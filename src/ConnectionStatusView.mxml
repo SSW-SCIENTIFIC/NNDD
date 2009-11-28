@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="384" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+
+	<mx:Script>
+		<![CDATA[
+			import org.mineap.NNDD.LogManager;
+			import org.mineap.NNDD.util.NicoServerStatusCheck;
+		
+			private var loginUrl:String = "https://secure.nicovideo.jp/secure/login_form?message=cant_login";
+			private var getFlvUrl:String = "http://www.nicovideo.jp/api/getflv";
+			private var getBgmUrl:String = "http://www.nicovideo.jp/api/getbgm";
+			private var messageServerUrlArray:Array = new Array("http://msg.nicovideo.jp/4/api/", "http://msg.nicovideo.jp/13/api/", "http://msg.nicovideo.jp/18/api/", "http://msg.nicovideo.jp/34/api/", 
+					"http://msg.nicovideo.jp/38/api/", "http://msg.nicovideo.jp/45/api/");
+			private var videoServerUrlArray:Array = new Array("http://smile-pcm42.nicovideo.jp/smile", "http://smile-pso42.nicovideo.jp/smile", "http://smile-pso00.nicovideo.jp/smile",
+					"http://smile-pso62.nicovideo.jp/smile", "http://smile-pso62.nicovideo.jp/smile", "http://smile-pso22.nicovideo.jp/smile", "http://smile-pso52.nicovideo.jp/smile", 
+					"http://smile-pcm51.nicovideo.jp/smile", "http://smile-pcm22.nicovideo.jp/smile", "http://smile-pcm11.nicovideo.jp/smile", "http://smile-pcm52.nicovideo.jp/smile",
+					"http://smile-pcm41.nicovideo.jp/smile", "http://smile-pcm51.nicovideo.jp/smile", "http://smile-pcm32.nicovideo.jp/smile", "http://smile-pcm11.nicovideo.jp/smile");
+			private var thumbImgServerUrlArray:Array = new Array("http://tn-skr1.smilevideo.jp/smile", "http://tn-skr2.smilevideo.jp/smile", "http://tn-skr3.smilevideo.jp/smile", "http://tn-skr4.smilevideo.jp/smile");
+			private var getThumbInfoUrl:String = "http://ext.nicovideo.jp/api/getthumbinfo";
+			private var ichibaInfoUrlArray:Array = new Array("http://ichiba1.nicovideo.jp/embed", "http://ichiba2.nicovideo.jp/embed", "http://ichiba3.nicovideo.jp/embed", "http://ichiba4.nicovideo.jp/embed");
+			private var rankingUrl:String = "http://www.nicovideo.jp/ranking";
+			private var tagSearchUrl:String = "http://www.nicovideo.jp/tag";
+			private var searchUrl:String = "http://www.nicovideo.jp/search";
+			private var myListUrl:String = "http://www.nicovideo.jp/mylist";
+			
+			private var logManager:LogManager;
+			
+			private var check_login:NicoServerStatusCheck = null;
+			private var check_ranking:NicoServerStatusCheck = null;
+			private var check_tagSearch:NicoServerStatusCheck = null;
+			private var check_search:NicoServerStatusCheck = null;
+			private var check_myList:NicoServerStatusCheck = null;
+			private var check_getFlv:NicoServerStatusCheck = null;
+			private var check_getBgm:NicoServerStatusCheck = null;
+			private var check_message:NicoServerStatusCheck = null;
+			private var check_video:NicoServerStatusCheck = null;
+			private var check_thumbImg:NicoServerStatusCheck = null;
+			private var check_thumbInfo:NicoServerStatusCheck = null;
+			private var check_ichiba:NicoServerStatusCheck = null;
+			
+			public function setLogManager(logManager:LogManager):void{
+				this.logManager = logManager;
+			}
+			
+			public function isFullComplete():Boolean{
+				if(check_login != null){
+					return false;
+				}
+				if(check_ranking != null){
+					return false;
+				}
+				if(check_tagSearch != null){
+					return false;
+				}
+				if(check_search != null){
+					return false;
+				}
+				if(check_myList != null){
+					return false;
+				}
+				if(check_getFlv != null){
+					return false;
+				}
+				if(check_getBgm != null){
+					return false;
+				}
+				if(check_message != null){
+					return false;
+				}
+				if(check_video != null){
+					return false;
+				}
+				if(check_thumbImg != null){
+					return false;
+				}
+				if(check_thumbInfo != null){
+					return false;
+				}
+				if(check_ichiba != null){
+					return false;
+				}
+				
+				logManager.addLog("***接続診断完了***");
+				return true;
+			}
+
+			protected function startButton_clickHandler(event:MouseEvent):void
+			{
+				
+				if(Button(event.target).label == "キャンセル"){
+					button_start.label = "サーバーの状況を診断";
+					
+					logManager.addLog("***接続診断キャンセル***");
+					
+					if(check_login != null){
+						check_login.close();
+					}
+					if(check_ranking != null){
+						check_ranking.close();
+					}
+					if(check_tagSearch != null){
+						check_tagSearch.close();
+					}
+					if(check_search != null){
+						check_search.close();
+					}
+					if(check_myList != null){
+						check_myList.close();
+					}
+					if(check_getFlv != null){
+						check_getFlv.close();
+					}
+					if(check_getBgm != null){
+						check_getBgm.close();
+					}
+					if(check_message != null){
+						check_message.close();
+					}
+					if(check_video != null){
+						check_video.close();
+					}
+					if(check_thumbImg != null){
+						check_thumbImg.close();
+					}
+					if(check_thumbInfo != null){
+						check_thumbInfo.close();
+					}
+					if(check_ichiba != null){
+						check_ichiba.close();
+					}
+					
+					check_login = null;
+					check_ranking = null;
+					check_tagSearch = null;
+					check_search = null;
+					check_myList = null;
+					check_getFlv = null;
+					check_getBgm = null;
+					check_message = null;
+					check_video = null;
+					check_thumbImg = null;
+					check_thumbInfo = null;
+					check_ichiba = null;
+					
+				}else{
+					
+					logManager.addLog("***接続診断開始***");
+					
+					Button(event.target).label = "キャンセル";
+					
+					check_login = new NicoServerStatusCheck(logManager);
+					check_login.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_login != null){
+							check_login.close();
+							check_login = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_login.checkUrl(loginUrl, label_loginStatus, "ログインサーバー");
+					
+					
+					check_ranking = new NicoServerStatusCheck(logManager);
+					check_ranking.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_ranking != null){
+							check_ranking.close();
+							check_ranking = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_ranking.checkUrl(rankingUrl, label_ranking, "ランキング");
+					
+					check_tagSearch = new NicoServerStatusCheck(logManager);
+					check_tagSearch.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_tagSearch != null){
+							check_tagSearch.close();
+							check_tagSearch = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_tagSearch.checkUrl(tagSearchUrl, label_tagSearch, "タグ検索");
+					
+					check_search = new NicoServerStatusCheck(logManager);
+					check_search.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_search != null){
+							check_search.close();
+							check_search = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_search.checkUrl(searchUrl, label_search, "単語検索");
+					
+					check_myList = new NicoServerStatusCheck(logManager);
+					check_myList.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_myList != null){
+							check_myList.close();
+							check_myList = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_myList.checkUrl(myListUrl, label_mylist, "マイリスト");
+					
+					
+					check_getFlv = new NicoServerStatusCheck(logManager);
+					check_getFlv.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_getFlv != null){
+							check_getFlv.close();
+							check_getFlv = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_getFlv.checkUrl(getFlvUrl, label_getFlv, "getFlv");
+					
+					check_getBgm = new NicoServerStatusCheck(logManager);
+					check_getBgm.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_getBgm != null){
+							check_getBgm.close();
+							check_getBgm = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_getBgm.checkUrl(getBgmUrl, label_getBgm, "getBgm");
+					
+					
+					check_message = new NicoServerStatusCheck(logManager);
+					check_message.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_message != null){
+							check_message.close();
+							check_message = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_message.check(messageServerUrlArray, label_message, "メッセージサーバー");
+					
+					check_video = new NicoServerStatusCheck(logManager);
+					check_video.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_video != null){
+							check_video.close();
+							check_video = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_video.check(videoServerUrlArray, label_video, "動画サーバー");
+					
+					check_thumbImg = new NicoServerStatusCheck(logManager);
+					check_thumbImg.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_thumbImg != null){
+							check_thumbImg.close();
+							check_thumbImg = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_thumbImg.check(thumbImgServerUrlArray, label_thumbImg, "サムネイル画像サーバー");
+					
+					check_thumbInfo = new NicoServerStatusCheck(logManager);
+					check_thumbInfo.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_thumbInfo != null){
+							check_thumbInfo.close();
+							check_thumbInfo = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_thumbInfo.checkUrl(getThumbInfoUrl, label_thumbInfo, "サムネイル情報サーバー");
+					
+					check_ichiba = new NicoServerStatusCheck(logManager);
+					check_ichiba.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if(check_ichiba != null){
+							check_ichiba.close();
+							check_ichiba = null;
+						}
+						if(isFullComplete()){
+							button_start.label = "サーバーの状況を診断";
+						}
+					});
+					check_ichiba.check(ichibaInfoUrlArray, label_ichiba, "市場情報サーバー");
+				}
+				
+			}
+
+		]]>
+	</mx:Script>
+
+	<mx:Label text="ログインサーバー" left="10" top="10"/>
+	<mx:Label text="動画API" left="10" top="160"/>
+	<mx:Label text="BGMAPI" left="10" top="186"/>
+	
+	<mx:Label text="メッセージサーバー" left="10" top="212"/>
+	<mx:Label text="動画サーバー" left="10" top="238"/>
+	<mx:Label text="サムネイル画像サーバー" left="10" top="264"/>
+	<mx:Label text="サムネイル情報API" left="10" top="290"/>
+	<mx:Label text="市場情報サーバー" left="10" top="316"/>
+	<mx:Label text="ランキングサーバー" left="10" top="46"/>
+	<mx:Label text="単語検索サーバー" left="10" top="72"/>
+	<mx:Label text="マイリストサーバー" left="10" top="124"/>
+	<mx:Label text="タグ検索サーバー" left="10" top="98"/>
+	<mx:Label text="未実施" left="160" top="238" id="label_video" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="212" id="label_message" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="186" id="label_getBgm" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="160" id="label_getFlv" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="124" id="label_mylist" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="98" id="label_tagSearch" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="72" id="label_search" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="46" id="label_ranking" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="10" id="label_loginStatus" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="264" id="label_thumbImg" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="290" id="label_thumbInfo" fontWeight="normal"/>
+	<mx:Label text="未実施" left="160" top="316" id="label_ichiba" fontWeight="normal"/>
+	<mx:HRule left="10" top="36" right="10"/>
+	<mx:HRule left="10" top="150" right="10"/>
+	<mx:HRule left="10" top="342" right="10"/>
+	<mx:Label text="：" left="133" top="124"/>
+	<mx:Label text="：" left="133" top="160"/>
+	<mx:Label text="：" left="133" top="186"/>
+	<mx:Label text="：" left="133" top="212"/>
+	<mx:Label text="：" left="133" top="238"/>
+	<mx:Label text="：" left="133" top="264"/>
+	<mx:Label text="：" left="133" top="290"/>
+	<mx:Label text="：" left="133" top="316"/>
+	<mx:Label text="：" left="133" top="10"/>
+	<mx:Label text="：" left="133" top="46"/>
+	<mx:Label text="：" left="133" top="72"/>
+	<mx:Label text="：" left="133" top="98"/>
+	<mx:Button label="サーバーの状況を診断" right="10" top="352" click="startButton_clickHandler(event)" id="button_start"/>
+	
+</mx:Canvas>

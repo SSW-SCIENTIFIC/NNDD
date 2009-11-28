@@ -1,11 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					   xmlns:s="library://ns.adobe.com/flex/spark" 
-					   xmlns:mx="library://ns.adobe.com/flex/halo">
-	<s:layout>
-		<s:BasicLayout/>
-	</s:layout>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-</s:WindowedApplication>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="800" height="600" xmlns:ns1="*">
+
+	<mx:ApplicationControlBar left="5" top="5" right="213">
+		<mx:ToggleButtonBar dataProvider="{viewstack3}" height="22">
+		</mx:ToggleButtonBar>
+		<mx:Button label="Player"/>
+		<mx:Button label="ログイン"/>
+	</mx:ApplicationControlBar>
+	
+	<mx:ApplicationControlBar right="5" top="5" width="200">
+		<mx:Label text="検索:"/>
+		<mx:TextInput width="100%"/>
+	</mx:ApplicationControlBar>
+	
+	<mx:ViewStack id="viewstack3" left="0" right="0" bottom="0" top="46">
+		<mx:Canvas label="NNDD" top="0" left="0" right="0" bottom="0">
+		
+			<mx:HDividedBox left="5" top="0" bottom="0" right="5">
+				<mx:Canvas width="150" height="100%" minWidth="150">
+					<mx:Tree left="0" top="0" bottom="30" right="0"></mx:Tree>
+					<mx:Button label="+" left="0" bottom="5"/>
+					<mx:Button label="-" left="47" bottom="5"/>
+					<mx:Button x="95" y="525" label="edit"/>
+				</mx:Canvas>
+				
+				<mx:ViewStack id="viewstack1" width="200" height="100%" minWidth="300">
+					<mx:Canvas label="nico_view" width="100%" height="100%">
+						
+						<mx:ViewStack id="viewstack2" height="45" left="0" top="0" right="0">
+							<mx:Canvas label="ranking" width="100%" height="100%">
+								<mx:ApplicationControlBar left="0" top="0" right="0">
+									<mx:Label text="[期間]"/>
+									<mx:ComboBox editable="false" width="150"></mx:ComboBox>
+									<mx:Label text="[対象]"/>
+									<mx:ComboBox editable="false" width="150"></mx:ComboBox>
+									<mx:Button label="更新"/>
+								</mx:ApplicationControlBar>
+							</mx:Canvas>
+							<mx:Canvas label="search" width="100%" height="100%">
+								<mx:ApplicationControlBar left="0" top="0" right="0">
+									<mx:Label text="[順序]:"/>
+									<mx:ComboBox width="120" id="comboBox_sortType" dataProvider="{searchSortListProvider}" rowCount="10" close="nicoSearchComboboxClosed(event)"></mx:ComboBox>
+									<mx:Label text="[種別]:"/>
+									<mx:ComboBox dataProvider="{serchTypeProvider}" id="combobox_serchType" width="120" close="nicoSearchComboboxClosed(event)"></mx:ComboBox>
+									<mx:Label text="[単語]:"/>
+									<mx:TextInput id="textInput_NicoSearch" enter="nicoSearchEnter(event)" width="100%" focusIn="textInputForcusEventHandler(event)"/>
+									<mx:Button label="検索" id="button_SearchNico" click="searchNicoButtonClicked()"/>
+								</mx:ApplicationControlBar>
+							</mx:Canvas>
+							<mx:Canvas label="mylist" width="100%" height="100%">
+								<mx:ApplicationControlBar left="0" top="0" right="0">
+									<mx:TextInput text="ここにマイリストのURLか、マイリストのIDを入力します。" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
+										focusIn="textInputForcusEventHandler(event)" toolTip="公開マイリスト及び自分のマイリストをのURL(もしくはID)を入力して「更新」ボタンを押すとマイリストが表示されます" width="100%"/>
+									<mx:Button label="更新" click="myListRenewButtonClicked(event)" id="button_myListRenew"/>
+								</mx:ApplicationControlBar>
+							</mx:Canvas>
+						</mx:ViewStack>
+						
+						<mx:Button label="&lt;" left="0" top="45"/>
+						<mx:Button label="&gt;" left="116" top="45"/>
+						<mx:ComboBox editable="false" width="60" left="48" top="45"></mx:ComboBox>
+						<mx:Button label="ニコ動へ" top="45" right="0"/>
+						<mx:DataGrid left="0" top="70" right="0" bottom="30" rowHeight="50">
+							<mx:columns>
+								<mx:DataGridColumn headerText="" dataField="number" width="30"/>
+								<mx:DataGridColumn headerText="" dataField="thumbImg" width="60">
+									<mx:itemRenderer>
+										<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								<mx:DataGridColumn headerText="タイトル" dataField="title"/>
+								<mx:DataGridColumn headerText="サムネイル情報" dataField="thumbInfo" width="100"/>
+								<mx:DataGridColumn headerText="状況" dataField="status" width="100"/>
+							</mx:columns>
+						</mx:DataGrid>
+						<mx:HSlider right="0" bottom="10"/>
+						<mx:Button label="再生" left="0" bottom="5"/>
+						<mx:Button label="DL" left="50" bottom="5"/>
+					</mx:Canvas>
+					<mx:Canvas label="nndd_view" width="100%" height="100%">
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:HDividedBox>
+
+		</mx:Canvas>
+		
+		<mx:Canvas label="設定" width="100%" height="100%">
+			<mx:TabNavigator backgroundAlpha="0.0" left="10" top="0" bottom="0" right="10" change="confTabChange(event)">
+				<mx:Canvas label="設定" width="100%" height="100%" id="canvas_innerConfig">
+					<mx:Label text="全般" top="0" left="10" fontWeight="bold"/>
+					
+					<mx:Label text="ムービーの保存先：" width="95" left="30" top="20"/>
+					<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="358" left="133" top="18" editable="false"/>
+					<mx:Button label="参照" click="folderSelectButtonClicked(event)" left="499" top="18" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定しても、NNDDのライブラリタブから再生できます。"/>
+					
+					<mx:Button label="更新" left="443" top="46" click="renewLibraryButtonClicked()" toolTip="ムービーの保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
+					<mx:Label text="ムービーの保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="48"/>
+					
+					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="30" top="76"/>
+					<mx:Button label="リセット" left="233" top="74" id="button_windowPositionReset" click="windowPositionReset()"/>
+					
+					<mx:CheckBox label="起動時にバージョンチェックをする" selected="true" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="104"/>
+					<mx:Button label="今すぐバージョンチェック" click="versionCheck(true)" left="223" top="104"/>
+					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="134"/>
+					
+					<mx:HRule left="163" top="164" right="10" height="8"/>
+					<mx:HRule left="43" top="5" right="10"/>
+					<mx:HRule left="113" top="275" right="10"/>
+					<mx:HRule left="73" top="321" right="10"/>
+					<mx:HRule left="43" right="10" top="368"/>
+					
+					<mx:Label text="ランキング・検索・マイリスト" top="164" left="10" fontWeight="bold"/>
+					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="181" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" toolTip="起動時に前回の起動の設定でランキングを更新します。"/>
+					<mx:CheckBox label="ブラウザでストリーミング再生する" left="203" top="181" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
+					<mx:CheckBox label="ダブルクリックでストリーミング再生する" left="396" top="181" id="checkBox_isDoubleClickOnStreaming" change="checkBoxDoubleClickOnStreamingChanged(event)" toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、ストリーミング再生します。"/>
+					<mx:CheckBox label="コメントの更新時に古いコメントに日付を付けて別名保存する(※Playerと設定を共有)" left="30" top="211" id="checkBox_isReNameOldComment" change="checkBoxReNameOldCommentChanged(event)" toolTip="ライブラリでコメントを更新する際に、古いコメントファイル名にファイルの作成日時を付加して保存します。"/>
+					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="243"/>
+					<mx:Button label="追加" id="button_addDefSearchItem" left="243" top="241" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					
+					<mx:Label text="ダウンロードリスト" top="269" left="10" fontWeight="bold"/>
+					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="285" selected="true" id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
+					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="213" top="285" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
+					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode" click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="486" top="285"/>
+					
+					<mx:Label text="ライブラリ" left="10" top="315" fontWeight="bold"/>
+					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="331" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
+					<!--
+					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
+					-->
+					<mx:Label text="寄付" left="10" fontWeight="bold" top="361"/>
+					<mx:Label text="MineApplicationProject(MineAP)はNNDDに対する寄付をお待ちしております。" left="30" top="387"/>
+					<mx:Button label="PayPalで寄付する" id="button_donation" click="donationButtonClicked(event)" left="426" top="383" toolTip="PayPalの寄付のページを既定のブラウザで開きます。"/>
+					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
+					
+				</mx:Canvas>
+				<mx:Canvas label="ログ" width="100%" height="100%" id="canvas_innerConfing_log">
+					<mx:HRule left="297" top="7" right="10"/>
+					<mx:Label text="ログ（&lt;ムービーの保存先&gt;/nndd.logにも出力されます）" left="10" top="0" fontWeight="bold"/>
+					<mx:TextArea id="textArea_log" enabled="true" editable="false" left="10" top="26" bottom="10" wordWrap="false" right="10"/>
+				</mx:Canvas>
+				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					<ns1:ConnectionStatusView id="connectionStatusView" left="0" top="0" bottom="0" right="0" creationComplete="connectionStatusViewCreationCompleteHandler(event)">
+					</ns1:ConnectionStatusView>
+				</mx:Canvas>
+			</mx:TabNavigator>
+		</mx:Canvas>
+		
+	</mx:ViewStack>
+	
+</mx:WindowedApplication>
