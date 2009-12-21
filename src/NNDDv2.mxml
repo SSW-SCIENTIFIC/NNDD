@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="800" height="600" xmlns:ns1="*">
 
-	<mx:ApplicationControlBar left="5" top="5" right="213">
+	<mx:ApplicationControlBar left="5" top="5" right="250">
 		<mx:ToggleButtonBar dataProvider="{viewstack3}" height="22">
 		</mx:ToggleButtonBar>
 		<mx:Button label="Player"/>
 		<mx:Button label="ログイン"/>
 	</mx:ApplicationControlBar>
 	
-	<mx:ApplicationControlBar right="5" top="5" width="200">
-		<mx:Label text="検索:"/>
-		<mx:TextInput width="100%"/>
+	<mx:ApplicationControlBar right="5" top="5" width="237">
+		<mx:Label text="検索"/>
+		<mx:ComboBox editable="true" width="100%"></mx:ComboBox>
 	</mx:ApplicationControlBar>
 	
 	<mx:ViewStack id="viewstack3" left="0" right="0" bottom="0" top="46">
@@ -25,60 +25,42 @@
 				</mx:Canvas>
 				
 				<mx:ViewStack id="viewstack1" width="200" height="100%" minWidth="300">
-					<mx:Canvas label="nico_view" width="100%" height="100%">
-						
-						<mx:ViewStack id="viewstack2" height="45" left="0" top="0" right="0">
-							<mx:Canvas label="ranking" width="100%" height="100%">
-								<mx:ApplicationControlBar left="0" top="0" right="0">
-									<mx:Label text="[期間]"/>
-									<mx:ComboBox editable="false" width="150"></mx:ComboBox>
-									<mx:Label text="[対象]"/>
-									<mx:ComboBox editable="false" width="150"></mx:ComboBox>
-									<mx:Button label="更新"/>
-								</mx:ApplicationControlBar>
-							</mx:Canvas>
-							<mx:Canvas label="search" width="100%" height="100%">
-								<mx:ApplicationControlBar left="0" top="0" right="0">
-									<mx:Label text="[順序]:"/>
-									<mx:ComboBox width="120" id="comboBox_sortType" dataProvider="{searchSortListProvider}" rowCount="10" close="nicoSearchComboboxClosed(event)"></mx:ComboBox>
-									<mx:Label text="[種別]:"/>
-									<mx:ComboBox dataProvider="{serchTypeProvider}" id="combobox_serchType" width="120" close="nicoSearchComboboxClosed(event)"></mx:ComboBox>
-									<mx:Label text="[単語]:"/>
-									<mx:TextInput id="textInput_NicoSearch" enter="nicoSearchEnter(event)" width="100%" focusIn="textInputForcusEventHandler(event)"/>
-									<mx:Button label="検索" id="button_SearchNico" click="searchNicoButtonClicked()"/>
-								</mx:ApplicationControlBar>
-							</mx:Canvas>
-							<mx:Canvas label="mylist" width="100%" height="100%">
-								<mx:ApplicationControlBar left="0" top="0" right="0">
-									<mx:TextInput text="ここにマイリストのURLか、マイリストのIDを入力します。" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
-										focusIn="textInputForcusEventHandler(event)" toolTip="公開マイリスト及び自分のマイリストをのURL(もしくはID)を入力して「更新」ボタンを押すとマイリストが表示されます" width="100%"/>
-									<mx:Button label="更新" click="myListRenewButtonClicked(event)" id="button_myListRenew"/>
-								</mx:ApplicationControlBar>
-							</mx:Canvas>
-						</mx:ViewStack>
-						
-						<mx:Button label="&lt;" left="0" top="45"/>
-						<mx:Button label="&gt;" left="116" top="45"/>
-						<mx:ComboBox editable="false" width="60" left="48" top="45"></mx:ComboBox>
-						<mx:Button label="ニコ動へ" top="45" right="0"/>
-						<mx:DataGrid left="0" top="70" right="0" bottom="30" rowHeight="50">
-							<mx:columns>
-								<mx:DataGridColumn headerText="" dataField="number" width="30"/>
-								<mx:DataGridColumn headerText="" dataField="thumbImg" width="60">
-									<mx:itemRenderer>
-										<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
-									</mx:itemRenderer>
-								</mx:DataGridColumn>
-								<mx:DataGridColumn headerText="タイトル" dataField="title"/>
-								<mx:DataGridColumn headerText="サムネイル情報" dataField="thumbInfo" width="100"/>
-								<mx:DataGridColumn headerText="状況" dataField="status" width="100"/>
-							</mx:columns>
-						</mx:DataGrid>
-						<mx:HSlider right="0" bottom="10"/>
-						<mx:Button label="再生" left="0" bottom="5"/>
-						<mx:Button label="DL" left="50" bottom="5"/>
+					<mx:Canvas label="ranking" width="100%" height="100%">
+						<mx:ApplicationControlBar left="0" top="0" right="0">
+							<mx:Label text="[期間]"/>
+							<mx:ComboBox editable="false" width="150"></mx:ComboBox>
+							<mx:Label text="[対象]"/>
+							<mx:ComboBox editable="false" width="150"></mx:ComboBox>
+							<mx:Button label="更新"/>
+						</mx:ApplicationControlBar>
+						<ns1:VideoListView left="0" top="35" bottom="0" right="0">
+						</ns1:VideoListView>
 					</mx:Canvas>
-					<mx:Canvas label="nndd_view" width="100%" height="100%">
+					<mx:Canvas label="search" width="100%" height="100%">
+						<mx:ApplicationControlBar left="0" top="0" right="0">
+							<mx:Label text="[順序]"/>
+							<mx:ComboBox width="120" id="comboBox_sortType" dataProvider="{searchSortListProvider}" rowCount="10" close="nicoSearchComboboxClosed(event)"></mx:ComboBox>
+							<mx:Label text="[種別]"/>
+							<mx:ComboBox dataProvider="{serchTypeProvider}" id="combobox_serchType" width="120" close="nicoSearchComboboxClosed(event)"></mx:ComboBox>
+							<mx:Label text="[単語]"/>
+							<mx:ComboBox editable="true" width="120"></mx:ComboBox>
+							<mx:Button label="検索" id="button_SearchNico" click="searchNicoButtonClicked()"/>
+						</mx:ApplicationControlBar>
+						<ns1:VideoListView left="0" top="35" bottom="0" right="0">
+						</ns1:VideoListView>
+					</mx:Canvas>
+					<mx:Canvas label="mylist" width="100%" height="100%">
+						<mx:ApplicationControlBar left="0" top="0" right="0">
+							<mx:TextInput text="ここにマイリストのURLか、マイリストのIDを入力します。" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
+								focusIn="textInputForcusEventHandler(event)" toolTip="公開マイリスト及び自分のマイリストをのURL(もしくはID)を入力して「更新」ボタンを押すとマイリストが表示されます" width="100%"/>
+							<mx:Button label="更新" click="myListRenewButtonClicked(event)" id="button_myListRenew"/>
+						</mx:ApplicationControlBar>
+						<ns1:VideoListView left="0" top="35" bottom="0" right="0">
+						</ns1:VideoListView>
+					</mx:Canvas>
+					<mx:Canvas label="library" width="100%" height="100%">
+						<ns1:VideoListView left="0" top="-30" bottom="0" right="0">
+						</ns1:VideoListView>
 					</mx:Canvas>
 				</mx:ViewStack>
 			</mx:HDividedBox>

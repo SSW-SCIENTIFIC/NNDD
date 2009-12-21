@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:mx="library://ns.adobe.com/flex/halo" width="602" height="528" xmlns:mx1="http://www.adobe.com/2006/mxml">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx1:Button label="&lt;" left="0" top="5"/>
+	<mx1:ComboBox editable="false" width="60" left="48" top="5"></mx1:ComboBox>
+	<mx1:Button label="&gt;" left="116" top="5"/>
+	<mx1:Button label="ニコ動へ" right="0" top="5"/>
+	<mx1:DataGrid rowHeight="50" left="0" top="30" right="0" bottom="30">
+		<mx1:columns>
+			<mx1:DataGridColumn headerText="" dataField="number" width="30"/>
+			<mx1:DataGridColumn headerText="" dataField="thumbImg" width="60">
+				<mx1:itemRenderer>
+					<mx1:Component><mx1:Image width="100%" height="100%"/></mx1:Component>
+				</mx1:itemRenderer>
+			</mx1:DataGridColumn>
+			<mx1:DataGridColumn headerText="タイトル" dataField="title"/>
+			<mx1:DataGridColumn headerText="サムネイル情報" dataField="thumbInfo" width="100"/>
+			<mx1:DataGridColumn headerText="状況" dataField="status" width="100"/>
+		</mx1:columns>
+	</mx1:DataGrid>
+	<mx1:Button label="再生" left="0" bottom="5"/>
+	<mx1:Button label="DL" left="54" bottom="5"/>
+	<mx1:HSlider right="0" bottom="10"/>
+</mx:Canvas>
