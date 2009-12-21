@@ -12,6 +12,15 @@ package org.mineap.a2n4as
 	
 	import org.mineap.NNDD.util.PathMaker;
 
+	[Event(name="watchSuccess", type="WatchVideoPage")]
+	[Event(name="watchFail", type="WatchVideoPage")]
+	[Event(name="httpResponseStatus", type="HTTPStatusEvent")]
+	
+	/**
+	 * 
+	 * @author shiraminekeisuke(MineAP)
+	 * 
+	 */
 	public class WatchVideoPage extends EventDispatcher
 	{
 		
@@ -19,6 +28,8 @@ package org.mineap.a2n4as
 		
 		//so.addVariable("videoId", "so8174126");
 		private static const videoIdPattern:RegExp = new RegExp("addVariable.\"videoId\", \"([^\"]+)\".");
+		
+		private static const descriptionPattern:RegExp = new RegExp("description:     '([^']+)'");
 		
 		/**
 		 * "http://www.nicovideo.jp/watch/"を表す定数です
@@ -101,10 +112,36 @@ package org.mineap.a2n4as
 		
 		/**
 		 * 
+		 * @return 
+		 * 
+		 */
+		public function getDescription():String{
+			
+			if (this._watchLoader.data != null) {
+				
+				var result:Array = descriptionPattern.exec(this._watchLoader.data);
+				if(result != null && result.length > 1){
+					return result[1];
+				}else{
+					return "";
+				}
+				
+			} else {
+				return "";
+			}
+			
+		}
+		
+		/**
+		 * 
 		 * @param event
 		 * 
 		 */
 		private function completeEventHandler(event:Event):void{
+			
+			// TODO テスト
+//			trace(this.getDescription());
+			
 			this._data = this._watchLoader.data;
 			dispatchEvent(new Event(WATCH_SUCCESS));
 		}

@@ -1,37 +1,54 @@
 package org.mineap.a2n4as
 {
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
-
+	
+	import org.mineap.a2n4as.util.CommentAnalyzer;
+	import org.mineap.a2n4as.util.GetFlvResultAnalyzer;
+	import org.mineap.a2n4as.util.GetThreadKeyResultAnalyzer;
+	
+	[Event(name="commentGetSuccess", type="Event")]
+	[Event(name="commentGetFail", type="ErrorEvent")]
+	[Event(name="httpResponseStatus", type="HTTPStatusEvent")]
+	
 	/**
 	 * ニコニコ動画からコメントを取得します。<br>
-	 * 取得結果は、addCommentLoaderListener()で登録したリスナから取得します。
 	 *  
-	 * @author shiraminekeisuke
-	 * 
+	 * @author shiraminekeisuke(MineAP)
+	 * @eventType CommentLoader.COMMENT_GET_SUCCESS
+	 * @eventType CommentLoader.COMMENT_GET_FAIL
+	 * @eventType HTTPStatusEvent.HTTP_RESPONSE_STATUS
 	 */
 	public class CommentLoader extends EventDispatcher
 	{
 		
 		private var _commentLoader:URLLoader;
 		
-		private var _count:int;
-		
 		private var _messageServerUrl:String;
-		
-		private var _userID:String;
 		
 		private var _apiAccess:ApiGetFlvAccess;
 		
-		private var _isOwnerComment:Boolean;
+		private var _apiGetThreadkeyAccess:ApiGetThreadkeyAccess;
 		
-		private var _threadId:String;
+		private var _getflvAnalyzer:GetFlvResultAnalyzer;
 		
-		private var _isPremium:String;
+		private var _commentAnalyzer:CommentAnalyzer;
+		
+		private var _isOwnerComment:Boolean
+		
+		private var _count:int = 0;
+		
+		private var _xml:XML;
+		
+		public static const COMMENT_GET_SUCCESS:String = "CommentGetSuccess";
 		
 		public static const COMMENT_GET_FAIL:String = "CommentGetFail";
 		
@@ -46,125 +63,152 @@ package org.mineap.a2n4as
 		
 		/**
 		 * ニコニコ動画にアクセスしてコメントを取得します。
+		 * threadIdが指定された場合はapiAccessの結果を使わずに指定されたthreadIdを使用します。
 		 * 
 		 * @param videoId コメントを取得したい動画のビデオID。
 		 * @param count 取得するコメントの数。
 		 * @param isOwnerComment 投稿者コメントかどうか
 		 * @param apiAccess getFlvにアクセスするApiGetFlvAccessオブジェクト
-		 * 
+		 * @param threadId スレッドID
 		 */
 		public function getComment(videoId:String, count:int, isOwnerComment:Boolean, apiAccess:ApiGetFlvAccess):void
 		{
 			this._count = count;
-			this._isOwnerComment = isOwnerComment;
+			
 			this._apiAccess = apiAccess;
 			
-			this._getComment();
+			this._getflvAnalyzer = new GetFlvResultAnalyzer();
+			
+			this._isOwnerComment = isOwnerComment;
+			
+			var isSucess:Boolean = _getflvAnalyzer.analyze(apiAccess.data);
+			
+			if(!isSucess){
+				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false, _getflvAnalyzer.result));
+				close();
+				return;
+			}
+			
+			//コメントを投稿する際に使う
+			this._messageServerUrl = _getflvAnalyzer.ms;
+			
+			// getthreadkeyにアクセス
+			this._apiGetThreadkeyAccess = new ApiGetThreadkeyAccess();
+			this._apiGetThreadkeyAccess.addEventListener(ApiGetThreadkeyAccess.SUCCESS, _getComment);
+			this._apiGetThreadkeyAccess.addEventListener(ApiGetThreadkeyAccess.FAIL, function(event:ErrorEvent):void{
+				trace(event);
+				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false, _getflvAnalyzer.result));
+				close();
+			});
+			this._apiGetThreadkeyAccess.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+				trace(event);
+			});
+			this._apiGetThreadkeyAccess.getthreadkey(this._getflvAnalyzer.threadId);
 			
 		}
 		
 		/**
 		 * 
 		 */
-		private function _getComment():void{
-			
-			var result:String = unescape(decodeURIComponent(this._apiAccess.data));
-			
-			//APIから得られたデータの"thread_ID="にあるスレッドIDを探す
-			//thread_id=1240164480&
-			var threadId:String = "";
-			var pattern:RegExp = new RegExp("thread_id=([^&]*)&", "ig");
-			var array:Array = pattern.exec(result);
-			if(array != null && array.length > 1){
-				threadId = array[array.length-1];
-			}else{
-				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false, result));
-				close();
-				return;
-			}
-			//APIから得られたデータの"user_id="にあるユーザーIDを探す
-			//&user_id=573999&
-			var userID:String = "";
-			pattern = new RegExp("&user_id=([^&])*&", "ig");
-			array = pattern.exec(result);
-			if(array != null && array.length > 1){
-				userID = array[array.length-1];
-			}else{
-				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false,  result));
-				close();
-				return;
-			}
-			//APIから得られたデータの"&ms="にあるURLを探す
-			//&ms=http://msg.nicovideo.jp/43/api/&
-			var commentURL:String = "";
-			pattern = new RegExp("&ms=(http://msg.nicovideo.jp/[^/]*/api/)&", "ig");
-			array = pattern.exec(result);
-			if(array != null && array.length > 1){
-				commentURL = array[array.length-1];
-			}else{
-				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false,  result));
-				close();
-				return;
-			}
-			//APIから得られたデータの"@is_premium="にあるURLを探す
-			//&is_premium=0&
-			var isPremium:String = "";
-			pattern = new RegExp("&is_premium=(\\d)&", "ig");
-			array = pattern.exec(result);
-			if(array != null && array.length > 1){
-				isPremium = array[array.length-1];
-			}else{
-				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false,  result));
-				close();
-				return;
-			}
-			
-			//コメントを投稿する際に使う
-			this._messageServerUrl = commentURL;
-			this._userID = userID;
-			this._threadId = threadId;
-			this._isPremium = isPremium;
+		private function _getComment(event:Event):void{
 			
 			//POSTリクエストを生成
-			var getComment:URLRequest = new URLRequest(unescape(commentURL));
+			var getComment:URLRequest = new URLRequest(unescape(this._getflvAnalyzer.ms));
 			getComment.method = "POST";
 			getComment.requestHeaders = new Array(new URLRequestHeader("Content-Type", "text/html"));
 
+			_apiGetThreadkeyAccess.close();
+			
 			//XMLを生成
 			//var xml:String = "<thread fork=\"1\" user_id=\"" + user_id + "\" res_from=\"1000\" version=\"20061206\" thread=\"" + threadId + "\" />";
 			var xml:XML = null;
-			if(!this._isOwnerComment){
-				xml = new XML("<thread res_from=\"-"+ this._count +"\" version=\"20061206\" thread=\"" + threadId + "\" />");
-				getComment.data = xml;
-			}else{
-				xml = new XML("<thread res_from=\"-"+ this._count +"\" fork=\"1\" version=\"20061206\" thread=\"" + threadId + "\" />"); 
-				getComment.data = xml;
+			var fork:String = "";
+			if(this._isOwnerComment){
+				fork = "fork=\"1\"";
 			}
 			
+			if(this._getflvAnalyzer.needs_key == 1 && !this._isOwnerComment ){ // 投コメは取りに行かないよ
+				
+				var getThreadKeyResultAnalyzer:GetThreadKeyResultAnalyzer = new GetThreadKeyResultAnalyzer();
+				getThreadKeyResultAnalyzer.analyze((event.currentTarget as ApiGetThreadkeyAccess).result);
+				
+				// 公式 
+				/*
+				  <thread 
+				　thread="******" ← getflv で返ってくる thread_id を使用 
+				　version="20061206" 
+				　res_from="-1000" 
+				　user_id="******" ← getflv で返ってくる user_id を使用 
+				　threadkey="******" ← これ以降の属性は getthreadkey で返ってくる内容 
+				　force_184="1" 
+					　/> 
+				*/
+				xml = new XML("<thread/>");
+				xml.@thread = this._getflvAnalyzer.threadId;
+				xml.@version = "20061206";
+				xml.@res_from = (this._count * -1);
+				xml.@user_id = this._getflvAnalyzer.userId;
+				xml.@threadkey = getThreadKeyResultAnalyzer.threadkey;
+				xml.@force_184 = getThreadKeyResultAnalyzer.force_184;
+			}else{
+				xml = new XML("<thread res_from=\"-"+ this._count +"\" "+ fork +" version=\"20061206\" thread=\"" + this._getflvAnalyzer.threadId + "\" />");
+			}
+//			trace(xml.toXMLString());
+			getComment.data = xml;
+			
 			this._commentLoader.dataFormat=URLLoaderDataFormat.TEXT;
+			
+			this._commentLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusEventHandler);
+			this._commentLoader.addEventListener(Event.COMPLETE, commentGetSuccess);
+			this._commentLoader.addEventListener(IOErrorEvent.IO_ERROR, errorEventHandler);
+			this._commentLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorEventHandler);
+			
 			//読み込み開始
 			this._commentLoader.load(getComment);
 			
 		}
 		
 		/**
-		 * コメントロード用のURLLoaderにリスナを追加します。
+		 * 
 		 * @param event
-		 * @param listener
 		 * 
 		 */
-		public function addCommentLoaderListener(event:String, listener:Function):void{
-			this._commentLoader.addEventListener(event, listener);
+		private function httpResponseStatusEventHandler(event:HTTPStatusEvent):void{
+			dispatchEvent(event);
 		}
 		
 		/**
-		 * APIアクセス用URLLoader（getFlv）にリスナを追加します
+		 * 
 		 * @param event
-		 * @param listener
 		 * 
 		 */
-		public function addApiGetFlvAccessListener(event:String, listener:Function):void{
-			this._apiAccess.addEventListener(event, listener);
+		private function commentGetSuccess(event:Event):void{
+			try{
+				this._xml = new XML((event.currentTarget as URLLoader).data);
+				
+				var analyzer:CommentAnalyzer = new CommentAnalyzer();
+				if(analyzer.analyze(xml, this._count)){
+					this._commentAnalyzer = analyzer;
+					
+					dispatchEvent(new Event(COMMENT_GET_SUCCESS));
+					return;	
+				}
+				
+			}catch(error:Error){
+				trace(error.getStackTrace())
+			}
+			dispatchEvent(new ErrorEvent(COMMENT_GET_FAIL, false, false, "fail:analyze"));
+			
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function errorEventHandler(event:ErrorEvent):void{
+			dispatchEvent(new ErrorEvent(COMMENT_GET_FAIL, false, false, event.text));
+			close();
 		}
 		
 		/**
@@ -182,16 +226,16 @@ package org.mineap.a2n4as
 		 * 
 		 */
 		public function get userID():String{
-			return this._userID;
+			return this._getflvAnalyzer.userId;
 		}
 		
 		/**
-		 * APIの結果から取得したthureadIdを返します。
+		 * APIの結果から取得したthreadIdを返します。
 		 * @return 
 		 * 
 		 */
-		public function get thureadId():String{
-			return this._threadId;
+		public function get threadId():String{
+			return this._getflvAnalyzer.threadId;
 		}
 		
 		/**
@@ -212,10 +256,28 @@ package org.mineap.a2n4as
 			try{
 				this._commentLoader.close();
 			}catch(error:Error){
-//				trace(error.getStackTrace());
 			}
-//			this._commentLoader = null;
+			try{
+				this._apiGetThreadkeyAccess.close();
+			}catch(error:Error){
+			}
+			try{
+				this._apiAccess.close();
+			}catch(error:Error){
+				
+			}
 		}
+
+		public function get commentAnalzyer():CommentAnalyzer
+		{
+			return _commentAnalyzer;
+		}
+
+		public function get xml():XML
+		{
+			return _xml;
+		}
+
 		
 	}
 }

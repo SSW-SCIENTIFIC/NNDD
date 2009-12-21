@@ -17,7 +17,7 @@ package org.mineap.a2n4as
 		private static const tokenPattern:RegExp = new RegExp("NicoAPI.token = \"(.+)\";");
 		
 		//<option value="434361">おきに</option>
-		private static const myListPattern:RegExp = new RegExp("<option value=\"(\\d+)\">([^<]+)</option>", "ig");
+		private static const myListPattern:RegExp = new RegExp("<option value=\"(\\d+)\"[^>]*>([^<]+)</option>", "ig");
 		
 		private static const itemTypePattern:RegExp = new RegExp("<input type=\"hidden\" name=\"item_type\" value=\"(.+)\">", "ig");
 		

@@ -55,18 +55,22 @@ package org.mineap.a2n4as
 		 */
 		public static const COMMENT:int = 2;
 		
+		/**
+		 * 総合(種別)
+		 */
+		public static const FAV:int = 3;
 		
 		/**
 		 * ニコニコ動画のランキングURLです。
 		 * NICO_RANKING_URLS[ランキング期間][ランキング種別]で指定します。
 		 */
 		public static const NICO_RANKING_URLS:Array = new Array(
-			new Array("http://www.nicovideo.jp/ranking/mylist/daily/","http://www.nicovideo.jp/ranking/view/daily/","http://www.nicovideo.jp/ranking/res/daily/"),
-			new Array("http://www.nicovideo.jp/ranking/mylist/weekly/","http://www.nicovideo.jp/ranking/view/weekly/","http://www.nicovideo.jp/ranking/res/weekly/"),
-			new Array("http://www.nicovideo.jp/ranking/mylist/monthly/","http://www.nicovideo.jp/ranking/view/monthly/","http://www.nicovideo.jp/ranking/res/monthly/"),
-			new Array("http://www.nicovideo.jp/ranking/mylist/hourly/","http://www.nicovideo.jp/ranking/view/hourly/","http://www.nicovideo.jp/ranking/res/hourly/"),
-			new Array("http://www.nicovideo.jp/ranking/mylist/total/","http://www.nicovideo.jp/ranking/view/total/all/","http://www.nicovideo.jp/ranking/res/total/"),
-			new Array("http://www.nicovideo.jp/newarrival")
+			new Array("http://www.nicovideo.jp/ranking/mylist/daily/","http://www.nicovideo.jp/ranking/view/daily/","http://www.nicovideo.jp/ranking/res/daily/","http://www.nicovideo.jp/ranking/fav/daily/"),
+			new Array("http://www.nicovideo.jp/ranking/mylist/weekly/","http://www.nicovideo.jp/ranking/view/weekly/","http://www.nicovideo.jp/ranking/res/weekly/","http://www.nicovideo.jp/ranking/fav/weekly/"),
+			new Array("http://www.nicovideo.jp/ranking/mylist/monthly/","http://www.nicovideo.jp/ranking/view/monthly/","http://www.nicovideo.jp/ranking/res/monthly/","http://www.nicovideo.jp/ranking/fav/monthly/"),
+			new Array("http://www.nicovideo.jp/ranking/mylist/hourly/","http://www.nicovideo.jp/ranking/view/hourly/","http://www.nicovideo.jp/ranking/res/hourly/","http://www.nicovideo.jp/ranking/fav/hourly/"),
+			new Array("http://www.nicovideo.jp/ranking/mylist/total/","http://www.nicovideo.jp/ranking/view/total/all/","http://www.nicovideo.jp/ranking/res/total/","http://www.nicovideo.jp/ranking/fav/total/"),
+			new Array("http://www.nicovideo.jp/")
 		);
 		
 

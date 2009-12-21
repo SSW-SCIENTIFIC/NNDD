@@ -1,16 +1,30 @@
 package org.mineap.a2n4as
 {
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.HTTPStatusEvent;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	
+	[Event(name="success", type="ApiGetBgmAccess")]
+	[Event(name="fail", type="ApiGetBgmAccess")]
+	[Event(name="httpResponseStatus", type="HTTPStatusEvent")]
 	
 	/**
 	 * ニコニコ動画のAPI(getbgm)へのアクセスを担当するクラスです。
 	 *  
-	 * @author shiraminekeisuke
+	 * @author shiraminekeisuke(MineAP)
 	 * 
 	 */
-	public class ApiGetBgmAccess
+	public class ApiGetBgmAccess extends EventDispatcher
 	{
+		
+		public static const SUCCESS:String = "Success";
+		
+		public static const FAIL:String = "Fail";
 		
 		private var _loader:URLLoader;
 		
@@ -28,11 +42,66 @@ package org.mineap.a2n4as
 		{
 			//ニコ割等のURLを取得するためにニコニコ動画のAPIにアクセスする。
 			var getAPIResult:URLRequest;
-			var url:String = "http://www.nicovideo.jp/api/getbgm?v=" + threadID + "&as3=1";
+			var url:String = "http://flapi.nicovideo.jp/api/getbgm?v=" + threadID + "&as3=1";
 			getAPIResult = new URLRequest(url);
 			getAPIResult.method = "GET";
 			
+			this._loader.addEventListener(Event.COMPLETE, getBgmSuccess);
+			this._loader.addEventListener(IOErrorEvent.IO_ERROR, errorEventHandler);
+			this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorEventHandler);
+			this._loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusEventHandler);
+			
 			this._loader.load(getAPIResult);
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function errorEventHandler(event:ErrorEvent):void{
+			removeHandler(event.currentTarget as URLLoader);
+			dispatchEvent(new ErrorEvent(FAIL, false, false, event.text));
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function httpResponseStatusEventHandler(event:HTTPStatusEvent):void{
+			dispatchEvent(event);
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function getBgmSuccess(event:Event):void{
+			removeHandler(event.currentTarget as URLLoader);
+			dispatchEvent(new Event(SUCCESS));
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function removeHandler(target:URLLoader):void{
+			target.removeEventListener(Event.COMPLETE, getBgmSuccess);
+			target.removeEventListener(IOErrorEvent.IO_ERROR, errorEventHandler);
+			target.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorEventHandler);
+			target.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusEventHandler);
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get data():Object{
+			return this._loader.data;
 		}
 		
 		/**
@@ -87,22 +156,12 @@ package org.mineap.a2n4as
 		}
 		
 		/**
-		 * URLLoaderにリスナを追加します。
-		 * 
-		 * @param event
-		 * @param listener
-		 * 
-		 */
-		public function addEventListener(event:String, listener:Function):void{
-			this._loader.addEventListener(event, listener);
-		}
-		
-		/**
 		 * 
 		 * 
 		 */
 		public function close():void{
 			try{
+				removeHandler(this._loader);
 				this._loader.close();
 			}catch(error:Error){
 //				trace(error.getStackTrace());
