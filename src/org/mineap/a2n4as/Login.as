@@ -11,6 +11,10 @@ package org.mineap.a2n4as
 	import flash.net.URLRequestDefaults;
 	import flash.net.URLVariables;
 
+	[Event(name="login_success", type="Login")]
+	[Event(name="login_fail", type="Login")]
+	[Event(name="logout_complete", type="Login")]
+	
 	/**
 	 * ニコニコ動画へのログインリクエストを格納するクラスです。
 	 * 
@@ -36,9 +40,9 @@ package org.mineap.a2n4as
 		public static const LOGOUT_URL:String = "https://secure.nicovideo.jp/secure/logout";
 		
 		/**
-		 * ニコニコ動画へのログインに失敗した際に遷移するページのURLです。
+		 * ニコニコ動画へのログインに失敗した際に返されるメッセージです。
 		 */
-		public static const LOGIN_FAIL_URL:String = "https://secure.nicovideo.jp/secure/login_form?message=cant_login";
+		public static const LOGIN_FAIL_MESSAGE:String = "cant_login";
 		
 		/**
 		 * ニコニコ動画のトップページURLです。
@@ -157,13 +161,13 @@ package org.mineap.a2n4as
 			dispatchEvent(event);
 			
 			if (event.status != 200) {
-				dispatchEvent(new ErrorEvent(LOGIN_FAIL, false, false, event.toString()));
+				dispatchEvent(new ErrorEvent(LOGIN_FAIL, false, false, "status:" + event.status));
 				
 				return;
 			}
 			
-			if (event.responseURL == LOGIN_FAIL_URL){
-				dispatchEvent(new ErrorEvent(LOGIN_FAIL, false, false, event.toString()));
+			if (event.responseURL.indexOf(LOGIN_FAIL_MESSAGE) != -1){
+				dispatchEvent(new ErrorEvent(LOGIN_FAIL, false, false, LOGIN_FAIL_MESSAGE));
 				
 				return;
 			}

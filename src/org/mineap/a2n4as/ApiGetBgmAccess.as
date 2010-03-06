@@ -115,14 +115,14 @@ package org.mineap.a2n4as
 			if(xml.@status == "ok"){
 				var xmlList:XMLList = xml.children();
 				for each(var temp:XML in xmlList){
-					if(temp.movie_type.text() == "swf" && temp.bgm_type.text() == "cm"){
+					if(/*temp.movie_type.text() == "swf" && */temp.bgm_type.text() == "cm"){
 						var url:String = temp.url.text();
 						if(url != null && url != ""){
 							urls.push(url);
 						}
 					}
 				}
-				trace(xml);
+//				trace(xml);
 			}else{
 				trace("解析失敗:" + xml);
 			}
@@ -141,7 +141,7 @@ package org.mineap.a2n4as
 			if(xml.@status == "ok"){
 				var xmlList:XMLList = xml.children();
 				for each(var temp:XML in xmlList){
-					if(temp.movie_type.text() == "swf" && temp.bgm_type.text() == "cm"){
+					if(/*temp.movie_type.text() == "swf" && */temp.bgm_type.text() == "cm"){
 						var id:String = temp.video_id.text();
 						if(id != null && id != ""){
 							ids.push(id);

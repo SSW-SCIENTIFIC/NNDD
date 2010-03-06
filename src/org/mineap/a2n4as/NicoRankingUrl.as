@@ -70,7 +70,7 @@ package org.mineap.a2n4as
 			new Array("http://www.nicovideo.jp/ranking/mylist/monthly/","http://www.nicovideo.jp/ranking/view/monthly/","http://www.nicovideo.jp/ranking/res/monthly/","http://www.nicovideo.jp/ranking/fav/monthly/"),
 			new Array("http://www.nicovideo.jp/ranking/mylist/hourly/","http://www.nicovideo.jp/ranking/view/hourly/","http://www.nicovideo.jp/ranking/res/hourly/","http://www.nicovideo.jp/ranking/fav/hourly/"),
 			new Array("http://www.nicovideo.jp/ranking/mylist/total/","http://www.nicovideo.jp/ranking/view/total/all/","http://www.nicovideo.jp/ranking/res/total/","http://www.nicovideo.jp/ranking/fav/total/"),
-			new Array("http://www.nicovideo.jp/")
+			new Array("http://www.nicovideo.jp/newarrival/")
 		);
 		
 

@@ -1,6 +1,7 @@
 package org.mineap.a2n4as.util
 {
 	/**
+	 * getThreadKeyにアクセスした際の応答を解析します。
 	 * 
 	 * @author shiraminekeisuke(MineAP)
 	 * 
@@ -8,15 +9,16 @@ package org.mineap.a2n4as.util
 	public class GetThreadKeyResultAnalyzer
 	{
 		
-		private var _threadkey:String = "";
+		private var _keys:Vector.<String> = new Vector.<String>();
 		
-		private var _force_184:String = "";
+		private var _map:Object = new Object();
 		
 		public function GetThreadKeyResultAnalyzer()
 		{
 		}
 		
 		/**
+		 * 渡された文字列をgetThreadkeyの戻り値であると仮定して解析します。
 		 * 
 		 * @param result
 		 * @return 
@@ -25,15 +27,14 @@ package org.mineap.a2n4as.util
 		public function analyze(result:String):Boolean{
 			try{
 				
-				var map:Object = new Object();
+				// "&"　で分割する
 				for each(var results:String in decodeURIComponent(result).split("&")){
-					// threadkey="" と force_184="" が取れる
+					// "=" で分割する
 					var words:Array = results.split("=");
-					map[words[0]] = words[1];
+					
+					this._keys.push(words[0]);
+					this._map[words[0]] = words[1];
 				}
-				
-				this._threadkey = map["threadkey"];
-				this._force_184 = map["force_184"];
 				
 				return true;
 			
@@ -44,16 +45,24 @@ package org.mineap.a2n4as.util
 			
 		}
 
-		public function get threadkey():String
-		{
-			return _threadkey;
+		/**
+		 * キーの一覧を返します。
+		 * @return 
+		 * 
+		 */
+		public function getKeys():Vector.<String>{
+			return this._keys;
 		}
 
-		public function get force_184():String
-		{
-			return _force_184;
+		/**
+		 * keyに対応する値を返します。存在しない場合はnullを返します。
+		 * @param key
+		 * @return 
+		 * 
+		 */
+		public function getValue(key:String):String{
+			return this._map[key];
 		}
-
 		
 	}
 }

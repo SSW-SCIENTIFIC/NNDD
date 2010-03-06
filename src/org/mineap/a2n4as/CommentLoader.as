@@ -148,8 +148,11 @@ package org.mineap.a2n4as
 				xml.@version = "20061206";
 				xml.@res_from = (this._count * -1);
 				xml.@user_id = this._getflvAnalyzer.userId;
-				xml.@threadkey = getThreadKeyResultAnalyzer.threadkey;
-				xml.@force_184 = getThreadKeyResultAnalyzer.force_184;
+				
+				for each(var key:String in getThreadKeyResultAnalyzer.getKeys()){
+					xml.@[key] = getThreadKeyResultAnalyzer.getValue(key);
+				}
+				
 			}else{
 				xml = new XML("<thread res_from=\"-"+ this._count +"\" "+ fork +" version=\"20061206\" thread=\"" + this._getflvAnalyzer.threadId + "\" />");
 			}
