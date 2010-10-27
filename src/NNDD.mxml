@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--NNDD.mxml -->
+<!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
+
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="initNNDD(this)" 
+	width="850" height="600" borderStyle="solid" horizontalScrollPolicy="off" verticalScrollPolicy="off" closing="windowClose(event)" 
+	windowMove="windowMove(event)" windowResize="windowMove(event)" error="error(event)" initialize="windowedapplication1_initializeHandler(event)"
+	invoke="invokeEventHandler(event)" minWidth="800" minHeight="500" xmlns:ns1="*" autoExit="false" activate="windowedapplication1_activateHandler(event)"
+	fontFamily="Verdana">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.listClasses.IListItemRenderer;
+			import mx.messaging.SubscriptionInfo;
+			
+			import org.mineap.nnddv2.library.LibraryTreeBuilder;
+			import org.mineap.nnddv2.model.tree.ITreeItem;
+			import org.mineap.nnddv2.model.tree.TreeFileItem;
+			
+			private var fileSystemTreeComplete:Boolean = false;
+			private var downloadedDataGridComplete:Boolean = false;
+			private var playListComplete:Boolean = false;
+			private var tileListComplete:Boolean = false;
+			
+			private var rankingMenu:ContextMenu;
+			private var rankingMenuitem:ContextMenuItem;
+			private var rankingMenuitem2:ContextMenuItem;
+			private var rankingMenuitem3:ContextMenuItem;
+			private var searchMenu:ContextMenu;
+			private var searchMenuitem:ContextMenuItem;
+			private var searchMenuitem2:ContextMenuItem;
+			private var searchMenuitem3:ContextMenuItem;
+			private var downloadedMenu:ContextMenu;
+			private var downloadedMenuitem1:ContextMenuItem;
+			private var downloadedMenuitem2:ContextMenuItem;
+			private var downloadedMenuitem3:ContextMenuItem;
+			private var downloadedMenuitem4:ContextMenuItem;
+			private var downloadedMenuitem5:ContextMenuItem;
+			private var downloadMenu:ContextMenu;
+			private var downloadMenuitem1:ContextMenuItem;
+			private var downloadMenuitem2:ContextMenuItem;
+			private var myListMenu:ContextMenu;
+			private var myListMenuItem1:ContextMenuItem;
+			private var myListMenuItem2:ContextMenuItem;
+			private var myListMenuItem3:ContextMenuItem;
+			private var myListMenuItem4:ContextMenuItem;
+			private var fileSystemTreeMenu:ContextMenu;
+			private var fileSystemTreeMenuItem1:ContextMenuItem;
+			private var fileSystemTreeMenuItem2:ContextMenuItem;
+			private var tagTileListMenu:ContextMenu;
+			private var tagFilterTileListMenu:ContextMenu;
+			private var tagTileListMenuItem1:ContextMenuItem;
+			private var tagTileListMenuItem2:ContextMenuItem;
+			private var tagTileListMenuItem3:ContextMenuItem;
+			private var tagFilterTileListMenuItem1:ContextMenuItem;
+			private var tagFilterTileListMenuItem2:ContextMenuItem;
+			private var tagFilterTileListMenuItem3:ContextMenuItem;
+			private var historyMenu:ContextMenu;
+			private var historyPlay:ContextMenuItem;
+			private var historyDownload:ContextMenuItem;
+			private var historyDelete:ContextMenuItem;
+			
+			private var copyUrlMenuItem:ContextMenuItem;
+			private var playAllMenuItem:ContextMenuItem;
+
+			protected function windowedapplication1_activateHandler(event:Event):void
+			{
+				Mouse.show();
+			}
+
+			protected function windowedapplication1_initializeHandler(event:FlexEvent):void
+			{
+				// ツールチップのデフォルトサイズを変更
+//				var css:CSSStyleDeclaration = StyleManager.getStyleDeclaration("ToolTip");
+//				css.setStyle("fontSize", 10);
+			}
+
+			private function get openNicosoundMenuItem():ContextMenuItem{
+				var openNicosoundMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_OPEN_NICOSOUND, true);
+				openNicosoundMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
+				return openNicosoundMenuItem;
+			}
+			
+			private function get openNicomimiMenuItem():ContextMenuItem{
+				var openNicomimiMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_OPEN_NICOMIMI, false);
+				openNicomimiMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicomimi);
+				return openNicomimiMenuItem;
+			}
+			
+			private function get openWebBrowser():ContextMenuItem{
+				var openWebBrowserMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_OPEN_NICONICO_DOUGA, true);
+				openWebBrowserMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openWebBrowserForContextMenu);
+				return openWebBrowserMenuItem;
+			}
+			
+			protected function applicationcontrolbar1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var index:int = 0;
+				var value:Object = null;
+				
+				value = ConfigManager.getInstance().getItem("searchTypeIndex");
+				if(value != null){
+					index = int(value);
+					combobox_serchType.selectedIndex = index;
+				}
+				
+				index = 0;
+				value = ConfigManager.getInstance().getItem("searchSortTypeIndex");
+				if(value != null){
+					index = int(value);
+					comboBox_sortType.selectedIndex = index;
+				}
+				
+				if(isSaveSearchHistory){
+					loadSearchHistory();
+				}
+				
+			}
+
+
+			protected function dataGrid_history_creationCompleteHandler(event:FlexEvent):void
+			{
+				historyMenu = new ContextMenu();
+				historyPlay = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
+				historyPlay.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, historyItemHandler);
+				historyDownload = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST);
+				historyDownload.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, historyItemHandler);
+				historyDelete = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE_BY_QUEUE)
+				historyDelete.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, historyItemHandler);
+				
+				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+				
+				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
+				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				historyMenu.customItems.push(historyPlay, historyDownload, historyDelete, 
+					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+				historyMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				dataGrid_history.contextMenu = historyMenu;
+			}
+
+
+			protected function dataGrid_downloadList_creationCompleteHandler(event:FlexEvent):void
+			{
+				downloadMenu = new ContextMenu();
+				downloadMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY_BY_QUEUE);
+				downloadMenuitem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,queueItemHandler);
+				downloadMenuitem2 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE_BY_QUEUE, true);
+				downloadMenuitem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,queueItemHandler);
+				
+				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+				
+				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
+				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				downloadMenu.customItems.push(downloadMenuitem1, downloadMenuitem2, 
+					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+				downloadMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				dataGrid_downloadList.contextMenu = downloadMenu;
+			}
+
+
+			protected function dataGrid_myList_creationCompleteHandler(event:FlexEvent):void
+			{
+				myListMenu = new ContextMenu();
+				myListMenuItem1 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
+				myListMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
+				myListMenuItem2 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY);
+				myListMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
+				myListMenuItem3 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST, true);
+				myListMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
+				myListMenuItem4 = new ContextMenuItem(Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED, true);
+				myListMenuItem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
+				
+				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+				
+				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
+				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
+				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
+				myListMenu.customItems.push(myListMenuItem1, myListMenuItem2, playAllMenuItem, myListMenuItem4, myListMenuItem3, 
+					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+				myListMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				dataGrid_myList.contextMenu = myListMenu;
+				
+				if(this.thumbImgSizeForMyList != -1){
+					slider_thumbImageSizeForMyList.value = this.thumbImgSizeForMyList;
+					dataGrid_myList.rowHeight = 50*slider_thumbImageSizeForMyList.value;
+					dataGridColumn_thumbUrl.width = 60*slider_thumbImageSizeForMyList.value;
+					this.validateNow();
+				}
+				
+				
+			}
+
+
+			protected function dataGrid_search_creationCompleteHandler(event:FlexEvent):void
+			{
+				searchMenu = new ContextMenu();
+				searchMenuitem = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
+				searchMenuitem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, searchItemHandler);
+				searchMenuitem2 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY);
+				searchMenuitem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, searchItemHandler);
+				searchMenuitem3 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST, true);
+				searchMenuitem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, searchItemHandler);
+				
+				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+				
+				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
+				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
+				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
+				searchMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				searchMenu.customItems.push(searchMenuitem, searchMenuitem2, playAllMenuItem, searchMenuitem3, 
+					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+				
+				dataGrid_search.contextMenu = searchMenu;
+				
+				if(this.thumbImgSizeForSearch != -1){
+					slider_thumbImageSize_search.value = this.thumbImgSizeForSearch;
+					dataGrid_search.rowHeight = 50*slider_thumbImageSize_search.value;
+					dataGridColumn_thumbImage_Search.width = 60*slider_thumbImageSize_search.value;
+					this.validateNow();
+				}
+				
+				
+			}
+
+
+			protected function dataGrid_ranking_creationCompleteHandler(event:FlexEvent):void
+			{
+				rankingMenu = new ContextMenu();
+				rankingMenuitem = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
+				rankingMenuitem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, rankingItemHandler);
+				rankingMenuitem2 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY);
+				rankingMenuitem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, rankingItemHandler);
+				rankingMenuitem3 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST, true);
+				rankingMenuitem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, rankingItemHandler);
+				
+				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+				
+				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
+				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
+				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
+				rankingMenu.customItems.push(rankingMenuitem, rankingMenuitem2, playAllMenuItem, rankingMenuitem3,
+					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+				rankingMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				dataGrid_ranking.contextMenu = rankingMenu;
+			}
+
+
+			protected function tileList_filterTag_creationCompleteHandler(event:FlexEvent):void
+			{
+				tagFilterTileListMenu = new ContextMenu();
+				tagFilterTileListMenuItem1 = new ContextMenuItem(Message.L_TAB_LIST_MENU_ITEM_LABEL_SEARCH);
+				tagFilterTileListMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,tagListItemHandler)
+				tagFilterTileListMenuItem2 = new ContextMenuItem(Message.L_TAB_LIST_MENU_ITEM_LABEL_JUMP_DIC, true);
+				tagFilterTileListMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,tagListItemHandler)
+				tagFilterTileListMenuItem3 = new ContextMenuItem(Message.L_TAB_LIST_MENU_ITEM_LABEL_SHOW_TAG, true);
+				tagFilterTileListMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,tagListItemHandler)
+				tagFilterTileListMenu.customItems.push(tagFilterTileListMenuItem1, tagFilterTileListMenuItem2, tagFilterTileListMenuItem3)
+				tileList_filterTag.contextMenu = tagFilterTileListMenu;
+				tileList_filterTag.dataProvider = ngTagProvider;
+			}
+
+
+			protected function tileList_tag_creationCompleteHandler(event:FlexEvent):void
+			{
+				tagTileListMenu = new ContextMenu();
+				tagTileListMenuItem1 = new ContextMenuItem(Message.L_TAB_LIST_MENU_ITEM_LABEL_SEARCH);
+				tagTileListMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,tagListItemHandler);
+				tagTileListMenuItem2 = new ContextMenuItem(Message.L_TAB_LIST_MENU_ITEM_LABEL_JUMP_DIC, true);
+				tagTileListMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,tagListItemHandler);
+				tagTileListMenuItem3 = new ContextMenuItem(Message.L_TAB_LIST_MENU_ITEM_LABEL_HIDE_TAG, true);
+				tagTileListMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,tagListItemHandler);
+				tagTileListMenu.customItems.push(tagTileListMenuItem1, tagTileListMenuItem2, tagTileListMenuItem3);
+				tileList_tag.contextMenu = tagTileListMenu;
+				tileList_tag.dataProvider = tagProvider;
+				
+				if(this.lastCanvasTagTileListHight != -1){
+					this.canvas_tagTileList.height = this.lastCanvasTagTileListHight;
+					this.validateNow();
+				}
+				
+				this.canvas_tagTileList.addEventListener(ResizeEvent.RESIZE, tileListHeightChanged);
+				
+				tileListComplete = true;
+				setLibraryTab();
+				
+			}
+
+			protected function dataGrid_downloaded_creationCompleteHandler(event:FlexEvent):void
+			{
+				downloadedMenu = new ContextMenu();
+				downloadedMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
+				downloadedMenuitem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
+				downloadedMenuitem2 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE);
+				downloadedMenuitem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
+				downloadedMenuitem3 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_EDIT);
+				downloadedMenuitem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
+				downloadedMenuitem4 = new ContextMenuItem(Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW, true);
+				downloadedMenuitem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,fileSystemTreeItemHandler);
+				downloadedMenuitem5 = new ContextMenuItem(Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR);
+				downloadedMenuitem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,fileSystemTreeItemHandler);
+				
+				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+				
+				downloadedMenu.customItems.push(downloadedMenuitem1, downloadedMenuitem2, downloadedMenuitem3, playListContextMenuItem, 
+					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem, downloadedMenuitem4, downloadedMenuitem5);
+				downloadedMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				dataGrid_downloaded.contextMenu = downloadedMenu;
+				if(this.lastLibraryWidth != -1){
+					this.canvas_libAndPList.width = this.lastLibraryWidth;
+					this.validateNow();
+				}
+				this.canvas_libAndPList.addEventListener(ResizeEvent.RESIZE, libraryWidthChanged);
+				
+				downloadedDataGridComplete = true;
+				setLibraryTab();
+			}
+
+			protected function list_playList_creationCompleteHandler(event:FlexEvent):void
+			{
+				playListComplete = true;
+				setLibraryTab();
+				updatePlayListSummery();
+			}
+
+
+			protected function tree_SearchItem_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(this.lastSearchItemListWidth != -1){
+					this.canvas_searchItemList.width = this.lastSearchItemListWidth;
+					this.validateNow();
+				}
+				
+				(tree_SearchItem.dataProvider as ArrayCollection).refresh();
+				tree_SearchItem.invalidateList();
+				tree_SearchItem.validateNow();
+				
+				this.canvas_searchItemList.addEventListener(ResizeEvent.RESIZE, searchItemListWidthChanged);
+			}
+
+
+			protected function canvas_myListSummary_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(this.lastMyListSummaryWidth != -1){
+					this.canvas_myListSummary.width = this.lastMyListSummaryWidth;
+					this.validateNow();
+				}
+				this.canvas_myListSummary.addEventListener(ResizeEvent.RESIZE, myListSummaryWidthChagned);
+			}
+
+
+			protected function textArea_myList_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(this.lastMyListHeight != -1){
+					this.textArea_myList.height = this.lastMyListHeight;
+					this.validateNow();
+				}
+				
+				this.textArea_myList.addEventListener(ResizeEvent.RESIZE, myListHeightChanged);
+			}
+
+
+			protected function tree_myList_creationCompleteHandler(event:FlexEvent):void
+			{
+				tree_myList.dataProvider = myListProvider;
+				(tree_myList.dataProvider as ArrayCollection).refresh();
+				tree_myList.invalidateList();
+				tree_myList.validateNow();
+				
+				var timer:Timer = new Timer(100, 1);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
+					(tree_myList.dataProvider as ArrayCollection).refresh();
+					tree_myList.invalidateList();
+					tree_myList.validateNow();
+				});
+				timer.start();
+				
+			}
+
+
+			protected function tree_myList_showHandler(event:FlexEvent):void
+			{
+				(tree_myList.dataProvider as ArrayCollection).refresh();
+				tree_myList.invalidateList();
+				tree_myList.validateNow();
+			}
+
+
+			protected function tree_myList_changeHandler(event:ListEvent):void
+			{
+				(tree_myList.dataProvider as ArrayCollection).refresh();
+				tree_myList.invalidateList();
+				tree_myList.validateNow();
+			}
+
+
+			protected function textInput_url_nativeDragEnterHandler(event:NativeDragEvent):void
+			{
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+					NativeDragManager.acceptDragDrop(this.textInput_url);
+				}
+			}
+
+
+			protected function textInput_url_nativeDragDropHandler(event:NativeDragEvent):void
+			{
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+					textInput_url.text = String(event.clipboard);
+				}
+			}
+			
+
+
+			protected function button_addDlList_nativeDragEnterHandler(event:NativeDragEvent):void
+			{
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+					NativeDragManager.acceptDragDrop(this.button_addDlList);
+				}
+			}
+
+
+			protected function button_addDlList_nativeDragDropHandler(event:NativeDragEvent):void
+			{
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+					addDLListForClipboard(event.clipboard);
+				}
+			}
+
+
+			protected function textInput_url_focusOutHandler(event:FocusEvent):void
+			{
+				textInput_url_foculsIn = false;
+			}
+
+
+			protected function textInput_url_focusInHandler(event:FocusEvent):void
+			{
+				textInput_url_foculsIn = true;
+				var textInput:TextInput = TextInput(event.currentTarget);
+				textInput.selectionBeginIndex = 0;
+				textInput.selectionEndIndex = textInput.text.length;
+			}
+
+
+			protected function checkBox_showAll_creationCompleteHandler(event:FlexEvent):void
+			{
+				checkBox_showAll.selected = this.showAll;
+			}
+
+			protected function tree_library_creationCompleteHandler(event:FlexEvent):void
+			{
+				var libraryTreeBuilder:LibraryTreeBuilder = new LibraryTreeBuilder();
+				var array:Array = libraryTreeBuilder.build(true);
+				(event.currentTarget as Tree).dataProvider = array;
+				
+				fileSystemTreeMenu = new ContextMenu();
+				fileSystemTreeMenuItem1 = new ContextMenuItem(Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW);
+				fileSystemTreeMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileSystemTreeItemHandler);
+				fileSystemTreeMenuItem2 = new ContextMenuItem(Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR);
+				fileSystemTreeMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileSystemTreeItemHandler);
+				fileSystemTreeMenu.customItems.push(fileSystemTreeMenuItem1, fileSystemTreeMenuItem2);
+				(event.currentTarget as Tree).contextMenu = fileSystemTreeMenu;
+				
+				(event.currentTarget as Tree).openItems = array;
+				
+				fileSystemTreeComplete = true;
+				
+				setLibraryTab();
+				
+				
+			}
+
+
+			protected function tree_library_itemOpeningHandler(event:TreeEvent):void
+			{
+				var item:TreeFolderItem = (event.item as TreeFolderItem);
+				
+				if(item != null){
+					
+					if(item.file != null){
+						// フォルダ展開時にサブフォルダを生成
+						
+						if(isEnableLibrary){
+							var libraryTreeBuilder:LibraryTreeBuilder = new LibraryTreeBuilder();
+							item.children = libraryTreeBuilder.buildOnlyChildDir(item);
+						}else{
+							item.children = new Array();
+						}
+					}else{
+						
+						// プレイリスト一覧を更新
+						var treeDataBuilder:TreeDataBuilder = new TreeDataBuilder();
+						var playLists:Vector.<PlayList> = PlayListManager.instance.readPlayListSummary(libraryManager.playListDir);
+						var array:Array = new Array();
+						for each(var playList:PlayList in playLists){
+							var file:TreeFileItem = treeDataBuilder.getFileObject(playList.name);
+							array.push(file);
+						}
+						
+						item.children = array;
+					}
+				}
+			}
+
+
+			protected function tree_library_dragDropHandler(event:DragEvent):void
+			{
+				event.preventDefault();
+				tree_library.hideDropFeedback(event);
+				
+				var oldDir:File = null;
+				var selectedItems:Array = null;
+				
+				// ドロップ元
+				if(event.dragInitiator == this.tree_library){
+					// ツリーから移動
+					var item:ITreeItem = (this.tree_library.selectedItem as ITreeItem);
+					if(item != null){
+						oldDir = item.file;
+					}
+				}else if(event.dragInitiator == this.dataGrid_downloaded){
+					// データグリッドから追加
+					selectedItems = this.dataGrid_downloaded.selectedItems;
+				}
+				
+				var index:int = tree_library.calculateDropIndex(event);
+				var dropItem:ITreeItem = (this.tree_library.indexToItemRenderer(index).data as ITreeItem);
+				
+				if(dropItem != null){
+					var pName:String = dropItem.label;
+					
+					// ドロップ先は
+					if(dropItem.file == null){
+						
+						var videos:Array = new Array();
+						for each(var object:Object in selectedItems){
+							var path:String = object.dataGridColumn_videoPath;
+							var name:String = object.dataGridColumn_videoName;
+							
+							var nnddVideo:NNDDVideo = new NNDDVideo(path, name);
+							videos.push(nnddVideo);
+						}
+						
+						// プレイリストに追加
+						var pIndex:int = playListManager.getPlayListIndexByName(pName);
+						playListManager.addNNDDVideos(pIndex, videos);
+						
+					}else if(dropItem.file != null){
+						
+						var newDir:File = dropItem.file;
+						
+						// ライブラリ
+						if(oldDir != null){
+							
+							// フォルダの場所を移動
+							oldDir.moveTo(newDir);
+							
+						}else{
+							
+							// ファイルを移動
+							var treeItem:ITreeItem = (tree_library.selectedItem as ITreeItem);
+							if(treeItem != null){
+								oldDir = treeItem.file;
+							}else{
+								if(selectedItems.length > 0){
+									var str:String = selectedItems[0].dataGridColumn_videoPath;
+									try{
+										oldDir = new File(str).parent;
+									}catch(error:Error){
+									}
+								}else{
+									oldDir = libraryManager.libraryDir;
+								}
+							}
+							if(oldDir == null){
+								return;
+							}
+							
+							// プレイリスト選択中はライブラリに移動できない
+							if(playListManager.isSelectedPlayList){
+								return;
+							}
+							
+							// 移動先が同じディレクトリだったら無視
+							if(newDir.nativePath == oldDir.nativePath){
+								return;
+							}
+							
+							var errorStore:Error = null;
+							var fileNames:String = "";
+							
+							for each(var object:Object in selectedItems){
+								var path:String = object.dataGridColumn_videoPath;
+								
+								var video:NNDDVideo = libraryManager.isExist(LibraryUtil.getVideoKey(path));
+								
+								if(video == null){
+									continue;
+								}
+								
+								var videoFile:File = video.file;
+								
+								// ファイルを移動
+								try{
+									var newFile:File = new File(newDir.resolvePath(videoFile.name).url);
+									if(videoFile.exists){
+										moveFile(videoFile, newFile, false);
+									}
+								}catch(error:Error){
+									if(fileNames.length > 0){
+										fileNames += ", ";
+									}
+									if(videoFile != null){
+										fileNames += videoFile.name;
+									}else{
+										fileNames += path;
+									}
+									errorStore = error;
+								}
+							}
+							
+							if(errorStore != null){
+								Alert.show("移動できなかったファイルがあります。\n\n" + fileNames, Message.M_ERROR);
+								logManager.addLog("移動できなかったファイルがあります:" + fileNames + ":" + errorStore + ":" + errorStore.getStackTrace());
+							}
+							
+						}
+						
+						libraryManager.saveLibrary();
+//						libraryManager.loadLibrary();
+						
+					}
+					
+					var item:ITreeItem = (this.tree_library.selectedItem as ITreeItem);
+					if(item != null && item.file != null){
+						// ライブラリを更新する
+						updateLibrary(this.tree_library.selectedIndex);
+					}else if(item != null && item.file == null){
+						// プレイリストを更新する
+						var index:int = playListManager.getPlayListIndexByName(item.label);
+						updatePlayList(index);
+					}
+					
+				}else{
+					// だめぽ
+				}
+				
+				trace(event);
+				
+			}
+			
+			protected function tree_library_itemClickHandler(event:ListEvent):void
+			{
+				var itreeItem:ITreeItem = (event.itemRenderer.data as ITreeItem);
+				
+				if(itreeItem != null){
+					var labelName:String = itreeItem.label;
+					if(itreeItem.file == null){
+						// ファイルを持っていないのはプレイリスト
+						if(labelName != null){
+							var index:int = playListManager.getPlayListIndexByName(labelName);
+							updatePlayList(index);
+						}
+						
+						button_addDir.toolTip = "プレイリストを追加";
+						button_delDir.toolTip = "プレイリストを削除";
+						button_fileNameEdit.toolTip = "プレイリスト名を編集";
+						
+					}else{
+						// ファイルを持っているのはライブラリ
+						if(isEnableLibrary){
+							updateLibrary(event.rowIndex);
+							
+							button_addDir.toolTip = "フォルダを追加";
+							button_delDir.toolTip = "フォルダを削除";
+							button_fileNameEdit.toolTip = "フォルダ名を編集";
+						}
+					}
+				}
+			}
+
+
+			protected function tree_library_itemDoubleClickHandler(event:ListEvent):void
+			{
+				var itreeItem:ITreeItem = (event.itemRenderer.data as ITreeItem);
+				
+				if(itreeItem != null){
+					var labelName:String = itreeItem.label;
+					if(itreeItem.file == null){
+						// ファイルを持っていないのはプレイリスト
+						playMovieByPlayListIndex(labelName);
+						
+					}else{
+						if(isEnableLibrary){
+							// ファイルを持っているのはライブラリ
+							playMovieByLibraryDir(itreeItem.file);
+						}
+					}
+				}
+			}
+
+
+			protected function tree_library_dragEnterAndOverHandler(event:DragEvent):void
+			{
+				if(event.target == tree_library){
+					var index:int = tree_library.calculateDropIndex(event);
+					
+					var Initiator:* = event.currentTarget;
+					DragManager.acceptDragDrop(Initiator);
+					
+					var renderer:IListItemRenderer = tree_library.indexToItemRenderer(index);
+					if(renderer == null){
+						return;
+					}
+					
+					var dropItem:ITreeItem = (renderer.data as ITreeItem);
+					if(dropItem != null){
+						if(dropItem.file != null){
+							// ドロップ先がライブラリで
+							if(playListManager.isSelectedPlayList){
+								// プレイリスト選択中はドロップできない
+								DragManager.showFeedback(DragManager.NONE);
+								tree_library.hideDropFeedback(event);
+							}else{
+								DragManager.showFeedback(DragManager.COPY);
+								tree_library.showDropFeedback(event);
+							}
+						}else{
+							DragManager.showFeedback(DragManager.COPY);
+							tree_library.showDropFeedback(event);
+						}
+					}
+				}
+			}
+
+			protected function tree_library_dragExitHandler(event:DragEvent):void
+			{
+				tree_library.hideDropFeedback(event);
+			}
+
+
+			protected function button_addDir_clickHandler(event:MouseEvent):void
+			{
+				var item:ITreeItem = (tree_library.selectedItem as ITreeItem);
+				if(item != null){
+					if(item.file == null){
+						addPlayList()
+					}else{
+						addDirectory();
+					}
+				}
+			}
+
+
+			protected function button_delDir_clickHandler(event:MouseEvent):void
+			{
+				var item:ITreeItem = (tree_library.selectedItem as ITreeItem);
+				if(item != null){
+					if(item.file == null){
+						deletePlayList();
+					}else{
+						deleteDirectory();
+					}
+				}
+			}
+
+
+			protected function button_fileNameEdit_clickHandler(event:MouseEvent):void
+			{
+				var item:ITreeItem = (tree_library.selectedItem as ITreeItem);
+				if(item != null){
+					if(item.file == null){
+						playListNameEdit();
+					}else{
+						fileNameEdit();
+					}
+				}
+			}
+
+
+			protected function dataGrid_downloaded_dragOverAndEnterHandler(event:DragEvent):void
+			{
+				if(event.target == dataGrid_downloaded){
+					var Initiator:* = event.currentTarget;
+					DragManager.acceptDragDrop(Initiator);
+					
+					if(playListManager.isSelectedPlayList){
+						DragManager.showFeedback(DragManager.COPY);
+						dataGrid_downloaded.showDropFeedback(event);
+					}else{
+						DragManager.showFeedback(DragManager.NONE);
+						dataGrid_downloaded.hideDropFeedback(event);
+					}
+				}
+			}
+
+
+			protected function dataGrid_downloaded_dragExitHandler(event:DragEvent):void
+			{
+				dataGrid_downloaded.hideDropFeedback(event);
+			}
+
+
+			protected function dataGrid_downloaded_dragCompleteHandler(event:DragEvent):void
+			{
+				if(playListManager.isSelectedPlayList){
+					savePlayListByDataGridSort();
+				}
+			}
+
+		]]>
+	</mx:Script>
+	
+	<mx:Script source="org/mineap/nnddv2/NNDD.as"/>
+	
+	<mx:ApplicationControlBar top="5" left="10" right="10">
+		<mx:ToggleButtonBar dataProvider="viewstack1" id="viewStack">
+		</mx:ToggleButtonBar>
+		<mx:VRule width="20" height="20"/>
+		<mx:Button label="Player" click="playerOpenButtonClicked(event)" toolTip="Playerウィンドウを開きます"/>
+		<mx:VRule width="20" height="20"/>
+		<mx:Button label="ログアウト" id="logoutButton" click="logoutButtonClicked()" toolTip="ニコニコ動画へログイン・ニコニコ動画からログアウトします"/>
+		<mx:Button label="終了" id="exitButton" click="exitButtonClicked()" toolTip="NNDDを終了します"/>
+	</mx:ApplicationControlBar>
+	<mx:ViewStack id="viewstack1" right="0" left="0" top="46" change="tabChanged()" bottom="0">
+		<mx:Canvas label="ランキング" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_ranking" creationComplete="rankingCanvasCreationComplete(event)"
+			toolTip="ニコニコ動画のランキングを閲覧できます">
+			
+			<mx:ApplicationControlBar right="10" left="10" top="0" height="33">
+				<mx:Label text="[期間]:"/>
+				<mx:RadioButtonGroup id="radiogroup_period">
+				</mx:RadioButtonGroup>
+				<mx:RadioButton label="新着" groupName="radiogroup_period" id="radio_period_new" value="5" click="rankingRenewButtonClicked()" enabled="true"/>
+				<mx:RadioButton label="毎時" groupName="radiogroup_period" id="radio_period_hourly" value="3" click="rankingRenewButtonClicked()" enabled="true"/>
+				<mx:RadioButton label="毎日" groupName="radiogroup_period" id="radio_period_daily" selected="true" value="0" click="rankingRenewButtonClicked()" enabled="true"/>
+				<mx:RadioButton label="週間" groupName="radiogroup_period" id="radio_period_weekly" value="1" click="rankingRenewButtonClicked()" enabled="true"/>
+				<mx:RadioButton label="月間" groupName="radiogroup_period" id="radio_period_monthly" value="2" click="rankingRenewButtonClicked()" enabled="true"/>
+				<mx:RadioButton label="合計" groupName="radiogroup_period" id="radio_period_all" value="4" click="rankingRenewButtonClicked()" enabled="true"/>
+				
+				<mx:Label text="[対象]:"/>
+				<mx:RadioButtonGroup id="radiogroup_target">
+				</mx:RadioButtonGroup>
+				<mx:RadioButton label="総合" groupName="radiogroup_target" enabled="true" value="3" id="radio_target_fav" click="rankingRenewButtonClicked()" selected="true"/>
+				<mx:RadioButton label="コメント" groupName="radiogroup_target" enabled="true" value="2" id="radio_target_res" click="rankingRenewButtonClicked()"/>
+				<mx:RadioButton label="再生数" groupName="radiogroup_target" enabled="true" value="1" id="radio_target_view" click="rankingRenewButtonClicked()"/>
+				<mx:RadioButton label="マイリスト" groupName="radiogroup_target" value="0" id="radio_target_mylist" click="rankingRenewButtonClicked()" enabled="true"/>
+				
+			</mx:ApplicationControlBar>
+			
+			<mx:HDividedBox left="10" top="40" bottom="30" right="10">
+				
+				<mx:List left="10" top="41" bottom="30" id="list_categoryList" dataProvider="{categoryListProvider}" itemClick="categoryListItemClicked(event)" 
+					width="150" height="100%" minWidth="150" doubleClickEnabled="false"></mx:List>
+				
+				<mx:Canvas height="100%" width="100%" minWidth="630">
+					
+					<mx:ComboBox width="65" dataProvider="{rankingPageCountProvider}" id="combobox_pageCounter_ranking" change="rankingPageCountChanged()" top="0" left="48"></mx:ComboBox>
+					<mx:Button id="button_back" left="0" top="0" width="40" label="&lt;"
+							   click="backButtonClicked()"/>
+					<mx:Button id="button_next" left="121" top="0" width="40" label="&gt;"
+							   click="nextButtonClicked()"/>
+					
+					<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_ranking" dataProvider="{rankingProvider}" 
+						top="25" left="0" right="0" bottom="0" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
+						itemDoubleClick="rankingDataGridDoubleClicked(event)" allowMultipleSelection="true" dragEnabled="true" 
+						creationComplete="dataGrid_ranking_creationCompleteHandler(event)">
+						<!-- horizontalScrollPolicy="on"> -->
+						<mx:columns>
+							<mx:DataGridColumn headerText="順位" width="30" dataField="dataGridColumn_ranking" id="dataGridColumn_rank"/>
+							<mx:DataGridColumn headerText="サムネイル" width="60" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage">
+								<mx:itemRenderer>
+									<mx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></mx:Component>
+								</mx:itemRenderer>
+							</mx:DataGridColumn>
+							<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" id="dataGridColumn_videoName"/>
+							<mx:DataGridColumn headerText="情報" dataField="dataGridColumn_videoInfo" width="180" id="dataGridColumn_info"/>
+							<mx:DataGridColumn headerText="状況" dataField="dataGridColumn_condition" width="100" id="dataGridColumn_status"/>
+						</mx:columns>
+					</mx:DataGrid>
+					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このランキングをブラウザで表示します" click="showRankingOnNico(event)"/>
+					<mx:Button label="更新" width="80" click="rankingRenewButtonClicked()" id="rankingRenewButton" enabled="true" top="0" right="94"/>
+					
+				</mx:Canvas>
+			</mx:HDividedBox>
+			
+			<mx:Button label="DLリストに追加" width="103" id="downloadStartButton" click="addDownloadListButtonClicked()" left="10" bottom="5" enabled="true" toolTip="選択中の項目をダウンロードリストに追加します"/>
+			<mx:Button label="ストリーミング" width="103" id="playStartButton" left="121" bottom="5" enabled="true" click="rankingStreamingPlayButtonClicked(event)" toolTip="選択中の項目をストリーミング再生します"/>
+			
+			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChanged(event)" id="slider_thumbImageSize" toolTip="サムネイル画像の大きさを変更します"/>
+			
+			
+		</mx:Canvas>
+		<mx:Canvas label="検索" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_search"
+			toolTip="ニコニコ動画で動画を検索できます">
+			
+			<mx:ApplicationControlBar right="10" left="10" top="0" height="33" creationComplete="applicationcontrolbar1_creationCompleteHandler(event)">
+				<mx:Label text="[順序]:"/>
+				<mx:ComboBox width="120" id="comboBox_sortType" dataProvider="{searchSortListProvider}" rowCount="10" change="nicoSearchComboboxClosed(event)"></mx:ComboBox>
+				<mx:Label text="[種別]:"/>
+				<mx:ComboBox dataProvider="{serchTypeProvider}" id="combobox_serchType" width="120" change="nicoSearchComboboxClosed(event)"></mx:ComboBox>
+				<mx:Label text="[単語]:"/>
+				<mx:ComboBox editable="true" id="combobox_NicoSearch" enter="searchNicoButtonClicked()" width="150" dataProvider="{searchHistoryProvider}" fontWeight="normal"></mx:ComboBox>
+				<mx:Button label="検索" id="button_SearchNico" click="searchNicoButtonClicked()" width="80"/>
+				
+			</mx:ApplicationControlBar>
+			
+			<mx:HDividedBox left="10" top="40" bottom="0" right="10">
+				
+				<mx:Canvas width="150" height="100%" minWidth="150" id="canvas_searchItemList">
+					<mx:Button left="0" bottom="5" width="35" label="+" click="addSearchItem(event)"
+							   enabled="true" toolTip="検索条件を追加します"/>
+					<mx:Button left="38" bottom="5" width="35" label="-"
+							   click="removeSearchItem(event)" enabled="true"
+							   toolTip="選択中の検索条件を削除します"/>
+					<mx:Button label="編集" id="button_searchItemEdit" left="75" bottom="5" click="editSearchItem(event)" toolTip="選択中の検索条件を編集します"/>
+					<mx:Tree dataProvider="{searchListProvider}" dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
+						itemClick="searchItemClicked(event)" itemDoubleClick="searchItemDoubleClicked(event)" doubleClickEnabled="true" right="0" allowMultipleSelection="true"
+						left="0" top="0" bottom="30" id="tree_SearchItem" horizontalScrollPolicy="on"
+						creationComplete="tree_SearchItem_creationCompleteHandler(event)"></mx:Tree>
+				</mx:Canvas>
+				
+				<mx:Canvas height="100%" width="100%" minWidth="630">
+					
+					<mx:ComboBox width="65" dataProvider="{searchPageCountProvider}" id="combobox_pageCounter_search" change="searchPageCountChanged()" top="0" left="48"></mx:ComboBox>
+					<mx:Button id="button_back_search" left="0" top="0" width="35" label="&lt;"
+							   click="searchBackButtonClicked()"/>
+					<mx:Button id="button_next_search" left="121" top="0" width="35" label="&gt;"
+							   click="searchNextButtonClicked()"/>
+					
+					<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_search" dataProvider="{searchProvider}"
+								 top="25" left="0" right="0" bottom="30" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
+								 itemDoubleClick="searchDataGridDoubleClicked(event)" allowMultipleSelection="true" dragEnabled="true" 
+								 creationComplete="dataGrid_search_creationCompleteHandler(event)">
+						<!-- horizontalScrollPolicy="on"> -->
+						<mx:columns>
+							<mx:DataGridColumn headerText="#" width="30" dataField="dataGridColumn_ranking" id="dataGridColumn_rank_Search"/>
+							<mx:DataGridColumn headerText="サムネイル" width="60" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage_Search">
+								<mx:itemRenderer>
+									<mx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></mx:Component>
+								</mx:itemRenderer>
+							</mx:DataGridColumn>
+							<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" id="dataGridColumn_videoName_Search"/>
+							<mx:DataGridColumn headerText="情報" dataField="dataGridColumn_videoInfo" width="180" id="dataGridColumn_info_Search"/>
+							<mx:DataGridColumn headerText="状況" dataField="dataGridColumn_condition" width="100" id="dataGridColumn_status_Search"/>
+						</mx:columns>
+					</mx:DataGrid>
+					
+					<mx:Button label="DLリストに追加" width="103" click="addDownloadListButtonClickedForSearch()" enabled="true" left="0" bottom="5" toolTip="選択中の項目をダウンロードリストに追加します"/>
+					<mx:Button label="ストリーミング" width="103" enabled="true" click="videoStreamingPlayButtonClickedForSearch()" left="111" bottom="5" toolTip="選択中の項目をストリーミング再生します"/>
+					<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" liveDragging="true" change="thumbSizeChangedForSearch(event)" id="slider_thumbImageSize_search" right="0" bottom="5"
+						toolTip="サムネイル画像の大きさを変更します"/>
+					<mx:Label left="169" top="2" id="label_totalCount"/>
+					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="この検索結果をブラウザで表示します" click="showSearchResultOnNico(event)"/>
+				</mx:Canvas>
+			</mx:HDividedBox>
+				
+		</mx:Canvas>
+		<mx:Canvas label="マイリスト" width="100%" height="100%" id="canvas_myList"
+			toolTip="ニコニコ動画の公開マイリストと自分のマイリストを閲覧できます">
+			<mx:HDividedBox left="10" top="0" bottom="0" right="10">
+				<mx:Canvas width="150" height="100%" minWidth="150" id="canvas_myListSummary" creationComplete="canvas_myListSummary_creationCompleteHandler(event)">
+					<mx:Tree left="0" top="0" bottom="30" right="0" id="tree_myList" dragMoveEnabled="true" dataProvider="{myListProvider}" dragEnabled="true" dropEnabled="true"
+							 doubleClickEnabled="true" allowMultipleSelection="true" itemClick="myListClicked(event)" itemDoubleClick="myListDoubleClicked(event)" horizontalScrollPolicy="on"
+							 initialize="treeMyListInitializer()" creationComplete="tree_myList_creationCompleteHandler(event)" show="tree_myList_showHandler(event)" change="tree_myList_changeHandler(event)"></mx:Tree>
+					<mx:Button x="0" bottom="5" width="35" label="+" click="addPublicMyList(event)"
+							   enabled="true" toolTip="マイリストを追加します"/>
+					<mx:Button x="39" bottom="5" width="35" label="-"
+							   click="removePublicMyList(event)" enabled="true"
+							   toolTip="選択中のマイリストを削除します"/>
+					<mx:Button label="編集" id="button_playListNameEdit0" left="77" bottom="5" click="editPublicMyList(event)" toolTip="選択中のマイリストを編集します"/>
+					
+				</mx:Canvas>
+				<mx:Canvas height="100%" width="100%" minWidth="350">
+					<mx:TextInput left="0" top="0" right="182" text="ここにマイリストのURLか、マイリストのIDを入力します。" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
+						focusIn="textInputForcusEventHandler(event)" toolTip="公開マイリスト及び自分のマイリストをのURL(もしくはID)を入力して「更新」ボタンを押すとマイリストが表示されます"/>
+					<mx:Button label="更新" click="myListRenewButtonClicked(event)" right="94" top="0" width="80" id="button_myListRenew"/>
+					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
+					
+					<mx:VDividedBox left="0" right="0" top="25" bottom="30">
+						<mx:TextArea left="0" top="25" right="0" bottom="480" id="textArea_myList" width="100%" height="50" 
+									 verticalScrollPolicy="on" creationComplete="textArea_myList_creationCompleteHandler(event)"/>
+						<mx:Canvas width="100%" height="100%" id="canvas_myListItem">
+							<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_myList" dataProvider="{myListItemProvider}" 
+										 top="0" left="0" bottom="0" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
+										 itemDoubleClick="myListItemDataGridDoubleClicked()" right="0" allowMultipleSelection="true" dragEnabled="true"
+										 creationComplete="dataGrid_myList_creationCompleteHandler(event)"
+										 updateComplete="dataGridMyListHeaderReleaseHandler(event)">
+								<!-- horizontalScrollPolicy="on"> -->
+								<mx:columns>
+									<mx:DataGridColumn headerText="#" width="30" dataField="dataGridColumn_index"/>
+									<mx:DataGridColumn headerText="サムネイル" width="60" dataField="dataGridColumn_preview" id="dataGridColumn_thumbUrl">
+										<mx:itemRenderer>
+											<mx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></mx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName"/>
+									<mx:DataGridColumn headerText="情報" dataField="dataGridColumn_videoInfo" width="180"/>
+									<mx:DataGridColumn headerText="状況" dataField="dataGridColumn_condition" width="100"/>
+								</mx:columns>
+							</mx:DataGrid>
+						</mx:Canvas>
+					</mx:VDividedBox>
+					
+					<mx:Button label="DLリストに追加" width="103" id="downloadStartButton0" click="addDownloadListButtonClickedForMyList()" left="0" bottom="5" enabled="true" toolTip="選択中の項目をダウンロードリストに追加します"/>
+					<mx:Button label="ストリーミング" width="103" id="playStartButton0" left="111" bottom="5" enabled="true" click="videoStreamingPlayButtonClickedForMyList()" toolTip="選択中の項目をストリーミング再生します"/>
+					<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="0" bottom="5" liveDragging="true" change="thumbSizeChangedForMyList(event)" id="slider_thumbImageSizeForMyList"
+						toolTip="サムネイル画像の大きさを変更します"/>
+					<mx:Label left="222" bottom="7" id="label_myListStatus" right="118" text="{myListStatusProvider}"/>
+					
+					
+				</mx:Canvas>
+			</mx:HDividedBox>
+		</mx:Canvas>
+		<mx:Canvas label="DLリスト" width="100%" height="100%" id="canvas_queue"
+				   toolTip="ニコニコ動画から動画をダウンロードする際のキューです">
+			<mx:DataGrid left="10" top="28" right="10" bottom="30" rowHeight="50" 
+						 sortableColumns="false" dataProvider="{downloadProvider}" 
+						 id="dataGrid_downloadList" allowMultipleSelection="true"
+						 doubleClickEnabled="true" itemDoubleClick="downloadListDoubleClicked(event)"
+						 creationComplete="dataGrid_downloadList_creationCompleteHandler(event)"
+						 dropEnabled="true" dragEnabled="true" dragMoveEnabled="true"
+						 nativeDragDrop="dlListDroped(event)">
+						 <!-- dropEnabled="true" dragEnabled="true" horizontalScrollPolicy="on"> -->
+				<mx:columns>
+					<mx:DataGridColumn headerText="動画名" dataField="col_videoName" width="200"/>
+					<mx:DataGridColumn headerText="動画URL" dataField="col_videoUrl" width="100"/>
+					<mx:DataGridColumn headerText="進捗" dataField="col_status" width="50"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Button id="button_downloadStart" left="10" top="0" width="65" label="DL開始"
+					   click="downloadManager.next()"/>
+			<mx:Button id="button_downloadCancel" left="79" top="0" width="65" label="DL中止"
+					   click="downloadManager.stop()"/>
+			<mx:VRule width="20" height="22" left="148" top="0"/>
+			<mx:Button label="スケジュール" left="176" top="0" click="button_schedule_clickHandler(event)"/>
+			<mx:VRule width="20" height="22" left="270" top="0"/>
+			<mx:Button label="すべてクリア" id="button_EmptyDownloadList" click="downloadManager.emptyList()" left="298" top="0"/>
+			<mx:Button label="DL済みをクリア" id="button_downloadedItemRemove" click="downloadManager.removeDownloadedVideo()" left="392" top="0"/>
+			
+			<mx:Label text="次のダウンロード開始:" right="118" top="2"/>
+			<mx:Label width="100" right="10" top="2" id="label_nextDownloadTime"/>
+			
+			<mx:TextInput id="textInput_url" left="80" bottom="5" width="400" 
+						  text="特定の動画をダウンロードするときはここにURLか動画IDを入力します" 
+						  focusIn="textInput_url_focusInHandler(event)"
+						  nativeDragEnter="textInput_url_nativeDragEnterHandler(event)" 
+						  nativeDragDrop="textInput_url_nativeDragDropHandler(event)"
+						  focusOut="textInput_url_focusOutHandler(event)"/>
+			
+			<mx:Button label="+" bottom="5" left="488" click="addDLListButtonClicked(event)" toolTip="リストに追加します。ここにURLをドロップしてもリストに追加できます。"
+					   id="button_addDlList" nativeDragEnter="button_addDlList_nativeDragEnterHandler(event)"
+					   nativeDragDrop="button_addDlList_nativeDragDropHandler(event)"  width="80"/>
+			<mx:Button left="576" bottom="5" width="35" label="-"
+					   click="deleteDLListButtonClicked(event)" toolTip="選択中の項目をリストから削除します。"/>
+			<mx:Label text="動画のURL:" left="10" bottom="7"/>
+			
+			
+		</mx:Canvas>
+		<mx:Canvas label="ライブラリ" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_library"
+			toolTip="ニコニコ動画からダウンロードした動画を管理できます">
+			
+			<mx:HDividedBox left="0" top="0" bottom="0" right="0">
+				<mx:Canvas height="100%" width="160" minWidth="160" id="canvas_libAndPList">
+					<mx:Canvas left="10" top="0" bottom="0" right="0">
+						<mx:Tree left="0" top="0" bottom="45" right="0" id="tree_library" 
+								 dataProvider="{libraryProvider}"
+								 dragDrop="tree_library_dragDropHandler(event)"
+								 dragEnter="tree_library_dragEnterAndOverHandler(event)"
+								 dragOver="tree_library_dragEnterAndOverHandler(event)"
+								 dragExit="tree_library_dragExitHandler(event)"
+								 dragMoveEnabled="true"
+								 itemClick="tree_library_itemClickHandler(event)"
+								 itemDoubleClick="tree_library_itemDoubleClickHandler(event)"
+								 doubleClickEnabled="true"
+								 creationComplete="tree_library_creationCompleteHandler(event)" 
+								 itemOpening="tree_library_itemOpeningHandler(event)"
+								 horizontalScrollPolicy="on"></mx:Tree>
+						<mx:CheckBox label="動画を全て表示" left="5" bottom="26" toolTip="選択したフォルダ下の全ての動画を表示します。" 
+									 id="checkBox_showAll" click="checkBoxShowAllChanged(event)"
+									 creationComplete="checkBox_showAll_creationCompleteHandler(event)"/>
+						<mx:Button id="button_addDir" left="5" bottom="5" width="35" label="+"
+								   click="button_addDir_clickHandler(event)" enabled="true"
+								   toolTip="ライブラリにフォルダを追加します"/>
+						<mx:Button id="button_delDir" left="44" bottom="5" width="35" label="-"
+								   click="button_delDir_clickHandler(event)" enabled="true"
+								   toolTip="ライブラリからフォルダを削除します"/>
+						<mx:Button id="button_fileNameEdit" left="87" bottom="5" width="50"
+								   label="編集" click="button_fileNameEdit_clickHandler(event)"
+								   toolTip="ライブラリのフォルダを編集します"/>
+					</mx:Canvas>
+				</mx:Canvas>
+				
+				<mx:Canvas height="100%" width="100%" minWidth="600" id="canvas_libraryItems">
+					<mx:VDividedBox left="0" top="0" bottom="30" right="10">
+						<mx:Canvas id="canvas_tagTileList" width="100%" height="50%">
+							<mx:Label text="タグ検索" enabled="true" bottom="2" right="128"/>
+							<mx:TextInput enabled="true" id="textInput_searchInTagList" change="searchTagListTextInputChange()" enter="searchTagListTextInputChange()"
+								textInput="searchTagListTextInputChange()" bottom="0" right="0" width="120"/>
+							<mx:Label text="※ダブルクリックでタグ検索" left="152" bottom="0"/>
+							<mx:TabNavigator left="0" top="0" bottom="25" right="0" id="tag_tabNavigator">
+								<mx:Canvas label="タグ一覧" width="100%" height="100%" id="canvas_tagList">
+									<mx:TileList dataProvider="{tagProvider}" id="tileList_tag" allowMultipleSelection="true" itemRenderer="TagTileListRenderer" 
+										itemClick="tagTileListClicked(event)" allowDragSelection="false" itemDoubleClick="tagTileListItemDoubleClickEventHandler(event)"
+										doubleClickEnabled="true" left="0" top="0" bottom="0" right="0"
+										creationComplete="tileList_tag_creationCompleteHandler(event)"></mx:TileList>
+								</mx:Canvas>
+								<mx:Canvas label="タグフィルタ" width="100%" height="100%" id="canvas_tagFilter">
+									<mx:TileList dataProvider="{ngTagProvider}" id="tileList_filterTag" allowMultipleSelection="true" itemRenderer="TagTileListRenderer" 
+										allowDragSelection="false" itemDoubleClick="tagTileListItemDoubleClickEventHandler(event)"
+										doubleClickEnabled="true" left="0" top="0" bottom="0" right="0"
+										creationComplete="tileList_filterTag_creationCompleteHandler(event)"></mx:TileList>
+								</mx:Canvas>
+							</mx:TabNavigator>
+							<mx:Button label="表示" left="0" bottom="0" click="tagShow()"/>
+							<mx:Button label="隠す" left="74" bottom="0" click="tagHide()"/>
+						</mx:Canvas>
+						<mx:Canvas height="100%" width="100%" id="canvas_libraryDataGrid">
+							<mx:DataGrid right="0" top="0" bottom="0" left="0" 
+										 enabled="true" 
+										 rowHeight="30" 
+										 sortableColumns="true" 
+										 id="dataGrid_downloaded" 
+										 dataProvider="{downloadedProvider}" 
+										 allowMultipleSelection="true" 
+										 doubleClickEnabled="true" 
+										 doubleClick="downLoadedItemDoubleClicked(dataGrid_downloaded.selectedIndex)" 
+										 keyUp="downloadedKeyUpHandler(event)" 
+										 dragEnabled="true" 
+										 dropEnabled="true" 
+										 dragMoveEnabled="true"
+										 dragComplete="dataGrid_downloaded_dragCompleteHandler(event)"
+										 dragOver="dataGrid_downloaded_dragOverAndEnterHandler(event)"
+										 dragEnter="dataGrid_downloaded_dragOverAndEnterHandler(event)"
+										 dragExit="dataGrid_downloaded_dragExitHandler(event)"
+										 updateComplete="dataGridLibraryHeaderReleaseHandler(event)" 
+										 creationComplete="dataGrid_downloaded_creationCompleteHandler(event)">
+								<!-- horizontalScrollPolicy="on"> -->
+								<mx:columns>
+									<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="35">
+										<mx:itemRenderer>
+											<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300"/>
+									<mx:DataGridColumn headerText="作成日" dataField="dataGridColumn_date" width="80"/>
+									<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40"/>
+									<mx:DataGridColumn headerText="状態" dataField="dataGridColumn_condition" width="80"/>
+									<mx:DataGridColumn headerText="パス" dataField="dataGridColumn_videoPath" width="0" visible="false"/>
+								</mx:columns>
+							</mx:DataGrid>
+						</mx:Canvas>
+					</mx:VDividedBox>
+					
+					<mx:Button id="button_play_downloadedItem" left="0" bottom="5" width="50"
+							   label="再生" click="downLoadedItemPlay()"/>
+					<mx:VRule width="15" height="22" left="54" bottom="5"/>
+					<mx:Button label="動画以外を更新" id="newCommentDownloadButton" click="newCommentDownloadButtonClicked()" left="191" bottom="5" enabled="true"/>
+					<mx:Button label="コメントのみ更新" id="newCommentOnlyDownloadButton" click="newCommentDownloadButtonClicked(true)" left="77" bottom="5" enabled="true"/>
+					<mx:Button label="すべて更新" left="295" bottom="5" click="addDownloadListForDownloadedList(event)"/>
+					
+					<mx:Label text="リスト内検索" right="138" bottom="7" enabled="true"/>
+					<mx:TextInput enabled="true" id="textInput_searchInDLList" change="searchDLListTextInputChange()" enter="searchDLListTextInputChange()"
+						right="10" bottom="5" width="120"/>
+					
+				</mx:Canvas>
+				
+			</mx:HDividedBox>
+			
+		</mx:Canvas>
+		<mx:Canvas label="履歴" width="100%" height="100%" id="canvas_history" toolTip="NNDDで再生した動画の履歴を閲覧できます">
+			<mx:DataGrid rowHeight="30" sortableColumns="true" id="dataGrid_history" doubleClickEnabled="true"
+				right="10" top="0" bottom="30" left="10" dataProvider="{historyProvider}" itemDoubleClick="historyItemDoubleClickEventHandler(event)" allowMultipleSelection="true" 
+				creationComplete="dataGrid_history_creationCompleteHandler(event)">
+				<!-- horizontalScrollPolicy="on"> -->
+				<mx:columns>
+					<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="35">
+						<mx:itemRenderer>
+							<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+					<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="200"/>
+					<mx:DataGridColumn headerText="再生日" dataField="dataGridColumn_playdate" width="80"/>
+					<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40"/>
+					<mx:DataGridColumn headerText="状態" dataField="dataGridColumn_condition" width="80"/>
+					<mx:DataGridColumn headerText="URL" dataField="dataGridColumn_url" width="100"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Button left="191" bottom="5" width="35" label="-"
+					   click="removeHistoryItem(dataGrid_history.selectedItems)"/>
+			<mx:Button label="リストをクリア" left="239" bottom="5" click="removeHistory()"/>
+			<mx:Button left="10" bottom="5" width="50" label="再生" click="historyItemPlay(event)"/>
+			<mx:Button label="DLリストに追加" click="historyItemDownload(event)" left="64" bottom="5"/>
+			<mx:VRule height="22" width="10" left="173" bottom="5"/>
+		</mx:Canvas>
+		
+		<mx:Canvas label="設定" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_option" 
+			toolTip="NNDDの設定を変更できます">
+			<mx:TabNavigator backgroundAlpha="0.0" left="10" top="0" bottom="38" right="10" change="confTabChange(event)">
+				<mx:Canvas label="全般" width="100%" height="100%" id="canvas_all_config" creationComplete="allConfigCanvasCreationComplete(event)" show="allConfigCanvasShow(event)">
+					<mx:Label text="全般" top="0" left="10" fontWeight="bold"/>
+					
+					<mx:Label text="動画の保存先：" width="95" left="30" top="20"/>
+					<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="358" left="133" top="18" editable="false"/>
+					<mx:Button label="参照..." click="folderSelectButtonClicked(event)" left="499" top="18" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定した後、ライブラリを更新しなおせば、NNDDのライブラリタブから再生できます。"/>
+					
+					<mx:Button label="更新" left="499" top="47" click="renewLibraryButtonClicked()" toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
+					<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="48"/>
+					
+					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="30" top="76"/>
+					<mx:Button label="リセット" left="281" top="75" id="button_windowPositionReset" click="windowPositionReset()"/>
+					
+					<mx:CheckBox label="起動時にバージョンチェックをする" selected="true" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="104"/>
+					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="262" top="104"/>
+					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="134"/>
+					<mx:HRule left="43" top="5" right="10"/>
+					
+					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
+					<!--
+					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
+					-->
+					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="166"/>
+					<mx:ComboBox left="259" top="166" id="comboBox_font" dataProvider="{fontDataProvider}" width="150" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+					<mx:Button label="デフォルト" left="419" top="165" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					
+					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
+					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="190"/>
+					
+					
+				</mx:Canvas>
+				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" creationComplete="nicoConfigCanvasCreationComplete(event)">
+					<mx:HRule left="163" top="0" right="10" height="8"/>
+					<mx:Label text="ランキング・検索・マイリスト" top="0" left="10" fontWeight="bold"/>
+					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="17" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" toolTip="起動時に前回の起動の設定でランキングを更新します。これを有効にすると前回終了時に選択されていたタブに移動しません。"/>
+					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="47" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
+					<mx:CheckBox label="ダブルクリックでストリーミング再生する" left="30" top="77" id="checkBox_isDoubleClickOnStreaming" change="checkBoxDoubleClickOnStreamingChanged(event)" toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、ストリーミング再生します。"/>
+					<mx:CheckBox label="検索履歴を保存する" left="30" top="107" id="checkbox_saveSearchHistory" selected="true" toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" change="checkBoxSaveSearchHistoryChanged(event)"/>
+					<mx:Button label="履歴を消去" left="166" top="107" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
+					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="139"/>
+					<mx:Button label="追加" id="button_addDefSearchItem" left="283" top="138" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					<mx:CheckBox label="マイリスト更新をスケジュール実行する" id="checkBox_myListRenewOnSchedule" click="checkBoxMylistRenewOnScheduleChanged(event)" selected="true" left="30" top="165" height="22" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
+					<mx:ComboBox left="270" dataProvider="{myListRenewScheduleTimeProvider}" selectedIndex="1" width="100" change="myListRenewScheduleTimeChange(event)" top="165" id="combobox_myListRenewTime" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
+					<mx:Label text="：" left="243" top="167"/>
+					<mx:Label text="分おき" left="378" top="167"/>
+					<mx:Button label="今すぐ更新" left="436" click="myListRenewNow()" top="165"/>
+					<mx:VRule width="7" height="18" left="421" top="167"/>
+					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="194"/>
+					<mx:Label x="30" y="195" text="自分のマイリストをマイリスト一覧に追加"/>
+					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
+				</mx:Canvas>
+				<mx:Canvas label="DLリスト・ライブラリ" width="100%" height="100%" id="canvas_library_config"  creationComplete="libraryConfigCanvasCreationComplete(event)">
+					<mx:HRule left="113" top="6" right="10"/>
+					<mx:Label text="ダウンロードリスト" top="0" left="10" fontWeight="bold"/>
+					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="16" selected="true" id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
+					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="30" top="46" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
+					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode" click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="30" top="76"/>
+					<mx:HRule left="73" top="112" right="10"/>
+					<mx:Label text="ライブラリ" left="10" top="106" fontWeight="bold"/>
+					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="122" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
+					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="152" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
+					<mx:Label text="保存するコメントの最大数：" left="60" top="178"/>
+					<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100" left="229" top="175" id="numericStepper_saveCommentMaxCount" change="numericStepperSaveCommentMaxCountChanged(event)" toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
+					<mx:Label text="件/動画" left="329" top="178"/>
+					
+					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
+					
+				</mx:Canvas>
+				<mx:Canvas label="ログ" width="100%" height="100%" id="canvas_innerConfing_log">
+					<mx:HRule left="297" top="7" right="10"/>
+					<mx:Label text="ログ（&lt;動画の保存先&gt;/nndd.logにも出力されます）" left="10" top="0" fontWeight="bold"/>
+					<mx:TextArea id="textArea_log" enabled="true" editable="false" left="5" top="25" bottom="30" wordWrap="false" right="5"/>
+					<mx:Button label="更新" right="5" bottom="5" click="logAreaRenewButtonClicked(event)"/>
+				</mx:Canvas>
+				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					<ns1:ConnectionStatusView id="connectionStatusView" left="0" top="0" bottom="0" right="0" creationComplete="connectionStatusViewCreationCompleteHandler(event)">
+					</ns1:ConnectionStatusView>
+				</mx:Canvas>
+			</mx:TabNavigator>
+			<mx:Label text="MineApplicationProject(MineAP)はNNDDに対する寄付をお待ちしております。" left="10" bottom="10"/>
+			<mx:Button label="寄付" id="button_donation" click="donationButtonClicked(event)" toolTip="寄付のページを既定のブラウザで開きます。" left="471" bottom="10"/>
+			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>
+			
+		</mx:Canvas>
+		
+	</mx:ViewStack>
+	
+</mx:WindowedApplication>

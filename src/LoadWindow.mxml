@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="300" height="112">
+
+	<mx:Label id="label_loadingInfo" left="10" top="10"/>
+	<mx:ProgressBar width="260" left="10" top="36" indeterminate="true" id="progressBar_loading"/>
+	
+</mx:TitleWindow>

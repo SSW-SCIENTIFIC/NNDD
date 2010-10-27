@@ -3,10 +3,10 @@
 
 	<mx:Script>
 		<![CDATA[
-			import org.mineap.NNDD.LogManager;
-			import org.mineap.NNDD.util.NicoServerStatusCheck;
+			import org.mineap.nnddv2.LogManager;
+			import org.mineap.nnddv2.util.NicoServerStatusCheck;
 		
-			private var loginUrl:String = "https://secure.nicovideo.jp/secure/login_form?message=cant_login";
+			private var loginUrl:String = "https://secure.nicovideo.jp/secure/login_form";
 			private var getFlvUrl:String = "http://www.nicovideo.jp/api/getflv";
 			private var getBgmUrl:String = "http://www.nicovideo.jp/api/getbgm";
 			private var messageServerUrlArray:Array = new Array("http://msg.nicovideo.jp/4/api/", "http://msg.nicovideo.jp/13/api/", "http://msg.nicovideo.jp/18/api/", "http://msg.nicovideo.jp/34/api/", 
@@ -17,7 +17,8 @@
 					"http://smile-pcm41.nicovideo.jp/smile", "http://smile-pcm51.nicovideo.jp/smile", "http://smile-pcm32.nicovideo.jp/smile", "http://smile-pcm11.nicovideo.jp/smile");
 			private var thumbImgServerUrlArray:Array = new Array("http://tn-skr1.smilevideo.jp/smile", "http://tn-skr2.smilevideo.jp/smile", "http://tn-skr3.smilevideo.jp/smile", "http://tn-skr4.smilevideo.jp/smile");
 			private var getThumbInfoUrl:String = "http://ext.nicovideo.jp/api/getthumbinfo";
-			private var ichibaInfoUrlArray:Array = new Array("http://ichiba1.nicovideo.jp/embed", "http://ichiba2.nicovideo.jp/embed", "http://ichiba3.nicovideo.jp/embed", "http://ichiba4.nicovideo.jp/embed");
+//			private var ichibaInfoUrlArray:Array = new Array("http://ichiba1.nicovideo.jp/embed", "http://ichiba2.nicovideo.jp/embed", "http://ichiba3.nicovideo.jp/embed", "http://ichiba4.nicovideo.jp/embed");
+			private var ichibaInfoUrlArray:Array = new Array("http://ichiba.nicovideo.jp/embed/");
 			private var rankingUrl:String = "http://www.nicovideo.jp/ranking";
 			private var tagSearchUrl:String = "http://www.nicovideo.jp/tag";
 			private var searchUrl:String = "http://www.nicovideo.jp/search";

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="350" height="25" cornerRadius="5">
+
+	<mx:Script source="org/mineap/nnddv2/view/CommentPostView.as" />
+	
+	<mx:TextInput top="2" bottom="1" left="54" width="60" id="textinput_command" enter="postButtonClicked(event)"/>
+	<mx:TextInput top="2" bottom="1" right="50" left="118" id="textInput_comment" enter="postButtonClicked(event)"/>
+	<mx:Button right="1" top="1" bottom="1" width="45" label="投稿" click="postButtonClicked(event)"
+			   focusEnabled="false" fontSize="10"/>
+	<mx:Label left="2" top="3" bottom="4" width="50" fontSize="10" text="コマンド:"/>
+	
+</mx:Canvas>

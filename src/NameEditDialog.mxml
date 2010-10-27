@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- NameEditDialog.mxml -->
+<!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="258" height="138" title="名前を編集">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.IndexChangedEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.mineap.nnddv2.FileIO;
+			import org.mineap.nnddv2.LogManager;
+			import org.mineap.nnddv2.Message;
+			import org.mineap.nnddv2.library.ILibraryManager;
+			import org.mineap.nnddv2.library.LibraryManagerBuilder;
+			import org.mineap.nnddv2.myList.MyListBuilder;
+			import org.mineap.nnddv2.util.PathMaker;
+			
+			private var logManager:LogManager;
+			private var libraryManager:ILibraryManager;
+			private var oldFile:File;
+			private var newFile:File;
+			private var isPlayList:Boolean = false;
+			
+			public function initNameEditDialog(path:String, isPlayList:Boolean = false):void{
+				textInput_newName.text = path.substring(path.lastIndexOf("/")+1);
+				oldFile = new File(path);
+				this.logManager = LogManager.instance;
+				this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
+				this.isPlayList = isPlayList
+			}
+			
+			public function getNewFilePath():String{
+				return newFile.url;
+			}
+			
+			private function editButtonClicked():void{
+				if(textInput_newName.text.length >= 1){
+					var url:String = oldFile.url.substring(0, oldFile.url.lastIndexOf("/")+1) + textInput_newName.text;
+					if(textInput_newName.text != FileIO.getSafeFileName(textInput_newName.text)){
+						Alert.show("次の文字は使用できません。\n" + Message.DONOT_USE_CHAR_FOR_FILE_NAME, Message.M_ERROR);
+						return;
+					}
+					
+					var file:File = new File(url);
+					if(file.url == oldFile.url){
+						PopUpManager.removePopUp(this);
+						newFile = file;
+						dispatchEvent(new Event(Event.COMPLETE));
+						return;
+					}
+					if(file.exists){
+						if(!isPlayList){
+							Alert.show("既に同名のフォルダが存在します。", Message.M_ERROR);
+						}else{
+							Alert.show("既に同名のプレイリストが存在します。", Message.M_ERROR);
+						}
+						return;
+					}
+					try{
+						oldFile.moveTo(file, false);
+						PopUpManager.removePopUp(this);
+						this.newFile = file;
+						if(!isPlayList){
+							try{
+								if(libraryManager != null){
+									libraryManager.changeDirName(oldFile, newFile);
+								}
+								logManager.addLog("フォルダの名前を編集:" + file.nativePath);
+							}catch(error:Error){
+								logManager.addLog("フォルダ名の変更をライブラリに反映できませんでした。「設定 > 更新」からライブラリを更新し直してください。\n" + error.getStackTrace());
+								Alert.show("フォルダ名の変更をライブラリに反映できませんでした。「設定 > 更新」からライブラリを更新し直してください。:" + error ,Message.M_ERROR);
+							}	
+						}else{
+							logManager.addLog("プレイリストの名前を編集:" + file.nativePath);
+						}
+						dispatchEvent(new Event(Event.COMPLETE));
+					}catch(error:Error){
+						if(!isPlayList){
+							Alert.show("フォルダを編集できませんでした。" + error, "エラー");
+						}else{
+							Alert.show("プレイリストを編集できませんでした。" + error, "エラー");
+						}
+					}
+				}
+			}
+			
+			private function editCancelButtonClicked():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:TextInput width="218" left="10" top="36" id="textInput_newName" enter="editButtonClicked()"/>
+	<mx:Label text="新しいフォルダ名を入力してください。" left="10" top="10" id="label_info"/>
+	<mx:Button id="button_edit" right="10" bottom="10" width="50" label="編集"
+			   click="editButtonClicked()"/>
+	<mx:Button label="キャンセル" right="64" bottom="10" id="button_cancel" click="editCancelButtonClicked()"/>
+	
+</mx:TitleWindow>

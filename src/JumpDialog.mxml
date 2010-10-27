@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="230" height="140" title="ジャンプの確認" layout="absolute" show="titlewindow2_showHandler(event)">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			private var _videoId:String = "";
+			
+			public function setVideoId(videoId:String):void{
+				_videoId = videoId;
+				if(label_videoId != null){
+					label_videoId.text = _videoId;
+					button_next.setFocus();
+				}
+			}
+			
+			protected function button_next_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new Event(Event.OPEN));
+			}
+
+			protected function button_back_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new Event(Event.CANCEL));
+			}
+
+			protected function titlewindow2_showHandler(event:FlexEvent):void
+			{
+				label_videoId.text = _videoId;
+				button_next.setFocus();
+			}
+
+		]]>
+	</mx:Script>
+
+	<mx:Label text="次の動画へジャンプします。" left="10" top="5"/>
+	<mx:Button label="次の動画へジャンプ" bottom="30" id="button_next" click="button_next_clickHandler(event)" left="10"/>
+	<mx:Button label="ジャンプしない" bottom="5" id="button_back" click="button_back_clickHandler(event)" left="10"/>
+	<mx:Label left="10" top="25" id="label_videoId"/>
+	
+</mx:TitleWindow>
