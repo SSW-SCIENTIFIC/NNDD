@@ -144,7 +144,7 @@
 	</mx:Script>
 
 
-	<mx:Script source="org/mineap/nnddv2/view/VideoPlayer.as" />
+	<mx:Script source="org/mineap/nndd/view/VideoPlayer.as" />
 	
 	<mx:Canvas width="100%" x="0" height="100%" y="0" id="canvas_videoPlayer" creationComplete="canvas_videoPlayer_creationCompleteHandler(event)" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 		<mx:TextArea id="textArea_tag" minHeight="10" height="50" htmlText="{textAreaTagProvider}" link="tagTextAreaLinkClikced(event)" fontSize="11" left="5" top="5" right="5" 

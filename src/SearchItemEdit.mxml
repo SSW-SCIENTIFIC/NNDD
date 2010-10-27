@@ -3,9 +3,9 @@
 
 	<mx:Script>
 		<![CDATA[
-			import org.mineap.nnddv2.model.SearchItem;
-			import org.mineap.nnddv2.model.SearchSortString;
-			import org.mineap.nnddv2.model.SearchTypeString;
+			import org.mineap.nndd.model.SearchItem;
+			import org.mineap.nndd.model.SearchSortString;
+			import org.mineap.nndd.model.SearchTypeString;
 			import org.mineap.nicovideo4as.model.SearchSortType;
 			import org.mineap.nicovideo4as.model.SearchType;
 

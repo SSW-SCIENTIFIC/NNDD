@@ -14,9 +14,9 @@
 			import mx.controls.listClasses.IListItemRenderer;
 			import mx.messaging.SubscriptionInfo;
 			
-			import org.mineap.nnddv2.library.LibraryTreeBuilder;
-			import org.mineap.nnddv2.model.tree.ITreeItem;
-			import org.mineap.nnddv2.model.tree.TreeFileItem;
+			import org.mineap.nndd.library.LibraryTreeBuilder;
+			import org.mineap.nndd.model.tree.ITreeItem;
+			import org.mineap.nndd.model.tree.TreeFileItem;
 			
 			private var fileSystemTreeComplete:Boolean = false;
 			private var downloadedDataGridComplete:Boolean = false;
@@ -820,7 +820,7 @@
 		]]>
 	</mx:Script>
 	
-	<mx:Script source="org/mineap/nnddv2/NNDD.as"/>
+	<mx:Script source="org/mineap/nndd/NNDD.as"/>
 	
 	<mx:ApplicationControlBar top="5" left="10" right="10">
 		<mx:ToggleButtonBar dataProvider="viewstack1" id="viewStack">

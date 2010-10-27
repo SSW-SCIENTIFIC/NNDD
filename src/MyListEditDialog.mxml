@@ -8,12 +8,12 @@
 	<mx:Script>
 		<![CDATA[
 			import mx.events.ListEvent;
-			import org.mineap.nnddv2.myList.MyListBuilder;
-			import org.mineap.nnddv2.Message;
-			import org.mineap.nnddv2.library.namedarray.LibraryManager;
+			import org.mineap.nndd.myList.MyListBuilder;
+			import org.mineap.nndd.Message;
+			import org.mineap.nndd.library.namedarray.LibraryManager;
 			import mx.events.IndexChangedEvent;
 			import mx.managers.PopUpManager;
-			import org.mineap.nnddv2.LogManager;
+			import org.mineap.nndd.LogManager;
 			import mx.controls.Alert;
 			
 			private var logManager:LogManager;

@@ -3,8 +3,8 @@
 
 	<mx:Script>
 		<![CDATA[
-			import org.mineap.nnddv2.LogManager;
-			import org.mineap.nnddv2.util.NicoServerStatusCheck;
+			import org.mineap.nndd.LogManager;
+			import org.mineap.nndd.util.NicoServerStatusCheck;
 		
 			private var loginUrl:String = "https://secure.nicovideo.jp/secure/login_form";
 			private var getFlvUrl:String = "http://www.nicovideo.jp/api/getflv";

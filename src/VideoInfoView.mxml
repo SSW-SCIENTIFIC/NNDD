@@ -13,7 +13,7 @@
 			import mx.events.DropdownEvent;
 			import mx.events.IndexChangedEvent;
 			
-			import org.mineap.nnddv2.comment.Comments;
+			import org.mineap.nndd.comment.Comments;
 			
 			private var thumbImgMenu:ContextMenu;
 			private var thumbImgMenuItem1:ContextMenuItem;
@@ -158,7 +158,7 @@
 		]]>
 	</mx:Script>
 
-	<mx:Script source="org/mineap/nnddv2/view/VideoInfoView.as" />
+	<mx:Script source="org/mineap/nndd/view/VideoInfoView.as" />
 	
 	<mx:Image id="image_thumbImg" left="5" top="2" scaleContent="true" height="70" click="button_goToWebClicked(event)" 
 			  toolTip="クリックするとブラウザで動画を再生します" enabled="true" width="92" creationComplete="image_thumbImg_creationCompleteHandler(event)"/>

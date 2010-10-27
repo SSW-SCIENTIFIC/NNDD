@@ -6,7 +6,7 @@
 			import mx.core.Application;
 			import mx.events.FlexEvent;
 			
-			import org.mineap.nnddv2.util.PathMaker;
+			import org.mineap.nndd.util.PathMaker;
 			import org.mineap.util.config.ConfigManager;
 
 			protected function window1_creationCompleteHandler(event:FlexEvent):void

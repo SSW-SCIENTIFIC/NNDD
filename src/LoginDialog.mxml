@@ -20,7 +20,7 @@
 	</mx:Script>
 
     
-    <mx:Script source="org/mineap/nnddv2/view/LoginDialog.as"/>
+    <mx:Script source="org/mineap/nndd/view/LoginDialog.as"/>
     
     <mx:Label left="4" top="4" fontSize="10" fontWeight="bold" text="メールアドレスとパスワードを入力してログインしてください。"/>
     

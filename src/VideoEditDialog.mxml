@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="291" title="動画の情報を編集" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 	
-	<mx:Script source="org/mineap/nnddv2/View/VideoEditDialog.as" />
+	<mx:Script source="org/mineap/nndd/View/VideoEditDialog.as" />
 	
 	<mx:Label id="label_videoTitle" text="タイトル:" left="10" top="10"/>
 	<mx:Label id="label_videoPath" text="ファイルパス:" left="10" top="66"/>

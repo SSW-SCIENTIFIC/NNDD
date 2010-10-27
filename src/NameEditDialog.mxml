@@ -11,13 +11,13 @@
 			import mx.events.IndexChangedEvent;
 			import mx.managers.PopUpManager;
 			
-			import org.mineap.nnddv2.FileIO;
-			import org.mineap.nnddv2.LogManager;
-			import org.mineap.nnddv2.Message;
-			import org.mineap.nnddv2.library.ILibraryManager;
-			import org.mineap.nnddv2.library.LibraryManagerBuilder;
-			import org.mineap.nnddv2.myList.MyListBuilder;
-			import org.mineap.nnddv2.util.PathMaker;
+			import org.mineap.nndd.FileIO;
+			import org.mineap.nndd.LogManager;
+			import org.mineap.nndd.Message;
+			import org.mineap.nndd.library.ILibraryManager;
+			import org.mineap.nndd.library.LibraryManagerBuilder;
+			import org.mineap.nndd.myList.MyListBuilder;
+			import org.mineap.nndd.util.PathMaker;
 			
 			private var logManager:LogManager;
 			private var libraryManager:ILibraryManager;

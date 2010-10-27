@@ -3,7 +3,7 @@
 
 	<mx:Script>
 		<![CDATA[
-			import org.mineap.nnddv2.model.Schedule;
+			import org.mineap.nndd.model.Schedule;
 			import mx.events.ListEvent;
 			
 			private var _schedule:Schedule = new Schedule();

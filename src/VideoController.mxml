@@ -9,7 +9,7 @@
 		   rollOut="rollOut(event)" borderColor="#B7BABC" 
 		   xmlns:ns1="*" >
 
-	<mx:Script source="org/mineap/nnddv2/view/VideoController.as" />
+	<mx:Script source="org/mineap/nndd/view/VideoController.as" />
 
 	<mx:Button id="button_play" left="5" top="5" width="30" click="play()" focusEnabled="false"
 			   icon="@Embed(source='player/NNDDicons_play_20x20.png')" textAlign="center"/>
