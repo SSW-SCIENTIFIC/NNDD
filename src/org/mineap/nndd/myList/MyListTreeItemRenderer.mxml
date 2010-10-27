@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<treeClasses:TreeItemRenderer xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:treeClasses="mx.controls.treeClasses.*"
+							  dataChange="treeitemrenderer1_dataChangeHandler(event)"
+							  rollOverEffect="test"
+							  >
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.mineap.nndd.util.MyListUtil;
+
+			private function changeBold():void{
+				if(this.label != null){
+					var str:String = this.label.text;
+					this.label.inheritingStyles.fontWeight = "nomal";
+					
+					if(str.length > 0){
+						
+						var count:int = searchChildren(this.data);
+						
+//						trace(str + ":" + count);
+						
+						if(count == 0){
+							this.label.inheritingStyles.fontWeight = "nomal";
+//							trace("nomal:" + str);
+						}else{
+							this.label.inheritingStyles.fontWeight = "bold";	
+//							trace("bold:" + str);
+						}
+						
+					}
+					
+				}
+			}
+			
+			protected function treeitemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+//				trace(event);
+				changeBold();
+			}
+			
+			private function searchChildren(data:Object):int{
+				
+				var count:int = 0;
+				
+				if(data == null){
+					return count;
+				}
+				
+				if(data.hasOwnProperty("label")){
+					var str:String = data.label as String;
+					count += MyListManager.instance.getMyListUnPlayVideoCount(str);
+				}
+				
+				if(data.hasOwnProperty("children")){
+					var children:Array = data.children as Array;
+					if(children != null){
+						for each(var object:Object in children){
+							count += searchChildren(object);
+						}
+					}
+				}
+				
+				return count;
+			}
+			
+
+		]]>
+	</mx:Script>
+	<mx:Resize id="test">
+		<!-- rollOverEffect を指定すると rollOver 時に label が一つ前の状態で描画されるのが直る。わけがわからない。 -->
+	</mx:Resize>
+</treeClasses:TreeItemRenderer>
