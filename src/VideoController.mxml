@@ -3,11 +3,12 @@
 <!-- PlayerController.mxml -->
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
 
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="60" 
-		   backgroundAlpha="0.95" minWidth="200" minHeight="50" cornerRadius="10" 
-		   borderStyle="solid" alpha="1.0" rollOver="rollOver(event)" 
-		   rollOut="rollOut(event)" borderColor="#B7BABC" 
-		   xmlns:ns1="*" >
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:ns1="*"
+		   width="320" height="60" minWidth="200" minHeight="50" backgroundAlpha="0.8"
+		   backgroundColor="#FFFFFF" borderStyle="solid" borderVisible="true"
+		   contentBackgroundColor="#FFFFFF" cornerRadius="5" rollOut="rollOut(event)"
+		   rollOver="rollOver(event)">
 
 	<mx:Script source="org/mineap/nndd/view/VideoController.as" />
 
@@ -15,15 +16,16 @@
 			   icon="@Embed(source='player/NNDDicons_play_20x20.png')" textAlign="center"/>
 	<mx:Button id="button_stop" left="38" top="5" width="30" click="stop()" focusEnabled="false"
 			   icon="@Embed(source='player/NNDDicons_stop_20x20.png')"/>
-	<mx:HSlider id="slider_timeline" liveDragging="true" allowTrackClick="true" 
-				change="sliderTimelineChanged(event)" dataTipFormatFunction="myDataTipFormatFunction" 
-				top="5" thumbPress="thumbPress(event)" thumbRelease="thumbRelease(event)" 
-				mouseFocusEnabled="true" mouseWheel="mouseWheel(event)" snapInterval="0.1" 
-				minimum="0" maximum="1" left="76" right="95" focusEnabled="false" minWidth="50"/>
-	<mx:HSlider maximum="1" minimum="0" snapInterval="0.01" value="0.5" 
-				liveDragging="true" id="slider_volume" change="sliderVolumeChanged(event)" 
-				right="0" width="56" top="34" mouseWheel="mouseWheel(event)" 
-				mouseFocusEnabled="true" focusEnabled="false"/>
+	<mx:HSlider id="slider_timeline" left="76" right="97" top="5" height="19" minWidth="50"
+				allowTrackClick="true" change="sliderTimelineChanged(event)"
+				dataTipFormatFunction="myDataTipFormatFunction" focusEnabled="false"
+				liveDragging="true" maximum="1" minimum="0" mouseFocusEnabled="true"
+				mouseWheel="mouseWheel(event)" snapInterval="0.1" thumbPress="thumbPress(event)"
+				thumbRelease="thumbRelease(event)"/>
+	<mx:HSlider id="slider_volume" right="0" top="34" width="51" height="14"
+				change="sliderVolumeChanged(event)" focusEnabled="false" liveDragging="true"
+				maximum="1" minimum="0" mouseFocusEnabled="true" mouseWheel="mouseWheel(event)"
+				snapInterval="0.01" value="0.5"/>
 	
 	<mx:Label text="000:00/000:00" textAlign="right" id="label_time" right="5" top="8"/>
 	<ns1:CommentPostView left="1" bottom="1" right="50" id="commentPostView">
