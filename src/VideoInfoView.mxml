@@ -13,7 +13,7 @@
 			import mx.events.DropdownEvent;
 			import mx.events.IndexChangedEvent;
 			
-			import org.mineap.nndd.comment.Comments;
+			import org.mineap.nndd.player.comment.Comments;
 			
 			private var thumbImgMenu:ContextMenu;
 			private var thumbImgMenuItem1:ContextMenuItem;
