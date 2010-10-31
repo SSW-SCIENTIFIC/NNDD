@@ -23,16 +23,14 @@ package org.mineap.nndd.player
 	import mx.controls.DataGrid;
 	import mx.controls.SWFLoader;
 	import mx.controls.Text;
-	import mx.controls.VideoDisplay;
 	import mx.controls.videoClasses.VideoError;
-	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	import mx.core.Window;
 	import mx.events.AIREvent;
 	import mx.events.FlexEvent;
 	import mx.events.MetadataEvent;
 	import mx.events.VideoEvent;
 	import mx.formatters.DateFormatter;
-	import mx.managers.PopUpManager;
 	
 	import org.libspark.utils.ForcibleLoader;
 	import org.mineap.nicovideo4as.MyListLoader;
@@ -45,24 +43,20 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
-	import org.mineap.nndd.NGListManager;
 	import org.mineap.nndd.NNDDDownloader;
-	import org.mineap.nndd.NNDDMyListAdder;
 	import org.mineap.nndd.NNDDVideoPageWatcher;
 	import org.mineap.nndd.RenewDownloadManager;
-	import org.mineap.nndd.comment.Command;
-	import org.mineap.nndd.comment.CommentManager;
-	import org.mineap.nndd.comment.Comments;
-	import org.mineap.nndd.event.LocalCommentSearchEvent;
 	import org.mineap.nndd.history.HistoryManager;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.library.LocalVideoInfoLoader;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.NNDDComment;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.model.PlayList;
 	import org.mineap.nndd.playList.PlayListManager;
+	import org.mineap.nndd.player.comment.Command;
+	import org.mineap.nndd.player.comment.CommentManager;
+	import org.mineap.nndd.player.comment.Comments;
 	import org.mineap.nndd.util.DateUtil;
 	import org.mineap.nndd.util.IchibaBuilder;
 	import org.mineap.nndd.util.LibraryUtil;
@@ -72,17 +66,16 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;
 	import org.mineap.nndd.util.ThumbInfoUtil;
 	import org.mineap.nndd.util.WebServiceAccessUtil;
-	import org.mineap.nndd.view.SmoothVideoDisplay;
 	import org.mineap.util.config.ConfigIO;
 	import org.mineap.util.config.ConfigManager;
+	import org.osmf.events.TimeEvent;
+	
+	import spark.components.VideoDisplay;
 
 	/**
-	 * PlayerController.as
 	 * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
 	 * 
-	 * Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved.
-	 * 
-	 * @author shiraminekeisuke
+	 * @author shiraminekeisuke(MineAP)
 	 * 
 	 */
 	public class PlayerController extends EventDispatcher
@@ -109,7 +102,7 @@ package org.mineap.nndd.player
 		private var loader:Loader = null;
 		private var isMovieClipPlaying:Boolean = false;
 		
-		private var videoDisplay:SmoothVideoDisplay = null;
+		private var videoDisplay:VideoDisplay = null;
 		
 		private var nicowariSwfLoader:SWFLoader = null;
 		
@@ -181,8 +174,6 @@ package org.mineap.nndd.player
 		private var streamingProgressTimer:Timer = null;
 		
 		private var _videoID:String = null;
-		
-		private var _myListAdder:NNDDMyListAdder = null;
 		
 		private var nnddDownloaderForWatch:NNDDDownloader = null;
 		
@@ -454,7 +445,7 @@ package org.mineap.nndd.player
 				if(!file.exists){
 					Alert.show("動画が既に存在しません。\n動画が移動されたか、削除されている可能性があります。", "エラー");
 					logManager.addLog("動画が既に存在しません。動画が移動されたか、削除されている可能性があります。:" + file.nativePath);
-					Application.application.activate();
+					FlexGlobals.topLevelApplication.activate();
 					return;
 				}
 				
@@ -613,7 +604,7 @@ package org.mineap.nndd.player
 						
 						isMovieClipPlaying = false;
 						
-						videoDisplay = new SmoothVideoDisplay();
+						videoDisplay = new VideoDisplay();
 						
 						videoPlayer.label_downloadStatus.text = "";
 						
@@ -625,13 +616,11 @@ package org.mineap.nndd.player
 						videoPlayer.canvas_video.removeAllChildren();
 						videoPlayer.canvas_video.addChild(videoDisplay);
 						
-						videoDisplay.smoothing = true;
-						
 						videoDisplay.setConstraintValue("bottom", 0);
 						videoDisplay.setConstraintValue("left", 0);
 						videoDisplay.setConstraintValue("right", 0);
 						videoDisplay.setConstraintValue("top", 0);
-						videoDisplay.bufferTime = 3;
+//						videoDisplay.bufferTime = 3;
 												
 						videoDisplay.autoPlay = autoPlay;
 						videoDisplay.source = videoPath;
@@ -882,12 +871,12 @@ package org.mineap.nndd.player
 				renewDownloadManager.renewForOtherVideo(this.mailAddress, 
 					this.password, PathMaker.getVideoID(videoId), videoName, 
 					new File(videoPath.substring(0, videoPath.lastIndexOf("/")+1)), 
-					videoInfoView.isAppendComment, null, Application.application.getSaveCommentMaxCount());
+					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount());
 			}else{
 				renewDownloadManager.renewForCommentOnly(this.mailAddress, 
 					this.password, PathMaker.getVideoID(videoId), videoName, 
 					new File(videoPath.substring(0, videoPath.lastIndexOf("/")+1)), 
-					videoInfoView.isAppendComment, null, Application.application.getSaveCommentMaxCount());
+					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount());
 			}
 		}
 		
@@ -916,7 +905,7 @@ package org.mineap.nndd.player
 					videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
 					logManager.addLog("過去ログの取得に失敗:" + event);
 					
-					Application.application.activate();
+					FlexGlobals.topLevelApplication.activate();
 					Alert.show("過去ログの取得に失敗しました。\nご利用のアカウントでは過去ログを取得できない可能性があります。\n(この機能はプレミアムアカウントでのみ利用可能です。)", Message.M_ERROR);
 				});
 				renewDownloadManagerForOldComment.addEventListener(RenewDownloadManager.PROCCESS_CANCEL, function(event:Event):void{
@@ -942,7 +931,7 @@ package org.mineap.nndd.player
 					
 					renewDownloadManagerForOldComment = null;
 					
-					Application.application.activate();
+					FlexGlobals.topLevelApplication.activate();
 					Alert.show("過去ログの取得に失敗しました。", Message.M_ERROR);
 				});
 				
@@ -958,7 +947,7 @@ package org.mineap.nndd.player
 				}
 
 				// maxCountが小さすぎると過去コメントが保存されないケースがあるので水増し
-				var maxCount:Number = Application.application.getSaveCommentMaxCount();
+				var maxCount:Number = (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount();
 				if(maxCount < 10000){
 					maxCount = 10000;
 				}
@@ -1172,14 +1161,15 @@ package org.mineap.nndd.player
 					//再生ごとのリサイズが有効か？ 有効でなくてもレートが指定されているか？
 					if(this.videoInfoView.isResizePlayerEachPlay || windowSizeRatio != -1){
 						
-						if(this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null){
+						if(this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoObject != null){
 							//FLV再生か？
+							this.videoDisplay.videoObject.smoothing = true;
 							
-							if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoHeight > 0){
+							if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoObject.videoHeight > 0){
 								
 								//動画の大きさがニコ動の表示窓より小さいとき && ウィンドウの大きさを動画に合わせる (動画の高さが０の時は読み込み終わっていないのでスキップ)
 								var isWideVideo:Boolean = false;
-								if(WIDE_MODE_ASPECT_RATIO < Number(this.videoDisplay.videoWidth)/Number(this.videoDisplay.videoHeight)){
+								if(WIDE_MODE_ASPECT_RATIO < Number(this.videoDisplay.videoObject.videoWidth)/Number(this.videoDisplay.videoObject.videoHeight)){
 									// この動画は16:9だ
 									isWideVideo = true;
 									trace("enable 16:9 mode");
@@ -1208,12 +1198,12 @@ package org.mineap.nndd.player
 //									resizePlayerJustVideoSize(windowSizeRatio);
 								}
 								
-							}else if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO && this.videoDisplay.videoHeight > 0){
+							}else if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO && this.videoDisplay.videoObject.videoHeight > 0){
 								
 								//動画の大きさにウィンドウの大きさを合わせるとき(videoHeightが0の時は動画がまだ読み込まれていないのでスキップ)
 								
-								videoWindowHeight = this.videoDisplay.videoHeight * ratio;
-								videoWindowWidth = this.videoDisplay.videoWidth * ratio;
+								videoWindowHeight = this.videoDisplay.videoObject.videoHeight * ratio;
+								videoWindowWidth = this.videoDisplay.videoObject.videoWidth * ratio;
 								
 								this.videoDisplay.setConstraintValue("bottom", 0);
 								this.videoDisplay.setConstraintValue("left", 0);
@@ -1442,8 +1432,9 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		private function addVideoDisplayEventListeners(videoDisplay:VideoDisplay):void{
-			videoDisplay.addEventListener(VideoEvent.PLAYHEAD_UPDATE, videoProgressHandler);
-			videoDisplay.addEventListener(VideoEvent.COMPLETE, videoCompleteHandler);
+			videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, currentTimeChangeEventHandler);
+			videoDisplay.addEventListener(TimeEvent.DURATION_CHANGE, durationChangeEventHandler);
+			videoDisplay.addEventListener(TimeEvent.COMPLETE, videoDisplayCompleteHandler);
 		}
 		
 		/**
@@ -1452,14 +1443,27 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		private function removeVideoDisplayEventListeners(videoDisplay:VideoDisplay):void{
-			if(videoDisplay.hasEventListener(VideoEvent.PLAYHEAD_UPDATE)){
-				videoDisplay.removeEventListener(VideoEvent.PLAYHEAD_UPDATE, videoProgressHandler);
+			if(videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)){
+				videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, currentTimeChangeEventHandler);
 			}
-			if(videoDisplay.hasEventListener(VideoEvent.STATE_CHANGE)){
-				videoDisplay.removeEventListener(VideoEvent.STATE_CHANGE, resizePlayerJustVideoSize);
+			if(videoDisplay.hasEventListener(TimeEvent.DURATION_CHANGE)){
+				videoDisplay.removeEventListener(TimeEvent.DURATION_CHANGE, durationChangeEventHandler);
 			}
 			if(videoDisplay.hasEventListener(VideoEvent.COMPLETE)){
-				videoDisplay.removeEventListener(VideoEvent.COMPLETE, videoCompleteHandler);
+				videoDisplay.removeEventListener(TimeEvent.COMPLETE, videoDisplayCompleteHandler);
+			}
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function durationChangeEventHandler(event:TimeEvent):void{
+			if(videoInfoView.isResizePlayerEachPlay){
+				resizePlayerJustVideoSize(videoPlayer.nowRatio);
+			}else{
+				resizePlayerJustVideoSize();
 			}
 		}
 		
@@ -1589,18 +1593,18 @@ package org.mineap.nndd.player
 		 * @param evt
 		 * 
 		 */
-		private function videoProgressHandler(evt:VideoEvent = null):void{
+		private function currentTimeChangeEventHandler(event:TimeEvent = null):void{
 			try{
 				var allSec:String="00",allMin:String="0";
 				var nowSec:String="00",nowMin:String="0";
 				
-				this.commentTimerVpos = evt.playheadTime*1000;
+				this.commentTimerVpos = event.time*1000;
 				
-				nowSec = String(int(this.videoDisplay.playheadTime%60));
-				nowMin = String(int(this.videoDisplay.playheadTime/60));
+				nowSec = String(int(this.videoDisplay.currentTime%60));
+				nowMin = String(int(this.videoDisplay.currentTime/60));
 				
-				allSec = String(int(this.videoDisplay.totalTime%60));
-				allMin = String(int(this.videoDisplay.totalTime/60));
+				allSec = String(int(this.videoDisplay.duration%60));
+				allMin = String(int(this.videoDisplay.duration/60));
 				
 				if(nowSec.length == 1){
 					nowSec = "0" + nowSec;
@@ -1611,12 +1615,12 @@ package org.mineap.nndd.player
 				
 				videoPlayer.videoController_under.slider_timeline.enabled = true;
 				videoPlayer.videoController_under.slider_timeline.minimum = 0;
-				videoPlayer.videoController_under.slider_timeline.maximum = videoDisplay.totalTime;
+				videoPlayer.videoController_under.slider_timeline.maximum = videoDisplay.duration;
 				if(!this.sliderChanging){
 					
-					this.videoPlayer.videoController.slider_timeline.maximum = videoDisplay.totalTime;
-					this.videoPlayer.videoController_under.slider_timeline.maximum = videoDisplay.totalTime;
-					videoPlayer.videoController_under.slider_timeline.value = videoDisplay.playheadTime;
+					this.videoPlayer.videoController.slider_timeline.maximum = videoDisplay.duration;
+					this.videoPlayer.videoController_under.slider_timeline.maximum = videoDisplay.duration;
+					videoPlayer.videoController_under.slider_timeline.value = videoDisplay.currentTime;
 					
 				}
 				videoPlayer.videoController_under.label_time.text = nowMin + ":" + nowSec + "/" + allMin + ":" + allSec;
@@ -1624,14 +1628,14 @@ package org.mineap.nndd.player
 				
 				videoPlayer.videoController.slider_timeline.enabled = true;
 				videoPlayer.videoController.slider_timeline.minimum = 0;
-				videoPlayer.videoController.slider_timeline.maximum = videoDisplay.totalTime;
+				videoPlayer.videoController.slider_timeline.maximum = videoDisplay.duration;
 				if(!this.sliderChanging){
-					videoPlayer.videoController.slider_timeline.value = videoDisplay.playheadTime;
+					videoPlayer.videoController.slider_timeline.value = videoDisplay.currentTime;
 				}
 				videoPlayer.videoController.label_time.text = nowMin + ":" + nowSec + "/" + allMin + ":" + allSec;
 				videoPlayer.videoController.slider_timeline.enabled = true;
 			}catch(error:Error){
-				VideoDisplay(evt.currentTarget).stop();
+				VideoDisplay(event.currentTarget).stop();
 				trace(error.getStackTrace());
 			}
 		}
@@ -1641,7 +1645,7 @@ package org.mineap.nndd.player
 		 * @param evt
 		 * 
 		 */
-		private function videoCompleteHandler(evt:VideoEvent = null):void{
+		private function videoDisplayCompleteHandler(evt:TimeEvent = null):void{
 			
 			if(movieEndTimer != null){
 				movieEndTimer.stop();
@@ -1854,8 +1858,8 @@ package org.mineap.nndd.player
 				allSec = String(int(mc.totalFrames/swfFrameRate%60));
 				allMin = String(int(mc.totalFrames/swfFrameRate/60));
 			}else if(this.windowType==PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null){
-				allSec = String(int(videoDisplay.totalTime%60));
-				allMin = String(int(videoDisplay.totalTime/60));
+				allSec = String(int(videoDisplay.duration%60));
+				allMin = String(int(videoDisplay.duration/60));
 			}
 			if(allSec.length == 1){
 				allSec = "0" + allSec;
@@ -2148,7 +2152,7 @@ package org.mineap.nndd.player
 			trace(seekTime);
 			if(this.windowReady){
 				if((new Date().time)-lastSeekTime > 1000){
-					if((videoDisplay != null && videoDisplay.initialized && videoDisplay.totalTime > 0) || (swfLoader != null && swfLoader.initialized)){
+					if((videoDisplay != null && videoDisplay.initialized && videoDisplay.duration > 0) || (swfLoader != null && swfLoader.initialized)){
 						
 						
 						trace("seekStart:" + seekTime);
@@ -2162,7 +2166,7 @@ package org.mineap.nndd.player
 						this.videoPlayer.videoInfoView.dataGrid_comment.verticalScrollPosition = 0;
 						
 						if(this.windowType == PlayerController.WINDOW_TYPE_FLV){
-							videoDisplay.playheadTime = seekTime;
+							videoDisplay.seek(seekTime);
 							commentTimerVpos = seekTime*1000;
 						}else if(this.windowType == PlayerController.WINDOW_TYPE_SWF){
 							mc.gotoAndPlay(int(seekTime));
@@ -3239,7 +3243,7 @@ package org.mineap.nndd.player
 					if(!file.exists){
 						Alert.show(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath, Message.M_ERROR);
 						logManager.addLog(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath);
-						Application.application.activate();
+						FlexGlobals.topLevelApplication.activate();
 						return;
 					}
 					
@@ -3296,7 +3300,7 @@ package org.mineap.nndd.player
 					if(mailAddress == "" || password == ""){
 						Alert.show("ニコニコ動画にログインしてください。", Message.M_ERROR);
 						logManager.addLog("ニコニコ動画にログインしてください。");
-						Application.application.activate();
+						FlexGlobals.topLevelApplication.activate();
 						return;
 					}
 					
@@ -3375,7 +3379,7 @@ package org.mineap.nndd.player
 						
 						Alert.show("ストリーミング再生中に予期せぬ例外が発生しました。\nError:" + e, Message.M_ERROR);
 						logManager.addLog("ストリーミング再生中に予期せぬ例外が発生しました。\nError:" + e + ":" + e.getStackTrace());
-						Application.application.activate();
+						FlexGlobals.topLevelApplication.activate();
 						nnddDownloaderForStreaming.close(true, true);
 						nnddDownloaderForStreaming = null;
 						
@@ -3390,7 +3394,7 @@ package org.mineap.nndd.player
 				videoPlayer.setControllerEnable(true);
 				Alert.show(url + "を再生できませんでした。\n" + error, Message.M_ERROR);
 				logManager.addLog("再生できませんでした:url=[" + url + "]\n" + error.getStackTrace());
-				Application.application.activate();
+				FlexGlobals.topLevelApplication.activate();
 			}
 		}
 		
@@ -3519,7 +3523,7 @@ package org.mineap.nndd.player
 		 */
 		public function loadPlayListSummry():void{
 //			playListManager.readPlayListSummary(libraryManager.playListDir);
-			(Application.application as NNDD).updatePlayListSummery();
+			(FlexGlobals.topLevelApplication as NNDD).updatePlayListSummery();
 		}
 		
 		/**
@@ -3529,7 +3533,7 @@ package org.mineap.nndd.player
 		 */
 		public function loadPlayList(index:int = -1):void{
 //			playListManager.getPlay(index);
-			(Application.application as NNDD).updatePlayList(index);
+			(FlexGlobals.topLevelApplication as NNDD).updatePlayList(index);
 		}
 		
 		/**
@@ -3560,8 +3564,8 @@ package org.mineap.nndd.player
 			
 			playListManager.addNNDDVideos(index, videoArray, 0);
 			
-			(Application.application as NNDD).updatePlayList(index);
-			(Application.application as NNDD).updatePlayListSummery();
+			(FlexGlobals.topLevelApplication as NNDD).updatePlayList(index);
+			(FlexGlobals.topLevelApplication as NNDD).updatePlayListSummery();
 			
 			return title;
 		}
@@ -3586,8 +3590,8 @@ package org.mineap.nndd.player
 				
 				playListManager.updatePlayList(title, vector);
 				
-				(Application.application as NNDD).updatePlayListSummery();
-				(Application.application as NNDD).updatePlayList(index);
+				(FlexGlobals.topLevelApplication as NNDD).updatePlayListSummery();
+				(FlexGlobals.topLevelApplication as NNDD).updatePlayList(index);
 				
 			}
 		}
@@ -3675,7 +3679,7 @@ package org.mineap.nndd.player
 			
 			if(videoId != null){
 				var video:NNDDVideo = new NNDDVideo(WatchVideoPage.WATCH_VIDEO_PAGE_URL + videoId, this.videoPlayer.title);
-				Application.application.addDownloadListForInfoView(video);
+				(FlexGlobals.topLevelApplication as NNDD).addDownloadListForInfoView(video);
 				logManager.addLog("InfoViewからDLリストへ追加:" + video.getDecodeUrl());
 			}else{
 				Alert.show("動画IDが見つからないため、DLリストに追加できませんでした。", Message.M_ERROR);
@@ -3700,103 +3704,15 @@ package org.mineap.nndd.player
 		 */
 		public function addMyList(myListId:String):void{
 			var videoTitle:String = videoPlayer.title;
+			var videoId:String = PathMaker.getVideoID(videoTitle);
 			
-			logManager.addLog("***マイリストへの追加***");
-			
-			if(this._myListAdder == null){
-				
-				if(myListId == null || myListId == ""){
-					Alert.show("マイリストが選択されていません。", Message.M_ERROR);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Application.application.activate();
-					return;
-				}
-				if(this.mailAddress == null || this.mailAddress == "" || this.password == null || this.password == ""){
-					Alert.show("ニコニコ動画にログインできません。ユーザー名とパスワードを設定してください。");
-					logManager.addLog("***マイリストへの追加失敗***");
-					Application.application.activate();
-					return;
-				}
-				var videoId:String = PathMaker.getVideoID(videoTitle);
-				if(videoId == null){
-					Alert.show("動画のIDが取得できませんでした。動画を再生し直した後、もう一度試してみてください。", Message.M_ERROR);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Application.application.activate();
-					return;
-				}
-				
-				this._myListAdder = new NNDDMyListAdder(this.logManager);
-				
-				this._myListAdder.addEventListener(NNDDMyListAdder.ADD_MYLIST_SUCESS, function(event:Event):void{
-					logManager.addLog("次の動画をマイリストに追加:" + videoTitle);
-					logManager.addLog("***マイリストへの追加成功***");
-					var text:String = "次の動画をマイリストに追加しました。\n" + videoTitle;
-					var alert:Alert = Alert.show(text, Message.M_MESSAGE);
-					var timer:Timer = new Timer(1000, 5);
-					timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
-						if(alert != null && alert.isPopUp){
-							PopUpManager.removePopUp(alert);
-						}
-					});
-					_myListAdder.close();
-					_myListAdder = null;
-				});
-				this._myListAdder.addEventListener(NNDDMyListAdder.ADD_MYLIST_DUP, function(event:Event):void{
-					logManager.addLog("次の動画はすでにマイリストに登録済:" + videoTitle);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Alert.show("次の動画は既にマイリストに追加されています。\n" + videoTitle, Message.M_MESSAGE);
-					_myListAdder.close();
-					_myListAdder = null;
-				});
-				this._myListAdder.addEventListener(NNDDMyListAdder.ADD_MYLIST_NOT_EXIST, function(event:Event):void{
-					logManager.addLog("次の動画は存在しない:" + videoTitle);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Alert.show("次の動画をマイリストに追加しようとしましたが、動画が存在しませんでした。\n" + videoTitle, Message.M_MESSAGE);
-					_myListAdder.close();
-					_myListAdder = null;
-				});
-				this._myListAdder.addEventListener(NNDDMyListAdder.ADD_MYLSIT_FAIL, function(event:ErrorEvent):void{
-					logManager.addLog("マイリストへの登録に失敗:" + videoTitle + ":" + event);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Alert.show("マイリストへの登録に失敗\n" + event, Message.M_ERROR);
-					Application.application.activate();
-					_myListAdder.close();
-					_myListAdder = null;
-				});
-				this._myListAdder.addEventListener(NNDDMyListAdder.LOGIN_FAIL, function(event:Event):void{
-					logManager.addLog("マイリストへの登録に失敗:" + videoTitle + ":" + event);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Alert.show("マイリストへの登録に失敗\n" + event, Message.M_ERROR);
-					Application.application.activate();
-					_myListAdder.close();
-					_myListAdder = null;
-				});
-				this._myListAdder.addEventListener(NNDDMyListAdder.GET_MYLISTGROUP_FAIL, function(event:Event):void{
-					logManager.addLog("マイリストへの登録に失敗:" + videoTitle + ":" + event);
-					logManager.addLog("***マイリストへの追加失敗***");
-					Alert.show("マイリストへの登録に失敗\n" + event, Message.M_ERROR);
-					Application.application.activate();
-					_myListAdder.close();
-					_myListAdder = null;
-				});
-				
-				_myListAdder.addMyList("http://www.nicovideo.jp/watch/" + videoId, myListId, this.mailAddress, this.password);	
-				
+			if(PlayerMylistAddr.instance.isAdding){
+				PlayerMylistAddr.instance.addMyList(this.mailAddress, this.password, myListId, videoId, videoTitle);
 			}else{
-				
-				logManager.addLog("マイリストへの登録をキャンセル:" + videoTitle);
-				logManager.addLog("***マイリストへの追加失敗***");
-				
-				try{
-					_myListAdder.close();
-				}catch(error:Error){
-					trace(error.getStackTrace());
-				}
-				_myListAdder = null;
+				PlayerMylistAddr.instance.close();
 			}
 			
 		}
-		
 		
 		/**
 		 * 
@@ -3809,15 +3725,6 @@ package org.mineap.nndd.player
 			}
 		}
 		
-		/**
-		 * 現在再生しているコメントに日付情報を付加して退避します。
-		 * 
-		 */
-		public function saveComment():void{
-			
-			
-			
-		}
 		
 		/**
 		 * 
