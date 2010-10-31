@@ -7,13 +7,13 @@ package org.mineap.nndd.player.comment
 	import mx.controls.Text;
 	import mx.events.FlexEvent;
 	
-	import org.mineap.nndd.model.NNDDComment;
-	import org.mineap.nndd.player.PlayerController;
-	import org.mineap.nndd.view.NNDDText;
 	import org.mineap.nInterpreter.IAnalyzeResult;
 	import org.mineap.nInterpreter.ResultType;
 	import org.mineap.nInterpreter.operation.jump.JumpResult;
 	import org.mineap.nInterpreter.operation.seek.SeekResult;
+	import org.mineap.nndd.model.NNDDComment;
+	import org.mineap.nndd.player.PlayerController;
+	import org.mineap.nndd.view.NNDDText;
 
 	/**
 	 * CommentManager.as
