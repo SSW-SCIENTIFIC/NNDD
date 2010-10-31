@@ -11,7 +11,7 @@ package org.mineap.nndd.util
 	import flash.utils.Timer;
 	
 	import org.mineap.nndd.LogManager;
-	import org.mineap.nndd.comment.Command;
+	import org.mineap.nndd.player.comment.Command;
 	
 	import mx.controls.Label;
 

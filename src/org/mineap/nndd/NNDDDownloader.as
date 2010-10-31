@@ -12,7 +12,7 @@ package org.mineap.nndd
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
 	
-	import org.mineap.nndd.comment.Command;
+	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;

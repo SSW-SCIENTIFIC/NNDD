@@ -24,7 +24,7 @@ package org.mineap.nndd
 	import mx.formatters.DateFormatter;
 	import mx.formatters.NumberFormatter;
 	
-	import org.mineap.nndd.comment.Command;
+	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.library.LocalVideoInfoLoader;

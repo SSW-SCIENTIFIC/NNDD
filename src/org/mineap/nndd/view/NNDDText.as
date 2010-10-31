@@ -5,7 +5,7 @@ package org.mineap.nndd.view
 	import mx.controls.Text;
 	import mx.core.Application;
 	
-	import org.mineap.nndd.comment.Command;
+	import org.mineap.nndd.player.comment.Command;
 
 
 	/**
