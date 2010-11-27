@@ -79,6 +79,9 @@ import mx.managers.DragManager;
 import mx.managers.FocusManager;
 import mx.managers.PopUpManager;
 
+import org.mineap.nicovideo4as.*;
+import org.mineap.nicovideo4as.model.*;
+import org.mineap.nicovideo4as.util.HtmlUtil;
 import org.mineap.nndd.*;
 import org.mineap.nndd.Access2Nico;
 import org.mineap.nndd.LogManager;
@@ -115,9 +118,6 @@ import org.mineap.nndd.util.*;
 import org.mineap.nndd.versionCheck.VersionChecker;
 import org.mineap.nndd.versionCheck.VersionUtil;
 import org.mineap.nndd.view.LoadingPicture;
-import org.mineap.nicovideo4as.*;
-import org.mineap.nicovideo4as.model.*;
-import org.mineap.nicovideo4as.util.HtmlUtil;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
 import org.mineap.util.font.FontUtil;
@@ -2071,7 +2071,31 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 	directory.browseForDirectory("ファイルの保存先を指定");
 	
 	// ファイル選択イベントのリスナを登録
-	directory.addEventListener(Event.SELECT, function(event:Event):void{
+	directory.addEventListener(Event.SELECT, function(event:Event):void
+	{
+		// ライブラリディレクトリが既に存在するなら今のデータを保存
+		if (libraryManager.libraryDir != null && libraryManager.libraryDir.exists)
+		{
+			var oldLibraryDir:File = libraryManager.libraryDir;
+			
+			// 検索項目
+			_searchItemManager.saveSearchItems(oldLibraryDir);
+			
+			// マイリスト
+			MyListManager.instance.saveMyListSummary(oldLibraryDir);
+			
+			// DLリスト
+//			DownloadedListManager.instance.
+			
+			// ライブラリ
+			libraryManager.saveLibrary(oldLibraryDir);
+			
+			// 履歴
+			HistoryManager.instance.saveHistory();
+			
+		}
+		
+		
 		// イベントのターゲットが選択されたファイルなので、`File`型に変換
 		libraryManager.changeLibraryDir(File(event.target));
 		
@@ -2080,7 +2104,7 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 		if(tree_library != null){
 			
 			var libraryTreeBuilder:LibraryTreeBuilder = new LibraryTreeBuilder();
-			(event.currentTarget as Tree).dataProvider = libraryTreeBuilder.build(true);
+			tree_library.dataProvider = libraryTreeBuilder.build(true);
 			
 		}
 		
@@ -2100,7 +2124,17 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 			tree_library.validateNow();
 		}
 		
+		// 検索項目
+		_searchItemManager.readSearchItems(libraryManager.libraryDir);
+		
+		// マイリスト
+		MyListManager.instance.readMyListSummary(libraryManager.libraryDir);
+		
+		// DLリスト
 		downloadedListManager.updateDownLoadedItems(libraryManager.libraryDir.url, showAll);
+		
+		// 履歴
+		HistoryManager.instance.loadHistory();
 		
 		logManager.addLog("保存先を変更:"+libraryManager.libraryDir.nativePath);
 	});
