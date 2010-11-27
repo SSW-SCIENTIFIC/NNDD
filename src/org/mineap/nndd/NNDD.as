@@ -2076,19 +2076,18 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 		// ライブラリディレクトリが既に存在するなら今のデータを保存
 		if (libraryManager.libraryDir != null && libraryManager.libraryDir.exists)
 		{
-			var oldLibraryDir:File = libraryManager.libraryDir;
 			
 			// 検索項目
-			_searchItemManager.saveSearchItems(oldLibraryDir);
+			_searchItemManager.saveSearchItems(libraryManager.systemFileDir);
 			
 			// マイリスト
-			MyListManager.instance.saveMyListSummary(oldLibraryDir);
+			MyListManager.instance.saveMyListSummary(libraryManager.systemFileDir);
 			
 			// DLリスト
 //			DownloadedListManager.instance.
 			
 			// ライブラリ
-			libraryManager.saveLibrary(oldLibraryDir);
+			libraryManager.saveLibrary(libraryManager.systemFileDir);
 			
 			// 履歴
 			HistoryManager.instance.saveHistory();
@@ -2125,13 +2124,13 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 		}
 		
 		// 検索項目
-		_searchItemManager.readSearchItems(libraryManager.libraryDir);
+		_searchItemManager.readSearchItems(libraryManager.systemFileDir);
 		
 		// マイリスト
-		MyListManager.instance.readMyListSummary(libraryManager.libraryDir);
+		MyListManager.instance.readMyListSummary(libraryManager.systemFileDir);
 		
 		// DLリスト
-		downloadedListManager.updateDownLoadedItems(libraryManager.libraryDir.url, showAll);
+		downloadedListManager.updateDownLoadedItems(libraryManager.systemFileDir.url, showAll);
 		
 		// 履歴
 		HistoryManager.instance.loadHistory();
