@@ -68,7 +68,9 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.util.WebServiceAccessUtil;
 	import org.mineap.util.config.ConfigIO;
 	import org.mineap.util.config.ConfigManager;
+	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.TimeEvent;
+	import org.osmf.media.MediaPlayerState;
 	
 	import spark.components.VideoDisplay;
 
@@ -610,7 +612,7 @@ package org.mineap.nndd.player
 						
 						if(isStreamingPlay){
 							videoPlayer.label_downloadStatus.text = "バッファ中...";
-							videoDisplay.addEventListener(VideoEvent.PLAYHEAD_UPDATE, bufferingHandler);
+							videoDisplay.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
 						}
 						
 						videoPlayer.canvas_video.removeAllChildren();
@@ -1014,11 +1016,12 @@ package org.mineap.nndd.player
 		 * @param event
 		 * 
 		 */
-		private function bufferingHandler(event:VideoEvent):void{
+		private function mediaPlayerStateChanged(event:MediaPlayerStateChangeEvent):void
+		{
 			if(videoDisplay != null && !isPlayerClosing){
-				if(event.state != VideoEvent.BUFFERING){
+				if(event.state != MediaPlayerState.BUFFERING){
 					videoPlayer.label_downloadStatus.text = "";
-					videoDisplay.removeEventListener(VideoEvent.PLAYHEAD_UPDATE, bufferingHandler);
+					videoDisplay.removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
 					if(commentTimer != null && !commentTimer.running){
 						time = (new Date).time;
 						commentTimer.start();
@@ -1026,7 +1029,7 @@ package org.mineap.nndd.player
 				}
 			}else{
 				(event.currentTarget as VideoDisplay).stop();
-				(event.currentTarget as VideoDisplay).removeEventListener(VideoEvent.PLAYHEAD_UPDATE, bufferingHandler);
+				(event.currentTarget as VideoDisplay).removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
 				destructor();
 			}
 		}
