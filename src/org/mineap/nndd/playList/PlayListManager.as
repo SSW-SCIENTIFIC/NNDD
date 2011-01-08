@@ -81,7 +81,7 @@ package org.mineap.nndd.playList
 			if(dir.exists){
 //				readPlayListSummary(dir);
 			}else{
-				dir = new File(libraryManager.libraryDir.url + "/playList/");
+				dir = libraryManager.libraryDir.resolvePath("playList/");
 				try{
 					dir.moveTo(libraryManager.playListDir);
 				}catch(error:Error){
