@@ -15,7 +15,7 @@
 
 	<!-- A universally unique application identifier. Must be unique across all AIR applications.
 	Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-	<id>com.mineap.nndd</id>
+	<id>org.mineap.nndd</id>
 
 	<!-- Used as the filename for the application. Required. -->
 	<filename>NNDD - v2.0.0 Alpha 0</filename>
