@@ -209,6 +209,7 @@ package org.mineap.nndd.library.sqlite
 			
 			var isConvertFromDB:Boolean = false;
 			if(oldVersion != newVersion){
+				// TODO: もし異なるならテーブルをdropして作り直さなきゃだめ
 				isConvertFromDB = true;
 			}
 			
@@ -376,7 +377,14 @@ package org.mineap.nndd.library.sqlite
 					// ライブラリに今回見つかった物を追加
 					for(tempKey in _tempLibraryMap){
 						var nnddVideo:NNDDVideo = _tempLibraryMap[tempKey];
-						add(nnddVideo, false, true);
+						
+						var tempVideo:NNDDVideo = isExistByVideoId(nnddVideo.key);
+						if(tempVideo == null){
+							add(nnddVideo, false, true);
+						}else{
+							nnddVideo.id = tempVideo.id;
+							update(nnddVideo, false);
+						}
 					}
 					
 					if(_allDirRenew){
@@ -472,7 +480,7 @@ package org.mineap.nndd.library.sqlite
 		/**
 		 * 
 		 * @param videoId
-		 * @param isSaveLibrary
+		 * @param isSaveLibrary SQLite版のLibrary実装ではこの引数に意味はありません。
 		 * @return 
 		 * 
 		 */
@@ -489,7 +497,7 @@ package org.mineap.nndd.library.sqlite
 		/**
 		 * 
 		 * @param video
-		 * @param isSaveLibrary
+		 * @param isSaveLibrary SQLite版のLibrary実装ではこの引数に意味はありません。
 		 * @return 
 		 * 
 		 */
@@ -509,7 +517,7 @@ package org.mineap.nndd.library.sqlite
 		/**
 		 * 
 		 * @param video
-		 * @param isSaveLibrary
+		 * @param isSaveLibrary SQLite版のLibrary実装ではこの引数に意味はありません。
 		 * @param isOverWrite
 		 * @return 
 		 * 
