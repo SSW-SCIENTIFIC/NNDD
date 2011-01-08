@@ -3828,7 +3828,7 @@ package org.mineap.nndd.player
 			var videoTitle:String = videoPlayer.title;
 			var videoId:String = PathMaker.getVideoID(videoTitle);
 			
-			if(PlayerMylistAddr.instance.isAdding){
+			if(!PlayerMylistAddr.instance.isAdding){
 				PlayerMylistAddr.instance.addMyList(this.mailAddress, this.password, myListId, videoId, videoTitle);
 			}else{
 				PlayerMylistAddr.instance.close();
