@@ -349,8 +349,12 @@
 				<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" left="68" top="135" change="checkboxEnableWideModeChanged(event)" toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
 				<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="190" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
 				<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="220" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
-				<mx:CheckBox label="Player下のコントローラを表示しない" id="checkbox_hideUnderController" rollOver="videoPlayer.videoController.rollOver(event)" rollOut="videoPlayer.videoController.rollOut(event)" 
-										change="checkboxHideUnderControllerChanged(event)" fontWeight="normal" left="10" top="250" width="199" height="22" toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
+				<mx:CheckBox id="checkbox_hideUnderController" left="10" top="250" height="22"
+							 label="Player下のコントローラを表示しない"
+							 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
+							 rollOut="videoPlayer.videoController.rollOut(event)"
+							 rollOver="videoPlayer.videoController.rollOver(event)"
+							 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
 				<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="280" id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
 				<mx:CheckBox label="動画以外をすべて更新する" left="35" top="301" id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
 				<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" left="35" top="321" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
@@ -364,15 +368,15 @@
 				<mx:Label text="コメントの大きさ：" left="10" top="522"/>
 				<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="113" top="522" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
 				<mx:Label text="0.5倍" left="113" top="548"/>
-				<mx:Label text="1.5倍" top="548" right="10" width="33"/>
+				<mx:Label right="10" top="548" text="1.5倍"/>
 				<mx:Label text="コメントのFPS：" left="10" top="574" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
 				<mx:HSlider minimum="1" maximum="5" value="2" left="113" top="574" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
 				<mx:Label text="7.5fps" left="113" top="600"/>
-				<mx:Label text="120fps" top="600" right="10" width="43"/>
+				<mx:Label right="10" top="600" text="120fps"/>
 				<mx:Label x="10" y="626" text="表示するコメント："/>
 				<mx:HSlider y="626" left="113" minimum="50" maximum="2500" snapInterval="50" right="10" showDataTip="true" value="250" id="slider_showCommentCount" change="sliderShowCommentCountChanged(event)" toolTip="表示するコメントの個数を指定します。ダウンロード済みのコメントの個数より大きい数字を指定しても、ダウンロード済みの個数以上は表示されません。"/>
 				<mx:Label text="50" left="113" top="652"/>
-				<mx:Label text="2500" top="652" right="10" width="33"/>
+				<mx:Label right="10" top="652" text="2500"/>
 				<mx:Label x="10" y="678" text="コメント表示時間："/>
 				<mx:HSlider y="678" left="113" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
 				<mx:Label text="1秒" left="113" top="704"/>
