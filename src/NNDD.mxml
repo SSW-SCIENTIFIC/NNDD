@@ -1072,7 +1072,6 @@
 				<mx:Canvas height="100%" width="160" minWidth="160" id="canvas_libAndPList">
 					<mx:Canvas left="10" top="0" bottom="0" right="0">
 						<mx:Tree left="0" top="0" bottom="45" right="0" id="tree_library" 
-								 dataProvider="{libraryProvider}"
 								 dragDrop="tree_library_dragDropHandler(event)"
 								 dragEnter="tree_library_dragEnterAndOverHandler(event)"
 								 dragOver="tree_library_dragEnterAndOverHandler(event)"
@@ -1114,10 +1113,14 @@
 										creationComplete="tileList_tag_creationCompleteHandler(event)"></mx:TileList>
 								</mx:Canvas>
 								<mx:Canvas label="タグフィルタ" width="100%" height="100%" id="canvas_tagFilter">
-									<mx:TileList dataProvider="{ngTagProvider}" id="tileList_filterTag" allowMultipleSelection="true" itemRenderer="TagTileListRenderer" 
-										allowDragSelection="false" itemDoubleClick="tagTileListItemDoubleClickEventHandler(event)"
-										doubleClickEnabled="true" left="0" top="0" bottom="0" right="0"
-										creationComplete="tileList_filterTag_creationCompleteHandler(event)"></mx:TileList>
+									<mx:TileList id="tileList_filterTag" left="0" right="0" top="0"
+												 bottom="0" allowDragSelection="false"
+												 allowMultipleSelection="true"
+												 creationComplete="tileList_filterTag_creationCompleteHandler(event)"
+												 dataProvider="{ngTagProvider}"
+												 doubleClickEnabled="true"
+												 itemDoubleClick="tagTileListItemDoubleClickEventHandler(event)"
+												 itemRenderer="TagTileListRenderer"></mx:TileList>
 								</mx:Canvas>
 							</mx:TabNavigator>
 							<mx:Button label="表示" left="0" bottom="0" click="tagShow()"/>
@@ -1163,9 +1166,9 @@
 					<mx:Button id="button_play_downloadedItem" left="0" bottom="5" width="50"
 							   label="再生" click="downLoadedItemPlay()"/>
 					<mx:VRule width="15" height="22" left="54" bottom="5"/>
-					<mx:Button label="動画以外を更新" id="newCommentDownloadButton" click="newCommentDownloadButtonClicked()" left="191" bottom="5" enabled="true"/>
+					<mx:Button label="動画以外を更新" id="newCommentDownloadButton" click="newCommentDownloadButtonClicked()" left="195" bottom="5" enabled="true"/>
 					<mx:Button label="コメントのみ更新" id="newCommentOnlyDownloadButton" click="newCommentDownloadButtonClicked(true)" left="77" bottom="5" enabled="true"/>
-					<mx:Button label="すべて更新" left="295" bottom="5" click="addDownloadListForDownloadedList(event)"/>
+					<mx:Button label="すべて更新" left="300" bottom="5" click="addDownloadListForDownloadedList(event)"/>
 					
 					<mx:Label text="リスト内検索" right="138" bottom="7" enabled="true"/>
 					<mx:TextInput enabled="true" id="textInput_searchInDLList" change="searchDLListTextInputChange()" enter="searchDLListTextInputChange()"
