@@ -40,6 +40,7 @@ import mx.events.ListEvent;
 import mx.events.ResizeEvent;
 import mx.managers.PopUpManager;
 
+import org.mineap.nicovideo4as.model.SearchType;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.model.NNDDVideo;
@@ -48,7 +49,7 @@ import org.mineap.nndd.model.SearchSortString;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.util.PathMaker;
-import org.mineap.nicovideo4as.model.SearchType;
+import org.mineap.nndd.util.ShortUrlChecker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
 
@@ -886,7 +887,39 @@ private function resizeNow(event:ResizeEvent):void{
 private function canvasVideoDroped(event:NativeDragEvent):void{
 	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
 		var url:String = (event.clipboard.getData(ClipboardFormats.TEXT_FORMAT) as String);
-		if(url != null && url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) != null){
+		
+		if(url == null){
+			return;
+		}
+		
+		var checker:ShortUrlChecker = new ShortUrlChecker();
+		if (checker.isShortUrl(url))
+		{
+			logManager.addLog("短縮URLを展開中...:" + url);
+			checker.addEventListener(Event.COMPLETE, function(event:Event):void
+			{
+				var url:String = checker.url;
+				logManager.addLog("短縮URLを展開:" + url);
+				if(url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) != null){
+					playerController.playMovie(url);
+					return;
+				}
+				var videoId:String = PathMaker.getVideoID(url);
+				if(videoId != null){
+					url = "http://www.nicovideo.jp/watch/" + videoId;
+					playerController.playMovie(url);
+					return;
+				}
+			});
+			checker.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void
+			{
+				logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":" + event);
+				Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
+			});
+			checker.expansion(url);
+		}
+		
+		if(url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) != null){
 			playerController.playMovie(url);
 			return;
 		}

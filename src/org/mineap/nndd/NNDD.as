@@ -1316,12 +1316,47 @@ private function invokeEventHandler(event:InvokeEvent):void{
 					//DLリストに追加
 					var video:NNDDVideo = new NNDDVideo(url, "-");
 					addDownloadList(video, -1);
+				}else if(url.match(new RegExp("http://")) != null){
+					var checker:ShortUrlChecker = new ShortUrlChecker();
+					if (checker.isShortUrl(url))
+					{
+						// 短縮URLなら展開
+						logManager.addLog("短縮URLを展開中...:" + url);
+						checker.addEventListener(Event.COMPLETE, function(event:Event):void{
+							if (checker.url != null)
+							{
+								logManager.addLog("短縮URLを展開:" + checker.url);
+								
+								if(checker.url.match(new RegExp("http://www.nicovideo.jp/watch/")) != null){
+									//DLリストに追加
+									var video:NNDDVideo = new NNDDVideo(checker.url, "-");
+									addDownloadList(video, -1);
+								}else
+								{
+									//これはニコ動のURL or 動画IDじゃない
+									logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);
+									Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
+								}
+							} else
+							{
+								logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":ShortUrlChecker.url is null.");
+								Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
+							}
+						});
+						checker.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void{
+							logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":" + event);
+							Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
+						});
+						checker.expansion(url);
+					}
 				}else{
 					//これはニコ動のURL or 動画IDじゃない
 					logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);
 					Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
 				}
 			}else if(arg1.indexOf("http://") == -1){
+				// ローカルのファイル
+				
 				var file:File = new File(arg1);
 				if(file.exists){
 //					this.isArgumentBoot = true;
@@ -1329,6 +1364,7 @@ private function invokeEventHandler(event:InvokeEvent):void{
 					playMovie(decodeURIComponent(file.url), -1);
 				}
 			}else if(arg1.match(new RegExp("http://www.nicovideo.jp/watch/")) != null){
+				// ニコ動
 				
 				if(MAILADDRESS == ""){
 					this.isArgumentBoot = true;
@@ -1336,6 +1372,35 @@ private function invokeEventHandler(event:InvokeEvent):void{
 				}else{
 					this.playingVideoPath = arg1;
 					this.videoStreamingPlayStart(arg1);
+				}
+			}else if(arg1.match(new RegExp("http://")) != null){
+				var checker:ShortUrlChecker = new ShortUrlChecker();
+				if (checker.isShortUrl(arg1))
+				{
+					// 短縮URLなら展開
+					logManager.addLog("短縮URLを展開中...:" + arg1);
+					checker.addEventListener(Event.COMPLETE, function(event:Event):void{
+						if (checker.url != null)
+						{
+							logManager.addLog("短縮URLを展開...:" + checker.url);
+							if(MAILADDRESS == ""){
+								isArgumentBoot = true;
+								argumentURL = checker.url;
+							}else{
+								playingVideoPath = checker.url;
+								videoStreamingPlayStart(checker.url);
+							}
+						} else
+						{
+							logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":ShortUrlChecker.url is null.");
+							Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
+						}
+					});
+					checker.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void{
+						logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":" + event);
+						Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
+					});
+					checker.expansion(arg1);
 				}
 			}else{
 				logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);

@@ -59,6 +59,7 @@ package org.mineap.nndd
 		public static var L_NOMAL_OR_WIDE:String = "4:3モード/16:9モード";
 		public static var L_COPY_VIDEO_URL:String = "動画のURLをコピー";
 		public static var L_COPY_VIDEO_URL_WITH_TITLE:String = "動画のタイトルとURLをコピー";
+		public static var L_RELOAD_VIDEO:String = "動画を再読み込み";
 		
 		/*主にメッセージ出力*/
 		public static var M_LOCAL_STORE_IS_BROKEN:String = "ローカルストアが破損している可能性があったため、ローカルストアのデータをリセットしました。";
@@ -101,6 +102,8 @@ package org.mineap.nndd
 		public static var M_RENEW_MYLIST_GROUP:String = "あなたのニコニコ動画上のマイリストをNNDDのマイリストの一覧に追加しますか？\n\n(この操作は「設定」>「ランキング・検索・マイリスト」の「自分のマイリストをマイリスト一覧に追加」からも実行できます。)";
 		
 		public static var M_LIBRARY_FILE_NOT_FOUND:String = "指定されたライブラリの保存先が見つからなかったため、保存先をリセットしました。\n\n見つからなかった保存先:";
+		
+		public static var M_SHORT_URL_EXPANSION_FAIL:String = "短縮URLの展開に失敗しました。";
 		
 		public static var M_ERROR:String = "エラー";
 		public static var M_MESSAGE:String = "通知";
