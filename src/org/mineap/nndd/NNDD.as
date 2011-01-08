@@ -289,8 +289,6 @@ private var myListStatusProvider:String = new String();
 private var fontDataProvider:Array = new Array();
 [Bindable]
 private var searchHistoryProvider:Array = new Array();
-[Bindable]
-private var libraryProvider:Array = new Array();
 
 
 /**
@@ -2092,6 +2090,9 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 			// 履歴
 			HistoryManager.instance.saveHistory();
 			
+			// NGタグ
+			ngTagManager.saveNgTags();
+			
 		}
 		
 		
@@ -2116,7 +2117,7 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 			(object.children as Array).push(file);
 		}
 		
-		libraryProvider.push(object);
+//		libraryProvider.addItem(object);
 		
 		if(tree_library != null){
 			tree_library.invalidateList();
@@ -2127,6 +2128,8 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 		_searchItemManager.readSearchItems(libraryManager.systemFileDir);
 		
 		// マイリスト
+		myListItemProvider.removeAll();
+		myListProvider.splice(0, myListProvider.length);
 		MyListManager.instance.readMyListSummary(libraryManager.systemFileDir);
 		
 		// DLリスト
@@ -2134,6 +2137,9 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 		
 		// 履歴
 		HistoryManager.instance.loadHistory();
+		
+		// Ngタグ
+		ngTagManager.loadNgTags();
 		
 		logManager.addLog("保存先を変更:"+libraryManager.libraryDir.nativePath);
 	});
@@ -2205,15 +2211,15 @@ private function tabChanged():void{
 			this.button_fileNameEdit.enabled = isEnableLibrary;
 	  		
 			if((this.tree_library.openItems as Array).length == 0){
-				this.tree_library.openItems = libraryProvider;
+//				this.tree_library.openItems = libraryProvider;
 			}
 			
-			if(isEnableLibrary){
-				var folder:TreeFolderItem = (libraryProvider[0] as TreeFolderItem);
-				if(folder != null){
-					folder.children = new Array();
-				}
-			}
+//			if(isEnableLibrary){
+//				var folder:TreeFolderItem = (libraryProvider[0] as TreeFolderItem);
+//				if(folder != null){
+//					folder.children = new Array();
+//				}
+//			}
 			
 			if(playListManager.isSelectedPlayList){
 				updatePlayListSummery();
@@ -2227,9 +2233,9 @@ private function tabChanged():void{
 					
 					var item:ITreeItem = (tree_library.selectedItem as ITreeItem);
 					
-					if(item == null){
-						item = libraryProvider[0];
-					}
+//					if(item == null){
+//						item = libraryProvider[0];
+//					}
 					
 					updateLibrary(tree_library.selectedIndex);
 					
@@ -2334,7 +2340,7 @@ private function libraryTabCreationComplete():void{
 		}
 		
 		if(newSelectedItems.length == 0){
-			this.tree_library.selectedItem = libraryProvider;
+//			this.tree_library.selectedItem = libraryProvider;
 		}else{
 			this.tree_library.selectedItem = newSelectedItems;
 		}
@@ -3393,11 +3399,11 @@ private function updateLibraryTree(item:ITreeItem):void{
 	
 	if(item != null){
 		
-		if(item.file != null && item is TreeFolderItem ){
-			
-			var libraryTreeBuilder:LibraryTreeBuilder = new LibraryTreeBuilder();
-			(item as TreeFolderItem).children = libraryTreeBuilder.buildOnlyChildDir(item as TreeFolderItem);
-		
+		if(item is TreeFolderItem){
+			if(item.file != null){
+				var libraryTreeBuilder:LibraryTreeBuilder = new LibraryTreeBuilder();
+				(item as TreeFolderItem).children = libraryTreeBuilder.buildOnlyChildDir(item as TreeFolderItem);
+			}
 		}
 		
 		var openItems:Array = (tree_library.openItems as Array);
@@ -4355,27 +4361,21 @@ public function updatePlayListSummery():void{
 	}
 	
 	var playLists:Vector.<PlayList> = this.playListManager.readPlayListSummary(libraryManager.playListDir);
-	
-	var nameArray:Array = new Array();
-	
-	var treeDataBuilder:TreeDataBuilder = new TreeDataBuilder();
-	
-	var item:TreeFolderItem = treeDataBuilder.getFolderObject("PlayList");
-	if(libraryProvider.length <= 0){
-		libraryProvider.push(item);
-	}else{
-		item = libraryProvider[0];
-		item.children = new Array();
-	}
-	
-	for each(var playList:PlayList in playLists){
-		var file:TreeFileItem = treeDataBuilder.getFileObject(playList.name);
-		
-		item.children.push(file);
-		file.parent = item;
-	}
-	
+
 	if(tree_library != null){
+
+	
+		var item:TreeFolderItem = this.tree_library.dataProvider[1];
+		item.children = new Array();
+		
+		var treeDataBuilder:TreeDataBuilder = new TreeDataBuilder();
+		for each(var playList:PlayList in playLists){
+			var file:TreeFileItem = treeDataBuilder.getFileObject(playList.name);
+			
+			item.children.push(file);
+			file.parent = item;
+		}
+	
 		if(openItems.indexOf(item) == -1){
 			openItems.push(item);
 		}
@@ -5357,8 +5357,8 @@ private function myListRenewButtonClicked(event:Event):void{
 					var text:String = myListBuilder.title + " [" + myListBuilder.creator + "]\n" + myListBuilder.description;
 					var title:String = myListBuilder.title + " [" + myListBuilder.creator + "]";
 					
-					textArea_myList.text = HtmlUtil.convertSpecialCharacterNotIncludedString(decodeURIComponent(text));
-					_myListManager.lastTitle = HtmlUtil.convertSpecialCharacterNotIncludedString(decodeURIComponent(title));
+					textArea_myList.text = HtmlUtil.convertSpecialCharacterNotIncludedString(text);
+					_myListManager.lastTitle = HtmlUtil.convertSpecialCharacterNotIncludedString(title);
 					
 					button_myListRenew.label == "更新";
 					dataGrid_myList.validateNow();
