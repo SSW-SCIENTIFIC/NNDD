@@ -8,6 +8,7 @@ package org.mineap.nndd.library.sqlite
 	
 	import mx.charts.chartClasses.StackedSeries;
 	
+	import org.mineap.nndd.library.sqlite.dao.VersionDao;
 	import org.mineap.nndd.model.NNDDVideo;
 
 	/**
@@ -56,7 +57,11 @@ package org.mineap.nndd.library.sqlite
 				this._connection = new SQLConnection();
 				this._connection.open(dbFile);
 				
-				this.createTable();
+				var version:String = VersionDao.instance.selectVersion();
+				
+				if(version == null){
+					this.createTable();
+				}
 				
 				return this._connection.connected;
 			
@@ -90,6 +95,9 @@ package org.mineap.nndd.library.sqlite
 			this._stmt = new SQLStatement();
 			this._stmt.sqlConnection = this._connection;
 			this._stmt.text = Queries.CREATE_TABLE_NNDDVIDEO;
+			this._stmt.execute();
+			
+			this._stmt.text = Queries.CREATE_INDEX_KEY_OF_NNDDVIDEO;
 			this._stmt.execute();
 			
 			this._stmt.text = Queries.CREATE_TABLE_TAG;

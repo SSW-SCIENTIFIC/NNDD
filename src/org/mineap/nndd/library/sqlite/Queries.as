@@ -19,6 +19,8 @@ package org.mineap.nndd.library.sqlite
 			" yetReading INTEGER," +
 			" UNIQUE(key));";
 		
+		public static const CREATE_INDEX_KEY_OF_NNDDVIDEO:String = "CREATE INDEX keyindex ON nnddvideo (key);";
+		
 		public static const CREATE_TABLE_TAG:String = "CREATE TABLE IF NOT EXISTS tagstring (" +
 			" id INTEGER PRIMARY KEY," +
 			" tag TEXT," +
