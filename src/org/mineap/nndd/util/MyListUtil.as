@@ -18,15 +18,23 @@ package org.mineap.nndd.util
 			
 			var myListId:String = null;
 			
-			var pattern:RegExp = new RegExp("http://www.nicovideo.jp/mylist/(\\d*)", "ig");
+			var pattern:RegExp = new RegExp("http://www.nicovideo.jp/mylist/(\\d*)");
 			var array:Array = pattern.exec(string);
-			if(array != null && array.length >= 1){
+			if(array != null && array.length >= 1 && array[1].length >= 1){
 				myListId = array[1];
+				return myListId;
 			}
-			pattern = new RegExp("[mylist/]*(\\d+)", "ig");
+			pattern = new RegExp("[mylist/]*(\\d+)");
 			array = pattern.exec(string);
 			if(array != null && array.length >= 1 && array[1].length >= 1){
 				myListId = array[array.length-1];
+				return myListId;
+			}
+			pattern = new RegExp("http://www.nicovideo.jp/my/mylist/#/(\\d*)");
+			array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				myListId = array[array.length-1];
+				return myListId;
 			}
 			
 			return myListId;
