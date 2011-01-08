@@ -3,9 +3,11 @@ package org.mineap.nndd.view
 	import flash.events.MouseEvent;
 	
 	import mx.controls.Text;
-	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	
 	import org.mineap.nndd.player.comment.Command;
+	
+	import spark.components.Application;
 
 
 	/**
@@ -75,7 +77,7 @@ package org.mineap.nndd.view
 		 * 
 		 */
 		private function mouseOverEventHandler(event:MouseEvent):void{
-			if(!Application.application.isMouseHide){
+			if(!FlexGlobals.topLevelApplication.isMouseHide){
 				(event.currentTarget as NNDDText).drawFocus(true);
 			}
 		}
