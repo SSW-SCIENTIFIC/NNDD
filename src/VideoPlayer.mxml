@@ -26,6 +26,7 @@
 			private var videoDisplayMenuItem11:ContextMenuItem;
 			private var videoDisplayMenuItem12:ContextMenuItem;
 			private var videoDisplayMenuItem13:ContextMenuItem;
+			private var videoDisplayMenuItem14:ContextMenuItem;
 			
 			private var _contextMenuShowing:Boolean = false;
 			
@@ -91,9 +92,12 @@
 				videoDisplayMenuItem13 = new ContextMenuItem(Message.L_COPY_VIDEO_URL_WITH_TITLE, false);
 				videoDisplayMenuItem13.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyVideoUrlWithTitle);
 				
+				videoDisplayMenuItem14 = new ContextMenuItem(Message.L_RELOAD_VIDEO, true);
+				videoDisplayMenuItem14.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, videoReload);
+
 				videoDisplayMenu.customItems.push(videoDisplayMenuItem10, videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem, 
 					videoDisplayMenuItem2, videoDisplayMenuItem3, videoDisplayMenuItem4, videoDisplayMenuItem7, videoDisplayMenuItem5, 
-					videoDisplayMenuItem6, videoDisplayMenuItem9 ,videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13);
+					videoDisplayMenuItem6, videoDisplayMenuItem9 ,videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13, videoDisplayMenuItem14);
 				
 				canvas_video_back.contextMenu = videoDisplayMenu;
 			}

@@ -13,9 +13,9 @@
 	<mx:Script source="org/mineap/nndd/view/VideoController.as" />
 
 	<mx:Button id="button_play" left="5" top="5" width="30" click="play()" focusEnabled="false"
-			   icon="@Embed(source='player/NNDDicons_play_20x20.png')" textAlign="center"/>
+			   icon="@Embed(source='player/NNDDicons_play_20x20.png')" textAlign="center" toolTip="再生"/>
 	<mx:Button id="button_stop" left="38" top="5" width="30" click="stop()" focusEnabled="false"
-			   icon="@Embed(source='player/NNDDicons_stop_20x20.png')"/>
+			   icon="@Embed(source='player/NNDDicons_stop_20x20.png')" toolTip="最初に戻る"/>
 	<mx:HSlider id="slider_timeline" left="76" right="97" top="5" height="19" minWidth="50"
 				allowTrackClick="true" change="sliderTimelineChanged(event)"
 				dataTipFormatFunction="myDataTipFormatFunction" focusEnabled="false"

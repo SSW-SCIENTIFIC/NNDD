@@ -231,7 +231,8 @@ private function play():void{
 }
 
 private function stop():void{
-	this.playerController.stop();
+//	this.playerController.stop();
+	this.playerController.goToTop();
 }
 
 private function thumbPress(event:SliderEvent):void{

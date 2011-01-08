@@ -1455,6 +1455,86 @@ package org.mineap.nndd.player
 		
 	
 		/**
+		 * 動画の読み込みを中止せずにシーク場所を先頭に戻します。
+		 * 
+		 */
+		public function goToTop():void
+		{
+			try{
+				
+				pausing = false;
+				
+				if(videoInfoView.isShowAlwaysNicowariArea){
+					videoPlayer.showNicowariArea();
+				}else{
+					videoPlayer.hideNicowariArea();
+				}
+				
+				if(videoPlayer != null && videoPlayer.label_downloadStatus != null){
+					videoPlayer.canvas_video_back.setFocus();
+					videoPlayer.label_downloadStatus.text = "";
+					videoPlayer.canvas_video.toolTip = "ここに動画ファイルをドロップすると動画を再生できます。";
+				}
+				
+				if(this.movieEndTimer != null){
+					this.movieEndTimer.stop();
+					this.movieEndTimer = null;
+				}
+				
+				if(renewDownloadManager != null){
+					try{
+						renewDownloadManager.close();
+						renewDownloadManager = null;
+						logManager.addLog("再生前の情報更新をキャンセルしました。");
+					}catch(error:Error){
+						trace(error);
+					}
+				}else{
+					
+					this.videoPlayer.videoController.button_play.enabled = true;
+					this.videoPlayer.videoController_under.button_play.enabled = true;
+					videoPlayer.videoController.button_play.setStyle("icon", icon_Play);
+					videoPlayer.videoController_under.button_play.setStyle("icon", icon_Play);
+					
+					this.videoPlayer.videoController_under.slider_timeline.value = 0;
+					this.videoPlayer.videoController.slider_timeline.value = 0;
+					
+					this.commentTimerVpos = 0;
+					this.commentTimer.stop();
+					this.commentTimer.reset();
+					
+					var playing:Boolean = false;
+					if(this.windowType == PlayerController.WINDOW_TYPE_FLV){
+						if(videoDisplay != null && videoDisplay.playing){
+							playing = true;
+						}
+					}else if(this.windowType == PlayerController.WINDOW_TYPE_SWF){
+						if(isMovieClipPlaying){
+							playing = true;
+						}
+					}
+					
+					if(playing){
+						this.play();
+					}
+					this.seek(0);
+					
+					
+					//終了時にニコ割が鳴っていたら止める。
+					videoPlayer.canvas_nicowari.removeAllChildren();
+					if(nicowariMC != null){
+						this.pauseByNicowari(true);
+					}
+					
+				}
+				
+			}catch(error:Error){
+				trace(error.getStackTrace());
+				logManager.addLog("停止中にエラーが発生しました:" + error + ":" + error.getStackTrace());
+			}
+		}
+		
+		/**
 		 * VideoDisplayに関連するリスナをまとめて登録します。
 		 * @param videoDisplay
 		 * 
@@ -2264,6 +2344,20 @@ package org.mineap.nndd.player
 //				this.videoInfoView.saveStore();
 				this.videoInfoView.close();
 			}
+		}
+		
+		/**
+		 * 
+		 * @param url
+		 * 
+		 */
+		public function reload(url:String):void
+		{
+			
+			stop();
+			
+			playMovie(url);
+			
 		}
 		
 		/**

@@ -1132,3 +1132,17 @@ public function copyVideoUrlWithTitle(event:Event):void{
 	}
 }
 
+public function videoReload(event:Event):void{
+	
+	var videoId:String = PathMaker.getVideoID(this.title);
+	
+	if(videoId == null)
+	{
+		return;
+	}
+	
+	videoId = "http://www.nicovideo.jp/watch/" + videoId;
+	
+	playerController.reload(videoId);
+	
+}
