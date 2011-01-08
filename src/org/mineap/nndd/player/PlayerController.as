@@ -68,6 +68,7 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.util.WebServiceAccessUtil;
 	import org.mineap.util.config.ConfigIO;
 	import org.mineap.util.config.ConfigManager;
+	import org.osmf.events.LoadEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.TimeEvent;
 	import org.osmf.media.MediaPlayerState;
@@ -642,7 +643,8 @@ package org.mineap.nndd.player
 							commentTimer.start();
 						}
 						
-						videoDisplay.addEventListener(MetadataEvent.METADATA_RECEIVED, metadetaRecevedEventHandler);
+						videoDisplay.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
+						videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
 						videoDisplay.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
 							event.currentTarget.setFocus();
 						});
@@ -968,8 +970,25 @@ package org.mineap.nndd.player
 		 * @param event
 		 * 
 		 */
-		protected function metadetaRecevedEventHandler(event:Event):void{
+		protected function byteloadedChangedEventHandler(event:Event):void{
 			trace(event.type);
+			if(videoInfoView.isResizePlayerEachPlay){
+				resizePlayerJustVideoSize(videoPlayer.nowRatio);
+			}else{
+				resizePlayerJustVideoSize();
+			}
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		protected function osmfCurrentTimeChangeEventHandler(event:TimeEvent):void{
+			trace(event.type + ", time:" + event.time);
+			if(event.time < 0){
+				return;
+			}
 			if(videoInfoView.isResizePlayerEachPlay){
 				resizePlayerJustVideoSize(videoPlayer.nowRatio);
 			}else{
@@ -1195,10 +1214,13 @@ package org.mineap.nndd.player
 									
 								}
 								
-								if(videoDisplay.hasEventListener(MetadataEvent.METADATA_RECEIVED)){
+								if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
 									//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
-									videoDisplay.removeEventListener(MetadataEvent.METADATA_RECEIVED, metadetaRecevedEventHandler);
+									videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
 //									resizePlayerJustVideoSize(windowSizeRatio);
+								}
+								if(videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)){
+									videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
 								}
 								
 							}else if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO && this.videoDisplay.videoObject.videoHeight > 0){
@@ -1213,10 +1235,13 @@ package org.mineap.nndd.player
 								this.videoDisplay.setConstraintValue("right", 0);
 								this.videoDisplay.setConstraintValue("top", 0);
 								
-								if(videoDisplay.hasEventListener(MetadataEvent.METADATA_RECEIVED)){
+								if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
 									//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
-									videoDisplay.removeEventListener(MetadataEvent.METADATA_RECEIVED, metadetaRecevedEventHandler);
+									videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
 //									resizePlayerJustVideoSize(windowSizeRatio);
+								}
+								if(videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)){
+									videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
 								}
 							}else{
 								//中断。後で呼ばれる事を期待する。
