@@ -69,6 +69,34 @@
 				Mouse.show();
 			}
 
+
+			protected function tree_FileSystem_dragEnterHandler(event:DragEvent):void
+			{
+				var Initiator:* = event.currentTarget;
+				DragManager.acceptDragDrop(Initiator);
+				DragManager.showFeedback(DragManager.MOVE);
+				
+				if(event.target.id == "tree_FileSystem"){
+					tree_library.showDropFeedback((event as DragEvent));
+				}
+			}
+
+
+			protected function tree_FileSystem_dragOverHandler(event:DragEvent):void
+			{
+				DragManager.showFeedback(DragManager.MOVE);
+				if(event.target.id == "tree_FileSystem"){
+					tree_library.showDropFeedback((event as DragEvent));
+				}
+			}
+
+
+			protected function tree_FileSystem_dragExitHandler(event:DragEvent):void
+			{
+				tree_library.hideDropFeedback(event);
+			}
+
+
 			protected function windowedapplication1_initializeHandler(event:FlexEvent):void
 			{
 				// ツールチップのデフォルトサイズを変更
