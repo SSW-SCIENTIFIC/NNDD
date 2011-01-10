@@ -17,6 +17,7 @@ package org.mineap.nndd.library.sqlite
 			" time REAL," +
 			" lastPlayDate REAL," +
 			" yetReading INTEGER," +
+			" pubDate REAL," +
 			" UNIQUE(key));";
 		
 		public static const CREATE_INDEX_KEY_OF_NNDDVIDEO:String = "CREATE INDEX keyindex ON nnddvideo (key);";
@@ -42,9 +43,9 @@ package org.mineap.nndd.library.sqlite
 			" version TEXT);";
 		
 		public static const INSERT_NNDDVIDEO:String = "INSERT INTO nnddvideo(" +
-			" key, uri, dirpath_id, videoName, isEconomy, modificationDate, creationDate, thumbUrl, playCount, time, lastPlayDate, yetReading" +
+			" key, uri, dirpath_id, videoName, isEconomy, modificationDate, creationDate, thumbUrl, playCount, time, lastPlayDate, yetReading, pubDate" +
 			" ) VALUES(" +
-			" :key, :uri, :dirpath_id, :videoName, :isEconomy, :modificationDate, :creationDate, :thumbUrl, :playCount, :time, :lastPlayDate, :yetReading" +
+			" :key, :uri, :dirpath_id, :videoName, :isEconomy, :modificationDate, :creationDate, :thumbUrl, :playCount, :time, :lastPlayDate, :yetReading, :pubDate" +
 			" );";
 		
 		public static const INSERT_TAGSTRING:String = "INSERT INTO tagstring(" +
@@ -93,7 +94,8 @@ package org.mineap.nndd.library.sqlite
 			" playCount = :playCount," +
 			" time = :time," +
 			" lastPlayDate = :lastPlayDate," +
-			" yetReading = :yetReading" +
+			" yetReading = :yetReading," +
+			" pubDate = :pubDate" +
 			" WHERE id = :id;";
 		
 		public static const UPDATE_TAGSTRING:String = "UPDATE tagstring SET" +
@@ -139,6 +141,8 @@ package org.mineap.nndd.library.sqlite
 		
 		
 		public static const DROP_NNDDVIDEO:String = "DROP TABLE nnddvideo;";
+		
+		public static const DROP_INDEX_KEY_OF_NNDDVIDEO:String = "DROP INDEX keyindex;";
 		
 		public static const DROP_NNDDVIDEO_TAG:String = "DROP TABLE nnddvideo_tag;";
 		

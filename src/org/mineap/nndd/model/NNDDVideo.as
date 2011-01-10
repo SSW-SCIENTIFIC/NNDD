@@ -52,6 +52,9 @@ package org.mineap.nndd.model
 		/** この動画が既読かどうかです。既読の場合はtrueです。これはマイリスト管理に使用されます。 */
 		public var yetReading:Boolean = false;
 		
+		/** この動画が投稿された日付です。この値はnullである可能性があります。 */
+		public var pubDate:Date = null;
+		
 		/**
 		 * 
 		 * コンストラクタ
@@ -66,11 +69,12 @@ package org.mineap.nndd.model
 		 * @param playCount
 		 * @param time
 		 * @param lastPlayDate
+		 * @param pubDate
 		 * 
 		 */
 		public function NNDDVideo(uri:String , videoName:String = null, isEconomy:Boolean = false, tags:Vector.<String> = null,
 				 modificationDate:Date = null, creationDate:Date = null, thumbUrl:String = null, playCount:Number = 0, time:Number = 0,
-				 lastPlayDate:Date = null)
+				 lastPlayDate:Date = null, pubDate:Date = null)
 		{
 			if(uri.indexOf("%") == -1){
 				this._uri = encodeURI(uri);
@@ -103,6 +107,9 @@ package org.mineap.nndd.model
 			}
 			if(lastPlayDate != null){
 				this.lastPlayDate = lastPlayDate;
+			}
+			if(pubDate != null){
+				this.pubDate = pubDate;
 			}
 		}
 		

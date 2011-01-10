@@ -20,7 +20,7 @@ package org.mineap.nndd.library.sqlite
 	{
 		private static const dbAccessHelper:DbAccessHelper = new DbAccessHelper();
 		
-		public static const version:String = "1";
+		public static const version:String = "2";
 		
 		private var _connection:SQLConnection;
 		private var _stmt:SQLStatement;
@@ -60,7 +60,7 @@ package org.mineap.nndd.library.sqlite
 				var version:String = VersionDao.instance.selectVersion();
 				
 				if(version == null){
-					this.createTable();
+					this.createTables();
 				}
 				
 				return this._connection.connected;
@@ -91,26 +91,17 @@ package org.mineap.nndd.library.sqlite
 		 * テーブルを作成します
 		 * 
 		 */
-		public function createTable():void{
-			this._stmt = new SQLStatement();
-			this._stmt.sqlConnection = this._connection;
-			this._stmt.text = Queries.CREATE_TABLE_NNDDVIDEO;
-			this._stmt.execute();
+		public function createTables():void{
 			
-			this._stmt.text = Queries.CREATE_INDEX_KEY_OF_NNDDVIDEO;
-			this._stmt.execute();
+			createNNDDTable();
 			
-			this._stmt.text = Queries.CREATE_TABLE_TAG;
-			this._stmt.execute();
+			createTagTable();
 			
-			this._stmt.text = Queries.CREATE_TABLE_NNDDVIDEO_TAG;
-			this._stmt.execute();
+			createNNDDVIDEO_TAGTable();
 			
-			this._stmt.text = Queries.CREATE_TABLE_FILE;
-			this._stmt.execute();
+			createNNDDVIDEO_FILETable();
 			
-			this._stmt.text = Queries.CREATE_TABLE_VERSION;
-			this._stmt.execute();
+			createVersionTable();
 			
 		}
 		
@@ -118,7 +109,71 @@ package org.mineap.nndd.library.sqlite
 		 * 
 		 * 
 		 */
-		public function dropTable():void{
+		public function createNNDDTable():void{
+			this._stmt = new SQLStatement();
+			this._stmt.sqlConnection = this._connection;
+			
+			this._stmt.text = Queries.CREATE_TABLE_NNDDVIDEO;
+			this._stmt.execute();
+			
+			this._stmt.text = Queries.CREATE_INDEX_KEY_OF_NNDDVIDEO;
+			this._stmt.execute();
+		}
+		
+		/**
+		 * 
+		 * 
+		 */
+		public function createTagTable():void{
+			this._stmt = new SQLStatement();
+			this._stmt.sqlConnection = this._connection;
+			
+			this._stmt.text = Queries.CREATE_TABLE_TAG;
+			this._stmt.execute();
+		}
+		
+		/**
+		 * 
+		 * 
+		 */
+		public function createNNDDVIDEO_TAGTable():void{
+			this._stmt = new SQLStatement();
+			this._stmt.sqlConnection = this._connection;
+			
+			this._stmt.text = Queries.CREATE_TABLE_NNDDVIDEO_TAG;
+			this._stmt.execute();
+		}
+		
+		/**
+		 * 
+		 * 
+		 */
+		public function createNNDDVIDEO_FILETable():void{
+			this._stmt = new SQLStatement();
+			this._stmt.sqlConnection = this._connection;
+			
+			this._stmt.text = Queries.CREATE_TABLE_FILE;
+			this._stmt.execute();
+		}
+		
+		/**
+		 * 
+		 * 
+		 */
+		public function createVersionTable():void{
+			this._stmt = new SQLStatement();
+			this._stmt.sqlConnection = this._connection;
+			
+			this._stmt.text = Queries.CREATE_TABLE_VERSION;
+			this._stmt.execute();
+		}
+		
+		
+		/**
+		 * 
+		 * 
+		 */
+		public function dropTables():void{
 			this._stmt = new SQLStatement();
 			this._stmt.sqlConnection = this._connection;
 			try{
@@ -130,6 +185,13 @@ package org.mineap.nndd.library.sqlite
 			
 			try{
 				this._stmt.text = Queries.DROP_TAGSTRING;
+				this._stmt.execute();
+			}catch(error:SQLError){
+				trace(error.getStackTrace());
+			}
+			
+			try{
+				this._stmt.text = Queries.DROP_INDEX_KEY_OF_NNDDVIDEO;
 				this._stmt.execute();
 			}catch(error:SQLError){
 				trace(error.getStackTrace());

@@ -61,7 +61,7 @@ package org.mineap.nndd.util
 		
 		/**
 		 * 
-		 * @param dateString
+		 * @param dateString 2010/11/12 12:36:12
 		 * @return 
 		 * 
 		 */
@@ -89,6 +89,37 @@ package org.mineap.nndd.util
 			
 			return newDate;
 			
+		}
+		
+		/**
+		 * 
+		 * @param dateString 2007-12-11T00:48:55+09:00
+		 * @return 
+		 * 
+		 */
+		public static function getDateForThumbXML(dateString:String):Date{
+			var pattern:RegExp = new RegExp("(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)T(\\d\\d):(\\d\\d):(\\d\\d)+.*");
+			
+			var newDate:Date = null;
+			
+			try{
+				
+				var array:Array = dateString.match(pattern);
+				
+				var year:String = array[1];
+				var month:String = array[2];
+				var date:String = array[3];
+				var h:String = array[4];
+				var m:String = array[5];
+				var s:String = array[6];
+				
+				newDate = new Date(year, Number(month) - 1, date, h, m, s);
+				
+			}catch(e:Error){
+				trace(e + "\n" + e.getStackTrace());
+			}
+			
+			return newDate;
 		}
 		
 	}

@@ -24,6 +24,7 @@ package org.mineap.nndd.library.sqlite
 	import org.mineap.nndd.library.sqlite.dao.NNDDVideoTagStringDao;
 	import org.mineap.nndd.library.sqlite.dao.TagStringDao;
 	import org.mineap.nndd.library.sqlite.dao.VersionDao;
+	import org.mineap.nndd.library.sqlite.util.DbMigrationUtil;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.model.TagString;
 	import org.mineap.nndd.tag.TagManager;
@@ -31,6 +32,7 @@ package org.mineap.nndd.library.sqlite
 	import org.mineap.nndd.versionCheck.VersionUtil;
 	
 	/**
+	 * SQLite版ライブラリとのコネクションを管理するクラスです。
 	 * 
 	 * @author shiraminekeisuke
 	 * 
@@ -209,7 +211,7 @@ package org.mineap.nndd.library.sqlite
 			
 			var isConvertFromDB:Boolean = false;
 			if(oldVersion != newVersion){
-				// TODO: もし異なるならテーブルをdropして作り直さなきゃだめ
+				//テーブル構造が変わっているのでDBを再構築
 				isConvertFromDB = true;
 			}
 			
@@ -217,16 +219,19 @@ package org.mineap.nndd.library.sqlite
 				if(!_converting){
 					_converting = true;
 					Alert.show("ライブラリを再構築します。", Message.M_MESSAGE, Alert.OK, null, function(event:CloseEvent):void{
-						var timer:Timer = new Timer(500, 1);
+						var timer:Timer = new Timer(1000, 1);
 						timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
-							convertFromXML();
+							if(isConvertFromXML){
+								convertFromXML();
+							}else if(isConvertFromDB){
+								convertFromDB();
+							}
 							_converting = false;
 						});
 						timer.start();
 					});
 				}
 			}
-			
 			return result;
 		}
 		
@@ -257,8 +262,8 @@ package org.mineap.nndd.library.sqlite
 				});
 				PopUpManager.centerPopUp(loadWindow);
 				
-				_dbAccessHelper.dropTable();
-				_dbAccessHelper.createTable();
+				_dbAccessHelper.dropTables();
+				_dbAccessHelper.createTables();
 				
 				var libraryManager:LibraryManager = LibraryManager.instance;
 				libraryManager.loadLibrary();
@@ -289,6 +294,44 @@ package org.mineap.nndd.library.sqlite
 					"手動でライブラリを更新してください。" + error, Message.M_ERROR);
 			}
 			
+		}
+		
+		/**
+		 * 
+		 * 
+		 */
+		public function convertFromDB():void{
+			_logger.addLog("データベースをバージョンアップしています...");
+			trace("変換開始");
+			
+			try{
+				
+				var loadWindow:LoadWindow = new LoadWindow();
+				loadWindow.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:Event):void{
+					loadWindow.label_loadingInfo.text = "ライブラリを再構築中です...";
+				});
+				PopUpManager.centerPopUp(loadWindow);
+				
+				var date:Date = new Date();
+				
+				var migration:DbMigrationUtil = new DbMigrationUtil();
+				migration.migrate();
+				
+				var time:Number = (new Date().time - date.time);
+				
+				_logger.addLog("変換完了(" + time + " ms)");
+				
+				updateVersion();
+				
+				PopUpManager.removePopUp(loadWindow);
+				Alert.show("再構築が完了しました。", Message.M_MESSAGE);
+				
+			}catch(error:Error){
+				trace(error.getStackTrace());
+				_logger.addLog("ライブラリの変換に失敗:" + error);
+				Alert.show("ライブラリの変換に失敗しました。\n" +
+					"手動でライブラリを更新してください。" + error, Message.M_ERROR);
+			}
 		}
 		
 		/**

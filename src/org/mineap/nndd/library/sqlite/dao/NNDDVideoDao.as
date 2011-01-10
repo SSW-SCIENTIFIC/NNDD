@@ -83,6 +83,11 @@ package org.mineap.nndd.library.sqlite.dao
 					yetReading = 1;
 				}
 				
+				var pubDate:Number = -1;
+				if(nnddVideo.pubDate != null){
+					pubDate = nnddVideo.pubDate.time;
+				}
+				
 				this._stmt.parameters[":key"] = nnddVideo.key;
 				this._stmt.parameters[":uri"] = nnddVideo.uri;
 				this._stmt.parameters[":dirpath_id"] = dir.id;
@@ -95,6 +100,7 @@ package org.mineap.nndd.library.sqlite.dao
 				this._stmt.parameters[":time"] = nnddVideo.time;
 				this._stmt.parameters[":lastPlayDate"] = lastPlayDate;
 				this._stmt.parameters[":yetReading"] = yetReading;
+				this._stmt.parameters[":pubDate"] = pubDate;
 				
 				this._stmt.execute();
 				
@@ -173,6 +179,11 @@ package org.mineap.nndd.library.sqlite.dao
 					yetReading = 1;
 				}
 				
+				var pubDate:Number = -1;
+				if(nnddVideo.pubDate != null){
+					pubDate = nnddVideo.pubDate.time;
+				}
+				
 				this._stmt.parameters[":key"] = nnddVideo.key;
 				this._stmt.parameters[":uri"] = nnddVideo.uri;
 				this._stmt.parameters[":dirpath_id"] = dir.id;
@@ -185,6 +196,7 @@ package org.mineap.nndd.library.sqlite.dao
 				this._stmt.parameters[":time"] = nnddVideo.time;
 				this._stmt.parameters[":lastPlayDate"] = lastPlayDate;
 				this._stmt.parameters[":yetReading"] = yetReading;
+				this._stmt.parameters[":pubDate"] = pubDate;
 				this._stmt.parameters[":id"] = nnddVideo.id;
 				
 				this._stmt.execute();
@@ -548,12 +560,12 @@ package org.mineap.nndd.library.sqlite.dao
 			var tags:Vector.<String> = new Vector.<String>();
 			
 			var modificationDate:Date = null;
-			if(object.modificationDate != null){
+			if(object.modificationDate != null && object.modificationDate != -1){
 				modificationDate = new Date(Number(object.modificationDate));
 			}
 			
 			var creationDate:Date = null;
-			if(object.creationDate != null){
+			if(object.creationDate != null && object.creationDate != -1){
 				creationDate = new Date(Number(object.creationDate));
 			}
 			
@@ -561,13 +573,18 @@ package org.mineap.nndd.library.sqlite.dao
 			var playCount:Number = Number(object.playCount);
 			var time:Number = Number(object.time);
 			var lastPlayDate:Date = null;
-			if(object.lastPlayDate != null){
+			if(object.lastPlayDate != null && object.lastPlayDate != -1){
 				lastPlayDate = new Date(Number(object.lastPlayDate));
+			}
+			
+			var pubDate:Date = null;
+			if(object.pubDate != null && object.pubDate != -1){
+				pubDate = new Date(Number(object.pubDate));
 			}
 			
 			var nnddVideo:NNDDVideo = new NNDDVideo(uri, videoName, isEconomy, 
 				tags, modificationDate, creationDate, thumbUrl, playCount, 
-				time, lastPlayDate);
+				time, lastPlayDate, pubDate);
 			
 			nnddVideo.id = object.id;
 			

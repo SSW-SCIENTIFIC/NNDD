@@ -34,6 +34,10 @@ package org.mineap.nndd.library.namedarray
 				if(lastPlayDate != null){
 					(libraryXML.item[index] as XML).@lastPlayDate = lastPlayDate.time;
 				}
+				var pubDate:Date = (video.pubDate as Date);
+				if(pubDate != null){
+					(libraryXML.item[index] as XML).@pubDate = pubDate.time;
+				}
 				
 				libraryXML.item[index].tags = <tags/>;
 				for(var i:int = 0; i<video.tagStrings.length; i++){
@@ -115,6 +119,12 @@ package org.mineap.nndd.library.namedarray
 						video.lastPlayDate = new Date(Number(item.@lastPlayDate));
 					}else{
 						video.lastPlayDate = null;
+					}
+					//投稿日時を取得
+					if((item as XML).@pubDate != undefined && (item as XML).@pubDate != ""){
+						video.pubDate = new Date(Number(item.@pubDate));
+					}else{
+						video.pubDate = null;
 					}
 					
 					var key:String = LibraryUtil.getVideoKey(video.getDecodeUrl());
