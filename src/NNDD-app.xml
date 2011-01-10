@@ -18,7 +18,7 @@
 	<id>org.mineap.nndd</id>
 
 	<!-- Used as the filename for the application. Required. -->
-	<filename>NNDD - v2.0.0 Alpha 0</filename>
+	<filename>NNDD</filename>
 
 	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
 	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
