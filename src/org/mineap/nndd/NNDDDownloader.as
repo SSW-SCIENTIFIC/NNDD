@@ -624,7 +624,7 @@ package org.mineap.nndd
 			
 			if(array != null && array.length > 1){
 				videoName = array[1];
-				var index:int = videoName.lastIndexOf("‐ニコニコ動画(");
+				var index:int = videoName.lastIndexOf("‐ ニコニコ動画(");
 				if(index != -1){
 					videoName = videoName.substr(0, index);
 				}
