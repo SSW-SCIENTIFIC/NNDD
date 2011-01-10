@@ -102,10 +102,12 @@ package org.mineap.nndd.player
 				var alert:Alert = Alert.show(text, Message.M_MESSAGE);
 				var timer:Timer = new Timer(1000, 5);
 				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
-					if(alert != null && alert.isPopUp){
+					if(alert != null){
+						trace("remove");
 						PopUpManager.removePopUp(alert);
 					}
 				});
+				timer.start();
 				_myListAddr.close();
 				_myListAddr = null;
 			});
