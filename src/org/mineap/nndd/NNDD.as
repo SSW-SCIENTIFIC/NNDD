@@ -107,6 +107,7 @@ import org.mineap.nndd.myList.MyListBuilder;
 import org.mineap.nndd.myList.MyListManager;
 import org.mineap.nndd.myList.MyListRenewScheduler;
 import org.mineap.nndd.myList.MyListTreeItemRenderer;
+import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
 import org.mineap.nndd.playList.PlayListDataGridBuilder;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
@@ -232,6 +233,8 @@ private var saveCommentMaxCount:Number = 10000;
 private var textInput_url_foculsIn:Boolean = false;
 
 private var showAll:Boolean = false;
+
+private var isEnableNativePlayer:Boolean = false;
 
 private var period:int = 0;
 private var target:int = 0;
@@ -1952,6 +1955,30 @@ private function readStore(isLogout:Boolean = false):void{
 			this.showAll = ConfUtil.parseBoolean(confValue);
 		}
 		
+		errorName = "isEnableNativePlayer";
+		confValue = ConfigManager.getInstance().getItem("isEnableNativePlayer");
+		if(confValue == null){
+			
+		}else{
+			this.isEnableNativePlayer = ConfUtil.parseBoolean(confValue);
+		}
+		
+		errorName = "nativePlayerPath";
+		confValue = ConfigManager.getInstance().getItem("nativePlayerPath");
+		if(confValue == null){
+			
+		}else{
+			try{
+				var file:File = new File();
+				file.nativePath = String(confValue);
+				
+				NativeProcessPlayerManager.instance.executeFile = file;
+				
+			}catch(error:Error){
+				trace(error.getStackTrace());
+			}
+		}
+		
 	}catch(error:Error){
 		/* ストアをリセット */
 //		EncryptedLocalStore.reset();
@@ -2624,6 +2651,10 @@ private function videoStreamingPlayStart(url:String):void{
 				
 				navigateToURL(new URLRequest(mUrl));
 				
+			}else if(isEnableNativePlayer){
+				
+				playNative(url);
+				
 			}else{
 				
 				if(playerController == null){
@@ -3217,21 +3248,29 @@ public function playMovie(url:String, startIndex:int, playList:PlayList = null):
 //				url = url;
 			}
 			
-			if(playerController == null){
-				playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager)
-				playerController.open();
+			
+			if(isEnableNativePlayer){
+				
+				playNative(url);
+				
 			}else{
-				if(!playerController.isOpen()){
-					playerController.destructor();
-					playerController = null;
+				
+				if(playerController == null){
 					playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager)
 					playerController.open();
+				}else{
+					if(!playerController.isOpen()){
+						playerController.destructor();
+						playerController = null;
+						playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager)
+						playerController.open();
+					}
 				}
-			}
-			if(startIndex != -1 && playList != null){
-				playerController.playMovie(url, playList, startIndex);
-			}else{
-				playerController.playMovie(url);
+				if(startIndex != -1 && playList != null){
+					playerController.playMovie(url, playList, startIndex);
+				}else{
+					playerController.playMovie(url);
+				}
 			}
 		}
 	}catch(error:Error){
@@ -3240,6 +3279,38 @@ public function playMovie(url:String, startIndex:int, playList:PlayList = null):
 	}
 	
 }
+
+private function playNative(url:String):void{
+	
+	try{
+		
+		if(url.toLowerCase().indexOf("http") > -1){
+			// ニコ動を直接
+			NativeProcessPlayerManager.instance.play(url);
+		}else{
+			// DL済みファイル
+			try{
+				var file:File = new File(url);
+				if(file.exists){
+					NativeProcessPlayerManager.instance.play(file.nativePath);
+				}else{
+					Alert.show("動画ファイルが存在しません。", Message.M_ERROR);
+				}
+				
+			}catch(error:Error){
+				logManager.addLog("動画ファイルが存在しません:" + error);
+				Alert.show("動画ファイルが存在しません。", Message.M_ERROR);
+				trace(error.getStackTrace());
+			}
+		}
+		
+	}catch(error:Error){
+		logManager.addLog("外部Player起動中に予期せぬ例外が発生しました:" + error);
+		Alert.show("外部Player起動中に予期せぬ例外が発生しました。\n" + error, Message.M_ERROR);
+		trace(error.getStackTrace());
+	}
+}
+
 
 /**
  * 
@@ -3910,6 +3981,10 @@ private function saveStore():void{
 		/* フォルダ内表示時にサブディレクトリの項目も見せるかどうか */
 		ConfigManager.getInstance().removeItem("showAll");
 		ConfigManager.getInstance().setItem("showAll", this.showAll);
+		
+		/* 外部プレーヤを有効にするかどうか */
+		ConfigManager.getInstance().removeItem("isEnableNativePlayer");
+		ConfigManager.getInstance().setItem("isEnableNativePlayer", this.isEnableNativePlayer);
 		
 		ConfigManager.getInstance().save();
 		

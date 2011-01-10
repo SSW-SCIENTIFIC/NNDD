@@ -1,5 +1,6 @@
 package org.mineap.nndd
 {
+	import flash.desktop.NativeProcess;
 	import flash.filesystem.File;
 	import flash.system.Capabilities;
 	
@@ -41,8 +42,8 @@ package org.mineap.nndd
 				"\n\tFlashPlayerバージョン:" + Capabilities.version +
 				"\n\tデバッガバージョン:" + Capabilities.isDebugger +
 				"\n\tプレイヤータイプ:" + Capabilities.playerType + 
-				"\n\tオペレーティングシステム:" + Capabilities.os;
-			
+				"\n\tオペレーティングシステム:" + Capabilities.os + 
+				"\n\tネイティブプロセスAPIサポート:" + NativeProcess.isSupported;
 			
 			if(logDir != null){
 				

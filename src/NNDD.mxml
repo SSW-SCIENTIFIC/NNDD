@@ -17,6 +17,8 @@
 			import org.mineap.nndd.library.LibraryTreeBuilder;
 			import org.mineap.nndd.model.tree.ITreeItem;
 			import org.mineap.nndd.model.tree.TreeFileItem;
+			import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
+			import org.mineap.util.config.ConfigIO;
 			
 			private var fileSystemTreeComplete:Boolean = false;
 			private var downloadedDataGridComplete:Boolean = false;
@@ -845,6 +847,62 @@
 				}
 			}
 
+
+			protected function checkbox_nativePlayer_enable_changeHandler(event:Event):void
+			{
+				isEnableNativePlayer = checkbox_nativePlayer_enable.selected;
+			}
+
+
+			protected function playerPath_textinput_changeHandler(event:Event):void
+			{
+				var str:String = playerPath_textinput.text;
+				if(str != null){
+					ConfigManager.getInstance().setItem("nativePlayerPath", str);
+					try{
+						var file:File = new File(str);
+						NativeProcessPlayerManager.instance.executeFile = file;
+					}catch(error:Error){
+						
+					}
+				}
+			}
+
+
+			protected function button_searchNativeProcess_clickHandler(event:MouseEvent):void
+			{
+				var directory:File = File.applicationDirectory;
+				
+				var filter:FileFilter = null;
+				if(Capabilities.os.toLowerCase().indexOf("windows") > -1){
+					filter = new FileFilter("実行可能ファイル", "*.exe;");
+				}else if(Capabilities.os.toLowerCase().indexOf("mac") > -1){
+					filter = new FileFilter("実行可能ファイル", "*;");
+				}else if(Capabilities.os.toLowerCase().indexOf("linux") > -1){
+					filter = new FileFilter("実行可能ファイル", "*;");
+				}
+				
+				directory.browseForOpen("動画を再生するアプリケーションを指定", [filter]);
+				directory.addEventListener(Event.SELECT, function(event:Event):void{
+					var file:File = (event.target as File);
+					NativeProcessPlayerManager.instance.executeFile = file;
+					var str:String = file.nativePath;
+					if(str != null){
+						ConfigManager.getInstance().setItem("nativePlayerPath", str);
+					}
+				});
+			}
+
+
+			protected function nativePlayer_creationCompleteHandler(event:FlexEvent):void
+			{
+				checkbox_nativePlayer_enable.selected = isEnableNativePlayer;
+				var file:File = NativeProcessPlayerManager.instance.executeFile;
+				if(file != null){
+					playerPath_textinput.text = file.nativePath;
+				}
+			}
+
 		]]>
 	</mx:Script>
 	
@@ -1252,15 +1310,15 @@
 					<mx:CheckBox label="起動時にバージョンチェックをする" selected="true" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="104"/>
 					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="262" top="104"/>
 					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="134"/>
-					<mx:HRule left="43" top="5" right="10"/>
+					<mx:HRule left="47" right="10" top="0" height="21"/>
 					
 					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					<!--
 					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
 					-->
 					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="166"/>
-					<mx:ComboBox left="259" top="166" id="comboBox_font" dataProvider="{fontDataProvider}" width="150" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="419" top="165" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:ComboBox left="259" top="166" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+					<mx:Button label="デフォルト" left="471" top="165" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="190"/>
@@ -1268,7 +1326,7 @@
 					
 				</mx:Canvas>
 				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" creationComplete="nicoConfigCanvasCreationComplete(event)">
-					<mx:HRule left="163" top="0" right="10" height="8"/>
+					<mx:HRule left="191" top="0" right="10" height="21"/>
 					<mx:Label text="ランキング・検索・マイリスト" top="0" left="10" fontWeight="bold"/>
 					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="17" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" toolTip="起動時に前回の起動の設定でランキングを更新します。これを有効にすると前回終了時に選択されていたタブに移動しません。"/>
 					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="47" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
@@ -1288,12 +1346,12 @@
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 				</mx:Canvas>
 				<mx:Canvas label="DLリスト・ライブラリ" width="100%" height="100%" id="canvas_library_config"  creationComplete="libraryConfigCanvasCreationComplete(event)">
-					<mx:HRule left="113" top="6" right="10"/>
+					<mx:HRule left="132" right="10" top="0" height="21"/>
 					<mx:Label text="ダウンロードリスト" top="0" left="10" fontWeight="bold"/>
 					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="16" selected="true" id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
 					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="30" top="46" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
 					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode" click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="30" top="76"/>
-					<mx:HRule left="73" top="112" right="10"/>
+					<mx:HRule left="83" right="10" top="103" height="24"/>
 					<mx:Label text="ライブラリ" left="10" top="106" fontWeight="bold"/>
 					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="122" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
 					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="152" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
@@ -1309,6 +1367,25 @@
 					<mx:Label text="ログ（&lt;動画の保存先&gt;/nndd.logにも出力されます）" left="10" top="0" fontWeight="bold"/>
 					<mx:TextArea id="textArea_log" enabled="true" editable="false" left="5" top="25" bottom="30" wordWrap="false" right="5"/>
 					<mx:Button label="更新" right="5" bottom="5" click="logAreaRenewButtonClicked(event)"/>
+				</mx:Canvas>
+				<mx:Canvas width="100%" height="100%" label="外部Player" creationComplete="nativePlayer_creationCompleteHandler(event)">
+					<mx:Label text="外部Player" top="0" left="10" fontWeight="bold"/>
+					<mx:HRule left="90" right="10" top="0" height="21"/>
+					
+					<mx:CheckBox left="10" top="29" label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
+								 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
+								 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
+					
+					<mx:Label left="29" top="56" text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
+					<mx:TextInput id="playerPath_textinput" left="122" top="54" width="300" enabled="{NativeProcess.isSupported}"
+								  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
+					<mx:Button x="430" y="55" label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
+							   click="button_searchNativeProcess_clickHandler(event)"/>
+					<mx:Text left="29" right="10" top="109" height="58" enabled="{NativeProcess.isSupported}" 
+							 text="※Mac OS で、アプリケーションバンドル内の実行可能ファイルを起動する場合、パスには、app ファイルへのパスではなく、（バンドル内の）実行可能ファイルへのフルパスを含むようにしてください。"/>
+					<mx:Text left="29" right="10" top="84" enabled="{NativeProcess.isSupported}" 
+							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。"/>
+					
 				</mx:Canvas>
 				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 					<ns1:ConnectionStatusView id="connectionStatusView" left="0" top="0" bottom="0" right="0" creationComplete="connectionStatusViewCreationCompleteHandler(event)">
