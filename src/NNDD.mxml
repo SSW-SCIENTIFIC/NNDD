@@ -888,6 +888,7 @@
 					NativeProcessPlayerManager.instance.executeFile = file;
 					var str:String = file.nativePath;
 					if(str != null){
+						playerPath_textinput.text = str;
 						ConfigManager.getInstance().setItem("nativePlayerPath", str);
 					}
 				});
