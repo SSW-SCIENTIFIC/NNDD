@@ -18,7 +18,7 @@ package org.mineap.util.config
 		/**
 		 * 設定ファイル
 		 */
-		private var _confFile:File = new File(File.applicationStorageDirectory.url + "config.xml");
+		private var _confFile:File = File.applicationStorageDirectory.resolvePath("config.xml");
 		
 		/**
 		 * 設定ファイルの中身
@@ -201,6 +201,19 @@ package org.mineap.util.config
 				return this._confFile.nativePath;
 			}else{
 				return "not found.";
+			}
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get confFile():File{
+			if(this._confFile != null){
+				return new File(this._confFile.url);
+			}else{
+				return null;
 			}
 		}
 		

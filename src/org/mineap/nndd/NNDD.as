@@ -305,6 +305,12 @@ private var searchHistoryProvider:Array = new Array();
  */
 public function initNNDD(nndd:NNDD):void
 {
+	
+	// 設定ファイルをコピー
+	var confFileUtil:ConfFileUtil = new ConfFileUtil();
+	confFileUtil.checkExistAndCopy();
+	
+	
 	/*デフォルト設定はSQLite*/
 	var libraryType:String = LibraryManagerBuilder.LIBRARY_TYPE_SQL;
 	var confType:String = ConfigManager.getInstance().getItem("libraryType");
@@ -323,7 +329,9 @@ public function initNNDD(nndd:NNDD):void
 	/*クラスインスタンスの初期化*/
 	this.nndd = nndd;
 	
-	this.version = VersionUtil.instance.version;
+	this.version = VersionUtil.instance.versionNumber;
+	
+	this.title =  "NNDD - " + VersionUtil.instance.versionLabel;
 	
 	URLRequestDefaults.userAgent = URLRequestDefaults.userAgent + " NNDD/" + this.version;
 	

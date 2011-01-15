@@ -21,7 +21,7 @@ package org.mineap.nndd
 	public class LogManager
 	{
 		
-		private var logString:String;
+		private var logString:String = "";
 		private var textArea:TextArea;
 		private var logDir:File;
 		
@@ -38,12 +38,17 @@ package org.mineap.nndd
 			var dateString:String = df.format(new Date());
 			
 			this.textArea = textArea;
+			
+			var tempStr:String = this.logString;
+			
 			this.logString = dateString + ":" + Message.BOOT_TIME_LOG +
 				"\n\tFlashPlayerバージョン:" + Capabilities.version +
 				"\n\tデバッガバージョン:" + Capabilities.isDebugger +
 				"\n\tプレイヤータイプ:" + Capabilities.playerType + 
 				"\n\tオペレーティングシステム:" + Capabilities.os + 
 				"\n\tネイティブプロセスAPIサポート:" + NativeProcess.isSupported;
+			
+			this.logString += "\n" + tempStr;
 			
 			if(logDir != null){
 				

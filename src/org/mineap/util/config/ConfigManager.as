@@ -1,5 +1,7 @@
 package org.mineap.util.config
 {
+	import flash.filesystem.File;
+
 	/**
 	 * 設定情報を管理するクラスです
 	 * 
@@ -145,12 +147,21 @@ package org.mineap.util.config
 		}
 		
 		/**
-		 * 
+		 * 設定ファイルの場所を示すネイティブパスの文字列表現を返します。
 		 * @return 
 		 * 
 		 */
 		public function get confFileNativePath():String{
 			return this._configIO.confFileNativePath;
+		}
+		
+		/**
+		 * 設定ファイルを示すファイルのインスタンスを返します。
+		 * @return 
+		 * 
+		 */
+		public function get confFile():File{
+			return this._configIO.confFile;
 		}
 		
 	}
