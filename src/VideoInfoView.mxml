@@ -4,7 +4,7 @@
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
 
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" title="Info"
-	layout="absolute" width="400" height="580" horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+	layout="absolute" width="400" height="1000" horizontalScrollPolicy="off" verticalScrollPolicy="off" 
 	windowComplete="windowCompleteHandler()" closing="windowClosing(event)" windowMove="windowMove(event)" windowResize="windowResized(event)"
 	minWidth="300" minHeight="300" xmlns:ns1="*" activate="window1_activateHandler(event)">
 
@@ -366,24 +366,24 @@
 				<mx:CheckBox left="10" top="492" label="投稿者フィルターを有効にする" toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
 				
 				<mx:Label text="コメントの大きさ：" left="10" top="522"/>
-				<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="113" top="522" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
-				<mx:Label text="0.5倍" left="113" top="548"/>
+				<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="522" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
+				<mx:Label text="0.5倍" left="143" top="548"/>
 				<mx:Label right="10" top="548" text="1.5倍"/>
 				<mx:Label text="コメントのFPS：" left="10" top="574" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-				<mx:HSlider minimum="1" maximum="5" value="2" left="113" top="574" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-				<mx:Label text="7.5fps" left="113" top="600"/>
+				<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="574" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
+				<mx:Label text="7.5fps" left="143" top="600"/>
 				<mx:Label right="10" top="600" text="120fps"/>
 				<mx:Label x="10" y="626" text="表示するコメント："/>
-				<mx:HSlider y="626" left="113" minimum="50" maximum="2500" snapInterval="50" right="10" showDataTip="true" value="250" id="slider_showCommentCount" change="sliderShowCommentCountChanged(event)" toolTip="表示するコメントの個数を指定します。ダウンロード済みのコメントの個数より大きい数字を指定しても、ダウンロード済みの個数以上は表示されません。"/>
-				<mx:Label text="50" left="113" top="652"/>
+				<mx:HSlider y="626" left="143" minimum="50" maximum="2500" snapInterval="50" right="10" showDataTip="true" value="250" id="slider_showCommentCount" change="sliderShowCommentCountChanged(event)" toolTip="表示するコメントの個数を指定します。ダウンロード済みのコメントの個数より大きい数字を指定しても、ダウンロード済みの個数以上は表示されません。"/>
+				<mx:Label text="50" left="143" top="652"/>
 				<mx:Label right="10" top="652" text="2500"/>
 				<mx:Label x="10" y="678" text="コメント表示時間："/>
-				<mx:HSlider y="678" left="113" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
-				<mx:Label text="1秒" left="113" top="704"/>
+				<mx:HSlider y="678" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
+				<mx:Label text="1秒" left="143" top="704"/>
 				<mx:Label text="5秒" top="704" right="10"/>
 				<mx:Label x="10" y="730" text="コメントの不透明度：" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-				<mx:HSlider y="730" left="113" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-				<mx:Label text="1%" left="113" top="756"/>
+				<mx:HSlider y="730" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
+				<mx:Label text="1%" left="143" top="756"/>
 				<mx:Label text="100%" top="756" right="10"/>
 				
 				

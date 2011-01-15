@@ -3,6 +3,7 @@ package org.mineap.util.font
 	import flash.text.Font;
 	
 	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	
 	/**
 	 * アプリケーションで使用するフォントの一覧を管理するクラスです。
@@ -42,10 +43,22 @@ package org.mineap.util.font
 		 */
 		public static function setFont(fontName:String):String{
 			if(fontName != null){
-				Application.application.setStyle("fontFamily", fontName);
-				Application.application.setPlayerFont(fontName);
+				FlexGlobals.topLevelApplication.setStyle("fontFamily", fontName);
+				FlexGlobals.topLevelApplication.setPlayerFont(fontName);
 			}
-			return Application.application.getStyle("fontFamily");
+			return FlexGlobals.topLevelApplication.getStyle("fontFamily");
+		}
+		
+		/**
+		 * 
+		 * @param fontSize
+		 * @return 
+		 * 
+		 */
+		public static function setSize(fontSize:int):String{
+			FlexGlobals.topLevelApplication.setStyle("fontSize", fontSize);
+			FlexGlobals.topLevelApplication.setPlayerFontSize(fontSize);
+			return FlexGlobals.topLevelApplication.getStyle("fontSize");
 		}
 		
 		/**

@@ -52,6 +52,7 @@ import org.mineap.nndd.util.PathMaker;
 import org.mineap.nndd.util.ShortUrlChecker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
+import org.mineap.util.font.FontUtil;
 
 public var isShowComment:Boolean = true;
 
@@ -120,6 +121,7 @@ public function init(playerController:PlayerController, videoInfoView:VideoInfoV
 
 protected function windowComplete(event:AIREvent):void{
 	this.setStyle("fontFamily", ConfigManager.getInstance().getItem("fontFamily"));
+	this.setStyle("fontSize", Number(ConfigManager.getInstance().getItem("fontSize")));
 }
 
 public function resetInfo():void{
@@ -684,6 +686,7 @@ private function readStore():void{
 		}else{
 			isShowComment = ConfUtil.parseBoolean(confValue);
 		}
+		
 		
 	}catch(error:Error){
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);

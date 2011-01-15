@@ -292,7 +292,8 @@ private var myListStatusProvider:String = new String();
 private var fontDataProvider:Array = new Array();
 [Bindable]
 private var searchHistoryProvider:Array = new Array();
-
+[Bindalbe]
+private var fontSizeDataProvider:Array = new Array("小","中","大");
 
 /**
  * イニシャライザです。<br>
@@ -1990,6 +1991,14 @@ private function readStore(isLogout:Boolean = false):void{
 			}
 		}
 		
+		errorName = "fontSize";
+		confValue = ConfigManager.getInstance().getItem("fontSize");
+		if(confValue == null){
+			confValue = "11";
+		}
+		confValue = FontUtil.setSize(Number(confValue));
+		ConfigManager.getInstance().setItem("fontSize", confValue);
+		
 	}catch(error:Error){
 		/* ストアをリセット */
 //		EncryptedLocalStore.reset();
@@ -2515,13 +2524,31 @@ private function allConfigCanvasCreationComplete(event:FlexEvent):void{
 	checkBox_versionCheck.selected = this.isVersionCheckEnable;
 	
 	checkBox_DisEnableAutoExit.selected = this.isDisEnableAutoExit;
+	
 	fontListRenew();
+	
+	fontSizeListRenew();
 }
 
 private function allConfigCanvasShow(event:Event):void{
 	
 	fontListRenew();
 	
+	fontSizeListRenew();
+	
+}
+
+private function fontSizeListRenew():void{
+	var fontSize:String = ConfigManager.getInstance().getItem("fontSize");
+	if(fontSize == "10"){
+		comboBox_fontsize.selectedIndex = 0;
+	}else if(fontSize == "11"){
+		comboBox_fontsize.selectedIndex = 1;
+	}else if(fontSize == "12"){
+		comboBox_fontsize.selectedIndex = 2;
+	}else{
+		comboBox_fontsize.selectedIndex = 1;
+	}
 }
 
 private function fontListRenew():void{
@@ -6542,9 +6569,30 @@ protected function fontComboboxChanged(event:ListEvent):void{
 	fontListRenew();
 }
 
+protected function fontSizeComboboxChanged(event:ListEvent):void{
+
+	var size:int = 12;
+	if(comboBox_fontsize.selectedIndex == 0){
+		size = 10;
+	}else if(comboBox_fontsize.selectedIndex == 1){
+		size = 11;
+	}else if(comboBox_fontsize.selectedIndex == 2){
+		size = 12;
+	}
+	FontUtil.setSize(size);
+	ConfigManager.getInstance().setItem("fontSize", size);
+	fontSizeListRenew();
+}
+
 public function setPlayerFont(fontName:String):void{
 	if(this.playerController != null){
 		this.playerController.setFont(fontName);
+	}
+}
+
+public function setPlayerFontSize(size:int):void{
+	if(this.playerController != null){
+		this.playerController.setFontSize(size);
 	}
 }
 

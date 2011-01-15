@@ -7,7 +7,7 @@
 	width="850" height="600" borderStyle="solid" horizontalScrollPolicy="off" verticalScrollPolicy="off" closing="windowClose(event)" 
 	windowMove="windowMove(event)" windowResize="windowMove(event)" error="error(event)" initialize="windowedapplication1_initializeHandler(event)"
 	invoke="invokeEventHandler(event)" minWidth="800" minHeight="500" xmlns:ns1="*" autoExit="false" activate="windowedapplication1_activateHandler(event)"
-	fontFamily="Verdana">
+	fontFamily="Verdana" fontSize="11">
 	
 	<mx:Script>
 		<![CDATA[
@@ -1320,9 +1320,12 @@
 					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="166"/>
 					<mx:ComboBox left="259" top="166" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
 					<mx:Button label="デフォルト" left="471" top="165" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="190"/>
+					
+					<mx:Label x="30" y="219" text="フォントのサイズ："/>
+					<mx:ComboBox left="151" top="219" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
-					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="190"/>
 					
 					
 				</mx:Canvas>

@@ -32,6 +32,7 @@ import mx.events.FlexEvent;
 import mx.events.ListEvent;
 import mx.events.SliderEvent;
 
+import org.mineap.nicovideo4as.model.SearchType;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.model.NNDDVideo;
@@ -41,9 +42,9 @@ import org.mineap.nndd.model.SearchSortString;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.util.PathMaker;
-import org.mineap.nicovideo4as.model.SearchType;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
+import org.mineap.util.font.FontUtil;
 
 private var videoPlayer:VideoPlayer;
 private var playerController:PlayerController;
@@ -644,7 +645,7 @@ private function windowCompleteHandler():void{
 	videoPlayer.showTagArea(!isHideTagArea, true);
 	
 	this.setStyle("fontFamily", ConfigManager.getInstance().getItem("fontFamily"));
-	
+	this.setStyle("fontSize", Number(ConfigManager.getInstance().getItem("fontSize")));
 }
 
 private function relationCanvasCreationCompleteHandler(event:FlexEvent):void{
@@ -1003,6 +1004,7 @@ private function readStore():void{
 		}else{
 			isNgUpEnable = ConfUtil.parseBoolean(confValue);
 		}
+		
 		
 	}catch(error:Error){
 		trace(error.getStackTrace());
