@@ -110,7 +110,7 @@ package org.mineap.nndd.library.namedarray
 					}
 					//再生回数を取得
 					if((item as XML).@playCount != undefined && (item as XML).@playCount != ""){
-						video.playCount = Number(item.@playCount);
+						video.playCount = Number(item.@playCount[0]);
 					}else{
 						video.playCount = 0;
 					}

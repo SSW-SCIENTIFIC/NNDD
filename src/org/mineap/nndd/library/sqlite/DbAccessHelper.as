@@ -116,8 +116,12 @@ package org.mineap.nndd.library.sqlite
 			this._stmt.text = Queries.CREATE_TABLE_NNDDVIDEO;
 			this._stmt.execute();
 			
-			this._stmt.text = Queries.CREATE_INDEX_KEY_OF_NNDDVIDEO;
-			this._stmt.execute();
+			try{
+				this._stmt.text = Queries.CREATE_INDEX_KEY_OF_NNDDVIDEO;
+				this._stmt.execute();
+			}catch(error:SQLError){
+				trace(error.getStackTrace());
+			}
 		}
 		
 		/**

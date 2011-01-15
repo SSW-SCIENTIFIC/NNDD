@@ -378,6 +378,7 @@ public function initNNDD(nndd:NNDD):void
 	
 	//システムディレクトリにライブラリファイルがあればそっちを取りに行く
 	var isSuccess:Boolean = this.libraryManager.loadLibrary();
+	this.libraryManager.addEventListener(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, libraryLoadCompleteEventHandler);
 	if(!isSuccess){
 		var file:File = new File(libraryManager.libraryDir.url + "/" + LibraryManager.LIBRARY_FILE_NAME);
 		//古いライブラリファイルはあるか？
@@ -568,7 +569,9 @@ private function libraryLoadCompleteEventHandler(event:LibraryLoadEvent):void{
 	}
 	
 	logManager.addLog("ライブラリを更新:" + libraryManager.libraryDir.nativePath);
-	Alert.show("ライブラリの更新が完了しました。", Message.M_MESSAGE);
+	if(loadWindow != null){
+		Alert.show("ライブラリの更新が完了しました。", Message.M_MESSAGE);
+	}
 }
 
 public function versionCheck():void{

@@ -1,5 +1,6 @@
 package org.mineap.nndd.library.sqlite
 {
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -8,6 +9,8 @@ package org.mineap.nndd.library.sqlite
 	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
+	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	import mx.events.AIREvent;
 	import mx.events.CloseEvent;
 	import mx.events.FlexEvent;
@@ -30,6 +33,8 @@ package org.mineap.nndd.library.sqlite
 	import org.mineap.nndd.tag.TagManager;
 	import org.mineap.nndd.util.LibraryUtil;
 	import org.mineap.nndd.versionCheck.VersionUtil;
+	
+	import spark.components.Application;
 	
 	/**
 	 * SQLite版ライブラリとのコネクションを管理するクラスです。
@@ -219,6 +224,12 @@ package org.mineap.nndd.library.sqlite
 				if(!_converting){
 					_converting = true;
 					Alert.show("ライブラリを再構築します。", Message.M_MESSAGE, Alert.OK, null, function(event:CloseEvent):void{
+						
+						var loadWindow:LoadWindow = PopUpManager.createPopUp(FlexGlobals.topLevelApplication as DisplayObject, LoadWindow, true) as LoadWindow;
+						loadWindow.label_loadingInfo.text = "ライブラリを再構築中";
+						loadWindow.progressBar_loading.label = "再構築中...";
+						PopUpManager.centerPopUp(loadWindow);
+						
 						var timer:Timer = new Timer(1000, 1);
 						timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
 							if(isConvertFromXML){
@@ -227,6 +238,11 @@ package org.mineap.nndd.library.sqlite
 								convertFromDB();
 							}
 							_converting = false;
+							
+							dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, 0, 0));
+							
+							PopUpManager.removePopUp(loadWindow);
+							
 						});
 						timer.start();
 					});
@@ -256,16 +272,11 @@ package org.mineap.nndd.library.sqlite
 			
 			try{
 				
-				var loadWindow:LoadWindow = new LoadWindow();
-				loadWindow.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:Event):void{
-					loadWindow.label_loadingInfo.text = "ライブラリを再構築中です...";
-				});
-				PopUpManager.centerPopUp(loadWindow);
-				
 				_dbAccessHelper.dropTables();
 				_dbAccessHelper.createTables();
 				
 				var libraryManager:LibraryManager = LibraryManager.instance;
+				libraryManager.changeLibraryDir(this.libraryDir, false);
 				libraryManager.loadLibrary();
 				var vector:Vector.<NNDDVideo> = libraryManager.getNNDDVideoArray(this._libraryDir, true);
 				trace(vector.length);
@@ -284,7 +295,6 @@ package org.mineap.nndd.library.sqlite
 				
 				updateVersion();
 				
-				PopUpManager.removePopUp(loadWindow);
 				Alert.show("再構築が完了しました。", Message.M_MESSAGE);
 				
 			}catch(error:Error){
@@ -306,12 +316,6 @@ package org.mineap.nndd.library.sqlite
 			
 			try{
 				
-				var loadWindow:LoadWindow = new LoadWindow();
-				loadWindow.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:Event):void{
-					loadWindow.label_loadingInfo.text = "ライブラリを再構築中です...";
-				});
-				PopUpManager.centerPopUp(loadWindow);
-				
 				var date:Date = new Date();
 				
 				var migration:DbMigrationUtil = new DbMigrationUtil();
@@ -323,7 +327,6 @@ package org.mineap.nndd.library.sqlite
 				
 				updateVersion();
 				
-				PopUpManager.removePopUp(loadWindow);
 				Alert.show("再構築が完了しました。", Message.M_MESSAGE);
 				
 			}catch(error:Error){
