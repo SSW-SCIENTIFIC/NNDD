@@ -701,6 +701,9 @@
 							updatePlayList(index);
 						}
 						
+						dataGrid_downloaded.dragMoveEnabled = true;
+						dataGrid_downloaded.dropEnabled = true;
+						
 						button_addDir.toolTip = "プレイリストを追加";
 						button_delDir.toolTip = "プレイリストを削除";
 						button_fileNameEdit.toolTip = "プレイリスト名を編集";
@@ -709,6 +712,9 @@
 						// ファイルを持っているのはライブラリ
 						if(isEnableLibrary){
 							updateLibrary(event.rowIndex);
+							
+							dataGrid_downloaded.dragMoveEnabled = false;
+							dataGrid_downloaded.dropEnabled = false;
 							
 							button_addDir.toolTip = "フォルダを追加";
 							button_delDir.toolTip = "フォルダを削除";
@@ -950,10 +956,12 @@
 				
 				<mx:Canvas height="100%" width="100%" minWidth="630">
 					
-					<mx:ComboBox width="65" dataProvider="{rankingPageCountProvider}" id="combobox_pageCounter_ranking" change="rankingPageCountChanged()" top="0" left="48"></mx:ComboBox>
-					<mx:Button id="button_back" left="0" top="0" width="40" label="&lt;"
+					<mx:ComboBox id="combobox_pageCounter_ranking" left="43" top="0" width="65"
+								 height="21" change="rankingPageCountChanged()"
+								 dataProvider="{rankingPageCountProvider}"></mx:ComboBox>
+					<mx:Button id="button_back" left="0" top="0" width="35" label="&lt;"
 							   click="backButtonClicked()"/>
-					<mx:Button id="button_next" left="121" top="0" width="40" label="&gt;"
+					<mx:Button id="button_next" left="116" top="0" width="35" label="&gt;"
 							   click="nextButtonClicked()"/>
 					
 					<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_ranking" dataProvider="{rankingProvider}" 
@@ -1017,10 +1025,12 @@
 				
 				<mx:Canvas height="100%" width="100%" minWidth="630">
 					
-					<mx:ComboBox width="65" dataProvider="{searchPageCountProvider}" id="combobox_pageCounter_search" change="searchPageCountChanged()" top="0" left="48"></mx:ComboBox>
+					<mx:ComboBox id="combobox_pageCounter_search" left="43" top="0" width="65"
+								 height="21" change="searchPageCountChanged()"
+								 dataProvider="{searchPageCountProvider}"></mx:ComboBox>
 					<mx:Button id="button_back_search" left="0" top="0" width="35" label="&lt;"
 							   click="searchBackButtonClicked()"/>
-					<mx:Button id="button_next_search" left="121" top="0" width="35" label="&gt;"
+					<mx:Button id="button_next_search" left="116" top="0" width="35" label="&gt;"
 							   click="searchNextButtonClicked()"/>
 					
 					<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_search" dataProvider="{searchProvider}"
@@ -1045,7 +1055,7 @@
 					<mx:Button label="ストリーミング" width="103" enabled="true" click="videoStreamingPlayButtonClickedForSearch()" left="111" bottom="5" toolTip="選択中の項目をストリーミング再生します"/>
 					<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" liveDragging="true" change="thumbSizeChangedForSearch(event)" id="slider_thumbImageSize_search" right="0" bottom="5"
 						toolTip="サムネイル画像の大きさを変更します"/>
-					<mx:Label left="169" top="2" id="label_totalCount"/>
+					<mx:Label left="159" top="2" id="label_totalCount"/>
 					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="この検索結果をブラウザで表示します" click="showSearchResultOnNico(event)"/>
 				</mx:Canvas>
 			</mx:HDividedBox>
@@ -1389,6 +1399,8 @@
 							 text="※Mac OS で、アプリケーションバンドル内の実行可能ファイルを起動する場合、パスには、app ファイルへのパスではなく、（バンドル内の）実行可能ファイルへのフルパスを含むようにしてください。"/>
 					<mx:Text left="29" right="10" top="84" enabled="{NativeProcess.isSupported}" 
 							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。"/>
+					<mx:Text left="142" top="30" visible="{!NativeProcess.isSupported}"
+							  text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
 					
 				</mx:Canvas>
 				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">

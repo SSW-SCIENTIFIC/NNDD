@@ -1654,7 +1654,7 @@ package org.mineap.nndd.player
 								nicoVideoAccessRetryTimer.stop();
 								nicoVideoAccessRetryTimer = null;
 							}
-							nicoVideoAccessRetryTimer = new Timer(1000*this.streamingRetryCount, 1);
+							nicoVideoAccessRetryTimer = new Timer(5000*this.streamingRetryCount, 1);
 							nicoVideoAccessRetryTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
 								(event.currentTarget as Timer).stop();
 								play();
