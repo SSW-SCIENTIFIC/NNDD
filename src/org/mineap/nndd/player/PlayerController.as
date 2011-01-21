@@ -752,6 +752,7 @@ package org.mineap.nndd.player
 		}
 		
 		/**
+		 * コメントを最新に更新します
 		 * 
 		 * @param videoId
 		 * @param videoPath
@@ -2176,7 +2177,7 @@ package org.mineap.nndd.player
 		 * ウィンドウがリサイズされた際、コメントの表示位置をリセットします。
 		 * また、SWFを再生中は、ウィンドウサイズが変更された場合に、Loaderコンポーネントの大きさを変更します。 
 		 */
-		public function windowResized(isCommentRemove:Boolean = true):void{
+		public function windowResized(isCommentRemove:Boolean):void{
 			
 			if(this.windowReady){
 				
@@ -2244,10 +2245,16 @@ package org.mineap.nndd.player
 					}
 				}
 				
-				//コメントをすべて除去。
 				if(isCommentRemove){
+					// コメントを全て除去
 					commentManager.removeAll();
+				}else{
+					// コメントの位置を再計算
+					commentManager.validateCommentPosition();
 				}
+				
+				
+				
 			}
 		}
 		
@@ -2403,7 +2410,8 @@ package org.mineap.nndd.player
 				}
 				commentManager.setComments(comments);
 			}
-			this.windowResized();
+			
+			this.windowResized(true);
 			
 		}
 		

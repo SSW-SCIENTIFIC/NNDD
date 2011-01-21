@@ -606,7 +606,7 @@ public function rollOut(event:MouseEvent):void{
 }
 
 public function videoCanvasResize(event:ResizeEvent):void{
-	this.playerController.windowResized();
+	this.playerController.windowResized(false);
 }
 
 private function readStore():void{
@@ -793,7 +793,7 @@ private function updateComplete():void{
 	if(isResize){
 		isResize = false;
 //		trace("updateComplete");
-		playerController.windowResized();
+		playerController.windowResized(false);
 	}
 }
 

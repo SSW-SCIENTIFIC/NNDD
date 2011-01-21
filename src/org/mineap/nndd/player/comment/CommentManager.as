@@ -779,6 +779,98 @@ package org.mineap.nndd.player.comment
 		}
 		
 		/**
+		 * 全てのコメントの位置を再計算し、配置し直します。
+		 * 
+		 */
+		public function validateCommentPosition():void{
+			
+			var i:int = 0;
+			if(commentNomalTextArray != null){
+				for(var j:int = 0; j<commentNomalTextArray.length; j++){
+					for(i = 0; i<commentNomalTextArray[j].length; i++){
+						if(commentNomalTextArray[j][i] != null){
+							
+							var fontSize:int = 0;
+							var command:int = (commentNomalTextArray[j][i]).size;
+							switch(command){
+								case Command.BIG:
+									fontSize = (commentNomalTextArray[j][i]).parent.height/15;
+									break;
+								case Command.SMALL:
+									fontSize = (commentNomalTextArray[j][i]).parent.height/25;
+									break;
+								case Command.MEDIUM:
+									fontSize = (commentNomalTextArray[j][i]).parent.height/20;
+									break;
+							}
+							fontSize = fontSize*videoInfoView.commentScale;
+							commentNomalTextArray[j][i].setStyle("fontSize", fontSize);
+							
+							if(!commentNomalTextArray[j][i].visible){
+								commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
+							}
+							commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height/15)*(i);
+						}
+					}
+				}
+			}
+			
+			if(commentShitaTextArray != null){
+				for(i = 0; i<commentShitaTextArray.length; i++){
+					if(commentShitaTextArray[i] != null){
+						
+						var fontSize:int = 0;
+						var command:int = (commentShitaTextArray[i]).size;
+						switch(command){
+							case Command.BIG:
+								fontSize = (commentShitaTextArray[i]).parent.height/15;
+								break;
+							case Command.SMALL:
+								fontSize = (commentShitaTextArray[i]).parent.height/25;
+								break;
+							case Command.MEDIUM:
+								fontSize = (commentShitaTextArray[i]).parent.height/20;
+								break;
+						}
+						fontSize = fontSize*videoInfoView.commentScale;
+						commentShitaTextArray[i].setStyle("fontSize", fontSize);
+						
+						commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
+						commentShitaTextArray[i].y = this.videoPlayer.canvas_video.height - (this.videoPlayer.canvas_video.height/15)*(i+2);
+					}
+				}
+			}
+			
+			if(commentUeTextArray != null){
+				for(i = 0; i<commentUeTextArray.length; i++){
+					if(commentUeTextArray[i] != null){
+						
+						var fontSize:int = 0;
+						var command:int = (commentUeTextArray[i]).size;
+						switch(command){
+							case Command.BIG:
+								fontSize = (commentUeTextArray[i]).parent.height/15;
+								break;
+							case Command.SMALL:
+								fontSize = (commentUeTextArray[i]).parent.height/25;
+								break;
+							case Command.MEDIUM:
+								fontSize = (commentUeTextArray[i]).parent.height/20;
+								break;
+						}
+						fontSize = fontSize*videoInfoView.commentScale;
+						commentUeTextArray[i].setStyle("fontSize", fontSize);
+						
+						commentUeTextArray[i].x = this.videoPlayer.canvas_video.width;
+						commentUeTextArray[i].y = (this.videoPlayer.canvas_video.height/15)*(i);
+					}
+				}
+			}
+			
+		}
+		
+		
+		/**
 		 * すべてのコメントに空の文字列を代入し、右の画面外に移動させます。
 		 * 上コメントと下コメントの場所はそのままです。
 		 * 

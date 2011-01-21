@@ -1,11 +1,14 @@
 package org.mineap.nndd.model
 {
 	import org.mineap.nicovideo4as.model.Comment;
+	import org.mineap.nndd.player.comment.Command;
 	
 	public class NNDDComment extends Comment
 	{
 		
 		private var _isShow:Boolean = true;
+		
+		private var _sizeCommand:int = Command.MEDIUM;
 		
 		/**
 		 * 
@@ -35,6 +38,17 @@ package org.mineap.nndd.model
 		{
 			_isShow = value;
 		}
+
+		public function get sizeCommand():int
+		{
+			return _sizeCommand;
+		}
+
+		public function set sizeCommand(value:int):void
+		{
+			_sizeCommand = value;
+		}
+
 
 	}
 }
