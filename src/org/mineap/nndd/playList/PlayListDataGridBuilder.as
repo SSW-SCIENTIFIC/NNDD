@@ -31,6 +31,7 @@ package org.mineap.nndd.playList
 			for each(var video:NNDDVideo in videos){
 				var thumbUrl:String = "";
 				var creationDate:String = "-";
+				var pubDate:String = "-";
 				var playCount:Number = 0;
 				var status:String = "";
 				var tempVideo:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(video.getDecodeUrl()));
@@ -44,7 +45,16 @@ package org.mineap.nndd.playList
 				}
 				
 				thumbUrl = video.thumbUrl;
-				creationDate = DateUtil.getDateString(video.creationDate);
+				if(video.creationDate != null){
+					creationDate = DateUtil.getDateString(video.creationDate);
+				}else{
+					creationDate = "-";
+				}
+				if(video.pubDate != null){
+					pubDate = DateUtil.getDateString(video.pubDate);
+				}else{
+					pubDate = "-";
+				}
 				playCount = video.playCount;
 				if(thumbUrl == ""){
 					thumbUrl = PathMaker.createThumbImgFilePath(video.getDecodeUrl(), true);
@@ -62,6 +72,7 @@ package org.mineap.nndd.playList
 					dataGridColumn_thumbImage: thumbUrl,
 					dataGridColumn_videoName: video.getVideoNameWithVideoID(),
 					dataGridColumn_date: creationDate,
+					dataGridColumn_pubdate: pubDate,
 					dataGridColumn_count: playCount,
 					dataGridColumn_condition: status,
 					dataGridColumn_videoPath: video.getDecodeUrl()

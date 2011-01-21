@@ -113,6 +113,7 @@ package org.mineap.nndd.downloadedList
 				dataGridColumn_thumbImage: "",
 				dataGridColumn_videoName: "loading...",
 				dataGridColumn_date: "",
+				dataGridColumn_pubdate: "",
 				dataGridColumn_count: "",
 				dataGridColumn_videoPath: "",
 				dataGridColumn_condition: ""
@@ -159,10 +160,12 @@ package org.mineap.nndd.downloadedList
 			var thumbUrl:String = "";
 			var playCount:Number = 0;
 			var creationDate:Date = null;
-		
+			var pubDate:Date = null;
+			
 			thumbUrl = video.thumbUrl;
 			playCount = video.playCount;
 			creationDate = video.creationDate;
+			pubDate = video.pubDate;
 			if(video.isEconomy){
 				status = "エコノミー画質";
 			}
@@ -174,10 +177,21 @@ package org.mineap.nndd.downloadedList
 				}
 			}
 			
+			var createDateString:String ="-";
+			if(creationDate != null){
+				createDateString = DateUtil.getDateString(creationDate);
+			}
+			
+			var pubDateString:String = "-";
+			if(pubDate != null){
+				pubDateString = DateUtil.getDateString(pubDate)
+			}
+			
 			this.downloadedListArray.addItem({
 				dataGridColumn_thumbImage: thumbUrl,
 				dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf("/")+1),
-				dataGridColumn_date: DateUtil.getDateString(creationDate),
+				dataGridColumn_date: createDateString,
+				dataGridColumn_pubdate: pubDateString,
 				dataGridColumn_count: playCount,
 				dataGridColumn_videoPath: decodedUrl,
 				dataGridColumn_condition: status
@@ -255,11 +269,13 @@ package org.mineap.nndd.downloadedList
 					var thumbUrl:String = "";
 					var playCount:Number = 0;
 					var creationDate:Date = null;
+					var pubDate:Date = null;
 					
 					if(video != null){
 						thumbUrl = video.thumbUrl;
 						playCount = video.playCount;
 						creationDate = video.creationDate;
+						pubDate = video.pubDate;
 						if(video.isEconomy){
 							status = "エコノミー画質";
 						}
@@ -271,11 +287,16 @@ package org.mineap.nndd.downloadedList
 					if(creationDate == null){
 						creationDate = myFile.creationDate;
 					}
+					var pubDateString:String = "";
+					if(pubDate != null){
+						pubDateString = DateUtil.getDateString(pubDate);
+					}
 					
 					this.downloadedListArray.addItem({
 						dataGridColumn_thumbImage: thumbUrl,
 						dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf("/")+1),
 						dataGridColumn_date: DateUtil.getDateString(creationDate),
+						dataGridColumn_pubdate: pubDateString,
 						dataGridColumn_count: playCount,
 						dataGridColumn_videoPath: decodedUrl,
 						dataGridColumn_condition: status

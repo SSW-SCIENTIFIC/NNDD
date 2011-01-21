@@ -2471,6 +2471,7 @@ package org.mineap.nndd.player
 							if(date != null){
 								dateString = "投稿日:" + dateFormatter.format(date);
 							}
+							
 							htmlInfo = thumbInfoAnalyzer.htmlTitle + "<br />" + dateString + "<br />" + thumbInfoAnalyzer.playCountAndCommentCountAndMyListCount;
 							
 							ownerText = thumbInfoAnalyzer.thumbInfoHtml + "\n(ローカルのデータを使用)";
@@ -2575,10 +2576,11 @@ package org.mineap.nndd.player
 				
 				if("ok" == analyzer.status){
 					for each(var item:RelationResultItem in analyzer.videos){
+						var pubDate:Date = new Date(item.time * 1000);
 						var info:String = HtmlUtil.convertSpecialCharacterNotIncludedString(item.title) + "\n" +
 								"\t再生回数:" + NumberUtil.addComma(String(item.view)) + "\n" +
 								"\tマイリスト:" + NumberUtil.addComma(String(item.mylist)) + ", コメント数:" + NumberUtil.addComma(String(item.comment)) + "\n" +
-								"\t投稿日:" + DateUtil.getDateString(new Date(item.time * 1000));
+								"\t投稿日:" + DateUtil.getDateString(pubDate);
 						(videoInfoView.relationDataProvider as ArrayCollection).addItem({
 							col_image:item.thumbnail,
 							col_info:info,
@@ -2715,14 +2717,21 @@ package org.mineap.nndd.player
 							var thumbInfo:String = watchVideoPage.thumbInfoLoader.thumbInfo;
 							if(thumbInfo != null){
 								var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(new XML(thumbInfo));
+								var video:NNDDVideo = libraryManager.isExist(videoId);
 								if(analyzer.errorCode != null && analyzer.errorCode.length > 0 && !isStreamingPlay){ 
 									// エラーコードが返ってきて、かつ、ストリーミングではないとき
-									var video:NNDDVideo = libraryManager.isExist(videoId);
-									var thumbInfoPath:String = PathMaker.createThmbInfoPathByVideoPath(video.getDecodeUrl());
-									var fileIO:FileIO = new FileIO();
-									var xml:XML = fileIO.loadXMLSync(thumbInfoPath, false);
-									analyzer = new ThumbInfoAnalyzer(xml);
-									setNicoThumbInfo(analyzer);
+									if(video != null){
+										var thumbInfoPath:String = PathMaker.createThmbInfoPathByVideoPath(video.getDecodeUrl());
+										var fileIO:FileIO = new FileIO();
+										var xml:XML = fileIO.loadXMLSync(thumbInfoPath, false);
+										analyzer = new ThumbInfoAnalyzer(xml);
+									}
+//									setNicoThumbInfo(analyzer);
+								}else{
+									if(video != null && video.pubDate == null){
+										video.pubDate = analyzer.getDateByFirst_retrieve();
+										libraryManager.update(video, false);
+									}
 								}
 								setNicoThumbInfo(analyzer);
 								
@@ -2889,6 +2898,7 @@ package org.mineap.nndd.player
 								tagStrings.push(tags[i]);
 							}
 							video.tagStrings = tagStrings;
+							video.pubDate = thumbInfoAnalyzer.getDateByFirst_retrieve();
 							//再生に時間がかかるのでライブラリの更新はしない
 							libraryManager.update(video, false);
 						}
