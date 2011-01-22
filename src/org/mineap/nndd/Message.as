@@ -38,6 +38,7 @@ package org.mineap.nndd
 		public static var L_DOWNLOADED_MENU_ITEM_LABEL_EDIT:String = "動画を編集";
 		public static var L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW:String = "このフォルダの情報を再収集";
 		public static var L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR:String = "このフォルダとサブフォルダの情報を再収集";
+		public static var L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_PLAYALL:String = "一覧を連続再生";
 		public static var L_TAB_LIST_MENU_ITEM_LABEL_SEARCH:String = "タグをニコニコで検索";
 		public static var L_TAB_LIST_MENU_ITEM_LABEL_JUMP_DIC:String = "タグをニコニコ大百科で表示";
 		public static var L_TAB_LIST_MENU_ITEM_LABEL_SHOW_TAG:String = "タグを表示";

@@ -12,6 +12,7 @@
 	<mx:Script>
 		<![CDATA[
 			import mx.controls.listClasses.IListItemRenderer;
+			import mx.core.UITextField;
 			import mx.messaging.SubscriptionInfo;
 			
 			import org.mineap.nndd.library.LibraryTreeBuilder;
@@ -50,6 +51,7 @@
 			private var fileSystemTreeMenu:ContextMenu;
 			private var fileSystemTreeMenuItem1:ContextMenuItem;
 			private var fileSystemTreeMenuItem2:ContextMenuItem;
+			private var fileSystemTreeMenuItem3:ContextMenuItem;
 			private var tagTileListMenu:ContextMenu;
 			private var tagFilterTileListMenu:ContextMenu;
 			private var tagTileListMenuItem1:ContextMenuItem;
@@ -65,6 +67,8 @@
 			
 			private var copyUrlMenuItem:ContextMenuItem;
 			private var playAllMenuItem:ContextMenuItem;
+			
+			public var thumbImageView:Image = new Image();
 
 			protected function windowedapplication1_activateHandler(event:Event):void
 			{
@@ -188,6 +192,7 @@
 					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				downloadMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_downloadList.contextMenu = downloadMenu;
+				
 			}
 
 
@@ -326,6 +331,7 @@
 
 			protected function dataGrid_downloaded_creationCompleteHandler(event:FlexEvent):void
 			{
+				
 				downloadedMenu = new ContextMenu();
 				downloadedMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
 				downloadedMenuitem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
@@ -344,12 +350,21 @@
 				downloadedMenu.customItems.push(downloadedMenuitem1, downloadedMenuitem2, downloadedMenuitem3, playListContextMenuItem, 
 					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem, downloadedMenuitem4, downloadedMenuitem5);
 				downloadedMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
+				
 				dataGrid_downloaded.contextMenu = downloadedMenu;
+				
 				if(this.lastLibraryWidth != -1){
 					this.canvas_libAndPList.width = this.lastLibraryWidth;
 					this.validateNow();
 				}
 				this.canvas_libAndPList.addEventListener(ResizeEvent.RESIZE, libraryWidthChanged);
+				
+				if(this.thumbImgSizeForLibrary != -1){
+					slider_thumbImageSizeForLibrary.value = this.thumbImgSizeForLibrary;
+					dataGrid_downloaded.rowHeight = 30*slider_thumbImageSizeForLibrary.value;
+					dataGridColumn_LibraryThumbImage.width = 35*slider_thumbImageSizeForLibrary.value;
+					this.validateNow();
+				}
 				
 				downloadedDataGridComplete = true;
 				setLibraryTab();
@@ -497,8 +512,12 @@
 				fileSystemTreeMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileSystemTreeItemHandler);
 				fileSystemTreeMenuItem2 = new ContextMenuItem(Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR);
 				fileSystemTreeMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileSystemTreeItemHandler);
-				fileSystemTreeMenu.customItems.push(fileSystemTreeMenuItem1, fileSystemTreeMenuItem2);
+				fileSystemTreeMenuItem3 = new ContextMenuItem(Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_PLAYALL, true);
+				fileSystemTreeMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileSystemTreeItemHandler);
+				fileSystemTreeMenu.customItems = new Array(fileSystemTreeMenuItem1, fileSystemTreeMenuItem2, fileSystemTreeMenuItem3);
 				(event.currentTarget as Tree).contextMenu = fileSystemTreeMenu;
+				
+				fileSystemTreeMenu.addEventListener(ContextMenuEvent.MENU_SELECT, tree_library_contextMenuSelectHandler);
 				
 				(event.currentTarget as Tree).openItems = array;
 				
@@ -506,6 +525,37 @@
 				
 				setLibraryTab();
 				
+				
+			}
+			
+			protected function tree_library_contextMenuSelectHandler(event:ContextMenuEvent):void{
+				
+				var uiTextField:UITextField = (event.mouseTarget as UITextField);
+				
+				var name:String = null;
+				if(uiTextField != null){
+					name = uiTextField.text;
+				}
+				
+				if(name != null){
+					if(name.toLowerCase().indexOf(".m3u") != -1){
+						fileSystemTreeMenuItem1.enabled = false;
+						fileSystemTreeMenuItem2.enabled = false;
+						fileSystemTreeMenuItem3.enabled = true;
+					}else if(name == "PlayList"){
+						fileSystemTreeMenuItem1.enabled = false;
+						fileSystemTreeMenuItem2.enabled = false;
+						fileSystemTreeMenuItem3.enabled = false;
+					}else{
+						fileSystemTreeMenuItem1.enabled = true;
+						fileSystemTreeMenuItem2.enabled = true;
+						fileSystemTreeMenuItem3.enabled = true;
+					}
+				}else{
+					fileSystemTreeMenuItem1.enabled = false;
+					fileSystemTreeMenuItem2.enabled = false;
+					fileSystemTreeMenuItem3.enabled = false;
+				}
 				
 			}
 
@@ -910,6 +960,29 @@
 				}
 			}
 
+			protected function textInput_focusInHandler(event:FocusEvent):void
+			{
+				var textInput:TextInput = TextInput(event.currentTarget);
+				textInput.selectionBeginIndex = 0;
+				textInput.selectionEndIndex = textInput.text.length;
+			}
+
+
+			protected function textInput_searchInDLList_focusOutHandler(event:FocusEvent):void
+			{
+				if(textInput_searchInDLList.text.length == 0){
+					textInput_searchInDLList.text = "リスト内を検索";
+				}
+			}
+
+
+			protected function textInput_searchInTagList_focusOutHandler(event:FocusEvent):void
+			{
+				if(textInput_searchInTagList.text.length == 0){
+					textInput_searchInTagList.text = "タグを検索";
+				}
+			}
+
 		]]>
 	</mx:Script>
 	
@@ -1198,9 +1271,12 @@
 				<mx:Canvas height="100%" width="100%" minWidth="600" id="canvas_libraryItems">
 					<mx:VDividedBox left="0" top="0" bottom="30" right="10">
 						<mx:Canvas id="canvas_tagTileList" width="100%" height="50%">
-							<mx:Label text="タグ検索" enabled="true" bottom="2" right="128"/>
-							<mx:TextInput enabled="true" id="textInput_searchInTagList" change="searchTagListTextInputChange()" enter="searchTagListTextInputChange()"
-								textInput="searchTagListTextInputChange()" bottom="0" right="0" width="120"/>
+							<mx:TextInput id="textInput_searchInTagList" right="0" bottom="0"
+										  focusIn="textInput_focusInHandler(event)"
+										  width="120" change="searchTagListTextInputChange()"
+										  enabled="true" enter="searchTagListTextInputChange()"
+										  text="タグを検索" textInput="searchTagListTextInputChange()"
+										  focusOut="textInput_searchInTagList_focusOutHandler(event)"/>
 							<mx:Label text="※ダブルクリックでタグ検索" left="152" bottom="0"/>
 							<mx:TabNavigator left="0" top="0" bottom="25" right="0" id="tag_tabNavigator">
 								<mx:Canvas label="タグ一覧" width="100%" height="100%" id="canvas_tagList">
@@ -1245,13 +1321,100 @@
 										 creationComplete="dataGrid_downloaded_creationCompleteHandler(event)">
 								<!-- horizontalScrollPolicy="on"> -->
 								<mx:columns>
-									<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="35">
+									<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="35" id="dataGridColumn_LibraryThumbImage">
 										<mx:itemRenderer>
-											<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
+											<mx:Component><mx:Image width="100%" height="100%" mouseOver="image1_mouseOverHandler(event)" 
+																	mouseMove="image1_mouseMoveHandler(event)" 
+																	mouseOut="image1_mouseOutHandler(event)"
+																	complete="image1_completeHandler(event)">
+															  <mx:Script>
+																  <![CDATA[
+																	  import mx.core.FlexGlobals;
+																	  protected function image1_mouseOverHandler(event:MouseEvent):void
+																	  {
+																		  
+																		  if((this as Image).width > 130){
+																			  return;
+																		  }
+																		  
+																		  var image:Image = (FlexGlobals.topLevelApplication as NNDD).thumbImageView;
+																		  image.alpha = 0.9;
+																		  image.visible = true;
+																		  image.source = (this as Image).source;
+																		  image.x = event.stageX + 5;
+																		  if(image.height + image.y > FlexGlobals.topLevelApplication.height - 15){
+																			  image.y = FlexGlobals.topLevelApplication.height - image.height - 15;
+																		  } else if(image.height < 100 && 100 + image.y > FlexGlobals.topLevelApplication.height - 15){
+																			  image.y = FlexGlobals.topLevelApplication.height - 100 - 15;
+																		  }else{
+																			  image.y = event.stageY;
+																		  }
+																		  
+																	  }
+
+																	  protected function image1_mouseMoveHandler(event:MouseEvent):void
+																	  {
+																		  
+																		  if((this as Image).width > 130){
+																			  return;
+																		  }
+																		  
+																		  var image:Image = (FlexGlobals.topLevelApplication as NNDD).thumbImageView;
+																		  image.x = event.stageX + 5;
+																		  image.y = event.stageY;
+																		  if(image.height + image.y > FlexGlobals.topLevelApplication.height - 15){
+																			  image.y = FlexGlobals.topLevelApplication.height - image.height - 15;
+																		  } else if(image.height < 100 && 100 + image.y > FlexGlobals.topLevelApplication.height - 15){
+																			  image.y = FlexGlobals.topLevelApplication.height - 100 - 15;
+																		  }else{
+																			  image.y = event.stageY;
+																		  }
+																	  }
+
+
+																	  protected function image1_mouseOutHandler(event:MouseEvent):void
+																	  {
+																		  
+																		  if((this as Image).width > 130){
+																			  return;
+																		  }
+																		  
+																		  var image:Image = (FlexGlobals.topLevelApplication as NNDD).thumbImageView;
+																		  image.visible = false;
+																		  image.source = null;
+																		  image.x = event.stageX + 5;
+																		  if(image.height + image.y > (FlexGlobals.topLevelApplication.height - 15)){
+																			  image.y = FlexGlobals.topLevelApplication.height - image.height - 15;
+																		  }else{
+																			  image.y = event.stageY;
+																		  }
+																	  }
+
+
+																	  protected function image1_completeHandler(event:Event):void
+																	  {
+																		  if((this as Image).width > 130){
+																			  return;
+																		  }
+																		  
+																		  var image:Image = (FlexGlobals.topLevelApplication as NNDD).thumbImageView;
+																		  if(image.source != null){
+																			  image.visible = true;
+																			  if(image.height + image.y > FlexGlobals.topLevelApplication.height - 15){
+																				  image.y = FlexGlobals.topLevelApplication.height - image.height - 15;
+																			  }
+																		  }
+																	  }
+
+																  ]]>
+															  </mx:Script>
+														  </mx:Image>
+											</mx:Component>
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
 									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300"/>
-									<mx:DataGridColumn headerText="作成日" dataField="dataGridColumn_date" width="80"/>
+									<mx:DataGridColumn headerText="作成日" dataField="dataGridColumn_date" width="60"/>
+									<mx:DataGridColumn headerText="投稿日" dataField="dataGridColumn_pubdate" width="60"/>
 									<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40"/>
 									<mx:DataGridColumn headerText="状態" dataField="dataGridColumn_condition" width="80"/>
 									<mx:DataGridColumn headerText="パス" dataField="dataGridColumn_videoPath" width="0" visible="false"/>
@@ -1260,16 +1423,28 @@
 						</mx:Canvas>
 					</mx:VDividedBox>
 					
-					<mx:Button id="button_play_downloadedItem" left="0" bottom="5" width="50"
-							   label="再生" click="downLoadedItemPlay()"/>
-					<mx:VRule width="15" height="22" left="54" bottom="5"/>
-					<mx:Button label="動画以外を更新" id="newCommentDownloadButton" click="newCommentDownloadButtonClicked()" left="195" bottom="5" enabled="true"/>
-					<mx:Button label="コメントのみ更新" id="newCommentOnlyDownloadButton" click="newCommentDownloadButtonClicked(true)" left="77" bottom="5" enabled="true"/>
-					<mx:Button label="すべて更新" left="300" bottom="5" click="addDownloadListForDownloadedList(event)"/>
+					<mx:Label left="0" bottom="5" width="40" text="更新:"/>
 					
-					<mx:Label text="リスト内検索" right="138" bottom="7" enabled="true"/>
-					<mx:TextInput enabled="true" id="textInput_searchInDLList" change="searchDLListTextInputChange()" enter="searchDLListTextInputChange()"
-						right="10" bottom="5" width="120"/>
+					<mx:Button label="動画以外" id="newCommentDownloadButton" 
+							   click="newCommentDownloadButtonClicked()" left="127" bottom="5" enabled="true"/>
+					<mx:Button label="コメント" id="newCommentOnlyDownloadButton" left="48" bottom="5" 
+							   click="newCommentDownloadButtonClicked(true)" enabled="true"/>
+					<mx:Button label="すべて" left="205" bottom="5" id="addDownloadListButton"
+							   click="addDownloadListForDownloadedList(event)"/>
+					
+					
+					<mx:TextInput id="textInput_searchInDLList" right="120" bottom="5" width="120"
+								  change="searchDLListTextInputChange()" enabled="true"
+								  enter="searchDLListTextInputChange()" text="リスト内を検索"
+								  focusIn="textInput_focusInHandler(event)"
+								  focusOut="textInput_searchInDLList_focusOutHandler(event)"/>
+					
+					<mx:HSlider width="110" minimum="0.5" maximum="5.0" 
+								snapInterval="0.1" value="1" right="10" bottom="5" 
+								liveDragging="true" change="thumbSizeChangedForLibrary(event)" 
+								id="slider_thumbImageSizeForLibrary"
+								toolTip="サムネイル画像の大きさを変更します"/>
+					
 					
 				</mx:Canvas>
 				

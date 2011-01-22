@@ -249,6 +249,7 @@ private var lastSearchItemListWidth:int = -1;
 
 private var thumbImgSizeForSearch:Number = -1;
 private var thumbImgSizeForMyList:Number = -1;
+private var thumbImgSizeForLibrary:Number = -1;
 
 private var myListRenewScheduleTime:Number = 30;
 
@@ -487,6 +488,12 @@ public function initNNDD(nndd:NNDD):void
 	/* タスクトレイ or Dockの設定 */
 	var trayIconManager:SystemTrayIconManager = new SystemTrayIconManager();
 	trayIconManager.setTrayIcon();
+	
+	
+	// サムネイル画像拡大表示用Image
+	thumbImageView.visible = false;
+	thumbImageView.alpha = 0.9;
+	this.addChild(thumbImageView);
 	
 }
 
@@ -994,8 +1001,12 @@ private function downloadedItemHandler(event:ContextMenuEvent):void {
 				
 				videoEditDialog.addEventListener(Event.COMPLETE, function(event:Event):void{
 					try{
-						if(videoEditDialog.oldVideo.uri != videoEditDialog.newVideo.uri){
-							(new File(videoEditDialog.oldVideo.uri)).moveTo(new File(videoEditDialog.newVideo.uri));
+						// ファイルの移動はダイアログ側でやる
+//						if(videoEditDialog.oldVideo.uri != videoEditDialog.newVideo.uri){
+//							(new File(videoEditDialog.oldVideo.uri)).moveTo(new File(videoEditDialog.newVideo.uri));
+//						}
+						if(dataGrid_downloaded.selectedItem != null){
+							dataGrid_downloaded.selectedItem.dataGridColumn_videoName = videoEditDialog.newVideo.file.name;
 						}
 						libraryManager.update(videoEditDialog.newVideo, true);
 					}catch(error:IOError){
@@ -1061,6 +1072,23 @@ private function fileSystemTreeItemHandler(event:ContextMenuEvent):void{
 				
 			}
 		
+		}
+	}else if((event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_PLAYALL){
+		var itreeItem:ITreeItem = null;
+		itreeItem = (tree_library.selectedItem as ITreeItem);
+			
+		if(itreeItem != null){
+			var labelName:String = itreeItem.label;
+			if(itreeItem.file == null){
+				// ファイルを持っていないのはプレイリスト
+				playMovieByPlayListIndex(labelName);
+				
+			}else{
+				if(isEnableLibrary){
+					// ファイルを持っているのはライブラリ
+					playMovieByLibraryDir(itreeItem.file);
+				}
+			}
 		}
 	}
 	
@@ -1699,6 +1727,14 @@ private function readStore(isLogout:Boolean = false):void{
 			//何もしない
 		}else{
 			thumbImgSizeForMyList = Number(confValue);
+		}
+		
+		errorName = "thumbImgSizeForLibrary";
+		confValue = ConfigManager.getInstance().getItem("thumbImgSizeForLibrary");
+		if (confValue == null) {
+			//何もしない
+		}else{
+			thumbImgSizeForLibrary = Number(confValue);
 		}
 		
 		errorName = "thumbImgSizeForSearch";
@@ -3536,6 +3572,10 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
  * 
  */
 private function searchDLListTextInputChange():void{
+	
+	if(textInput_searchInDLList.text == "リスト内を検索"){
+		return;
+	}
 	this.downloadedListManager.searchAndShow(dataGrid_downloaded, tileList_tag, textInput_searchInDLList.text);
 }
 
@@ -3544,8 +3584,13 @@ private function searchDLListTextInputChange():void{
  * 
  */
 private function searchTagListTextInputChange():void{
+	
 	if(isEnableLibrary){
 		var word:String = textInput_searchInTagList.text;
+		
+		if(word == "タグを検索"){
+			return;
+		}
 		
 		if(word.length > 0){
 			tileList_tag.dataProvider = this.libraryManager.searchTagAndShow(word);
@@ -3903,6 +3948,11 @@ private function saveStore():void{
 		if(this.thumbImgSizeForMyList != -1){
 			ConfigManager.getInstance().removeItem("thumbImgSizeForMyList");
 			ConfigManager.getInstance().setItem("thumbImgSizeForMyList", thumbImgSizeForMyList);
+		}
+		
+		if(this.thumbImgSizeForLibrary != -1){
+			ConfigManager.getInstance().removeItem("thumbImgSizeForLibrary");
+			ConfigManager.getInstance().setItem("thumbImgSizeForLibrary", thumbImgSizeForLibrary);
 		}
 		
 		if(this.thumbImgSizeForSearch != -1){
@@ -4618,11 +4668,20 @@ public function updatePlayList(index:int):void{
 	tileList_tag.invalidateDisplayList();
 	tileList_tag.validateNow();
 	
-	textInput_searchInDLList.text = word;
-	textInput_searchInTagList.text = tagWord;
-	
-	searchDLListTextInputChange();
-	searchTagListTextInputChange();
+	if(word == "リスト内を検索"){
+		searchDLListTextInputChange();
+		textInput_searchInDLList.text = word;
+	}else{
+		textInput_searchInDLList.text = word;
+		searchDLListTextInputChange();
+	}
+	if(tagWord == "タグを検索"){
+		searchTagListTextInputChange();
+		textInput_searchInTagList.text = tagWord;
+	}else{
+		textInput_searchInTagList.text = tagWord;
+		searchTagListTextInputChange();
+	}
 	
 	if(tree_library != null){
 		tree_library.selectedIndex = selectedIndex;
@@ -5024,6 +5083,12 @@ private function thumbSizeChangedForMyList(event:SliderEvent):void{
 	this.thumbImgSizeForMyList = event.value;
 	dataGrid_myList.rowHeight = 50*event.value;
 	dataGridColumn_thumbUrl.width = 60*event.value;
+}
+
+private function thumbSizeChangedForLibrary(event:SliderEvent):void{
+	this.thumbImgSizeForLibrary = event.value;
+	dataGrid_downloaded.rowHeight = 30*event.value;
+	dataGridColumn_LibraryThumbImage.width = 35*event.value;
 }
 
 private function donation():void{

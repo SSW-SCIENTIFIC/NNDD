@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="291" title="動画の情報を編集" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="300" title="動画の情報を編集" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 	
-	<mx:Script source="org/mineap/nndd/View/VideoEditDialog.as" />
+	<mx:Script source="org/mineap/nndd/view/VideoEditDialog.as" />
 	
-	<mx:Label id="label_videoTitle" text="タイトル:" left="10" top="10"/>
-	<mx:Label id="label_videoPath" text="ファイルパス:" left="10" top="66"/>
-	<mx:Label id="label_thumbImgPath" text="サムネイル画像のURLもしくはパス:" left="10" top="133"/>
-	<mx:Button label="参照" top="131" id="button_fileOpen" click="fileOpenButtonClicked(event)" left="219"/>
-	<mx:TextInput id="textInput_thumbImgPath" left="10" right="10" top="159"/>
-	<mx:Label text="エコノミーモード:" left="10" top="191"/>
-	<mx:ComboBox id="comboBox_isEconomyMode" width="87" top="189" left="122" selectedIndex="1" dataProvider="{economyTypeArray}">
+	<mx:Label id="label_videoTitle" text="ファイル名:" left="10" top="10"/>
+	<mx:TextInput height="22" left="10" top="36" right="10" editable="true" id="textInput_videoTitle"/>
+	
+	<mx:Label id="label_videoPath" text="ファイルの場所:" left="10" top="66"/>
+	<mx:Button label="参照" top="64" id="button_videoFileOpen" click="videoFileOpenButtonClicked(event)" left="110"/>
+	<mx:TextArea height="49" left="10" top="92" right="10" wordWrap="true" id="label_editVideoPath" editable="false"/>
+	
+	<mx:Label id="label_thumbImgPath" text="サムネイル画像のURLもしくはパス:" left="10" top="151"/>
+	<mx:Button label="参照" top="149" id="button_imgFileOpen" click="imageFileOpenButtonClicked(event)" left="219"/>
+	<mx:TextInput id="textInput_thumbImgPath" left="10" right="10" top="177"/>
+	
+	<mx:Label text="エコノミーモード:" left="10" top="209"/>
+	<mx:ComboBox id="comboBox_isEconomyMode" width="87" top="207" left="122" selectedIndex="1" dataProvider="{economyTypeArray}">
 	</mx:ComboBox>
+	
 	<mx:Button id="button_edit" right="10" bottom="10" width="50" label="編集"
 			   click="videoEditButtonClicked()"/>
 	<mx:Button label="キャンセル" right="64" bottom="10" id="button_cancel" click="videoEditCancelButtonClicked()"/>
-	<mx:TextArea height="31" left="10" top="92" right="10" wordWrap="true" id="label_editVideoPath" editable="false"/>
-	<mx:TextArea height="22" left="10" top="36" right="10" wordWrap="false" editable="false" id="textInput_videoTitle"/>
-
-	
+		
 </mx:TitleWindow>
