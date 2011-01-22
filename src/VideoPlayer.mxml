@@ -171,7 +171,7 @@
 				</mx:Canvas>
 				<ns1:VideoController id="videoController" backgroundAlpha="0.7" 
 									 alpha="1.0" backgroundColor="#FFFFFF" 
-									  borderStyle="solid" 
+									 borderStyle="solid" 
 									 horizontalCenter="0" bottom="40">
 				</ns1:VideoController>
 				<mx:Label id="label_playSourceStatus" rollOut="rollOut(event)" rollOver="rollOver(event)" color="#FFFFFF" right="10" top="10" initialize="label_playSourceStatusInit(event)"  fontWeight="bold"/>

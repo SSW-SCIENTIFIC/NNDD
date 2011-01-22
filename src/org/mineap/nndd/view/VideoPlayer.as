@@ -105,6 +105,7 @@ public function init(playerController:PlayerController, videoInfoView:VideoInfoV
 	
 	this.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:FlexEvent):void{
 		videoController.init(playerController, videoPlayer, logManager);
+		videoController.width = int(canvas_videoPlayer.width - canvas_videoPlayer.width/4);
 		videoController_under.init(playerController, videoPlayer, logManager, false);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpListener);
@@ -884,6 +885,9 @@ public function resetWindowPosition():void{
 
 private function resizeNow(event:ResizeEvent):void{
 	isResize = true;
+	if(videoController != null){
+		videoController.width = int(canvas_videoPlayer.width - canvas_videoPlayer.width/4);
+	}
 	followInfoView(lastRect);
 }
 
