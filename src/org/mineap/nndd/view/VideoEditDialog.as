@@ -160,7 +160,7 @@ private function createNewVideo():void{
 			// 新しいファイル名にvideoIdが含まれていないので付加
 			
 			var dotIndex:int = fileName.lastIndexOf(".");
-			if(dotIndex == -1){
+			if(dotIndex != -1){
 				// 拡張子がある
 				var videoTitle:String = fileName.substring(0, dotIndex);
 				var extension:String = fileName.substring(dotIndex);
@@ -176,7 +176,7 @@ private function createNewVideo():void{
 		
 		// 拡張子がついていなければつける
 		if(newFile.extension == null){
-			newFile = parentFile.resolvePath(fileName + _oldVideo.file.extension);
+			newFile = parentFile.resolvePath(fileName + "." +  _oldVideo.file.extension);
 		}
 		
 		// ファイルを移動
