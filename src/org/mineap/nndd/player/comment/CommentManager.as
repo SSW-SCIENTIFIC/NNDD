@@ -808,7 +808,7 @@ package org.mineap.nndd.player.comment
 								commentNomalTextArray[j][i].setStyle("fontSize", fontSize);
 							}
 							
-							if(!commentNomalTextArray[j][i].visible){
+							if(!commentNomalTextArray[j][i].visible || commentNomalTextArray[j][i].text == ""){
 								commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
 							}
 							commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height/15)*(i);
