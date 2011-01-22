@@ -792,19 +792,21 @@ package org.mineap.nndd.player.comment
 							
 							var fontSize:int = 0;
 							var command:int = (commentNomalTextArray[j][i]).size;
-							switch(command){
-								case Command.BIG:
-									fontSize = (commentNomalTextArray[j][i]).parent.height/15;
-									break;
-								case Command.SMALL:
-									fontSize = (commentNomalTextArray[j][i]).parent.height/25;
-									break;
-								case Command.MEDIUM:
-									fontSize = (commentNomalTextArray[j][i]).parent.height/20;
-									break;
+							if((commentNomalTextArray[j][i]).parent != null){
+								switch(command){
+									case Command.BIG:
+										fontSize = (commentNomalTextArray[j][i]).parent.height/15;
+										break;
+									case Command.SMALL:
+										fontSize = (commentNomalTextArray[j][i]).parent.height/25;
+										break;
+									case Command.MEDIUM:
+										fontSize = (commentNomalTextArray[j][i]).parent.height/20;
+										break;
+								}
+								fontSize = fontSize*videoInfoView.commentScale;
+								commentNomalTextArray[j][i].setStyle("fontSize", fontSize);
 							}
-							fontSize = fontSize*videoInfoView.commentScale;
-							commentNomalTextArray[j][i].setStyle("fontSize", fontSize);
 							
 							if(!commentNomalTextArray[j][i].visible){
 								commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
@@ -821,19 +823,21 @@ package org.mineap.nndd.player.comment
 						
 						var fontSize:int = 0;
 						var command:int = (commentShitaTextArray[i]).size;
-						switch(command){
-							case Command.BIG:
-								fontSize = (commentShitaTextArray[i]).parent.height/15;
-								break;
-							case Command.SMALL:
-								fontSize = (commentShitaTextArray[i]).parent.height/25;
-								break;
-							case Command.MEDIUM:
-								fontSize = (commentShitaTextArray[i]).parent.height/20;
-								break;
+						if((commentShitaTextArray[i]).parent != null){
+							switch(command){
+								case Command.BIG:
+									fontSize = (commentShitaTextArray[i]).parent.height/15;
+									break;
+								case Command.SMALL:
+									fontSize = (commentShitaTextArray[i]).parent.height/25;
+									break;
+								case Command.MEDIUM:
+									fontSize = (commentShitaTextArray[i]).parent.height/20;
+									break;
+							}
+							fontSize = fontSize*videoInfoView.commentScale;
+							commentShitaTextArray[i].setStyle("fontSize", fontSize);
 						}
-						fontSize = fontSize*videoInfoView.commentScale;
-						commentShitaTextArray[i].setStyle("fontSize", fontSize);
 						
 						commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
 						commentShitaTextArray[i].y = this.videoPlayer.canvas_video.height - (this.videoPlayer.canvas_video.height/15)*(i+2);
@@ -847,19 +851,21 @@ package org.mineap.nndd.player.comment
 						
 						var fontSize:int = 0;
 						var command:int = (commentUeTextArray[i]).size;
-						switch(command){
-							case Command.BIG:
-								fontSize = (commentUeTextArray[i]).parent.height/15;
-								break;
-							case Command.SMALL:
-								fontSize = (commentUeTextArray[i]).parent.height/25;
-								break;
-							case Command.MEDIUM:
-								fontSize = (commentUeTextArray[i]).parent.height/20;
-								break;
+						if((commentUeTextArray[i]).parent != null){
+							switch(command){
+								case Command.BIG:
+									fontSize = (commentUeTextArray[i]).parent.height/15;
+									break;
+								case Command.SMALL:
+									fontSize = (commentUeTextArray[i]).parent.height/25;
+									break;
+								case Command.MEDIUM:
+									fontSize = (commentUeTextArray[i]).parent.height/20;
+									break;
+							}
+							fontSize = fontSize*videoInfoView.commentScale;
+							commentUeTextArray[i].setStyle("fontSize", fontSize);
 						}
-						fontSize = fontSize*videoInfoView.commentScale;
-						commentUeTextArray[i].setStyle("fontSize", fontSize);
 						
 						commentUeTextArray[i].x = this.videoPlayer.canvas_video.width;
 						commentUeTextArray[i].y = (this.videoPlayer.canvas_video.height/15)*(i);
