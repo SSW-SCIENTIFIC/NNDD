@@ -456,7 +456,7 @@ private function fullScreen(event:FullScreenEvent):void{
 		vbox_videoPlayer.setConstraintValue("left", 5);
 		vbox_videoPlayer.setConstraintValue("right", 5);
 		vbox_videoPlayer.setConstraintValue("top", 58);
-		vbox_videoPlayer.setConstraintValue("backgroundColor", new int("0xb7babc"));
+		vbox_videoPlayer.setConstraintValue("backgroundColor", new int("0xFFFFFF"));
 		this.showStatusBar = true;
 		this.videoPlayer.button_ChangeFullScreen.label = Message.L_FULL;
 		if(this.videoInfoView.isHideUnderController){
