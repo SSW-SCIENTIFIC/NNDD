@@ -27,7 +27,7 @@ package org.mineap.nndd.versionCheck
 		
 		/**
 		 * 
-		 * @return 
+		 * @return 2.x.x
 		 * 
 		 */
 		public function get versionNumber():String
@@ -35,13 +35,12 @@ package org.mineap.nndd.versionCheck
 			var appXML:XML = NativeApplication.nativeApplication.applicationDescriptor;
 			var air:Namespace = appXML.namespaceDeclarations()[0];
 			var version:String = appXML.air::versionNumber;
-			version = version.substring(1);
 			return version;
 		}
 		
 		/**
 		 * 
-		 * @return 
+		 * @return 2.x.x (Beta)
 		 * 
 		 */
 		public function get versionLabel():String
