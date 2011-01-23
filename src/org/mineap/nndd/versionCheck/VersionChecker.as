@@ -2,6 +2,8 @@ package org.mineap.nndd.versionCheck
 {
 	import air.update.ApplicationUpdaterUI;
 	import air.update.events.DownloadErrorEvent;
+	import air.update.events.StatusFileUpdateErrorEvent;
+	import air.update.events.StatusUpdateErrorEvent;
 	import air.update.events.UpdateEvent;
 	
 	import flash.events.ErrorEvent;
@@ -54,6 +56,8 @@ package org.mineap.nndd.versionCheck
 			updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitializedEventHandler);
 			updater.addEventListener(DownloadErrorEvent.DOWNLOAD_ERROR, updaterDownloadErrorEventHandler);
 			updater.addEventListener(ErrorEvent.ERROR, updaterErrorEventHandler);
+			updater.addEventListener(StatusFileUpdateErrorEvent.FILE_UPDATE_ERROR, updaterErrorEventHandler);
+			updater.addEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, updaterErrorEventHandler);
 			updater.initialize();
 		}
 		
