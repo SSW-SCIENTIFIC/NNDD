@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- このファイルを http://sourceforge.jp/projects/nndd/wiki/Version に添付します。 -->
+<update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
+	<version>v2.0.0</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/49179/NNDDv2_0_0.air</url>
+	<description><![CDATA[
+v2.0.0
+・GUIの色合いを変更
+・ライブラリ
+　・高速化(SQLite版ライブラリ)
+　・ファイル/マイリスト一覧を一つのツリーに統合
+　・サムネイル画像サイズ変更機能
+　・ファイル名変更機能
+　・動画投稿日閲覧
+・外部Player対応(Adobe AIR 2.5必須、ネイティブインストーラのみ)
+・フォントサイズ変更機能
+・Playerのリサイズ時にコメントを消さないように変更
+・Playerの半透明コントローラの横幅を動的に変更するようにした
+
+v2.0.0 Alpha -> Beta
+・v1.xのライブラリが正しく読み込めない問題を修正
+・設定ファイルが存在しない場合にv1.xの設定ファイルを読み込むよう変更
+・フルスクリーンから復帰するとPlayerの色が一部おかしくなる問題を修正
+
+]]></description>
+</update>
