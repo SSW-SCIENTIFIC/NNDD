@@ -200,13 +200,13 @@ package org.mineap.nndd.player
 		
 		private var nicoRelationInfoLoader:ApiGetRelation = null;
 		
-		[Embed(source="player/NNDDicons_play_20x20.png")]
+		[Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play:Class;
 		
-		[Embed(source="player/NNDDicons_pause_20x20.png")]
+		[Embed(source="/player/NNDDicons_pause_20x20.png")]
         private var icon_Pause:Class;
 		
-		[Embed(source="player/NNDDicons_stop_20x20.png")]
+		[Embed(source="/player/NNDDicons_stop_20x20.png")]
         private var icon_Stop:Class;
 		
 		
