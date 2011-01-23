@@ -1007,8 +1007,15 @@ private function downloadedItemHandler(event:ContextMenuEvent):void {
 //						}
 						if(dataGrid_downloaded.selectedItem != null){
 							dataGrid_downloaded.selectedItem.dataGridColumn_videoName = videoEditDialog.newVideo.file.name;
+							dataGrid_downloaded.selectedItem.dataGridColumn_videoPath = videoEditDialog.newVideo.getDecodeUrl();
 						}
-						libraryManager.update(videoEditDialog.newVideo, true);
+						if(libraryManager.update(videoEditDialog.newVideo, true)){
+							// 成功
+						}else{
+							// 新しくビデオIDが追加された
+							libraryManager.remove(videoEditDialog.oldVideo.key, true);
+							libraryManager.add(videoEditDialog.newVideo, true);
+						}
 					}catch(error:IOError){
 						Alert.show("ファイル名の変更に失敗しました。" + error, Message.M_ERROR)
 						logManager.addLog("ファイル名の変更に失敗:" + error + ":" + error.getStackTrace());
@@ -3406,8 +3413,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 				
 				var filePath:String = this.downloadedListManager.getVideoPath(this.dataGrid_downloaded.selectedIndex);
 				if(filePath.indexOf("http://") == 0){
-					newCommentOnlyDownloadButton.label = "コメントのみ更新";
-					newCommentDownloadButton.label = "動画以外を更新";
+					newCommentOnlyDownloadButton.label = "コメント";
+					newCommentDownloadButton.label = "動画以外";
 					newCommentOnlyDownloadButton.enabled = true;
 					newCommentDownloadButton.enabled = true;
 					
@@ -3421,8 +3428,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 //				trace(array);
 				if(videoID == null){
 //					trace(fileName);
-					newCommentOnlyDownloadButton.label = "コメントのみ更新";
-					newCommentDownloadButton.label = "動画以外を更新";
+					newCommentOnlyDownloadButton.label = "コメント";
+					newCommentDownloadButton.label = "動画以外";
 					newCommentOnlyDownloadButton.enabled = true;
 					newCommentDownloadButton.enabled = true;
 					if(isCommentOnly){
@@ -3455,8 +3462,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 						
 						renewDownloadManager = new RenewDownloadManager(downloadedProvider, logManager);
 						renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_FAIL, function(event:Event):void{
-							newCommentOnlyDownloadButton.label = "コメントのみ更新";
-							newCommentDownloadButton.label = "動画以外を更新";
+							newCommentOnlyDownloadButton.label = "コメント";
+							newCommentDownloadButton.label = "動画以外";
 				
 							newCommentOnlyDownloadButton.enabled = true;
 							newCommentDownloadButton.enabled = true;
@@ -3464,8 +3471,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							renewDownloadManager = null;
 						});
 						renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_CANCEL, function(event:Event):void{
-							newCommentOnlyDownloadButton.label = "コメントのみ更新";
-							newCommentDownloadButton.label = "動画以外を更新";
+							newCommentOnlyDownloadButton.label = "コメント";
+							newCommentDownloadButton.label = "動画以外";
 				
 							newCommentOnlyDownloadButton.enabled = true;
 							newCommentDownloadButton.enabled = true;
@@ -3514,8 +3521,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							
 							libraryManager.add(video, true);
 							
-							newCommentOnlyDownloadButton.label = "コメントのみ更新";
-							newCommentDownloadButton.label = "動画以外を更新";
+							newCommentOnlyDownloadButton.label = "コメント";
+							newCommentDownloadButton.label = "動画以外";
 				
 							newCommentOnlyDownloadButton.enabled = true;
 							newCommentDownloadButton.enabled = true;
@@ -3540,8 +3547,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 					}
 				}else{
 					trace(fileName);
-					newCommentOnlyDownloadButton.label = "コメントのみ更新";
-					newCommentDownloadButton.label = "動画以外を更新";
+					newCommentOnlyDownloadButton.label = "コメント";
+					newCommentDownloadButton.label = "動画以外";
 					newCommentOnlyDownloadButton.enabled = true;
 					newCommentDownloadButton.enabled = true;
 					if(isCommentOnly){
@@ -3555,8 +3562,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 			}
 		}else{
 			
-			newCommentOnlyDownloadButton.label = "コメントのみ更新";
-			newCommentDownloadButton.label = "動画以外を更新";
+			newCommentOnlyDownloadButton.label = "コメント";
+			newCommentDownloadButton.label = "動画以外";
 			
 			renewDownloadManager.close();
 			renewDownloadManager = null;
