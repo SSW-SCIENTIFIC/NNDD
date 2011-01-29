@@ -7,12 +7,14 @@ package org.mineap.nndd.player
 	
 	import mx.controls.Alert;
 	
-	import org.mineap.nndd.player.comment.Comments;
-	import org.mineap.nndd.library.ILibraryManager;
-	import org.mineap.nndd.library.LibraryManagerBuilder;
+	import org.mineap.nicovideo4as.model.Comment;
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
+	import org.mineap.nndd.library.ILibraryManager;
+	import org.mineap.nndd.library.LibraryManagerBuilder;
+	import org.mineap.nndd.player.comment.Command;
+	import org.mineap.nndd.player.comment.Comments;
 	
 	/**
 	 * NGListManager.as
@@ -24,6 +26,7 @@ package org.mineap.nndd.player
 	 */	
 	public class NGListManager
 	{
+		
 		private var playerController:PlayerController;
 		private var videoPlayer:VideoPlayer;
 		private var videoInfoView:VideoInfoView;
@@ -123,7 +126,7 @@ package org.mineap.nndd.player
 				var ngId:String = videoInfoView.ngListProvider[i].ng_word_column;
 				var ngKind:String = videoInfoView.ngListProvider[i].ng_kind_column;
 				
-				this.ngMap[ngId] = ngKind;
+				this.ngMap[ngId.toUpperCase()] = ngKind;
 				
 			}
 		}
@@ -133,7 +136,7 @@ package org.mineap.nndd.player
 		 * @return 
 		 * 
 		 */
-		public function getNgWordList():Array{
+		public function get ngWordList():Array{
 			var array:Array = new Array();
 			for(var i:int = 0; i<videoInfoView.ngListProvider.length; i++){
 				if(videoInfoView.ngListProvider[i].ng_kind_column == Comments.NG_KIND_ARRAY[Comments.NG_WORD]){
@@ -144,10 +147,10 @@ package org.mineap.nndd.player
 		}
 		
 		/**
-		 * 指定されたidもしくはwordがNG(もしくは許可)かどうかチェックし、結果を返します。
+		 * 指定されたidがNG(もしくは許可)かどうかチェックし、結果を返します。
 		 * 
-		 * @param id
-		 * @param ngKind
+		 * @param id ユーザID
+		 * @param ngKind NGか許可か
 		 */
 		public function isNgId(id:String, ngKind:String):Boolean{
 			var kind:String = this.ngMap[id];
@@ -156,6 +159,30 @@ package org.mineap.nndd.player
 			}else{
 				return false;
 			}
+		}
+		
+		/**
+		 * 指定されたコマンドがNGコマンドとして登録されているかどうかチェックします
+		 * 
+		 * @param command コマンド文字列。
+		 * @return コマンドがNGとして登録されている場合にtrueを返します。空白区切りのコマンド群を指定すると、コマンド群に含まれるコマンドに一つ以上NGコマンドが存在した場合にtrueを返します。
+		 * 
+		 */
+		public function isNgCommand(command:String):Boolean{
+			//　分割
+			var array:Array = command.toUpperCase().split(" ");
+			
+			for each(var com:String in array){
+				
+				var kind:String = this.ngMap[com];
+				
+				if(Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind){
+					return true;
+				}
+				
+			}
+			
+			return false;
 		}
 		
 		/**

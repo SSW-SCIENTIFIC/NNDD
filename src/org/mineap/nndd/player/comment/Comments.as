@@ -23,7 +23,7 @@ package org.mineap.nndd.player.comment
 	public class Comments
 	{
 		
-		public static const NG_KIND_ARRAY:Array = new Array("ID","単語","許可ID");
+		public static const NG_KIND_ARRAY:Array = new Array("ID","単語","許可ID","コマンド");
 		public static const NG_ID:int = 0;
 		public static const NG_WORD:int = 1;
 		public static const PERMISSION_ID:int = 2;
@@ -254,7 +254,7 @@ package org.mineap.nndd.player.comment
 			var index:int = 0;
 			
 			//NGワード文字列
-			var ngWordList:Array = ngListManager.getNgWordList();
+			var ngWordList:Array = ngListManager.ngWordList;
 			
 			var lastTime:int = 0;
 			for(var j:int=0; j<this.commentArray.length; j++){
@@ -290,9 +290,11 @@ package org.mineap.nndd.player.comment
 							//NGIDだった。
 							this.commentArray[index].text = "";
 							comment = "#---- このコメントは表示されません(NGID) ----#";
+						}else if(ngListManager.isNgCommand(this.commentArray[index].mail)){
+							//NGコマンドだった
+							this.commentArray[index].text = "";
+							comment = "#---- このコメントは表示されません(NGコマンド) ----#";
 						}else{
-							//NGIDではない。
-							
 							//NGワードか？
 							for each(var ngword:String in ngWordList){
 								if(comment.indexOf(ngword) != -1){
