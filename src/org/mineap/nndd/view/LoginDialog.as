@@ -110,7 +110,7 @@ private function login():void
 			try{
 				_login.close();
 			}catch(error:Error){
-				
+				trace(error.getStackTrace());
 			}
 		}
 		loginButton.label = LoginDialog.LABEL_LOGIN;
@@ -164,9 +164,9 @@ private function loginFail(event:ErrorEvent):void
 	if(event.text != Login.LOGIN_FAIL_MESSAGE){
 		
 		Alert.show("ログインに失敗しました。以下の原因が考えられます。\n" +
-			"1.インターネットに接続されていない。\n" +
-			"2.ニコニコ動画へのアクセスが制限されている。\n" +
-			"3.ニコニコ動画のログインサーバーが応答しない。\n" +
+			"\t1.インターネットに接続されていない。\n" +
+			"\t2.ニコニコ動画へのアクセスが制限されている。\n" +
+			"\t3.ニコニコ動画のログインサーバーが応答しない。\n\n" +
 			event.text, Message.M_ERROR);	
 		logManager.addLog("ログイン失敗:ニコニコ動画にアクセスできない:" + event);
 		

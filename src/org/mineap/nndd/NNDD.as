@@ -2059,16 +2059,20 @@ private function readStore(isLogout:Boolean = false):void{
 	}
 	
 	/* ログイン処理 */
+	createLoginDialog(isStore, isAutoLogin, name, pass, isLogout);
+	
+}
+
+private function createLoginDialog(isStore:Boolean, isAutoLogin:Boolean, name:String, pass:String, isLogout:Boolean):void{
 	// ログインダイアログの作成
 	loginDialog = PopUpManager.createPopUp(this, LoginDialog, true) as LoginDialog;
-	loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, isStore, isAutoLogin, logManager, name, pass, isLogout);
+	loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, isStore, isAutoLogin, LogManager.instance, name, pass, isLogout);
 	// ログイン時のイベントリスナを追加
 	loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
 	loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
 	loginDialog.addEventListener(LoginDialog.NO_LOGIN, noLogin);
 	// ダイアログを中央に表示
 	PopUpManager.centerPopUp(loginDialog);
-	
 }
 
 /**
@@ -3858,9 +3862,30 @@ private function deleteDirectory():void{
  */
 private function logoutButtonClicked():void{
 	
-	this.logoutButton.enabled = false;
-	saveStore();
-	this.logout();
+	if(logoutButton.label == "ログイン"){
+		
+		var confValue:String = ConfigManager.getInstance().getItem("storeNameAndPass");
+		var isStore:Boolean = ConfUtil.parseBoolean(confValue);
+		var name:String = "";
+		var pass:String = "";
+		if(isStore){
+			var storedValue:ByteArray = EncryptedLocalStore.getItem("userName");
+			if(storedValue != null){
+				name = storedValue.readUTFBytes(storedValue.length);
+			}
+			storedValue = EncryptedLocalStore.getItem("password");
+			if(storedValue != null){
+				pass = storedValue.readUTFBytes(storedValue.length);
+			}
+		}
+		
+		createLoginDialog(isStore, false, name, pass, false);
+		
+	}else{
+		this.logoutButton.enabled = false;
+		saveStore();
+		this.logout();
+	}
 }
 
 /**
