@@ -509,14 +509,14 @@ package org.mineap.nndd.library.sqlite.dao
 						if(enableTran){
 							DbAccessHelper.instance.connection.commit();
 						}
-						return null;
+						return vector;
 					}
 					
 					if(result.data == null){
 						if(enableTran){
 							DbAccessHelper.instance.connection.commit();
 						}
-						return null;
+						return vector;
 					}
 					
 					if(result.data.length > 0){

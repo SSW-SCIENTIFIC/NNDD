@@ -737,7 +737,14 @@ package org.mineap.nndd.library.sqlite
 			
 			var vector:Vector.<NNDDVideo> = NNDDVideoDao.instance.selectNNDDVideoByFile(saveDir, true, false, isShowAll);
 			
-			trace("動画を抽出:" + (new Date().time - date.time) + " ms, " + vector.length + "件");
+			var count:int = 0;
+			if(vector != null){
+				count = vector.length;
+			}else{
+				vector = new Vector.<NNDDVideo>();
+			}
+			
+			trace("動画を抽出:" + (new Date().time - date.time) + " ms, " + count + "件");
 			
 			return vector;
 		}
