@@ -12,10 +12,6 @@ package org.mineap.nndd
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
 	
-	import org.mineap.nndd.player.comment.Command;
-	import org.mineap.nndd.model.NNDDVideo;
-	import org.mineap.nndd.util.PathMaker;
-	import org.mineap.nndd.util.ThumbInfoAnalyzer;
 	import org.mineap.nicovideo4as.CommentLoader;
 	import org.mineap.nicovideo4as.Login;
 	import org.mineap.nicovideo4as.ThumbImgLoader;
@@ -31,6 +27,10 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.model.NgUp;
 	import org.mineap.nicovideo4as.model.VideoType;
 	import org.mineap.nicovideo4as.util.HtmlUtil;
+	import org.mineap.nndd.model.NNDDVideo;
+	import org.mineap.nndd.player.comment.Command;
+	import org.mineap.nndd.util.PathMaker;
+	import org.mineap.nndd.util.ThumbInfoAnalyzer;
 
 	/**
 	 * ニコニコ動画にアクセスし、ダウンロードを行います。処理は以下の順に進行します。<br>
@@ -437,7 +437,7 @@ package org.mineap.nndd
 			//リスナ追加
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_SUCCESS, watchSuccess);
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_FAIL, function(event:ErrorEvent):void{
-				(event.target as URLLoader).close();
+				(event.target as WatchVideoPage).close();
 				_logManager.addLog(WATCH_FAIL + ":" +  _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				trace(WATCH_FAIL + ":" +  _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(WATCH_FAIL, false, false, event.text));
