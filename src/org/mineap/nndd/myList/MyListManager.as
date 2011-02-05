@@ -7,6 +7,7 @@ package org.mineap.nndd.myList
 	
 	import mx.controls.Alert;
 	
+	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
@@ -17,7 +18,6 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.util.MyListUtil;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.TreeDataBuilder;
-	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.util.config.ConfUtil;
 
 	/**
@@ -481,20 +481,43 @@ package org.mineap.nndd.myList
 				var fileIO:FileIO = new FileIO(LogManager.instance);
 				var xml:XML = fileIO.loadXMLSync(file.url, true);
 				
-				for each(var myList:XML in xml.children()){
+				var xmlList:XMLList = xml.children();
+				var myList:XML = searchXMLFromMyListXML(xmlList, myListName);
+				
+				if(myList != null){
+					myList.@sortFiledName = decodeURIComponent(myListSortType.sortFiledName);
+					myList.@sortFiledDescending = myListSortType.sortFiledDescending;
 					
-					if(decodeURIComponent(myList.@name) == myListName){
-						myList.@sortFiledName = decodeURIComponent(myListSortType.sortFiledName);
-						myList.@sortFiledDescending = myListSortType.sortFiledDescending;
-						break;
-					}
+					fileIO.saveXMLSync(file, xml);
 				}
-				
-				fileIO.saveXMLSync(file, xml);
-				
 			}
 			
 		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		private function searchXMLFromMyListXML(xmlList:XMLList, targetName:String):XML
+		{
+			for each(var myList:XML in xmlList){
+				
+				if("true" == myList.@isDir){
+					var xml:XML = searchXMLFromMyListXML(myList.children(), targetName);
+					if(xml != null){
+						return xml;
+					}
+						
+				}else{
+					if(decodeURIComponent(myList.@name) == targetName){
+						return myList;
+					}
+				}
+			}
+			return null;
+		}
+		
 		
 		/**
 		 * 
@@ -504,7 +527,7 @@ package org.mineap.nndd.myList
 		 */
 		public function getMyListSortType(myListName:String):MyListSortType{
 			
-			var file:File = new File(LibraryManager.instance.systemFileDir.url + "/myLists.xml");
+			var file:File = LibraryManager.instance.systemFileDir.resolvePath("myLists.xml");
 			
 			var name:String = null;
 			var descending:Boolean = false;
@@ -513,7 +536,41 @@ package org.mineap.nndd.myList
 				var fileIO:FileIO = new FileIO(LogManager.instance);
 				var xml:XML = fileIO.loadXMLSync(file.url, true);
 				
-				for each(var myList:XML in xml.children()){
+				var xmls:XMLList = xml.children();
+				
+				var sortType:MyListSortType = seachSortTypeFromXML(xmls, myListName);
+				
+				if(sortType != null){
+					name = sortType.sortFiledName;
+					descending = sortType.sortFiledDescending;
+				}
+			}
+			
+			return new MyListSortType(name, descending);
+		}
+		
+		/**
+		 * 引数で指定されたXMLListから、targetNameで指定された名称のMyListSortTypeを探して返します。
+		 * 
+		 * @param xmlList
+		 * @param targetName
+		 * @return 
+		 * 
+		 */
+		private function seachSortTypeFromXML(xmlList:XMLList, targetName:String):MyListSortType
+		{
+			for each(var myList:XML in xmlList){
+				
+				if("true" == myList.@isDir){
+					var subList:XMLList = myList.children();
+					var sortType:MyListSortType = seachSortTypeFromXML(subList, targetName);
+					
+					if(sortType != null){
+						return sortType;
+					}
+					
+				}else{
+					
 					var tempName:String = null;
 					try{
 						tempName = decodeURIComponent(myList.@name);
@@ -521,18 +578,16 @@ package org.mineap.nndd.myList
 						tempName = myList.@name;
 					}
 					
-					if(tempName == myListName){
-						name = myList.@sortFiledName;
-						descending = ConfUtil.parseBoolean(myList.@sortFiledDescending.toString());
-						break;
+					if(tempName == targetName){
+						var name:String = myList.@sortFiledName;
+						var descending:Boolean = ConfUtil.parseBoolean(myList.@sortFiledDescending.toString());
+						return new MyListSortType(name, descending);
 					}
 				}
-				
 			}
 			
-			return new MyListSortType(name, descending);
+			return null;
 		}
-		
 		
 		/**
 		 * 
