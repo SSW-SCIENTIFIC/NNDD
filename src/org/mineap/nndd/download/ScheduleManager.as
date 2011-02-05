@@ -155,7 +155,8 @@ package org.mineap.nndd.download
 				//ダウンロード中ではないか？
 				if(!this._isDownloading){
 					this._logManager.addLog("ダウンロードをスケジュール実行:" + new Date().toLocaleString());
-					this._downloadManager.next();
+					// スキップフラグを無視する
+					this._downloadManager.next(true);
 					this._isDownloading = true;
 				}else{
 					//すでにダウンロード中。タイマー再起動。

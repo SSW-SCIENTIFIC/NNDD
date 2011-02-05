@@ -143,21 +143,23 @@ package org.mineap.nndd.download
 				col_videoName:video.videoName,
 				col_videoUrl:url,
 				col_status:"待機中",
-				col_id:item.getDownloadID()
+				col_id:item.getDownloadID(),
+				col_statusType:DownloadStatusType.NOT_START
 			});
 			
 			showCountRest();
 			
 			if(!isDownloading && isStart){
-				//"待機中"のものを探してダウンロード開始
-				next();
+				// "待機中"のものを探してダウンロード開始
+				// ユーザ操作のDL開始なのでスキップしたのもやる
+				next(true);
 			}
 			
 			return true;
 		}
 		
 		/**
-		 * 
+		 * DLリストの長さを返します。
 		 * @return 
 		 * 
 		 */
@@ -169,14 +171,37 @@ package org.mineap.nndd.download
 		 * 次のダウンロードを開始します。
 		 * キューを上から探索し、ダウンロード済みでないものを見つけたらダウンロードを開始します。
 		 * 
+		 * @param ignoreSkipFlag キューを上から探索した際、スキップフラグがtrueに設定されている動画のDLを行うかどうかです。
+		 * 
 		 */
-		public function next():void{
+		public function next(ignoreSkipFlag:Boolean):void{
 			isCancel = false;
 			
 			if(mailaddress != "" && password != ""){
 				if(isDownloading == false){
+					
+					if(ignoreSkipFlag){
+						// Complete以外をNotstartに上書き
+						stop();
+					}
+					
 					for(var i:int = 0; downloadProvider.length > i; i++){
-						if(downloadProvider[i].col_status.indexOf("待機中") != -1){
+
+						if(downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER){
+							if(ignoreSkipFlag){
+								// スキップしない
+							}else{
+								// スキップフラグがtrueなら次へ
+								continue;
+							}
+						}
+						if(downloadProvider[i].col_statusType == DownloadStatusType.DOWNLOADEING){
+							// ココにDownloadingがあるのはおかしい。NOT_STARTで上書き
+							downloadProvider[i].col_statusType = DownloadStatusType.NOT_START;
+						}
+						
+						if(downloadProvider[i].col_statusType == DownloadStatusType.NOT_START
+							|| downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER){
 							
 							this.queueId = downloadProvider[i].col_id;
 							this.queueVideoName = downloadProvider[i].col_videoName;
@@ -188,7 +213,20 @@ package org.mineap.nndd.download
 								timerCount = timerCount*(retryCount*2);
 							}
 							if(retryCount >= 7){
-								stop();
+								// リトライオーバー
+								downloadProvider.setItemAt({
+									col_videoName:downloadProvider[i].col_videoName,
+									col_videoUrl:downloadProvider[i].col_videoUrl,
+									col_status:downloadProvider[i].col_status,
+									col_id:downloadProvider[i].col_id,
+									col_downloadedPath:downloadProvider[i].col_downloadedPath,
+									col_statusType:DownloadStatusType.RETRY_OVER
+								}, i);
+								
+								retryCount = 0;
+								isDownloading = false;
+								
+								next(false);
 								return;
 							}
 							
@@ -197,7 +235,7 @@ package org.mineap.nndd.download
 							}
 							
 							var retry:String = "";
-							if(isRetry){
+							if(this.isRetry){
 								retry = "\nリトライしています";
 							}
 							
@@ -207,7 +245,8 @@ package org.mineap.nndd.download
 								col_videoUrl:downloadProvider[i].col_videoUrl,
 								col_status:timerCount+"秒後にDL開始" + retry,
 								col_id:downloadProvider[i].col_id,
-								col_downloadedPath:downloadProvider[i].col_downloadedPath
+								col_downloadedPath:downloadProvider[i].col_downloadedPath,
+								col_statusType:DownloadStatusType.NOT_START
 							}, i);
 							timer.addEventListener(TimerEvent.TIMER, function(event:TimerEvent):void{
 								timerCount--;
@@ -217,7 +256,8 @@ package org.mineap.nndd.download
 									col_videoUrl:downloadProvider[index].col_videoUrl,
 									col_status:timerCount+"秒後にDL開始" + retry,
 									col_id:downloadProvider[index].col_id,
-									col_downloadedPath:downloadProvider[index].col_downloadedPath
+									col_downloadedPath:downloadProvider[index].col_downloadedPath,
+									col_statusType:DownloadStatusType.NOT_START
 								}, index);
 							});
 							timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
@@ -314,11 +354,27 @@ package org.mineap.nndd.download
 						timer.stop();
 					}
 					
-					setStatus("待機中\nキャンセルされました", false, queueVideoName, index);
+					setStatus("待機中\nキャンセルされました", DownloadStatusType.NOT_START, queueVideoName, index);
 					
 					isDownloading = false;
 					showCountRest();
 				}
+				
+				// 完了以外のステータスを Not_start に更新
+				for(var i:int = 0; downloadProvider.length < index; index++){
+					if(DownloadStatusType.COMPLETE == downloadProvider[i].col_status){
+						continue;
+					}
+					downloadProvider.setItemAt({
+						col_videoName:downloadProvider[i].col_videoName,
+						col_videoUrl:downloadProvider[i].col_videoUrl,
+						col_status:downloadProvider[i].col_status,
+						col_id:downloadProvider[i].col_id,
+						col_downloadedPath: downloadProvider[i].col_downloadedPath,
+						col_statusType: DownloadStatusType.NOT_START
+					}, i);
+				}
+				
 			}
 		}
 		
@@ -339,7 +395,7 @@ package org.mineap.nndd.download
 		}
 		
 		/**
-		 * 
+		 * ダウンロード済みの動画をDLリストから削除します。
 		 * 
 		 */
 		public function removeDownloadedVideo():void{
@@ -347,15 +403,17 @@ package org.mineap.nndd.download
 				if(event.detail == Alert.OK){
 					
 					var index:int = 0;
-					while(true){
-						var object:Object = downloadProvider[index];
-						if(true == object.col_isDownloaded){
-							downloadProvider.removeItemAt(index);
-						}else{
-							index++;
-						}
-						if(index >= downloadProvider.length){
-							break;
+					if(downloadProvider.length > 0){
+						while(true){
+							var object:Object = downloadProvider[index];
+							if(DownloadStatusType.COMPLETE == object.col_statusType){
+								downloadProvider.removeItemAt(index);
+							}else{
+								index++;
+							}
+							if(index >= downloadProvider.length){
+								break;
+							}
 						}
 					}
 					
@@ -421,11 +479,13 @@ package org.mineap.nndd.download
 		 */
 		public function showCountRest():int{
 			var count:int = 0;
-			if(isDownloading){
-				count++;
-			}
+//			if(isDownloading){
+//				count++;
+//			}
 			for(var i:int = 0; i<downloadProvider.length ;i++ ){
-				if(downloadProvider[i].col_status.indexOf("待機中") != -1){
+				if(downloadProvider[i].col_statusType == DownloadStatusType.DOWNLOADEING
+					|| downloadProvider[i].col_statusType == DownloadStatusType.NOT_START
+					|| downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER){
 					count++;
 				}
 			}
@@ -527,7 +587,7 @@ package org.mineap.nndd.download
 			
 			var index:int = searchQueueIndexByQueueId(queueId);
 			
-			setStatus("進行中\n" + status, false, queueVideoName, index, "", newVideoName);
+			setStatus("進行中\n" + status, DownloadStatusType.DOWNLOADEING, queueVideoName, index, "", newVideoName);
 			
 			if(newVideoName != null){
 				queueVideoName = newVideoName;
@@ -570,7 +630,7 @@ package org.mineap.nndd.download
 			
 			logManager.addLog(status + ":" + event.type + ":" + event.text);
 			var index:int = searchQueueIndexByQueueId(queueId);
-			setStatus("進行中\n" + status, false, queueVideoName, index, "", newVideoName);
+			setStatus("進行中\n" + status, DownloadStatusType.DOWNLOADEING, queueVideoName, index, "", newVideoName);
 			
 			if(newVideoName != null){
 				queueVideoName = newVideoName;
@@ -596,7 +656,7 @@ package org.mineap.nndd.download
 					
 					var index:int = searchQueueIndexByQueueId(queueId);
 					setStatus("動画をDL中\n" + new int((event.bytesLoaded/event.bytesTotal)*100) + "%\n" + 
-							formatter.format(loadedValue)+"MB/"+formatter.format(totalValue)+"MB", false, queueVideoName, index);
+							formatter.format(loadedValue)+"MB/"+formatter.format(totalValue)+"MB", DownloadStatusType.DOWNLOADEING, queueVideoName, index);
 				}
 			}
 		}
@@ -652,7 +712,7 @@ package org.mineap.nndd.download
 			
 			logManager.addLog("動画のダウンロード完了:" + video.getDecodeUrl());
 			var index:int = searchQueueIndexByQueueId(queueId);
-			setStatus("動画保存済\n右クリックから再生できます。", true, queueVideoName, index, video.getDecodeUrl());
+			setStatus("動画保存済\n右クリックから再生できます。", DownloadStatusType.COMPLETE, queueVideoName, index, video.getDecodeUrl());
 			
 			logManager.addLog("***動画取得完了***");
 				
@@ -670,7 +730,7 @@ package org.mineap.nndd.download
 			
 			/** **/
 			if(!isCancel && isDownloading == false){
-				next();
+				next(false);
 			}
 			
 		}
@@ -695,7 +755,7 @@ package org.mineap.nndd.download
 					}
 					isDownloading = false;
 					var index:int = searchQueueIndexByQueueId(queueId);
-					setStatus("待機中\n" + status, false, queueVideoName, index);
+					setStatus("待機中\n" + status, DownloadStatusType.NOT_START, queueVideoName, index);
 					showCountRest();
 				}
 			}else if(event.type == NNDDDownloader.DOWNLOAD_PROCESS_ERROR){
@@ -711,8 +771,10 @@ package org.mineap.nndd.download
 					isDownloading = false;
 					showCountRest();
 					var index:int = searchQueueIndexByQueueId(queueId);
-					setStatus("待機中\n" + status, false, queueVideoName, index);
-					next();
+					setStatus("待機中\n" + status, DownloadStatusType.NOT_START, queueVideoName, index);
+					
+					// 自動リトライ
+					next(false);
 				}
 			}
 			this._nnddDownloader = null;
@@ -720,14 +782,17 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * DLリスト上の指定されたqIndexの動画について、状態を再設定します。
 		 * 
 		 * @param status
-		 * @param index
-		 * @param path 省略可能
+		 * @param isDownloaded
+		 * @param videoName
+		 * @param qIndex
+		 * @param path
 		 * @param newVideoName
 		 * 
 		 */
-		public function setStatus(status:String, isDownloaded:Boolean, videoName:String, qIndex:int, path:String = "", newVideoName:String = null):void{
+		public function setStatus(status:String, statusType:DownloadStatusType, videoName:String, qIndex:int, path:String = "", newVideoName:String = null):void{
 			
 			if(qIndex == -1){
 				return;
@@ -746,7 +811,7 @@ package org.mineap.nndd.download
 						col_status:status,
 						col_id:downloadProvider[qIndex].col_id,
 						col_downloadedPath: path,
-						col_isDownloaded: isDownloaded
+						col_statusType: statusType
 					}, qIndex);
 				}
 			}
@@ -871,7 +936,7 @@ package org.mineap.nndd.download
 					xml.status = encodeURIComponent(downloadProvider[i].col_status);
 					xml.downloadedPath = encodeURIComponent(downloadProvider[i].col_downloadedPath);
 					xml.col_id = encodeURIComponent(downloadProvider[i].col_id);
-					xml.isDownloaded = encodeURIComponent(downloadProvider[i].col_isDownloaded);
+					xml.statusType = encodeURIComponent(downloadProvider[i].col_statusType.value);
 					
 					saveXML.appendChild(xml);
 					
@@ -936,13 +1001,20 @@ package org.mineap.nndd.download
 						}
 						
 						var status:String = decodeURIComponent(xmlList[i].status);
-						var isDownloaded:Boolean = false;
+						var statusType:DownloadStatusType = DownloadStatusType.NOT_START;
 						
-						if(status.indexOf("動画保存済") == -1){
-							isDownloaded = true;
+						if(status.indexOf("動画保存済") != -1){
+							statusType = DownloadStatusType.COMPLETE;
 						}
 						if("true" == xmlList[i].isDownloaded){
-							isDownloaded = true;
+							statusType = DownloadStatusType.COMPLETE;
+						}
+						if("0" == xmlList[i].statusType){
+							statusType = DownloadStatusType.COMPLETE;
+						}else if("1" == xmlList[i].statusType 
+								|| "2" == xmlList[i].statusType 
+								|| "3" == xmlList[i].statusType){
+							statusType = DownloadStatusType.NOT_START;
 						}
 							
 						downloadProvider.addItem({
@@ -951,7 +1023,7 @@ package org.mineap.nndd.download
 							col_status:status,
 							col_id:id,
 							col_downloadedPath: decodeURIComponent(xmlList[i].downloadedPath),
-							col_isDownloaded:isDownloaded
+							col_statusType: statusType
 						});
 					}
 					

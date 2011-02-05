@@ -1221,7 +1221,7 @@
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:Button id="button_downloadStart" left="10" top="0" width="65" label="DL開始"
-					   click="downloadManager.next()"/>
+					   click="downloadManager.next(true)"/>
 			<mx:Button id="button_downloadCancel" left="79" top="0" width="65" label="DL中止"
 					   click="downloadManager.stop()"/>
 			<mx:VRule width="20" height="22" left="148" top="0"/>
