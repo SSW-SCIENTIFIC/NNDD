@@ -272,12 +272,17 @@ package org.mineap.nndd.library.sqlite
 			
 			try{
 				
+				_logger.addLog("データベースのテーブルを作成");
 				_dbAccessHelper.dropTables();
 				_dbAccessHelper.createTables();
 				
 				var libraryManager:LibraryManager = LibraryManager.instance;
 				libraryManager.changeLibraryDir(this.libraryDir, false);
-				libraryManager.loadLibrary();
+				_logger.addLog("読み込み先XML:" + libraryManager.libraryFile.nativePath);
+				if(!libraryManager.loadLibrary()){
+					_logger.addLog("読み込み先XMLが存在しないため中断");
+					throw new Error("読み込み先XMLが存在しないため中断");
+				}
 				var vector:Vector.<NNDDVideo> = libraryManager.getNNDDVideoArray(this._libraryDir, true);
 				trace(vector.length);
 				_logger.addLog("変換対象動画数:" + vector.length);
@@ -301,7 +306,7 @@ package org.mineap.nndd.library.sqlite
 				trace(error.getStackTrace());
 				_logger.addLog("ライブラリの変換に失敗:" + error);
 				Alert.show("ライブラリの変換に失敗しました。\n" +
-					"手動でライブラリを更新してください。" + error, Message.M_ERROR);
+					"手動でライブラリを更新してください。\n\n" + error, Message.M_ERROR);
 			}
 			
 		}
