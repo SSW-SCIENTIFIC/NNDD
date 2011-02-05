@@ -1566,8 +1566,8 @@
 					
 				</mx:Canvas>
 				<mx:Canvas label="ログ" width="100%" height="100%" id="canvas_innerConfing_log">
-					<mx:HRule left="297" top="7" right="10"/>
-					<mx:Label text="ログ（&lt;動画の保存先&gt;/nndd.logにも出力されます）" left="10" top="0" fontWeight="bold"/>
+					<mx:HRule left="358" top="7" right="10"/>
+					<mx:Label text="ログ（&lt;動画の保存先&gt;/system/nndd.logにも出力されます）" left="10" top="0" fontWeight="bold"/>
 					<mx:TextArea id="textArea_log" enabled="true" editable="false" left="5" top="25" bottom="30" wordWrap="false" right="5"/>
 					<mx:Button label="更新" right="5" bottom="5" click="logAreaRenewButtonClicked(event)"/>
 				</mx:Canvas>
