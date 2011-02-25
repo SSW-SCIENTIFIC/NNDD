@@ -1488,7 +1488,7 @@ private function deleteVideo(urls:Array, indices:Array):void{
 							//動画を削除
 							var movieFile:File = new File(url);
 							
-							var nnddVideo:NNDDVideo = libraryManager.remove(LibraryUtil.getVideoKey(movieFile.nativePath), false);
+							var nnddVideo:NNDDVideo = libraryManager.remove(LibraryUtil.getVideoKey(decodeURIComponent(movieFile.url)), false);
 							if(nndd == null){
 								logManager.addLog("指定された動画はNNDDの管理外です。:" + movieFile.nativePath);
 							}
@@ -3314,7 +3314,7 @@ public function playMovie(url:String, startIndex:int, playList:PlayList = null):
 				var file:File = new File(url);
 				
 				if(!file.exists){
-					var videoId:String = LibraryUtil.getVideoKey(file.nativePath);
+					var videoId:String = LibraryUtil.getVideoKey(decodeURIComponent(file.url));
 					if(videoId != null){
 						var video:NNDDVideo = libraryManager.isExist(videoId);
 						if(video != null){

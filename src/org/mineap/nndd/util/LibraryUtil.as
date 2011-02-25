@@ -1,5 +1,7 @@
 package org.mineap.nndd.util
 {
+	import flash.filesystem.File;
+
 	/**
 	 * 
 	 * @author shiraminekeisuke
@@ -26,7 +28,7 @@ package org.mineap.nndd.util
 			var videoId:String = PathMaker.getVideoID(videoTitle);
 			if(videoId == null){
 				videoId = videoTitle;
-				var index:int = videoTitle.lastIndexOf("/");
+				var index:int = videoTitle.lastIndexOf("/"); 
 				if(index != -1){
 					videoId = videoTitle.substring(index+1);
 				}

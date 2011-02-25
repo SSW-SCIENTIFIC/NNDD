@@ -414,7 +414,7 @@ package org.mineap.nndd.library.sqlite
 				var loader:LocalVideoInfoLoader = new LocalVideoInfoLoader();
 				var nnddVideo:NNDDVideo = loader.loadInfo(file.url);
 				
-				var key:String = LibraryUtil.getVideoKey(file.nativePath);
+				var key:String = nnddVideo.key;
 				
 				_tempLibraryMap[key] = nnddVideo;
 				
