@@ -126,9 +126,12 @@ package org.mineap.nndd.player
 				var ngId:String = videoInfoView.ngListProvider[i].ng_word_column;
 				var ngKind:String = videoInfoView.ngListProvider[i].ng_kind_column;
 				
-				this.ngMap[ngId.toUpperCase()] = ngKind;
-				
-			}
+				if(ngKind == Comments.NG_KIND_ARRAY[Comments.NG_COMMAND]){
+					this.ngMap[ngId.toUpperCase()] = ngKind;
+				}else{
+					this.ngMap[ngId] = ngKind;
+				}
+ 			}
 		}
 		
 		/**
