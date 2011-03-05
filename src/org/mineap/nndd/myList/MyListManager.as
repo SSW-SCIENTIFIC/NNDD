@@ -12,6 +12,7 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
 	import org.mineap.nndd.NNDDMyListLoader;
+	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.MyListSortType;
 	import org.mineap.nndd.model.NNDDVideo;
@@ -475,7 +476,7 @@ package org.mineap.nndd.myList
 		 */
 		public function setMyListSortType(myListName:String, myListSortType:MyListSortType):void{
 			
-			var file:File = new File(LibraryManager.instance.systemFileDir.url + "/myLists.xml");
+			var file:File = new File(LibraryManagerBuilder.instance.libraryManager.systemFileDir.url + "/myLists.xml");
 			
 			if(file.exists){
 				var fileIO:FileIO = new FileIO(LogManager.instance);
@@ -527,7 +528,7 @@ package org.mineap.nndd.myList
 		 */
 		public function getMyListSortType(myListName:String):MyListSortType{
 			
-			var file:File = LibraryManager.instance.systemFileDir.resolvePath("myLists.xml");
+			var file:File = LibraryManagerBuilder.instance.libraryManager.systemFileDir.resolvePath("myLists.xml");
 			
 			var name:String = null;
 			var descending:Boolean = false;
