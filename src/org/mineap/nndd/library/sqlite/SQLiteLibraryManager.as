@@ -202,8 +202,19 @@ package org.mineap.nndd.library.sqlite
 			
 			var isConvertFromXML:Boolean = false;
 			if(!this.libraryFile.exists){
-				//新規SQLiteライブラリ
-				isConvertFromXML = true;
+				//SQLiteライブラリが存在しないので、
+				//新規SQLiteライブラリを作る
+				
+				//古い形式のライブラリファイルはあるか？
+				var oldLibraryFile:File = this.libraryDir.resolvePath("library.xml");
+				if(oldLibraryFile != null && oldLibraryFile.exists){
+					// ある。古いXMLから変換
+					isConvertFromXML = true;
+				}else{
+					// ない。SQL版ライブラリを新規作成
+					isConvertFromXML = false;
+				}
+				
 			}
 			
 			var result:Boolean = this._dbAccessHelper.connect(this.libraryFile);
@@ -216,18 +227,32 @@ package org.mineap.nndd.library.sqlite
 			
 			var isConvertFromDB:Boolean = false;
 			if(oldVersion != newVersion){
-				//テーブル構造が変わっているのでDBを再構築
+				//テーブル構造が変わっているのでDBを再構築(SQLite版DBファイルが無い場合もtrueが入る)
 				isConvertFromDB = true;
 			}
 			
 			if(isConvertFromXML || isConvertFromDB){
 				if(!_converting){
 					_converting = true;
-					Alert.show("ライブラリを再構築します。", Message.M_MESSAGE, Alert.OK, null, function(event:CloseEvent):void{
+					
+					var message:String = "ライブラリを再構築します。";
+					var createNewLibrary:Boolean = false;
+					if(isConvertFromDB && !isConvertFromXML){
+						// SQLite版ライブラリが無くて、XML版ライブラリも無い場合
+						message = "ライブラリ用のデータベースを作成します。";
+						createNewLibrary = true;
+					}
+					
+					Alert.show(message, Message.M_MESSAGE, Alert.OK, null, function(event:CloseEvent):void{
 						
 						var loadWindow:LoadWindow = PopUpManager.createPopUp(FlexGlobals.topLevelApplication as DisplayObject, LoadWindow, true) as LoadWindow;
-						loadWindow.label_loadingInfo.text = "ライブラリを再構築中";
-						loadWindow.progressBar_loading.label = "再構築中...";
+						if(createNewLibrary){
+							loadWindow.label_loadingInfo.text = "データベースを作成中";
+							loadWindow.progressBar_loading.label = "作成中...";
+						}else{
+							loadWindow.label_loadingInfo.text = "ライブラリを再構築中";
+							loadWindow.progressBar_loading.label = "再構築中...";
+						}
 						PopUpManager.centerPopUp(loadWindow);
 						
 						var timer:Timer = new Timer(1000, 1);
@@ -235,7 +260,7 @@ package org.mineap.nndd.library.sqlite
 							if(isConvertFromXML){
 								convertFromXML();
 							}else if(isConvertFromDB){
-								convertFromDB();
+								convertFromDB(createNewLibrary);
 							}
 							_converting = false;
 							
@@ -315,7 +340,7 @@ package org.mineap.nndd.library.sqlite
 		 * 
 		 * 
 		 */
-		public function convertFromDB():void{
+		public function convertFromDB(createNew:Boolean):void{
 			_logger.addLog("データベースをバージョンアップしています...");
 			trace("変換開始");
 			
@@ -332,8 +357,11 @@ package org.mineap.nndd.library.sqlite
 				
 				updateVersion();
 				
-				Alert.show("再構築が完了しました。", Message.M_MESSAGE);
-				
+				if(createNew){
+					Alert.show("データベースの作成が完了しました。", Message.M_MESSAGE);
+				}else{
+					Alert.show("再構築が完了しました。", Message.M_MESSAGE);
+				}
 			}catch(error:Error){
 				trace(error.getStackTrace());
 				_logger.addLog("ライブラリの変換に失敗:" + error);

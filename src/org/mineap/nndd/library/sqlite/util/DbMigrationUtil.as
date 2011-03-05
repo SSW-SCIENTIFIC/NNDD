@@ -10,11 +10,21 @@ package org.mineap.nndd.library.sqlite.util
 	import org.mineap.nndd.library.sqlite.dao.NNDDVideoDao;
 	import org.mineap.nndd.model.NNDDVideo;
 
+	/**
+	 * データベースのマイグレーションを担当するクラスです
+	 * 
+	 * @author shiraminekeisuke(MineAP)
+	 * 
+	 */
 	public class DbMigrationUtil
 	{
 		
 		private var _logger:LogManager = LogManager.instance;
 		
+		/**
+		 * コンストラクタ
+		 * 
+		 */
 		public function DbMigrationUtil()
 		{
 		}
@@ -73,7 +83,7 @@ package org.mineap.nndd.library.sqlite.util
 			
 			// XMLを保存
 			var fileIO:FileIO = new FileIO();
-			var file:File = SQLiteLibraryManager.instance.libraryDir.resolvePath("library_back.xml");
+			var file:File = SQLiteLibraryManager.instance.systemFileDir.resolvePath("library_back.xml");
 			
 			_logger.addLog("変換したXMLを保存:" + file.nativePath);
 			
