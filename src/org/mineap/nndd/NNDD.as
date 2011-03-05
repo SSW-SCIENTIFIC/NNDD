@@ -249,7 +249,9 @@ private var lastSearchItemListWidth:int = -1;
 
 private var thumbImgSizeForSearch:Number = -1;
 private var thumbImgSizeForMyList:Number = -1;
+private var thumbImgSizeForDLList:Number = -1;
 private var thumbImgSizeForLibrary:Number = -1;
+private var thumbImgSizeHistory:Number = -1;
 
 private var myListRenewScheduleTime:Number = 30;
 
@@ -1723,9 +1725,7 @@ private function readStore(isLogout:Boolean = false):void{
 		if (confValue == null) {
 			//何もしない
 		}else{
-			slider_thumbImageSize.value = Number(confValue);
-			dataGrid_ranking.rowHeight = 50*slider_thumbImageSize.value;
-			dataGridColumn_thumbImage.width = 60*slider_thumbImageSize.value;
+			thumbImgSizeForDLList = Number(confValue);
 		}
 		
 		errorName = "thumbImgSizeForMyList";
@@ -1736,12 +1736,28 @@ private function readStore(isLogout:Boolean = false):void{
 			thumbImgSizeForMyList = Number(confValue);
 		}
 		
+		errorName = "thumbImgSizeForDLList";
+		confValue = ConfigManager.getInstance().getItem("thumbImgSizeForDLList");
+		if (confValue == null){
+			//なにもしない
+		}else{
+			thumbImgSizeForDLList = Number(confValue);
+		}
+		
 		errorName = "thumbImgSizeForLibrary";
 		confValue = ConfigManager.getInstance().getItem("thumbImgSizeForLibrary");
 		if (confValue == null) {
 			//何もしない
 		}else{
 			thumbImgSizeForLibrary = Number(confValue);
+		}
+		
+		errorName = "thumbImgSizeHistory";
+		confValue = ConfigManager.getInstance().getItem("thumbImgSizeHistory");
+		if (confValue == null){
+			// 何もしない
+		}else{
+			thumbImgSizeHistory = Number(confValue);
 		}
 		
 		errorName = "thumbImgSizeForSearch";
@@ -3975,11 +3991,21 @@ private function saveStore():void{
 		
 		/*サムネイルの大きさを保存*/
 		ConfigManager.getInstance().removeItem("thumbImangeSize");
-		ConfigManager.getInstance().setItem("thumbImangeSize", slider_thumbImageSize.value);
+		ConfigManager.getInstance().setItem("thumbImangeSize", slider_thumbImageSizeForDLList.value);
 		
 		if(this.thumbImgSizeForMyList != -1){
 			ConfigManager.getInstance().removeItem("thumbImgSizeForMyList");
 			ConfigManager.getInstance().setItem("thumbImgSizeForMyList", thumbImgSizeForMyList);
+		}
+		
+		if(this.thumbImgSizeHistory != -1){
+			ConfigManager.getInstance().removeItem("thumbImgSizeHistory");
+			ConfigManager.getInstance().setItem("thumbImgSizeHistory", thumbImgSizeHistory);
+		}
+		
+		if(this.thumbImgSizeForDLList != -1){
+			ConfigManager.getInstance().removeItem("thumbImgSizeForDLList");
+			ConfigManager.getInstance().setItem("thumbImgSizeForDLList", thumbImgSizeForDLList);
 		}
 		
 		if(this.thumbImgSizeForLibrary != -1){
@@ -5117,10 +5143,22 @@ private function thumbSizeChangedForMyList(event:SliderEvent):void{
 	dataGridColumn_thumbUrl.width = 60*event.value;
 }
 
+private function thumbSizeChangedForDLList(event:SliderEvent):void
+{
+	this.thumbImgSizeForDLList = event.value;
+	dataGrid_downloadList.rowHeight = 50*event.value;
+}
+
 private function thumbSizeChangedForLibrary(event:SliderEvent):void{
 	this.thumbImgSizeForLibrary = event.value;
 	dataGrid_downloaded.rowHeight = 30*event.value;
 	dataGridColumn_LibraryThumbImage.width = 35*event.value;
+}
+
+private function thumbSizeChangedForHistory(event:SliderEvent):void{
+	this.thumbImgSizeHistory = event.value;
+	dataGrid_history.rowHeight = 30*event.value;
+	dataGridColumn_thumbImage_history.width = 35*event.value;
 }
 
 private function donation():void{
@@ -6140,8 +6178,8 @@ private function removeSearchItem(event:MouseEvent):void{
 			
 			Alert.show("これらの検索条件・フォルダを削除してもよろしいですか？\n" + searchItemNameArray, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{
 				if(event.detail == Alert.YES){
-					for(var i:int=0; i<selectedItems.length; i++){
-						_searchItemManager.removeSearchItem(selectedItems[i], true);
+					for(var i:int=0; i<searchItemNameArray.length; i++){
+						_searchItemManager.removeSearchItem(searchItemNameArray[i], true);
 					}
 					var object:Object = tree_SearchItem.openItems;
 					tree_SearchItem.dataProvider = searchListProvider;
