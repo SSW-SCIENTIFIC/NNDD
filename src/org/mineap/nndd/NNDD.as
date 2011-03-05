@@ -247,6 +247,7 @@ private var lastMyListHeight:int = -1;
 private var lastLibraryWidth:int = -1;
 private var lastSearchItemListWidth:int = -1;
 
+private var thumbImageSize:Number = -1;
 private var thumbImgSizeForSearch:Number = -1;
 private var thumbImgSizeForMyList:Number = -1;
 private var thumbImgSizeForDLList:Number = -1;
@@ -1720,12 +1721,18 @@ private function readStore(isLogout:Boolean = false):void{
 			this.lastCanvasPlaylistHight = int(confValue);
 		}
 		
-		errorName = "thumbImangeSize";
-		confValue = ConfigManager.getInstance().getItem("thumbImangeSize");
+		errorName = "thumbImageSize";
+		confValue = ConfigManager.getInstance().getItem("thumbImageSize");
 		if (confValue == null) {
 			//何もしない
 		}else{
-			thumbImgSizeForDLList = Number(confValue);
+			thumbImageSize = Number(confValue);
+			if(dataGrid_ranking != null && dataGrid_ranking != null && dataGridColumn_thumbImage != null){
+				slider_thumbImageSize.value = thumbImageSize;
+				dataGrid_ranking.rowHeight = 50*slider_thumbImageSize.value;
+				dataGridColumn_thumbImage.width = 60*slider_thumbImageSize.value;
+				this.validateNow();
+			}
 		}
 		
 		errorName = "thumbImgSizeForMyList";
@@ -3990,8 +3997,10 @@ private function saveStore():void{
 		}
 		
 		/*サムネイルの大きさを保存*/
-		ConfigManager.getInstance().removeItem("thumbImangeSize");
-		ConfigManager.getInstance().setItem("thumbImangeSize", slider_thumbImageSizeForDLList.value);
+		if(this.thumbImageSize != -1){
+			ConfigManager.getInstance().removeItem("thumbImageSize");
+			ConfigManager.getInstance().setItem("thumbImageSize", thumbImageSize);
+		}
 		
 		if(this.thumbImgSizeForMyList != -1){
 			ConfigManager.getInstance().removeItem("thumbImgSizeForMyList");
@@ -5126,7 +5135,7 @@ private function savePlayListByDataGridSort():void{
 }
 
 private function thumbSizeChanged(event:SliderEvent):void{
-	
+	this.thumbImageSize = event.value;
 	dataGrid_ranking.rowHeight = 50*event.value;
 	dataGridColumn_thumbImage.width = 60*event.value;
 }

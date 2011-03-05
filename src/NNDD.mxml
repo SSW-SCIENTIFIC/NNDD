@@ -177,6 +177,7 @@
 				if(this.thumbImgSizeHistory != -1){
 					slider_thumbImageSizeForHistory.value = this.thumbImgSizeHistory;
 					dataGrid_history.rowHeight = 30*slider_thumbImageSizeForHistory.value;
+					dataGridColumn_thumbImage_history.width = 35*slider_thumbImageSizeForHistory.value
 					this.validateNow();
 				}
 				
@@ -300,6 +301,14 @@
 					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				rankingMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_ranking.contextMenu = rankingMenu;
+				
+				if(this.thumbImageSize != -1){
+					slider_thumbImageSize.value = this.thumbImageSize;
+					dataGrid_ranking.rowHeight = 50*slider_thumbImageSize.value;
+					dataGridColumn_thumbImage.width = 60*slider_thumbImageSize.value;
+					this.validateNow();
+				}
+				
 			}
 
 
