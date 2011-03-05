@@ -173,6 +173,13 @@
 					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				historyMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_history.contextMenu = historyMenu;
+				
+				if(this.thumbImgSizeHistory != -1){
+					slider_thumbImageSizeForHistory.value = this.thumbImgSizeHistory;
+					dataGrid_history.rowHeight = 30*slider_thumbImageSizeForHistory.value;
+					this.validateNow();
+				}
+				
 			}
 
 
@@ -193,6 +200,12 @@
 					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				downloadMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_downloadList.contextMenu = downloadMenu;
+				
+				if(this.thumbImgSizeForDLList != -1){
+					slider_thumbImageSizeForDLList.value = this.thumbImgSizeForDLList;
+					dataGrid_downloadList.rowHeight = 50*slider_thumbImageSizeForDLList.value;
+					this.validateNow();
+				}
 				
 			}
 
@@ -1246,6 +1259,7 @@
 			<mx:Button left="576" bottom="5" width="35" label="-"
 					   click="deleteDLListButtonClicked(event)" toolTip="選択中の項目をリストから削除します。"/>
 			<mx:Label text="動画のURL:" left="10" bottom="7"/>
+			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForDLList(event)" id="slider_thumbImageSizeForDLList" toolTip="DLリストの行の高さを変更します"/>
 			
 			
 		</mx:Canvas>
@@ -1467,11 +1481,13 @@
 		</mx:Canvas>
 		<mx:Canvas label="履歴" width="100%" height="100%" id="canvas_history" toolTip="NNDDで再生した動画の履歴を閲覧できます">
 			<mx:DataGrid rowHeight="30" sortableColumns="true" id="dataGrid_history" doubleClickEnabled="true"
-				right="10" top="0" bottom="30" left="10" dataProvider="{historyProvider}" itemDoubleClick="historyItemDoubleClickEventHandler(event)" allowMultipleSelection="true" 
+				right="10" top="0" bottom="30" left="10" dataProvider="{historyProvider}" 
+				itemDoubleClick="historyItemDoubleClickEventHandler(event)" allowMultipleSelection="true" 
 				creationComplete="dataGrid_history_creationCompleteHandler(event)">
 				<!-- horizontalScrollPolicy="on"> -->
 				<mx:columns>
-					<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="35">
+					<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage"
+									   id="dataGridColumn_thumbImage_history" width="35">
 						<mx:itemRenderer>
 							<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
 						</mx:itemRenderer>
@@ -1489,6 +1505,7 @@
 			<mx:Button left="10" bottom="5" width="50" label="再生" click="historyItemPlay(event)"/>
 			<mx:Button label="DLリストに追加" click="historyItemDownload(event)" left="64" bottom="5"/>
 			<mx:VRule height="22" width="10" left="173" bottom="5"/>
+			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForHistory(event)" id="slider_thumbImageSizeForHistory" toolTip="履歴の行の高さを変更します"/>
 		</mx:Canvas>
 		
 		<mx:Canvas label="設定" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_option" 
