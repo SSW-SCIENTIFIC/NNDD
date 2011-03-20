@@ -1993,6 +1993,14 @@ private function readStore(isLogout:Boolean = false):void{
 			this.myListRenewScheduleTime = Number(confValue);
 		}
 		
+		errorName = "myListRenewDelayOfMylist";
+		confValue = ConfigManager.getInstance().getItem("myListRenewDelayOfMylist");
+		if(confValue == null){
+			// 何もしない
+		}else{
+			MyListRenewScheduler.instance.delayOfMylist = Number(confValue);
+		}
+		
 		errorName = "mylistRenewOnScheduleEnable";
 		confValue = ConfigManager.getInstance().getItem("mylistRenewOnScheduleEnable");
 		if(confValue == null){
@@ -4114,6 +4122,10 @@ private function saveStore():void{
 		/* マイリスト更新のスケジュール */
 		ConfigManager.getInstance().removeItem("myListRenewScheduleTime");
 		ConfigManager.getInstance().setItem("myListRenewScheduleTime", this.myListRenewScheduleTime);
+		
+		/* マイリスト更新１つあたりの間隔 */
+		ConfigManager.getInstance().removeItem("myListRenewDelayOfMylist");
+		ConfigManager.getInstance().setItem("myListRenewDelayOfMylist", MyListRenewScheduler.instance.delayOfMylist);
 		
 		/* マイリスト自動更新の有無 */
 		ConfigManager.getInstance().removeItem("mylistRenewOnScheduleEnable");

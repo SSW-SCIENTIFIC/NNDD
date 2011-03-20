@@ -75,6 +75,11 @@ package org.mineap.nndd.myList
 		private var _password:String;
 		
 		/**
+		 * マイリスト更新一つあたりの間隔。ミリ秒で指定する。
+		 */
+		private var _delayOfMylist:int = 1000;
+		
+		/**
 		 * 
 		 * @param mailAddress
 		 * 
@@ -163,7 +168,7 @@ package org.mineap.nndd.myList
 				this._timer = null;
 			}
 			
-			this._timer = new Timer(delay, 0);
+			this._timer = new Timer(this._delay, 0);
 			this._timer.addEventListener(TimerEvent.TIMER, timerEventListener);
 			this._timer.start();
 			
@@ -302,7 +307,7 @@ package org.mineap.nndd.myList
 				}
 				
 				if(enableNext){
-					var timer:Timer = new Timer(1000,1);
+					var timer:Timer = new Timer(this._delayOfMylist,1);
 					timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
 						next();
 					});
@@ -314,6 +319,24 @@ package org.mineap.nndd.myList
 			}
 			
 		}
+
+		/**
+		 * 
+		 */
+		public function get delayOfMylist():int
+		{
+			return _delayOfMylist;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set delayOfMylist(value:int):void
+		{
+			_delayOfMylist = value;
+		}
+
 		
 	}
+	
 }
