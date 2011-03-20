@@ -80,7 +80,10 @@ package org.mineap.nndd.library.sqlite
 		
 		public static const DELETE_FILE:String = "DELETE FROM file WHERE id = :id;";
 		
-		public static const DELETE_NEEDLESS_FILE:String = "DELETE FROM file WHERE id = (SELECT file.id FROM file, nnddvideo WHERE file.id != nnddvideo.dirpath_id);";
+		public static const DELETE_NEEDLESS_FILE:String = "DELETE FROM file WHERE id = " +
+			"(SELECT file.id FROM file WHERE file.id NOT IN" +
+			"(SELECT file.id FROM file INNER JOIN nnddvideo ON nnddvideo.dirpath_id = file.id)" +
+			");";
 		
 		public static const UPDATE_NNDDVIDEO:String = "UPDATE nnddvideo SET" +
 			" uri = :uri," +

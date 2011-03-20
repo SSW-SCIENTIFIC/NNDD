@@ -45,6 +45,7 @@ package org.mineap.nndd.library.sqlite.dao
 		}
 		
 		/**
+		 * 動画を追加します
 		 * 
 		 * @param nnddVideo
 		 * @return 
@@ -114,7 +115,7 @@ package org.mineap.nndd.library.sqlite.dao
 					var tag:TagString = TagStringDao.instance.selectTagStringByTag(str);
 					if(tag == null){
 						tag = new TagString(str);
-						/* タグが無ければ追加tuika */
+						/* タグが無ければ追加 */
 						TagStringDao.instance.insertTagString(tag);
 					}
 					
@@ -141,6 +142,7 @@ package org.mineap.nndd.library.sqlite.dao
 		}
 		
 		/**
+		 * 動画の情報を更新します
 		 * 
 		 * @param nnddVideo
 		 * @return 
@@ -239,6 +241,7 @@ package org.mineap.nndd.library.sqlite.dao
 		}
 		
 		/**
+		 * 動画を削除します
 		 * 
 		 * @param id
 		 * @return 
@@ -280,8 +283,9 @@ package org.mineap.nndd.library.sqlite.dao
 		}
 		
 		/**
+		 * 動画を削除します
 		 * 
-		 * @param key
+		 * @param key 動画のID。
 		 * @return 
 		 * 
 		 */
@@ -305,6 +309,9 @@ package org.mineap.nndd.library.sqlite.dao
 				this._stmt.parameters[":id"] = nnddVideo.id;
 				
 				this._stmt.execute();
+				
+				// どの動画にも見られていないファイルを消す
+				FileDao.instance.deleteNeedlessFile();
 				
 				DbAccessHelper.instance.connection.commit();
 				
