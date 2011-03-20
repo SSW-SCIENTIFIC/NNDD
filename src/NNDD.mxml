@@ -358,7 +358,7 @@
 				downloadedMenu = new ContextMenu();
 				downloadedMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
 				downloadedMenuitem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
-				downloadedMenuitem2 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE);
+				downloadedMenuitem2 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE, true);
 				downloadedMenuitem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
 				downloadedMenuitem3 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_EDIT);
 				downloadedMenuitem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
@@ -372,8 +372,8 @@
 				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
 				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
 				
-				downloadedMenu.customItems.push(downloadedMenuitem1, downloadedMenuitem2, 
-					downloadedMenuitem3, downloadedMenuitem6, playListContextMenuItem, 
+				downloadedMenu.customItems.push(downloadedMenuitem1, downloadedMenuitem3, 
+					downloadedMenuitem2, downloadedMenuitem6, playListContextMenuItem, 
 					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem, downloadedMenuitem4, 
 					downloadedMenuitem5);
 				downloadedMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
