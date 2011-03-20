@@ -1313,6 +1313,30 @@ public function resetPlayList():void{
 }
 
 /**
+ * プレイリストをシャッフルします
+ * 
+ * @details edvakf氏のソースをマージ
+ * @see https://github.com/edvakf/NNDDMOD/commit/6984ba8919727a98c249e1bc8a4848705de27df5
+ */
+public function shufflePlayList():void{
+	var tempArrayCollection:ArrayCollection = new ArrayCollection();
+	for each(var object:Object in playListProvider){
+		tempArrayCollection.addItem(object);
+	}
+	var i:int = tempArrayCollection.length;
+	while (--i) {
+		var j:int = Math.floor( Math.random() * (i + 1) );
+		if (i == j) {
+			continue;
+		}
+		var object:Object = tempArrayCollection.getItemAt(i);
+		tempArrayCollection.setItemAt( tempArrayCollection.getItemAt(j), i );
+		tempArrayCollection.setItemAt( object, j );
+	}
+	playListProvider = tempArrayCollection;
+}
+
+/**
  * 
  * @param index
  * @return 
@@ -1391,6 +1415,10 @@ public function playListDragDropHandler(event:DragEvent):void{
  */
 public function playListClearButtonClicked(event:MouseEvent):void{
 	resetPlayList();
+}
+
+public function playListShuffleButtonClicked(event:MouseEvent):void{
+	shufflePlayList();
 }
 
 /**

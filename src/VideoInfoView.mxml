@@ -240,7 +240,7 @@
 					<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" click="checkBoxIsSOPCChanged(event)" left="160" bottom="2" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
 				</mx:Canvas>
 				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" creationComplete="checkBox_repeatAllCompleteHandler(event)" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-					<mx:DataGrid left="0" right="0" top="20" bottom="30" dataProvider="{playListProvider}" doubleClickEnabled="true" 
+					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true" 
 						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
 						itemDoubleClick="playListDoubleClicked()" showHeaders="false">
 						<mx:columns>
@@ -251,16 +251,19 @@
 					<mx:CheckBox id="checkBox_repeatAll" right="5" bottom="5" label="すべてリピート"
 								 change="checkboxRepeatAllChanged()"
 								 toolTip="プレイリストの項目が最後まで再生されたら最初から再生し直します"/>
-					<mx:Button left="5" bottom="5" width="40" label="-"
+					<mx:Button left="10" bottom="28" width="50" label="-"
 							   click="playListItemDeleteButtonClicked(event)"
 							   toolTip="選択中の項目をプレイリストから削除します"/>
-					<mx:Button id="button_reverse" left="53" bottom="5" width="40" label="↓↑"
+					<mx:Button id="button_reverse" left="68" bottom="28" width="50" label="↓↑"
 							   click="playListReverseButtonClicked(event)"
 							   toolTip="このプレイリストの順番を逆順にします"/>
-					<mx:Button left="101" bottom="5" width="50" label="保存"
+					<mx:Button left="10" bottom="3" label="保存"
 							   click="playListSaveButtonClicked(event)" toolTip="このプレイリストの内容を保存します"/>
-					<mx:Button left="155" bottom="5" width="60" label="クリア"
+					<mx:Button left="89" bottom="3" label="クリア"
 							   click="playListClearButtonClicked(event)" toolTip="このプレイリストを空にします"/>
+					<mx:Button id="button_shuffle" left="126" bottom="28" width="80" label="シャッフル"
+							   click="playListShuffleButtonClicked(event)"
+							   toolTip="このプレイリストをシャッフルします"/>
 					<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
 				</mx:Canvas>
 				<mx:Canvas label="タグ" width="100%" height="100%" id="canvas_Tag">
