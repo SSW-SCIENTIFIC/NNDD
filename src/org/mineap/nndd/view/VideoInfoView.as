@@ -130,6 +130,14 @@ public var relationSortComboboxDataProvider:Array = new Array("オススメ度",
 public var relationOrderComboboxDataProvider:Array = new Array("降順", "昇順");
 [Bindable]
 private var label_playListTitle_dataProvider:String = "";
+[Bindable]
+public var videoType:String = "";
+[Bindable]
+public var connectionType:String = "";
+[Bindable]
+public var videoServerUrl:String = "";
+[Bindable]
+public var messageServerUrl:String = "";
 
 public function init(playerController:PlayerController, videoPlayer:VideoPlayer, logManager:LogManager):void{
 	this.videoPlayer = videoPlayer;

@@ -155,6 +155,20 @@
 				playerController.getOldCommentFromNico(oldCommentDate);
 			}
 
+
+			protected function canvas1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(videoTypeText.text.length == 0){
+					videoTypeText.text = "-";
+				}
+				if(videoServerUrlText.text.length == 0) {
+					videoServerUrlText.text = "-";
+				}
+				if(connectionTypeText.text.length == 0){
+					connectionTypeText.text = "-";
+				}
+			}
+
 		]]>
 	</mx:Script>
 
@@ -340,6 +354,16 @@
 				</mx:Canvas>
 			</mx:TabNavigator>
 		</mx:Canvas>
+		<mx:Canvas width="100%" height="100%" label="接続情報" creationComplete="canvas1_creationCompleteHandler(event)">
+			<mx:Label left="10" top="10" text="動画種別："/>
+			<mx:Text y="10" left="83" right="5" text="{videoType}" id="videoTypeText"/>
+			
+			<mx:Label left="10" top="30" text="接続種別："/>
+			<mx:Text y="30" left="83" right="5" text="{connectionType}" id="connectionTypeText"/>
+			
+			<mx:Label left="10" top="50" text="動画サーバー："/>
+			<mx:Text y="50" left="107" right="5" text="{videoServerUrl}" id="videoServerUrlText"/>
+		</mx:Canvas>
 		<mx:Canvas label="設定" width="100%" height="100%">
 			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="on" left="0" top="0" bottom="0" right="0" creationComplete="configCanvasCreationCompleteHandler(event)"
 						backgroundColor="#ffffff">
@@ -396,7 +420,8 @@
 	</mx:ViewStack>
 	<mx:ToggleButtonBar dataProvider="{viewstack1}" left="5" bottom="5" fontWeight="normal" height="20">
 	</mx:ToggleButtonBar>
-	<mx:Button label="動画を開く..." left="149" bottom="5" height="20" id="button_videoOpen" click="button_videoOpen_clickHandler(event)"/>
+	<mx:Button id="button_videoOpen" right="5" bottom="5" width="87" height="20" label="動画を開く..."
+			   click="button_videoOpen_clickHandler(event)"/>
 
 	
 </mx:Window>

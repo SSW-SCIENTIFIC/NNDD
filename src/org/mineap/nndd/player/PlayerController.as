@@ -28,7 +28,6 @@ package org.mineap.nndd.player
 	import mx.core.Window;
 	import mx.events.AIREvent;
 	import mx.events.FlexEvent;
-	import mx.events.MetadataEvent;
 	import mx.events.VideoEvent;
 	import mx.formatters.DateFormatter;
 	
@@ -423,6 +422,7 @@ package org.mineap.nndd.player
 				streamingProgressCount = 0;
 				
 				this.videoPlayer.label_playSourceStatus.text = "Streaming:0%   ";
+				videoInfoView.connectionType = "Streaming";
 				streamingProgressTimer = new Timer(200);
 				streamingProgressTimer.addEventListener(TimerEvent.TIMER, streamingProgressHandler);
 				streamingProgressTimer.start();
@@ -436,6 +436,7 @@ package org.mineap.nndd.player
 				}
 			}else{
 				this.videoPlayer.label_playSourceStatus.text = "[Local]";
+				videoInfoView.connectionType = "Local";
 				this.streamingRetryCount = 0;
 				if(this.videoPlayer.title == null){
 					this.videoPlayer.addEventListener(FlexEvent.CREATION_COMPLETE, function():void{
@@ -624,7 +625,14 @@ package org.mineap.nndd.player
 						videoDisplay.setConstraintValue("right", 0);
 						videoDisplay.setConstraintValue("top", 0);
 //						videoDisplay.bufferTime = 3;
-												
+						
+						if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
+							videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
+						}else{
+							videoInfoView.videoServerUrl = videoPath;
+						}
+						videoInfoView.videoType = "FLV/MP4";
+						
 						videoDisplay.autoPlay = autoPlay;
 						videoDisplay.source = videoPath;
 						videoDisplay.autoRewind = false;
@@ -700,6 +708,12 @@ package org.mineap.nndd.player
 						
 						windowReady = true;
 						
+						if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
+							videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
+						}else{
+							videoInfoView.videoServerUrl = videoPath;
+						}
+						videoInfoView.videoType = "SWF";
 						if(autoPlay){
 							fLoader.load(new URLRequest(videoPath));
 						}
@@ -3309,6 +3323,14 @@ package org.mineap.nndd.player
 		public function playMovie(url:String, playList:PlayList = null, playListIndex:int = -1, videoTitle:String = "", isEconomy:Boolean = false):void{
 			
 			try{
+				
+				if(videoInfoView != null){
+					videoInfoView.videoServerUrl = "-";
+					videoInfoView.connectionType = "-";
+					videoInfoView.videoType = "-";
+					videoInfoView.messageServerUrl = "-";
+				}
+				
 				try{
 					if(nicoVideoPageGetRetryTimer != null){
 						nicoVideoPageGetRetryTimer.stop();
