@@ -125,7 +125,7 @@ package org.mineap.nndd
 				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._logManager.addLog("ニコニコ動画へログイン");
-			this._login.login(mailAddr, password, Login.LOGIN_URL, true, Login.TOP_PAGE_URL);
+			this._login.login(mailAddr, password, Login.LOGIN_URL);
 			
 		}
 		
