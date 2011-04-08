@@ -122,5 +122,47 @@ package org.mineap.nndd.util
 			return newDate;
 		}
 		
+		/**
+		 * "5:03"のような形式の文字列から秒数を計算し、Numberで返します。
+		 * @param lengthString 5:03
+		 * @return 
+		 * 
+		 */
+		public static function getTimeForThumbXML(lengthString:String):Number
+		{
+			var len:Number = 0;
+			
+//			var pattern:RegExp = new RegExp("(\\d+):(\\d\\d)");
+			
+			try{
+//				var array:Array = lengthString.match(pattern);
+				
+				var index:int = lengthString.indexOf(":");
+				if(index == -1){
+					return len;
+				}
+				
+				// 分
+				var mStr:String = lengthString.substr(0,index);
+				if(mStr.length < 1){
+					mStr = "0";
+				}
+				// 秒
+				var sStr:String = lengthString.substr(index+1);
+				if(sStr.length < 1){
+					sStr = "0";
+				}
+				var m:int = int(mStr) * 60;
+				var s:int = int(sStr);
+				
+				len = m + s;
+				
+			}catch(e:Error){
+				trace(e.getStackTrace());
+			}
+			
+			return len;
+		}
+		
 	}
 }

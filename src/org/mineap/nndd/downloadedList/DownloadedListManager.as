@@ -116,6 +116,7 @@ package org.mineap.nndd.downloadedList
 				dataGridColumn_pubdate: "",
 				dataGridColumn_count: "",
 				dataGridColumn_videoPath: "",
+				dataGridColumn_time: "",
 				dataGridColumn_condition: ""
 			});
 
@@ -161,11 +162,14 @@ package org.mineap.nndd.downloadedList
 			var playCount:Number = 0;
 			var creationDate:Date = null;
 			var pubDate:Date = null;
+			var time:Number = 0;
 			
 			thumbUrl = video.thumbUrl;
 			playCount = video.playCount;
 			creationDate = video.creationDate;
 			pubDate = video.pubDate;
+			time = video.time;
+			
 			if(video.isEconomy){
 				status = "エコノミー画質";
 			}
@@ -187,6 +191,16 @@ package org.mineap.nndd.downloadedList
 				pubDateString = DateUtil.getDateString(pubDate)
 			}
 			
+			var timeString:String = "-";
+			if(time != 0){
+				var m:String = String(int(time/60));
+				var s:String = String(int(time%60));
+				if(s.length == 1){
+					s = "0" + s;
+				}
+				timeString = m + ":" + s;
+			}
+			
 			this.downloadedListArray.addItem({
 				dataGridColumn_thumbImage: thumbUrl,
 				dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf("/")+1),
@@ -194,6 +208,7 @@ package org.mineap.nndd.downloadedList
 				dataGridColumn_pubdate: pubDateString,
 				dataGridColumn_count: playCount,
 				dataGridColumn_videoPath: decodedUrl,
+				dataGridColumn_time: timeString,
 				dataGridColumn_condition: status
 			});
 			
@@ -270,12 +285,14 @@ package org.mineap.nndd.downloadedList
 					var playCount:Number = 0;
 					var creationDate:Date = null;
 					var pubDate:Date = null;
+					var time:Number = 0;
 					
 					if(video != null){
 						thumbUrl = video.thumbUrl;
 						playCount = video.playCount;
 						creationDate = video.creationDate;
 						pubDate = video.pubDate;
+						time = video.time;
 						if(video.isEconomy){
 							status = "エコノミー画質";
 						}
@@ -291,6 +308,15 @@ package org.mineap.nndd.downloadedList
 					if(pubDate != null){
 						pubDateString = DateUtil.getDateString(pubDate);
 					}
+					var timeString:String = "-";
+					if(time != 0){
+						var m:String = String(int(time/60));
+						var s:String = String(int(time%60));
+						if(s.length == 1){
+							s = "0" + s;
+						}
+						timeString = m + ":" + s;
+					}
 					
 					this.downloadedListArray.addItem({
 						dataGridColumn_thumbImage: thumbUrl,
@@ -299,6 +325,7 @@ package org.mineap.nndd.downloadedList
 						dataGridColumn_pubdate: pubDateString,
 						dataGridColumn_count: playCount,
 						dataGridColumn_videoPath: decodedUrl,
+						dataGridColumn_time: timeString,
 						dataGridColumn_condition: status
 					});
 					
@@ -383,6 +410,7 @@ package org.mineap.nndd.downloadedList
 								dataGridColumn_condition:dataGrid.dataProvider[i].dataGridColumn_condition,
 								dataGridColumn_count:dataGrid.dataProvider[i].dataGridColumn_count,
 								dataGridColumn_videoPath:dataGrid.dataProvider[i].dataGridColumn_videoPath,
+								dataGridColumn_time: dataGrid.dataProvider[i].dataGridColumn_time,
 								dataGridColumn_nicoVideoUrl: dataGrid.dataProvider[i].dataGridColumn_nicoVideoUrl
 							});
 						}
@@ -448,6 +476,7 @@ package org.mineap.nndd.downloadedList
 							dataGridColumn_condition:downloadedListArray[i].dataGridColumn_condition,
 							dataGridColumn_count:downloadedListArray[i].dataGridColumn_count,
 							dataGridColumn_videoPath:downloadedListArray[i].dataGridColumn_videoPath,
+							dataGridColumn_time: downloadedListArray[i].dataGridColumn_time,
 							dataGridColumn_nicoVideoUrl: downloadedListArray[i].dataGridColumn_nicoVideoUrl
 						});
 					}

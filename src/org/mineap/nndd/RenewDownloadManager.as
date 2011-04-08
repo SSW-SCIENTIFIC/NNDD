@@ -35,7 +35,7 @@ package org.mineap.nndd
 		{
 			this._logManager = logManager;	
 			this._dataProvider = dataProvider;
-			this._nnddDownloader = new NNDDDownloader(logManager);
+			this._nnddDownloader = new NNDDDownloader();
 			
 		}
 		

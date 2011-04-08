@@ -2744,6 +2744,7 @@ package org.mineap.nndd.player
 								}else{
 									if(video != null && video.pubDate == null){
 										video.pubDate = analyzer.getDateByFirst_retrieve();
+										video.time = DateUtil.getTimeForThumbXML(analyzer.length);
 										libraryManager.update(video, false);
 									}
 								}
@@ -2913,6 +2914,7 @@ package org.mineap.nndd.player
 							}
 							video.tagStrings = tagStrings;
 							video.pubDate = thumbInfoAnalyzer.getDateByFirst_retrieve();
+							video.time = DateUtil.getTimeForThumbXML(thumbInfoAnalyzer.length);
 							//再生に時間がかかるのでライブラリの更新はしない
 							libraryManager.update(video, false);
 						}
@@ -3385,6 +3387,14 @@ package org.mineap.nndd.player
 								//ファイルが存在して、動画も存在するなら動画のURLを更新しておく
 								video.uri = file.url;
 								video.thumbUrl = PathMaker.createThumbImgFilePath(file.url, true);
+								
+								//動画の時間が0ならサムネイル情報を見に行って更新する
+								if(video.time == 0){
+									var tempVideo:NNDDVideo = new LocalVideoInfoLoader().loadInfo(decodeURIComponent(file.url));
+									if(tempVideo != null){
+										video.time = tempVideo.time;
+									}
+								}
 								libraryManager.update(video, false);
 							}
 							url = video.getDecodeUrl();
@@ -3395,7 +3405,10 @@ package org.mineap.nndd.player
 						}else{
 							if(file.exists){
 								//ファイルが存在して、動画が存在しないなら新しく登録
-								video = new NNDDVideo(file.url, file.name);
+								video = new LocalVideoInfoLoader().loadInfo(decodeURIComponent(file.url));
+								if(video == null){
+									video = new NNDDVideo(file.url, file.name);
+								}
 								libraryManager.add(video, false);
 								logManager.addLog("動画を管理対象に追加:" + file.nativePath);
 							}
@@ -3502,7 +3515,7 @@ package org.mineap.nndd.player
 							nnddDownloaderForStreaming = null;
 						}
 						
-						nnddDownloaderForStreaming = new NNDDDownloader(LogManager.instance);
+						nnddDownloaderForStreaming = new NNDDDownloader();
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function(event:Event):void{
 							playMovie((event.target as NNDDDownloader).streamingUrl, playList, playListIndex, (event.target as NNDDDownloader).nicoVideoName, nnddDownloaderForStreaming.isEconomyMode);
 							removeStreamingPlayHandler(event);

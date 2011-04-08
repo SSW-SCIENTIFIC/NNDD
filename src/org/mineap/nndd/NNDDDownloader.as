@@ -225,10 +225,10 @@ package org.mineap.nndd
 		 * コンストラクタです。
 		 * 
 		 */
-		public function NNDDDownloader(logManager:LogManager)
+		public function NNDDDownloader()
 		{
 			
-			this._logManager = logManager;
+			this._logManager = LogManager.instance;
 			this._login = new Login();
 			this._watchVideo = new WatchVideoPage();
 			this._getflvAccess = new ApiGetFlvAccess();

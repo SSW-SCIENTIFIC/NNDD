@@ -56,6 +56,7 @@ package org.mineap.nndd.library
 			
 			var thumbUrl:String = "";
 			var pubDate:Date = null;
+			var time:Number = 0;
 			if(thumbInfoXML == null){
 				
 				var id:String = PathMaker.getVideoID(file.name);
@@ -64,7 +65,7 @@ package org.mineap.nndd.library
 					thumbUrl = PathMaker.getThumbImgUrl(id);
 				}
 				
-				return new NNDDVideo(file.url, file.name, false, null, file.modificationDate, file.creationDate, thumbUrl, 0, 0, null, null);
+				return new NNDDVideo(file.url, file.name, false, null, file.modificationDate, file.creationDate, thumbUrl, 0, time, null, null);
 				
 			}
 			
@@ -75,6 +76,10 @@ package org.mineap.nndd.library
 					tagArray.push((tags.tag[i] as XML).toString());
 				}
 				thumbUrl = thumbInfoXML.thumb.thumbnail_url;
+				var lengthString:String = thumbInfoXML.thumb.length;
+				if(lengthString != null && lengthString.length > 0){
+					time = DateUtil.getTimeForThumbXML(lengthString);
+				}
 				pubDate = DateUtil.getDateForThumbXML(thumbInfoXML.thumb.first_retrieve);
 			}else{
 				// サムネイル情報が存在しない時、もしくは動画が削除されているときは、既存の動画からタグ情報を取得
@@ -84,7 +89,7 @@ package org.mineap.nndd.library
 				}
 			}
 			
-			var video:NNDDVideo = new NNDDVideo(filePath, null, false, tagArray, null, null, null, 0, 0, null, pubDate);
+			var video:NNDDVideo = new NNDDVideo(filePath, null, false, tagArray, null, null, null, 0, time, null, pubDate);
 			var file:File = new File(filePath);
 			if(file.exists){
 				video.creationDate = file.creationDate;

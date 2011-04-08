@@ -174,6 +174,8 @@ private var searchPageLinkList:Array = new Array();
 
 private var isVersionCheckEnable:Boolean = true;
 
+private var isUseDownloadDir:Boolean = false;
+
 private var isFirstTimePlayerActiveEvent:Boolean = true;
 
 private var isRankingRenewAtStart:Boolean = false;
@@ -441,6 +443,7 @@ public function initNNDD(nndd:NNDD):void
 		rankingProvider, searchProvider, myListItemProvider, logManager);
 	this.downloadManager.isAlwaysEconomy = this.isAlwaysEconomy;
 	this.downloadManager.isAppendComment = this.isAppendComment;
+	this.downloadManager.isUseDownloadDir = this.isUseDownloadDir;
 	
 	/* 履歴管理 */
 	HistoryManager.initialize(historyProvider);
@@ -1713,6 +1716,12 @@ private function readStore(isLogout:Boolean = false):void{
 			this.isVersionCheckEnable = ConfUtil.parseBoolean(confValue);
 		}
 		
+		errorName = "isUseDownloadDir";
+		confValue = ConfigManager.getInstance().getItem("isUseDownloadDir");
+		if (confValue != null){
+			this.isUseDownloadDir = ConfUtil.parseBoolean(confValue);
+		}
+		
 		errorName = "lastCanvasPlaylistHight";
 		confValue = ConfigManager.getInstance().getItem("lastCanvasPlaylistHight");
 		if (confValue == null) {
@@ -2599,6 +2608,8 @@ private function libraryTabCreationComplete():void{
 
 private function allConfigCanvasCreationComplete(event:FlexEvent):void{
 	textInput_saveAdress.text = this.libraryManager.libraryDir.nativePath;
+	checkBox_useDownloadDir.selected = this.isUseDownloadDir;
+	
 	checkBox_versionCheck.selected = this.isVersionCheckEnable;
 	
 	checkBox_DisEnableAutoExit.selected = this.isDisEnableAutoExit;
@@ -3525,6 +3536,10 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 								video = new LocalVideoInfoLoader().loadInfo(filePath);
 								video.modificationDate = new File(filePath).modificationDate;
 								video.creationDate = new File(filePath).creationDate;
+							}else{
+								var tempVideo:NNDDVideo = new LocalVideoInfoLoader().loadInfo(filePath);
+								video.time = tempVideo.time;
+								video.pubDate = tempVideo.pubDate;
 							}
 							var thumbUrl:String = (event.currentTarget as RenewDownloadManager).localThumbUri;
 							var isLocal:Boolean = false;
@@ -4119,6 +4134,10 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("isVersionCheckEnable");
 		ConfigManager.getInstance().setItem("isVersionCheckEnable", isVersionCheckEnable);
 		
+		/* Downloadフォルダを作ってそこにダウンロードするかどうか */
+		ConfigManager.getInstance().removeItem("iseUsDownloadDir");
+		ConfigManager.getInstance().setItem("isUseDownloadDir", isUseDownloadDir);
+		
 		/* マイリスト更新のスケジュール */
 		ConfigManager.getInstance().removeItem("myListRenewScheduleTime");
 		ConfigManager.getInstance().setItem("myListRenewScheduleTime", this.myListRenewScheduleTime);
@@ -4502,6 +4521,11 @@ private function nicoSearchEnter(event:Event):void{
  */
 private function versionCheckCheckBoxChenged():void{
 	isVersionCheckEnable = checkBox_versionCheck.selected;
+}
+
+private function useDownloadDirCheckBoxChenged():void{
+	isUseDownloadDir = checkBox_useDownloadDir.selected;
+	this.downloadManager.isUseDownloadDir = isUseDownloadDir;
 }
 
 private function disEnableAutoExitCheckBoxChanged(event:Event):void{

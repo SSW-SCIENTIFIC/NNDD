@@ -1,8 +1,8 @@
 package org.mineap.nndd.util
 {
 
-	import org.mineap.nndd.Message;
 	import org.mineap.nicovideo4as.util.HtmlUtil;
+	import org.mineap.nndd.Message;
 	
 	public class ThumbInfoAnalyzer
 	{
