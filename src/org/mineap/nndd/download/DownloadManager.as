@@ -13,6 +13,7 @@ package org.mineap.nndd.download
 	import mx.containers.Canvas;
 	import mx.controls.Alert;
 	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	import mx.events.CloseEvent;
 	import mx.formatters.NumberFormatter;
 	
@@ -71,6 +72,8 @@ package org.mineap.nndd.download
 		public var isAlwaysEconomy:Boolean = false;
 		
 		public var isAppendComment:Boolean = false;
+		
+		public var isUseDownloadDir:Boolean = false;
 		
 		private var lastStatusUpdateTime:Date = new Date();
 		
@@ -511,20 +514,28 @@ package org.mineap.nndd.download
 		 */
 		public function createNNDDDrequestDownload(video:NNDDVideo):NNDDDownloader{
 			
-			var nnddDownloader:NNDDDownloader = new NNDDDownloader(logManager);
+			var nnddDownloader:NNDDDownloader = new NNDDDownloader();
 			var myLibrary:File = libraryManager.libraryDir;
+			var defLibrary:File = libraryManager.libraryDir;
+			
+			if(isUseDownloadDir){
+				myLibrary = defLibrary = defLibrary.resolvePath("Download");
+			}
+			
 			try{
 				if(video.getDecodeUrl() != null){
 					myLibrary = new File(video.getDecodeUrl().substr(0, video.getDecodeUrl().lastIndexOf("/")));
 					if(!myLibrary.exists){
-						myLibrary = libraryManager.libraryDir;
+						myLibrary = defLibrary;
 					}
 				}
 			}catch(error:Error){
-				myLibrary = libraryManager.libraryDir;
+				myLibrary = defLibrary;
 			}
-			nnddDownloader.requestDownload(this.mailaddress, this.password, PathMaker.getVideoID(video.getDecodeUrl()), 
-				null, myLibrary, false, isContactTheUser, this.isAlwaysEconomy, this.isAppendComment, Application.application.getSaveCommentMaxCount());
+			nnddDownloader.requestDownload(this.mailaddress, 
+				this.password, PathMaker.getVideoID(video.getDecodeUrl()), 
+				null, myLibrary, false, isContactTheUser, this.isAlwaysEconomy, 
+				this.isAppendComment, FlexGlobals.topLevelApplication.getSaveCommentMaxCount());
 			
 			return nnddDownloader;
 		}
