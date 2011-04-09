@@ -35,6 +35,7 @@ package org.mineap.nndd.playList
 				var playCount:Number = 0;
 				var status:String = "";
 				var tempVideo:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(video.getDecodeUrl()));
+				var time:Number = 0;
 				
 				if(tempVideo != null){
 					video = tempVideo;
@@ -68,6 +69,17 @@ package org.mineap.nndd.playList
 					}
 				}
 				
+				time = video.time;
+				var timeString:String = "-";
+				if(time != 0){
+					var m:String = String(int(time/60));
+					var s:String = String(int(time%60));
+					if(s.length == 1){
+						s = "0" + s;
+					}
+					timeString = m + ":" + s;
+				}
+				
 				arrayCollection.addItem({
 					dataGridColumn_thumbImage: thumbUrl,
 					dataGridColumn_videoName: video.getVideoNameWithVideoID(),
@@ -75,6 +87,7 @@ package org.mineap.nndd.playList
 					dataGridColumn_pubdate: pubDate,
 					dataGridColumn_count: playCount,
 					dataGridColumn_condition: status,
+					dataGridColumn_time: timeString,
 					dataGridColumn_videoPath: video.getDecodeUrl()
 				});
 			}
