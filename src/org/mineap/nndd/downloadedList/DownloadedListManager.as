@@ -407,6 +407,7 @@ package org.mineap.nndd.downloadedList
 								dataGridColumn_thumbImage:downloadedListArray[i].dataGridColumn_thumbImage,
 								dataGridColumn_videoName:dataGrid.dataProvider[i].dataGridColumn_videoName,
 								dataGridColumn_date:dataGrid.dataProvider[i].dataGridColumn_date,
+								dataGridColumn_pubdate:downloadedListArray[j].dataGridColumn_pubdate,
 								dataGridColumn_condition:dataGrid.dataProvider[i].dataGridColumn_condition,
 								dataGridColumn_count:dataGrid.dataProvider[i].dataGridColumn_count,
 								dataGridColumn_videoPath:dataGrid.dataProvider[i].dataGridColumn_videoPath,
@@ -447,39 +448,64 @@ package org.mineap.nndd.downloadedList
 				this.searchArray = null;
 				this.searchArray = new ArrayCollection();
 				
+				var videos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
+				
+				// 動画情報を一度全部持ってくる
 				var iSize:int = downloadedListArray.length;
 				for(var i:int = 0; i < iSize; i++ ){
 					var existCount:int = 0;
 					var videoName:String = downloadedListArray[i].dataGridColumn_videoName;
 					var videoId:String = PathMaker.getVideoID(videoName);
 					
-					var jSize:int = tags.length;
-					for(var j:uint = 0; j<jSize; j++){
+					var video:NNDDVideo = libraryManager.isExist(videoId);
+					
+					if(video != null){
+						videos.push(video);
+					}else{
+						videos.push(null);
+					}
+				}
+				
+				// 検索対象タグのmapを作成
+				var map:Object = new Object();
+				for each(var tag:String in tags){
+					map[tag.toUpperCase()] = tag;
+				}
+				
+				// 各動画に対してチェック
+				var jSize:int = videos.length;
+				for(var j:int = 0; j < jSize; j++){
+					var count:int = 0;
+					var nnddVideo:NNDDVideo = videos[j];
+					if(nnddVideo == null){
+						continue;
+					}
+					var kSize:int = nnddVideo.tagStrings.length;
+					var videoTags:Vector.<String> = nnddVideo.tagStrings;
+					for(var k:uint = 0; k<kSize; k++){
 						
-						var video:NNDDVideo = libraryManager.isExist(videoId);
-						if(video != null){
-							
-							var kSize:int = video.tagStrings.length;
-							for(var k:uint = 0; k<kSize; k++){
-								if(String(video.tagStrings[k]).toUpperCase().indexOf(String(tags[j]).toUpperCase()) != -1){
-									existCount++;
-								} 
-							}
-							
+						var videoTag:String = videoTags[k].toUpperCase();
+						var obj:String = map[videoTag];
+						if(obj != null){
+							count++;
 						}
 					}
-					if(existCount >= jSize){
+					
+					// and 検索
+					if(count >= tags.length){
 						searchArray.addItem({
-							dataGridColumn_thumbImage:downloadedListArray[i].dataGridColumn_thumbImage,
-							dataGridColumn_videoName:downloadedListArray[i].dataGridColumn_videoName,
-							dataGridColumn_date:downloadedListArray[i].dataGridColumn_date,
-							dataGridColumn_condition:downloadedListArray[i].dataGridColumn_condition,
-							dataGridColumn_count:downloadedListArray[i].dataGridColumn_count,
-							dataGridColumn_videoPath:downloadedListArray[i].dataGridColumn_videoPath,
-							dataGridColumn_time: downloadedListArray[i].dataGridColumn_time,
-							dataGridColumn_nicoVideoUrl: downloadedListArray[i].dataGridColumn_nicoVideoUrl
+							dataGridColumn_thumbImage:downloadedListArray[j].dataGridColumn_thumbImage,
+							dataGridColumn_videoName:downloadedListArray[j].dataGridColumn_videoName,
+							dataGridColumn_date:downloadedListArray[j].dataGridColumn_date,
+							dataGridColumn_pubdate:downloadedListArray[j].dataGridColumn_pubdate,
+							dataGridColumn_condition:downloadedListArray[j].dataGridColumn_condition,
+							dataGridColumn_count:downloadedListArray[j].dataGridColumn_count,
+							dataGridColumn_videoPath:downloadedListArray[j].dataGridColumn_videoPath,
+							dataGridColumn_time: downloadedListArray[j].dataGridColumn_time,
+							dataGridColumn_nicoVideoUrl: downloadedListArray[j].dataGridColumn_nicoVideoUrl
 						});
 					}
+					
 				}
 				
 				dataGrid.dataProvider = searchArray;
