@@ -1167,6 +1167,19 @@ package org.mineap.nndd.player
 		}
 
 		/**
+		 * 
+		 * @param isSmoothing
+		 * 
+		 */
+		public function setVideoSmoothing(isSmoothing:Boolean):void{
+			
+			if(videoDisplay != null && videoDisplay.videoObject != null){
+				videoDisplay.videoObject.smoothing = isSmoothing;
+			}
+			
+		}
+		
+		/**
 		 * videoDisplayの大きさを動画にあわせ、同時にウィンドウの大きさを変更します。
 		 * フルスクリーン時に呼ばれても何もしません。
 		 */		
@@ -1200,7 +1213,10 @@ package org.mineap.nndd.player
 						
 						if(this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoObject != null){
 							//FLV再生か？
-							this.videoDisplay.videoObject.smoothing = true;
+							
+							// スムージングを設定
+							
+							this.videoDisplay.videoObject.smoothing = videoInfoView.isSmoothing;
 							
 							if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoObject.videoHeight > 0){
 								

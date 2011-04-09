@@ -1018,6 +1018,22 @@
 					textInput_searchInTagList.text = "タグを検索";
 				}
 			}
+			
+			protected function timeSortFunc(obj1:Object, obj2:Object):int{
+				
+				var value1:int = DateUtil.getTimeForThumbXML(String(obj1.dataGridColumn_time));
+				var value2:int = DateUtil.getTimeForThumbXML(String(obj2.dataGridColumn_time));
+				
+				if(value1 < value2) {
+					return -1;
+				}
+				else if(value1 > value2){
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			}
 
 		]]>
 	</mx:Script>
@@ -1449,10 +1465,11 @@
 											</mx:Component>
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
-									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300"/>
-									<mx:DataGridColumn headerText="作成日" dataField="dataGridColumn_date" width="60"/>
-									<mx:DataGridColumn headerText="投稿日" dataField="dataGridColumn_pubdate" width="60"/>
-									<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40"/>
+									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300" />
+									<mx:DataGridColumn headerText="作成日" dataField="dataGridColumn_date" width="60" />
+									<mx:DataGridColumn headerText="投稿日" dataField="dataGridColumn_pubdate" width="60" />
+									<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40" textAlign="right"/>
+									<mx:DataGridColumn headerText="時間" dataField="dataGridColumn_time" width="40" textAlign="right" sortCompareFunction="timeSortFunc"/>
 									<mx:DataGridColumn headerText="状態" dataField="dataGridColumn_condition" width="80"/>
 									<mx:DataGridColumn headerText="パス" dataField="dataGridColumn_videoPath" width="0" visible="false"/>
 								</mx:columns>
@@ -1462,10 +1479,10 @@
 					
 					<mx:Label left="0" bottom="5" width="40" text="更新:"/>
 					
+					<mx:Button label="コメント" id="newCommentOnlyDownloadButton" left="48" bottom="5" 
+							   click="newCommentDownloadButtonClicked(true)" enabled="true"/>					
 					<mx:Button label="動画以外" id="newCommentDownloadButton" 
 							   click="newCommentDownloadButtonClicked()" left="127" bottom="5" enabled="true"/>
-					<mx:Button label="コメント" id="newCommentOnlyDownloadButton" left="48" bottom="5" 
-							   click="newCommentDownloadButtonClicked(true)" enabled="true"/>
 					<mx:Button label="すべて" left="205" bottom="5" id="addDownloadListButton"
 							   click="addDownloadListForDownloadedList(event)"/>
 					
@@ -1526,29 +1543,30 @@
 					<mx:Label text="動画の保存先：" width="95" left="30" top="20"/>
 					<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="358" left="133" top="18" editable="false"/>
 					<mx:Button label="参照..." click="folderSelectButtonClicked(event)" left="499" top="18" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定した後、ライブラリを更新しなおせば、NNDDのライブラリタブから再生できます。"/>
+					<mx:CheckBox label="新しくダウンロードした動画を&quot;Downloads&quot;フォルダに保存する" selected="true" id="checkBox_useDownloadDir" click="useDownloadDirCheckBoxChenged()" left="49" top="47" toolTip="新しくダウンロードした動画を、ライブラリの直下ではなく、ライブラリの直下のDownloadsフォルダに保存します。"/>
 					
-					<mx:Button label="更新" left="499" top="47" click="renewLibraryButtonClicked()" toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
-					<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="48"/>
+					<mx:Button label="更新" left="478" top="72" click="renewLibraryButtonClicked()" toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
+					<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="74"/>
 					
-					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="30" top="76"/>
-					<mx:Button label="リセット" left="281" top="75" id="button_windowPositionReset" click="windowPositionReset()"/>
+					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="31" top="102"/>
+					<mx:Button label="リセット" left="280" top="100" id="button_windowPositionReset" click="windowPositionReset()"/>
 					
-					<mx:CheckBox label="起動時にバージョンチェックをする" selected="true" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="104"/>
-					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="262" top="104"/>
-					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="134"/>
+					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="31" top="130"/>
+					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="260" top="129"/>
+					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="31" top="161"/>
 					<mx:HRule left="47" right="10" top="0" height="21"/>
 					
 					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					<!--
 					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
 					-->
-					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="166"/>
-					<mx:ComboBox left="259" top="166" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="471" top="165" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
-					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="190"/>
+					<mx:Label text="アプリケーションで使用するフォント：" left="31" top="187"/>
+					<mx:ComboBox left="260" top="187" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+					<mx:Button label="デフォルト" left="472" top="186" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="54" top="210"/>
 					
-					<mx:Label x="30" y="219" text="フォントのサイズ："/>
-					<mx:ComboBox left="151" top="219" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
+					<mx:Label x="31" y="239" text="フォントのサイズ："/>
+					<mx:ComboBox left="152" top="239" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					

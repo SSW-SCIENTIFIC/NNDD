@@ -79,6 +79,7 @@ public var isEnableWideMode:Boolean = true;
 public var relationSortIndex:int = 0;
 public var relationOrderIndex:int = 0;
 public var isNgUpEnable:Boolean = true;
+public var isSmoothing:Boolean = true;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -218,6 +219,13 @@ public function checkBoxNgUpChanged(event:Event):void{
 	this.isNgUpEnable = checkBox_isNgUpEnable.selected;
 	if(this.playerController != null){
 		this.playerController.reloadLocalComment();
+	}
+}
+
+public function checkBoxSmoothingChanged(event:Event):void{
+	this.isSmoothing = checkBox_isSmoothing.selected;
+	if(this.playerController != null){
+		this.playerController.setVideoSmoothing(this.isSmoothing);
 	}
 }
 
@@ -716,6 +724,7 @@ private function configCanvasCreationCompleteHandler(event:FlexEvent):void{
 	checkBox_hideSekaShinComment.selected = isHideSekaShinComment;
 	
 	checkBox_isNgUpEnable.selected = isNgUpEnable;
+	checkBox_isSmoothing.selected = isSmoothing;
 	
 	if(playerController.getCommentManager() != null){
 		playerController.getCommentManager().setAntiAlias(isAntiAlias);
@@ -1013,6 +1022,14 @@ private function readStore():void{
 			isNgUpEnable = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("isSmoothing");
+		if(confValue != null){
+			isSmoothing = ConfUtil.parseBoolean(confValue);
+		}
+		if(playerController != null){
+			playerController.setVideoSmoothing(this.isSmoothing);
+		}
+		
 		
 	}catch(error:Error){
 		trace(error.getStackTrace());
@@ -1128,6 +1145,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isNgUpEnable");
 		ConfigManager.getInstance().setItem("isNgUpEnable", isNgUpEnable);
+		
+		ConfigManager.getInstance().removeItem("isSmoothing");
+		ConfigManager.getInstance().setItem("isSmoothing",isSmoothing);
 		
 		ConfigManager.getInstance().save();
 		
