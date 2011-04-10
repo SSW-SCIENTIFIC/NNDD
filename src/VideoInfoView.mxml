@@ -6,7 +6,7 @@
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" title="Info"
 	layout="absolute" width="400" height="580" horizontalScrollPolicy="off" verticalScrollPolicy="off" 
 	windowComplete="windowCompleteHandler()" closing="windowClosing(event)" windowMove="windowMove(event)" windowResize="windowResized(event)"
-	minWidth="300" minHeight="300" xmlns:ns1="*" activate="window1_activateHandler(event)">
+	minWidth="300" minHeight="300" xmlns:ns1="*" activate="window1_activateHandler(event)" xmlns:view="org.mineap.nndd.view.*">
 
 	<mx:Script>
 		<![CDATA[
@@ -203,7 +203,7 @@
 	
 	<mx:Canvas left="5" top="2" width="90" height="70" backgroundColor="#969696"
 			   contentBackgroundColor="#969696" dropShadowVisible="false">
-		<mx:Image id="image_thumbImg" width="88" height="68" click="button_goToWebClicked(event)"
+		<view:SmoothImage id="image_thumbImg" width="88" height="68" click="button_goToWebClicked(event)"
 				  creationComplete="image_thumbImg_creationCompleteHandler(event)" enabled="true"
 				  left="1" top="1" scaleContent="true" toolTip="クリックするとブラウザで動画を再生します"/>
 	</mx:Canvas>
@@ -369,7 +369,7 @@
 					
 					<mx:Canvas left="5" top="0" width="50" height="50" backgroundColor="#969696"
 							   contentBackgroundColor="#969696" dropShadowVisible="false">
-						<mx:Image id="image_pubUserIcon" width="48" height="48"
+						<view:SmoothImage id="image_pubUserIcon" width="48" height="48"
 								  doubleClick="pubUserLinkButton_clickHandler(event)"
 								  doubleClickEnabled="true" top="1" left="1"
 								  source="{pubUserNameIconUrl}"/>
