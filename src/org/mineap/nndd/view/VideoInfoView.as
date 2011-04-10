@@ -139,6 +139,18 @@ public var connectionType:String = "";
 public var videoServerUrl:String = "";
 [Bindable]
 public var messageServerUrl:String = "";
+[Bindable]
+public var economyMode:String = "";
+[Bindable]
+public var nickName:String = "";
+[Bindable]
+public var isPremium:String = "";
+[Bindable]
+public var pubUserNameIconUrl:String = "";
+[Bindalbe]
+public var pubUserName:String = "";
+[Bindalbe]
+public var pubUserLinkButtonText:String = "";
 
 public function init(playerController:PlayerController, videoPlayer:VideoPlayer, logManager:LogManager):void{
 	this.videoPlayer = videoPlayer;

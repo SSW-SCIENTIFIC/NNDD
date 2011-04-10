@@ -1518,11 +1518,12 @@
 							<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
 						</mx:itemRenderer>
 					</mx:DataGridColumn>
-					<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="200"/>
+					<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300"/>
 					<mx:DataGridColumn headerText="再生日" dataField="dataGridColumn_playdate" width="80"/>
-					<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40"/>
+					<mx:DataGridColumn headerText="再生回数" dataField="dataGridColumn_count" width="40" textAlign="right"/>
+					<mx:DataGridColumn headerText="時間" dataField="dataGridColumn_time" width="40" textAlign="right" sortCompareFunction="timeSortFunc"/>
 					<mx:DataGridColumn headerText="状態" dataField="dataGridColumn_condition" width="80"/>
-					<mx:DataGridColumn headerText="URL" dataField="dataGridColumn_url" width="100"/>
+					<mx:DataGridColumn headerText="URL" dataField="dataGridColumn_url" width="60" showDataTips="true"/>
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:Button left="191" bottom="5" width="35" label="-"

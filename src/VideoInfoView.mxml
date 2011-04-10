@@ -10,6 +10,8 @@
 
 	<mx:Script>
 		<![CDATA[
+			import flash.net.navigateToURL;
+			
 			import mx.events.DropdownEvent;
 			import mx.events.IndexChangedEvent;
 			
@@ -167,6 +169,31 @@
 				if(connectionTypeText.text.length == 0){
 					connectionTypeText.text = "-";
 				}
+				if(messageServerUrlText.text.length == 0){
+					messageServerUrlText.text = "-";
+				}
+				if(economyModeText.text.length == 0) {
+					economyModeText.text = "-";
+				}
+				if(nickNameText.text.length == 0){
+					nickNameText.text = "-";
+				}
+				if(premiumText.text.length == 0){
+					premiumText.text = "-";
+				}
+				
+			}
+
+
+			protected function pubUserLinkButton_clickHandler(event:MouseEvent):void
+			{
+				var user:String = pubUserLinkButton.label;
+				if(user.length >= 5){
+					var url:String = "http://www.nicovideo.jp/" + user;
+					navigateToURL(new URLRequest(url));
+				}else{
+					
+				}
 			}
 
 		]]>
@@ -174,9 +201,12 @@
 
 	<mx:Script source="org/mineap/nndd/view/VideoInfoView.as" />
 	
-	<mx:Image id="image_thumbImg" left="5" top="2" scaleContent="true" height="70" click="button_goToWebClicked(event)" 
-			  toolTip="クリックするとブラウザで動画を再生します" enabled="true" width="92" creationComplete="image_thumbImg_creationCompleteHandler(event)"/>
-	
+	<mx:Canvas left="5" top="2" width="90" height="70" backgroundColor="#969696"
+			   contentBackgroundColor="#969696" dropShadowVisible="false">
+		<mx:Image id="image_thumbImg" width="88" height="68" click="button_goToWebClicked(event)"
+				  creationComplete="image_thumbImg_creationCompleteHandler(event)" enabled="true"
+				  left="1" top="1" scaleContent="true" toolTip="クリックするとブラウザで動画を再生します"/>
+	</mx:Canvas>
 	<mx:ComboBox left="100" top="53" right="128" id="comboBox_mylist" dataProvider="{myListDataProvider}" close="comboBox_mylist_closeHandler(event)" height="20"></mx:ComboBox>
 	<mx:Button id="button_mylist" right="74" top="53" width="50" height="20" label="追加"
 			   click="myListAddButtonClicked(event)" toolTip="ニコニコ動画のマイリストに動画を追加します"/>
@@ -319,8 +349,8 @@
 					</mx:TabNavigator>
 				</mx:Canvas>
 				<mx:Canvas label="投稿者" width="100%" height="100%" id="canvas_owner">
-					<mx:VDividedBox left="0" top="0" bottom="0" right="0">
-						<mx:TabNavigator width="100%" height="200">
+					<mx:VDividedBox left="0" top="50" bottom="0" right="0">
+						<mx:TabNavigator width="100%" height="180">
 							<mx:Canvas id="canvas_owner_onNico" label="ニコニコ" width="100%" height="100%">
 								<mx:TextArea id="textArea_owner_onNico" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_nico}" link="ownerTextLinkClicked(event)"/>
 							</mx:Canvas>
@@ -336,6 +366,24 @@
 							</mx:columns>
 						</mx:DataGrid>
 					</mx:VDividedBox>
+					
+					<mx:Canvas left="5" top="0" width="50" height="50" backgroundColor="#969696"
+							   contentBackgroundColor="#969696" dropShadowVisible="false">
+						<mx:Image id="image_pubUserIcon" width="48" height="48"
+								  doubleClick="pubUserLinkButton_clickHandler(event)"
+								  doubleClickEnabled="true" top="1" left="1"
+								  source="{pubUserNameIconUrl}"/>
+					</mx:Canvas>
+					<mx:Label left="63" top="0" text="投稿者名："/>
+					<mx:Label id="label_pubUserName" left="133" right="5" top="0"
+							  text="{pubUserName}"/>
+					<mx:LinkButton id="pubUserLinkButton" left="58" top="22"
+								   label="{pubUserLinkButtonText}"
+								   click="pubUserLinkButton_clickHandler(event)" 
+								   color="#0000FF" textDecoration="underline"
+								   toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
+					
+					
 				</mx:Canvas>
 				<mx:Canvas label="オススメ" width="100%" height="100%" creationComplete="relationCanvasCreationCompleteHandler(event)">
 					<mx:ComboBox left="0" top="0" width="120" dataProvider="{relationSortComboboxDataProvider}" id="combobox_relationSort" change="relationSortComboboxChange(event)"></mx:ComboBox>
@@ -356,13 +404,25 @@
 		</mx:Canvas>
 		<mx:Canvas width="100%" height="100%" label="接続情報" creationComplete="canvas1_creationCompleteHandler(event)">
 			<mx:Label left="10" top="10" text="動画種別："/>
-			<mx:Text y="10" left="83" right="5" text="{videoType}" id="videoTypeText"/>
+			<mx:Label id="videoTypeText" left="83" right="5" top="10" text="{videoType}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="30" text="接続種別："/>
-			<mx:Text y="30" left="83" right="5" text="{connectionType}" id="connectionTypeText"/>
+			<mx:Label id="connectionTypeText" left="83" right="5" top="30" text="{connectionType}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="50" text="動画サーバー："/>
-			<mx:Text y="50" left="107" right="5" text="{videoServerUrl}" id="videoServerUrlText"/>
+			<mx:Label id="videoServerUrlText" left="107" right="5" top="50" text="{videoServerUrl}"  toolTip="{videoServerUrl}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="70" text="メッセージサーバー："/>
+			<mx:Label id="messageServerUrlText" left="143" right="5" top="70" text="{messageServerUrl}" toolTip="{messageServerUrl}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="90" text="エコノミーモード："/>
+			<mx:Label id="economyModeText" left="131" right="6" top="90" text="{economyMode}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="110" text="ニックネーム："/>
+			<mx:Label id="nickNameText" left="107" right="6" top="110" text="{nickName}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="130" text="プレミアム："/>
+			<mx:Label id="premiumText" left="95" right="6" top="130" text="{isPremium}" truncateToFit="true" selectable="true"/>
 		</mx:Canvas>
 		<mx:Canvas label="設定" width="100%" height="100%">
 			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="on" left="0" top="0" bottom="0" right="0" creationComplete="configCanvasCreationCompleteHandler(event)"

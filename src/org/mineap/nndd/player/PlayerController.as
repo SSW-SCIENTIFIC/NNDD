@@ -354,6 +354,18 @@ package org.mineap.nndd.player
 			this.lastFrame = 0;
 			this.lastNicowariFrame = 0;
 			
+			if(videoInfoView != null){
+				videoInfoView.pubUserLinkButtonText = "(未取得)";
+				videoInfoView.pubUserNameIconUrl = null;
+				videoInfoView.pubUserName = "(未取得)";
+				
+				if(videoInfoView.pubUserLinkButton != null){
+					videoInfoView.pubUserLinkButton.label = videoInfoView.pubUserLinkButtonText;
+					videoInfoView.image_pubUserIcon.source = videoInfoView.pubUserNameIconUrl;
+					videoInfoView.label_pubUserName.text = videoInfoView.pubUserName;
+				}
+			}
+			
 			isCounted = false;
 			
 		}
@@ -630,6 +642,10 @@ package org.mineap.nndd.player
 							videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
 						}else{
 							videoInfoView.videoServerUrl = videoPath;
+							var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
+							if(messageServerUrl != null){
+								videoInfoView.messageServerUrl = messageServerUrl;
+							}
 						}
 						videoInfoView.videoType = "FLV/MP4";
 						
@@ -712,6 +728,10 @@ package org.mineap.nndd.player
 							videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
 						}else{
 							videoInfoView.videoServerUrl = videoPath;
+							var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
+							if(messageServerUrl != null){
+								videoInfoView.messageServerUrl = messageServerUrl;
+							}
 						}
 						videoInfoView.videoType = "SWF";
 						if(autoPlay){
@@ -2743,6 +2763,22 @@ package org.mineap.nndd.player
 							fail = true;
 						}
 						
+						if(videoInfoView != null){
+							trace(watchVideoPage.watcher.getPubUserName() + ", " 
+								+ watchVideoPage.watcher.getPubUserId() + ", " 
+								+ watchVideoPage.watcher.getPubUserIconUrl());
+							
+							videoInfoView.pubUserLinkButtonText = "user/" + watchVideoPage.watcher.getPubUserId();
+							videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getPubUserIconUrl();
+							videoInfoView.pubUserName = watchVideoPage.watcher.getPubUserName();
+							
+							if(videoInfoView.pubUserLinkButton != null){
+								videoInfoView.pubUserLinkButton.label = videoInfoView.pubUserLinkButtonText;
+								videoInfoView.image_pubUserIcon.source = videoInfoView.pubUserNameIconUrl;
+								videoInfoView.label_pubUserName.text = videoInfoView.pubUserName;
+							}
+						}
+						
 						if(!watchVideoPage.onlyOwnerText){
 							var thumbInfo:String = watchVideoPage.thumbInfoLoader.thumbInfo;
 							if(thumbInfo != null){
@@ -3347,6 +3383,9 @@ package org.mineap.nndd.player
 					videoInfoView.connectionType = "-";
 					videoInfoView.videoType = "-";
 					videoInfoView.messageServerUrl = "-";
+					videoInfoView.economyMode = "-";
+					videoInfoView.nickName = "-";
+					videoInfoView.isPremium = "-";
 				}
 				
 				try{
@@ -3536,6 +3575,20 @@ package org.mineap.nndd.player
 							playMovie((event.target as NNDDDownloader).streamingUrl, playList, playListIndex, (event.target as NNDDDownloader).nicoVideoName, nnddDownloaderForStreaming.isEconomyMode);
 							removeStreamingPlayHandler(event);
 							nnddDownloaderForStreaming = null;
+							
+							var downloader:NNDDDownloader = (event.currentTarget as NNDDDownloader);
+							if(downloader != null && videoInfoView != null){
+								if(downloader.messageServerURL != null){
+									videoInfoView.messageServerUrl = downloader.messageServerURL;
+								}
+								
+								if(downloader.getFlvResultAnalyzer != null){
+									videoInfoView.economyMode = String(downloader.getFlvResultAnalyzer.economyMode);
+									videoInfoView.nickName = downloader.getFlvResultAnalyzer.nickName;
+									videoInfoView.isPremium = String(downloader.getFlvResultAnalyzer.isPremium);
+								}
+							}
+							
 						});
 						
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
@@ -3650,7 +3703,7 @@ package org.mineap.nndd.player
 			}else if(event.type == NNDDDownloader.VIDEO_GET_SUCCESS){
 				status = "動画取得...成功";
 			}
-			
+
 			trace(status);
 			videoPlayer.label_downloadStatus.text = videoPlayer.label_downloadStatus.text + "\n\t" + status;
 			
@@ -3672,6 +3725,28 @@ package org.mineap.nndd.player
 				logManager.addLog(NNDDDownloader.DOWNLOAD_PROCESS_ERROR + ":" + event + ":" + (event as IOErrorEvent).text);
 				logManager.addLog("***ストリーミング再生に失敗***");
 			}
+			
+			var downloader:NNDDDownloader = (event.currentTarget as NNDDDownloader);
+			if(downloader != null && videoInfoView != null){
+				if(downloader.messageServerURL != null){
+					videoInfoView.messageServerUrl = downloader.messageServerURL;
+				}
+				
+				if(downloader.getFlvResultAnalyzer != null){
+					var url:String = downloader.getFlvResultAnalyzer.url;
+					if(url != null){
+						var index:int = url.indexOf("?");
+						if(index != -1){
+							url = url.substring(0,index);
+						}
+					}
+					videoInfoView.videoServerUrl = url;
+					videoInfoView.economyMode = String(downloader.getFlvResultAnalyzer.economyMode);
+					videoInfoView.nickName = downloader.getFlvResultAnalyzer.nickName;
+					videoInfoView.isPremium = String(downloader.getFlvResultAnalyzer.isPremium);
+				}
+			}
+			
 			removeStreamingPlayHandler(event);
 			this.nnddDownloaderForStreaming = null;
 		}

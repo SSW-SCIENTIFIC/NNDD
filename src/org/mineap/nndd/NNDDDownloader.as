@@ -66,6 +66,8 @@ package org.mineap.nndd
 		private var _ichibaInfoLoader:IchibaInfoLoader;
 		private var _videoLoader:VideoLoader;
 		
+		private var _flvResultAnalyzer:GetFlvResultAnalyzer;
+		
 		private var _videoId:String;
 		private var _saveDir:File;
 		private var _saveVideoName:String;
@@ -533,9 +535,9 @@ package org.mineap.nndd
 			this._logManager.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 			dispatchEvent(new Event(GETFLV_API_ACCESS_SUCCESS));
 			
-			var analyzer:GetFlvResultAnalyzer = new GetFlvResultAnalyzer();
-			analyzer.analyze(this._getflvAccess.data);
-			this._threadId = analyzer.threadId;
+			this._flvResultAnalyzer = new GetFlvResultAnalyzer();
+			this._flvResultAnalyzer.analyze(this._getflvAccess.data);
+			this._threadId = this._flvResultAnalyzer.threadId;
 			
 			if(this._when == null){
 				//過去ログは取得しない
@@ -1449,6 +1451,51 @@ package org.mineap.nndd
 			}
 		}
 		
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get messageServerURL():String{
+			if(this._commentLoader != null){
+				return this._commentLoader.messageServerUrl;
+			}
+			return null;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get videoUrl():String{
+			if(this._videoLoader != null){
+				return this._videoLoader.videoUrl;
+			}
+			return null;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get videoType():VideoType{
+			if(this._videoLoader != null){
+				return this._videoLoader.videoType;
+			}
+			return null;
+		}
+		
+		/**
+		 * getFlv APIの取得結果が存在する場合は、それを返します。
+		 * @return 
+		 * 
+		 */
+		public function get getFlvResultAnalyzer():GetFlvResultAnalyzer{
+			return this._flvResultAnalyzer;
+		}
 
 	}
 }
