@@ -239,7 +239,7 @@ private var showAll:Boolean = false;
 
 private var isEnableNativePlayer:Boolean = false;
 
-private var useAppDirLibFile:Boolean = true;
+private var useAppDirLibFile:Boolean = false;
 
 private var period:int = 0;
 private var target:int = 0;
@@ -2130,7 +2130,7 @@ private function readStore(isLogout:Boolean = false):void{
 		if(confValue != null){
 			useAppDirLibFile = ConfUtil.parseBoolean(confValue);
 		}else{
-			useAppDirLibFile = true;
+			useAppDirLibFile = false;
 		}
 		
 		
