@@ -99,6 +99,7 @@ import org.mineap.nndd.library.LibraryManagerBuilder;
 import org.mineap.nndd.library.LibraryTreeBuilder;
 import org.mineap.nndd.library.LocalVideoInfoLoader;
 import org.mineap.nndd.library.namedarray.LibraryManager;
+import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
 import org.mineap.nndd.model.*;
 import org.mineap.nndd.model.tree.ITreeItem;
 import org.mineap.nndd.model.tree.TreeFileItem;
@@ -148,7 +149,7 @@ private var _myListAdder:NNDDMyListAdder;
 private var loginDialog:LoginDialog;
 private var loadingWindow:LoadWindow;
 
-private var _libraryFile:File;
+private var _libraryDir:File;
 private var _selectedLibraryFile:File;
 
 private var playingVideoPath:String;
@@ -237,6 +238,8 @@ private var textInput_url_foculsIn:Boolean = false;
 private var showAll:Boolean = false;
 
 private var isEnableNativePlayer:Boolean = false;
+
+private var useAppDirLibFile:Boolean = true;
 
 private var period:int = 0;
 private var target:int = 0;
@@ -372,14 +375,49 @@ public function initNNDD(nndd:NNDD):void
 	/* ライブラリマネージャー生成 */
 //	this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
 	
-	if(!_libraryFile.exists){
+	//動画の保存先ディレクトリはあるか？(保存先ディレクトリは存在するか？)
+	if(!_libraryDir.exists){
 		
-		Alert.show(Message.M_LIBRARY_FILE_NOT_FOUND + this._libraryFile.nativePath, Message.M_ERROR);
-		this._libraryFile = libraryManager.defaultLibraryDir;
+		// デフォルトに戻す
+		Alert.show(Message.M_LIBRARY_FILE_NOT_FOUND + this._libraryDir.nativePath, Message.M_ERROR);
+		this._libraryDir = libraryManager.defaultLibraryDir;
 		
 	}
 	
-	this.libraryManager.changeLibraryDir(this._libraryFile, false);
+	
+	//アプリケーションディレクトリのライブラリを使う準備
+	this.libraryManager.useAppDirLibFile = this.useAppDirLibFile;
+	if(true == this.useAppDirLibFile){
+		//アプリケーションディレクトリを使う場合
+		if(this.libraryManager.libraryFile.exists){
+			//ライブラリファイルがもうあるので何もしない
+		}else{
+			//ライブラリファイルは無い場合
+			this.libraryManager.useAppDirLibFile = false;
+			
+			//古いライブラリファイル(SQL)をアプリケーションディレクトリにコピー
+			var oldLibFile:File = _libraryDir.resolvePath("system/").resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
+			var oldXMLLibFile:File = _libraryDir.resolvePath("system/").resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+			
+			this.libraryManager.useAppDirLibFile = true;
+			var newLibFile:File = File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
+			if(oldLibFile.exists && !newLibFile.exists){
+				oldLibFile.copyTo(newLibFile);
+				logManager.addLog("ライブラリファイルの保存先を変更(新しい保存先:" + File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME).nativePath + ")");
+			}
+			
+			//古いライブラリファイル(XML)をアプリケーションディレクトリにコピー
+			var newXMLFile:File = File.applicationStorageDirectory.resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+			if(oldXMLLibFile.exists && !newXMLFile.exists){
+				oldXMLLibFile.copyTo(newXMLFile);
+			}
+			
+//			oldLibFile.moveToTrash();
+		}
+	}
+	
+	
+	this.libraryManager.changeLibraryDir(this._libraryDir, false);
 	
 	this.ngTagManager.loadNgTags();
 	
@@ -387,8 +425,10 @@ public function initNNDD(nndd:NNDD):void
 	var isSuccess:Boolean = this.libraryManager.loadLibrary();
 	this.libraryManager.addEventListener(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, libraryLoadCompleteEventHandler);
 	if(!isSuccess){
+		//システムディレクトリにライブラリが無い
 		var file:File = new File(libraryManager.libraryDir.url + "/" + LibraryManager.LIBRARY_FILE_NAME);
-		//古いライブラリファイルはあるか？
+		
+		//古いライブラリファイル(XML)はあるか？
 		if(file.exists){
 			//あるなら持ってくる
 			try{
@@ -398,10 +438,12 @@ public function initNNDD(nndd:NNDD):void
 				error.getStackTrace();
 			}
 		}
-	}
-	if(!isSuccess){
-		//それでも無いなら更新を薦める
-		askAndRenewAtBootTime();
+		
+		//古いライブラリファイルが読み込めたか？
+		if(!isSuccess){
+			//古いライブラリファイルが無い、もしくは読み込みに失敗したなら更新を薦める
+			askAndRenewAtBootTime();
+		}
 	}
 	
 	/* ダウンロード済リストマネージャー */
@@ -1618,7 +1660,7 @@ private function readStore(isLogout:Boolean = false):void{
 	var isStore:Boolean = false;
 	var name:String = "" , pass:String = "";
 	
-	this._libraryFile = libraryManager.defaultLibraryDir;
+	this._libraryDir = libraryManager.defaultLibraryDir;
 
 	logManager.addLog("設定情報の読み込み:" + ConfigManager.getInstance().confFileNativePath);
 	trace("設定情報の読み込み:" + ConfigManager.getInstance().confFileNativePath);
@@ -1835,12 +1877,12 @@ private function readStore(isLogout:Boolean = false):void{
 		/*保存先を設定*/
 		confValue = ConfigManager.getInstance().getItem("libraryURL");
 		if (confValue == null) {
-			this._libraryFile = File.documentsDirectory;
-			this._libraryFile.url = this._libraryFile.url + "/NNDD";
+			this._libraryDir = File.documentsDirectory;
+			this._libraryDir.url = this._libraryDir.url + "/NNDD";
 		}else{
-			this._libraryFile.url = String(confValue);
+			this._libraryDir.url = String(confValue);
 		}
-		logManager.setLogDir(new File(this._libraryFile.url + "/system/"));
+		logManager.setLogDir(new File(this._libraryDir.url + "/system/"));
 		
 		errorName = "isSayHappyNewYear";
 		confValue = ConfigManager.getInstance().getItem("isSayHappyNewYear");
@@ -2082,15 +2124,23 @@ private function readStore(isLogout:Boolean = false):void{
 		confValue = FontUtil.setSize(Number(confValue));
 		ConfigManager.getInstance().setItem("fontSize", confValue);
 		
+		
+		errorName = "useAppDirLibFile";
+		confValue = ConfigManager.getInstance().getItem("useAppDirLibFile");
+		if(confValue != null){
+			useAppDirLibFile = ConfUtil.parseBoolean(confValue);
+		}else{
+			useAppDirLibFile = true;
+		}
+		
+		
 	}catch(error:Error){
 		/* ストアをリセット */
 //		EncryptedLocalStore.reset();
 		
 		/* エラー時は初期値を利用 */
-		this._libraryFile = File.documentsDirectory;
-		this._libraryFile.url = this._libraryFile.url + "/NNDD";
-		
-		logManager.setLogDir(new File(this._libraryFile.url + "/system"));
+		this._libraryDir = libraryManager.defaultLibraryDir;		
+		logManager.setLogDir(libraryManager.systemFileDir);
 		
 		/* エラーログ出力 */
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -4171,6 +4221,12 @@ private function saveStore():void{
 		/* 外部プレーヤを有効にするかどうか */
 		ConfigManager.getInstance().removeItem("isEnableNativePlayer");
 		ConfigManager.getInstance().setItem("isEnableNativePlayer", this.isEnableNativePlayer);
+		
+		/* ライブラリファイルをアプリケーションディレクトリに保存するかどうか */
+		ConfigManager.getInstance().removeItem("useAppDirLibFile");
+		ConfigManager.getInstance().setItem("useAppDirLibFile", this.useAppDirLibFile);
+		
+		
 		
 		ConfigManager.getInstance().save();
 		

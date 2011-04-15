@@ -61,8 +61,15 @@ package org.mineap.nndd.library.sqlite
 		private var _totalVideoCount:Number = 0;
 		private var _videoCount:Number = 0;
 		
+		private var _useAppDirLibFile:Boolean = true;
+		
 		public static const LIBRARY_FILE_NAME:String = "library.db";
 		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
 		public static function get instance():SQLiteLibraryManager{
 			return sqliteLibraryManager;
 		}
@@ -86,13 +93,16 @@ package org.mineap.nndd.library.sqlite
 		}
 		
 		/**
-		 * 
+		 * ライブラリファイルの場所を返します。
 		 * @return 
 		 * 
 		 */
-		public function get libraryFile():File
-		{
-			return new File(this.systemFileDir.url + "/" + SQLiteLibraryManager.LIBRARY_FILE_NAME);
+		public function get libraryFile():File{
+			if(_useAppDirLibFile){
+				return File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
+			}else{
+				return this.systemFileDir.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
+			}
 		}
 		
 		/**
@@ -143,6 +153,16 @@ package org.mineap.nndd.library.sqlite
 		public function get playListDir():File
 		{
 			return new File(systemFileDir.resolvePath("playList/").url);
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */
+		public function set useAppDirLibFile(value:Boolean):void
+		{
+			this._useAppDirLibFile = value;
 		}
 		
 		/**
@@ -206,7 +226,7 @@ package org.mineap.nndd.library.sqlite
 				//新規SQLiteライブラリを作る
 				
 				//古い形式のライブラリファイルはあるか？
-				var oldLibraryFile:File = this.libraryDir.resolvePath("library.xml");
+				var oldLibraryFile:File = this.systemFileDir.resolvePath("library.xml");
 				if(oldLibraryFile != null && oldLibraryFile.exists){
 					// ある。古いXMLから変換
 					isConvertFromXML = true;

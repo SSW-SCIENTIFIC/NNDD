@@ -83,7 +83,8 @@ package org.mineap.nndd.library.sqlite.util
 			
 			// XMLを保存
 			var fileIO:FileIO = new FileIO();
-			var file:File = SQLiteLibraryManager.instance.systemFileDir.resolvePath("library_back.xml");
+			var file:File = File.applicationStorageDirectory.resolvePath("library_back.xml");
+//			var file:File = SQLiteLibraryManager.instance.systemFileDir.resolvePath("library_back.xml");
 			
 			_logger.addLog("変換したXMLを保存:" + file.nativePath);
 			

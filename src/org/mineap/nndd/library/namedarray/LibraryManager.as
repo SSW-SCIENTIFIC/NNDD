@@ -91,6 +91,11 @@ package org.mineap.nndd.library.namedarray
 		
 		/**
 		 * 
+		 */
+		private var _useAppDirLibFile:Boolean = true;
+		
+		/**
+		 * 
 		 * 
 		 */
 		public function LibraryManager()
@@ -120,7 +125,11 @@ package org.mineap.nndd.library.namedarray
 		 * 
 		 */
 		public function get libraryFile():File{
-			return new File(this.systemFileDir.url + "/" + LibraryManager.LIBRARY_FILE_NAME);
+			if(_useAppDirLibFile){
+				return File.applicationStorageDirectory.resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+			}else{
+				return this.systemFileDir.resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+			}
 		}
 		
 		/**
@@ -160,6 +169,16 @@ package org.mineap.nndd.library.namedarray
 		public function get playListDir():File{
 			var playListDir:File = new File(systemFileDir.url + "/playList/");
 			return playListDir;
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */
+		public function set useAppDirLibFile(value:Boolean):void
+		{
+			this._useAppDirLibFile = value;
 		}
 		
 		/**

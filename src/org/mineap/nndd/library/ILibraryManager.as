@@ -51,6 +51,12 @@ package org.mineap.nndd.library
 		function get playListDir():File;
 		
 		/**
+		 * ライブラリファイルの保存先をアプリケーションディレクトリにするかどうか指定します
+		 * 
+		 */
+		function set useAppDirLibFile(value:Boolean):void;
+		
+		/**
 		 * ライブラリディレクトリを変更します
 		 * @param libraryDir
 		 * @param isSave
