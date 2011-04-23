@@ -117,7 +117,7 @@ public function init(playerController:PlayerController, videoInfoView:VideoInfoV
 	});
 	
 	readStore();
-		
+	
 }
 
 protected function windowComplete(event:AIREvent):void{

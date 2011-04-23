@@ -195,6 +195,28 @@
 					
 				}
 			}
+			
+			protected function showQualitySliderDataTipFunction(value:Number):String
+			{
+				var str:String = "低";
+				switch(value){
+					case 0:
+						str = "低";
+						break;
+					case 1:
+						str = "中"
+						break;
+					case 2:
+						str = "高"
+						break;
+					case 3:
+						str = "最高";
+						break;
+					default:
+						str = "高";
+				}
+				return str;
+			}
 
 		]]>
 	</mx:Script>
@@ -425,57 +447,80 @@
 			<mx:Label id="premiumText" left="95" right="6" top="130" text="{isPremium}" truncateToFit="true" selectable="true"/>
 		</mx:Canvas>
 		<mx:Canvas label="設定" width="100%" height="100%">
-			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="on" left="0" top="0" bottom="0" right="0" creationComplete="configCanvasCreationCompleteHandler(event)"
+			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0"
 						backgroundColor="#ffffff">
-				<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" change="checkBoxPlayerAlwaysFrontChanged(event)" minHeight="20" left="10" top="10"/>
-				<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="40"/>
-				<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" change="checkboxPlayerFollowChanged(event)" left="10" top="70"/>
-				<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" change="checkboxResizePlayerEachPlay(event)" left="10" top="100"/>
-				<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" groupName="radioGroup_resizeType" value="1" left="35" top="118" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
-				<mx:RadioButton label="動画のサイズに合わせる" id="radioButton_resizeVideo" groupName="radioGroup_resizeType" value="2" left="35" top="160" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズを動画の大きさに合わせます"/>
-				<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
-				<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" left="68" top="135" change="checkboxEnableWideModeChanged(event)" toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
-				<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="190" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
-				<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="220" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
-				<mx:CheckBox id="checkbox_hideUnderController" left="10" top="250" height="22"
-							 label="Player下のコントローラを表示しない"
-							 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
-							 rollOut="videoPlayer.videoController.rollOut(event)"
-							 rollOver="videoPlayer.videoController.rollOver(event)"
-							 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
-				<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="280" id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
-				<mx:CheckBox label="動画以外をすべて更新する" left="35" top="301" id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
-				<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" left="35" top="321" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
-				<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="381" id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
-				<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="35" top="402" id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
-				<mx:CheckBox left="10" top="351" label="「世界の新着」コメントを表示しない" toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
-				<mx:CheckBox label="コメントを太字にする" top="432" left="10" id="checkBox_commentBold" change="checkBoxCommentBoldChanged(event)"/>
-				<mx:CheckBox label="常にエコノミーモードでストリーミングする" id="checkBox_isAlwaysEconomyForStreaming" left="10" top="462" change="checkBoxAlwaysEconomyChanged(event)" toolTip="ストリーミング再生を常にエコノミーモードで行います。ローカルのファイルを再生する際は無視されます。"/>
-				<mx:CheckBox left="10" top="492" label="投稿者フィルターを有効にする" toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
-				<mx:CheckBox left="10" top="522" label="再生時に動画をスムージングする" toolTip="FLV/MP4の再生時にスムージングを有効にします。" id="checkBox_isSmoothing" change="checkBoxSmoothingChanged(event)" selected="true"/>
-				
-				<mx:Label text="コメントの大きさ：" left="10" top="553"/>
-				<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="553" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
-				<mx:Label text="0.5倍" left="143" top="579"/>
-				<mx:Label right="10" top="579" text="1.5倍"/>
-				<mx:Label text="コメントのFPS：" left="10" top="605" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-				<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="605" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-				<mx:Label text="7.5fps" left="143" top="631"/>
-				<mx:Label right="10" top="631" text="120fps"/>
-				<mx:Label x="10" y="657" text="表示するコメント："/>
-				<mx:HSlider y="657" left="143" minimum="50" maximum="2500" snapInterval="50" right="10" showDataTip="true" value="250" id="slider_showCommentCount" change="sliderShowCommentCountChanged(event)" toolTip="表示するコメントの個数を指定します。ダウンロード済みのコメントの個数より大きい数字を指定しても、ダウンロード済みの個数以上は表示されません。"/>
-				<mx:Label text="50" left="143" top="683"/>
-				<mx:Label right="10" top="683" text="2500"/>
-				<mx:Label x="10" y="709" text="コメント表示時間："/>
-				<mx:HSlider y="709" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
-				<mx:Label text="1秒" left="143" top="735"/>
-				<mx:Label text="5秒" top="735" right="10"/>
-				<mx:Label x="10" y="761" text="コメントの不透明度：" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-				<mx:HSlider y="761" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-				<mx:Label text="1%" left="143" top="787"/>
-				<mx:Label text="100%" top="787" right="10"/>
-				
-				
+				<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config">
+					<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1"
+							   creationComplete="configCanvas1CreationCompleteHandler(event)">
+						<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" change="checkboxResizePlayerEachPlay(event)" left="10" top="10"/>
+						
+						<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
+						<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" groupName="radioGroup_resizeType" value="1" left="35" top="28" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
+						<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" left="68" top="45" change="checkboxEnableWideModeChanged(event)" toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
+						<mx:RadioButton label="動画のサイズに合わせる" id="radioButton_resizeVideo" groupName="radioGroup_resizeType" value="2" left="35" top="70" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズを動画の大きさに合わせます"/>
+						
+						<mx:CheckBox left="10" top="122" label="再生時に動画をスムージングする" toolTip="FLV/MP4の再生時にスムージングを有効にします。" id="checkBox_isSmoothing" change="checkBoxSmoothingChanged(event)" selected="true"/>
+						<mx:CheckBox label="常にエコノミーモードでストリーミングする" id="checkBox_isAlwaysEconomyForStreaming" left="10" top="96" change="checkBoxAlwaysEconomyChanged(event)" toolTip="ストリーミング再生を常にエコノミーモードで行います。ローカルのファイルを再生する際は無視されます。"/>
+						<mx:Label x="10" y="148" text="再生品質:"/>
+						<mx:HSlider minimum="2" maximum="3" snapInterval="1" value="2" left="143" top="148" change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="10" toolTip="Playerの再生品質を設定します。デフォルトでは「高」です。"
+									dataTipFormatFunction="showQualitySliderDataTipFunction"/>
+						<mx:Label text="高" left="143" top="174"/>
+						<mx:Label right="10" top="174" text="最高"/>
+						
+					</mx:Canvas>
+					<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2"
+							   creationComplete="configCanvas2CreationCompleteHandler(event)">
+						
+						<mx:CheckBox label="コメントを太字にする" top="36" left="10" id="checkBox_commentBold" change="checkBoxCommentBoldChanged(event)"/>
+						<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
+						<mx:CheckBox left="10" top="62" label="投稿者フィルターを有効にする" toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
+						
+						<mx:Label text="コメントの大きさ：" left="10" top="92"/>
+						<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="92" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
+						<mx:Label text="0.5倍" left="143" top="118"/>
+						<mx:Label right="10" top="118" text="1.5倍"/>
+						<mx:Label text="コメントのFPS：" left="10" top="144" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
+						<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="144" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
+						<mx:Label text="7.5fps" left="143" top="170"/>
+						<mx:Label right="10" top="170" text="120fps"/>
+						<mx:Label x="10" y="196" text="表示するコメント："/>
+						<mx:HSlider y="196" left="143" minimum="50" maximum="2500" snapInterval="50" right="10" showDataTip="true" value="250" id="slider_showCommentCount" change="sliderShowCommentCountChanged(event)" toolTip="表示するコメントの個数を指定します。ダウンロード済みのコメントの個数より大きい数字を指定しても、ダウンロード済みの個数以上は表示されません。"/>
+						<mx:Label text="50" left="143" top="222"/>
+						<mx:Label right="10" top="222" text="2500"/>
+						<mx:Label x="10" y="248" text="コメント表示時間："/>
+						<mx:HSlider y="248" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
+						<mx:Label text="1秒" left="143" top="274"/>
+						<mx:Label text="5秒" top="274" right="10"/>
+						<mx:Label x="10" y="300" text="コメントの不透明度：" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
+						<mx:HSlider y="300" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
+						<mx:Label text="1%" left="143" top="326"/>
+						<mx:Label text="100%" top="326" right="10"/>
+					</mx:Canvas>
+					<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3"
+							   creationComplete="configCanvas3CreationCompleteHandler(event)">
+						<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" change="checkBoxPlayerAlwaysFrontChanged(event)" minHeight="20" left="10" top="10"/>
+						<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="38"/>
+						<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" change="checkboxPlayerFollowChanged(event)" left="10" top="66"/>
+						
+						<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="173" id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
+						<mx:CheckBox label="動画以外をすべて更新する" left="35" top="195" id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
+						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" left="35" top="215" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
+						
+						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="92" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
+						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="118" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
+						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="144" height="22"
+									 label="Player下のコントローラを表示しない"
+									 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
+									 rollOut="videoPlayer.videoController.rollOut(event)"
+									 rollOver="videoPlayer.videoController.rollOver(event)"
+									 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
+						
+						<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="241" id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
+						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="35" top="262" id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
+						
+						
+					</mx:Canvas>
+				</mx:TabNavigator>
 			</mx:Canvas>
 		</mx:Canvas>
 	</mx:ViewStack>

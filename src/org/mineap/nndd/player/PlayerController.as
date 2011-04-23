@@ -5,6 +5,7 @@ package org.mineap.nndd.player
 	import flash.display.MovieClip;
 	import flash.display.NativeWindowType;
 	import flash.display.StageDisplayState;
+	import flash.display.StageQuality;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -547,6 +548,8 @@ package org.mineap.nndd.player
 			 * 匿名メソッド。再生前の初期化を行います。
 			 */
 			function initStart():void{
+				
+				trace(videoPlayer.stage.quality);
 				
 				try{
 					if(_isEconomyMode){
@@ -1197,6 +1200,36 @@ package org.mineap.nndd.player
 				videoDisplay.videoObject.smoothing = isSmoothing;
 			}
 			
+		}
+		
+		/**
+		 * 
+		 * @param value 0-3 default=2
+		 * 
+		 */
+		public function setPlayerQuality(value:int):void{
+			if(videoPlayer.stage != null){
+				
+				var qualityStr:String = StageQuality.HIGH;
+				switch(value){
+					case 0:
+						qualityStr = StageQuality.LOW;
+						break;
+					case 1:
+						qualityStr = StageQuality.MEDIUM;
+						break;
+					case 2:
+						qualityStr = StageQuality.HIGH;
+						break;
+					case 3:
+						qualityStr = StageQuality.BEST;
+						break;
+					default:
+						qualityStr = StageQuality.HIGH;
+				}
+				
+				videoPlayer.stage.quality = qualityStr;
+			}
 		}
 		
 		/**

@@ -7,11 +7,13 @@
  * 
  */	
 
+import flash.display.StageQuality;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.TextEvent;
 import flash.geom.Rectangle;
+import flash.sampler.getInvocationCount;
 import flash.utils.Timer;
 
 import mx.collections.ArrayCollection;
@@ -24,6 +26,7 @@ import mx.controls.HSlider;
 import mx.controls.RadioButton;
 import mx.core.Application;
 import mx.core.DragSource;
+import mx.core.FlexGlobals;
 import mx.events.AIREvent;
 import mx.events.CloseEvent;
 import mx.events.DataGridEvent;
@@ -80,6 +83,7 @@ public var relationSortIndex:int = 0;
 public var relationOrderIndex:int = 0;
 public var isNgUpEnable:Boolean = true;
 public var isSmoothing:Boolean = true;
+public var playerQuality:int = 2;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -691,15 +695,19 @@ private function relationOrderComboboxChange(event:Event):void{
 	playerController.setNicoRelationInfoForRelationSortTypeChange();
 }
 
-private function configCanvasCreationCompleteHandler(event:FlexEvent):void{
-	checkbox_PlayerAlwaysFront.selected = videoPlayer.isAlwaysFront;
-	checkbox_InfoViewAlwaysFront.selected = isInfoViewAlwaysFront;
-	checkbox_playerFollow.selected = isPlayerFollow;
-	radioGroup_resizeType.selectedValue = selectedResizeType;
+private function playerQualitySliderChanged(event:Event):void{
+	playerQuality = slider_playerQuality.value;
 	
+	if(playerController != null){
+		playerController.setPlayerQuality(playerQuality);
+	}
+}
+
+private function configCanvas1CreationCompleteHandler(event:FlexEvent):void{
 	checkbox_resizePlayerEachPlay.selected = isResizePlayerEachPlay;
+	
+	radioGroup_resizeType.selectedValue = selectedResizeType;
 	if(isResizePlayerEachPlay){
-		//			playerController.resizePlayerJustVideoSize();
 		radioButton_resizeNicoDou.enabled = true;
 		radioButton_resizeVideo.enabled = true;
 	}else{
@@ -707,41 +715,56 @@ private function configCanvasCreationCompleteHandler(event:FlexEvent):void{
 		radioButton_resizeVideo.enabled = false;
 	}
 	
-	checkBox_showAlwaysNicowariArea.selected = isShowAlwaysNicowariArea;
-	
-	checkBox_commentBold.selected = isCommentFontBold;
-	
-	checkbox_hideUnderController.selected = isHideUnderController;
-	slider_commentScale.value = commentScale;
-	slider_fps.value = getValueByFps(fps);
-	
-	checkBox_renewComment.selected = isRenewCommentEachPlay;
-	slider_showCommentCount.value = showCommentCount;
-	slider_showCommentTime.value = showCommentSec;
-	slider_commentAlpha.value = commentAlpha;
-	checkBox_renewTagAndNicowari.selected = isRenewOtherCommentWithCommentEachPlay;
-	checkBox_renewTagAndNicowari.enabled = isRenewCommentEachPlay;
-	
-	checkBox_enableJump.selected = isEnableJump;
-	checkBox_askToUserOnJump.selected = isAskToUserOnJump;
-	checkBox_askToUserOnJump.enabled = isEnableJump;
-	
-	checkBox_isAlwaysEconomyForStreaming.selected = isAlwaysEconomyForStreaming;
-	
-	checkbox_hideTagArea.selected = isHideTagArea;
-	
-	isAppendComment = Application.application.getAppendComment();
-	checkBox_isAppendComment.selected = isAppendComment;
-	checkBox_isAppendComment.enabled = isRenewCommentEachPlay;
-	checkBox_hideSekaShinComment.selected = isHideSekaShinComment;
-	
-	checkBox_isNgUpEnable.selected = isNgUpEnable;
+	checkbox_enableWideMode.selected = isEnableWideMode;
 	checkBox_isSmoothing.selected = isSmoothing;
 	
 	if(playerController.getCommentManager() != null){
 		playerController.getCommentManager().setAntiAlias(isAntiAlias);
 	}
+	
+	checkBox_isAlwaysEconomyForStreaming.selected = isAlwaysEconomyForStreaming;
+	
+	slider_playerQuality.value = playerQuality;
+	
 }
+
+private function configCanvas2CreationCompleteHandler(event:FlexEvent):void{
+	checkBox_commentBold.selected = isCommentFontBold;
+	checkBox_hideSekaShinComment.selected = isHideSekaShinComment;
+	checkBox_isNgUpEnable.selected = isNgUpEnable;
+	
+	slider_commentScale.value = commentScale;
+	slider_fps.value = getValueByFps(fps);
+	slider_showCommentCount.value = showCommentCount;
+	slider_showCommentTime.value = showCommentSec;
+	slider_commentAlpha.value = commentAlpha;
+	
+	
+}
+
+private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
+	checkbox_PlayerAlwaysFront.selected = videoPlayer.isAlwaysFront;
+	checkbox_InfoViewAlwaysFront.selected = isInfoViewAlwaysFront;
+	
+	checkbox_playerFollow.selected = isPlayerFollow;
+	checkBox_renewComment.selected = isRenewCommentEachPlay;
+	checkBox_renewTagAndNicowari.selected = isRenewOtherCommentWithCommentEachPlay;
+	checkBox_renewTagAndNicowari.enabled = isRenewCommentEachPlay;
+	
+	isAppendComment = FlexGlobals.topLevelApplication.getAppendComment();
+	checkBox_isAppendComment.selected = isAppendComment;
+	checkBox_isAppendComment.enabled = isRenewCommentEachPlay;
+	
+	
+	checkBox_showAlwaysNicowariArea.selected = isShowAlwaysNicowariArea;
+	checkbox_hideTagArea.selected = isHideTagArea;
+	checkbox_hideUnderController.selected = isHideUnderController;
+	
+	checkBox_enableJump.selected = isEnableJump;
+	checkBox_askToUserOnJump.selected = isAskToUserOnJump;
+	checkBox_askToUserOnJump.enabled = isEnableJump;
+}
+
 
 public function isRepeatAll():Boolean{
 	return this.isPlayListRepeat;
@@ -1042,6 +1065,18 @@ private function readStore():void{
 			playerController.setVideoSmoothing(this.isSmoothing);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("playerQuality");
+		if(confValue != null){
+			playerQuality = int(confValue);
+		}
+		if(playerController != null){
+			playerController.setPlayerQuality(this.playerQuality);
+		}
+		
+		confValue = ConfigManager.getInstance().getItem("isEnableWideMode");
+		if(confValue != null){
+			isEnableWideMode = ConfUtil.parseBoolean(confValue);
+		}
 		
 	}catch(error:Error){
 		trace(error.getStackTrace());
@@ -1160,6 +1195,12 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isSmoothing");
 		ConfigManager.getInstance().setItem("isSmoothing",isSmoothing);
+		
+		ConfigManager.getInstance().removeItem("playerQuality");
+		ConfigManager.getInstance().setItem("playerQuality", playerQuality);
+		
+		ConfigManager.getInstance().removeItem("isEnableWideMode");
+		ConfigManager.getInstance().setItem("isEnableWideMode", isEnableWideMode);
 		
 		ConfigManager.getInstance().save();
 		
