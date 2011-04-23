@@ -294,7 +294,7 @@ package org.mineap.nndd
 			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
 			this._login.addEventListener(Login.LOGIN_FAIL, function(event:ErrorEvent):void{
 //				(event.target as Login).close();
-				_logManager.addLog(LOGIN_FAIL + event.target + ":" + event.text);
+				LogManager.instance.addLog(LOGIN_FAIL + event.target + ":" + event.text);
 //				trace(event + ":" + event.target +  ":" + event.text);
 //				dispatchEvent(new IOErrorEvent(LOGIN_FAIL, false, false, event.text));
 //				close(true, true, event);
@@ -304,7 +304,7 @@ package org.mineap.nndd
 			});
 			this._login.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			
 			if(isStart){
@@ -440,7 +440,7 @@ package org.mineap.nndd
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_SUCCESS, watchSuccess);
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_FAIL, function(event:ErrorEvent):void{
 				(event.target as WatchVideoPage).close();
-				_logManager.addLog(WATCH_FAIL + ":" +  _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(WATCH_FAIL + ":" +  _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				trace(WATCH_FAIL + ":" +  _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(WATCH_FAIL, false, false, event.text));
 				close(true, true, event);
@@ -450,10 +450,10 @@ package org.mineap.nndd
 				var videoId:String = PathMaker.getVideoID(event.responseURL);
 				// リダイレクトされた。
 				if(videoId != _videoId){
-					_logManager.addLog("リダイレクト: " + _videoId + " -> " + videoId);
+					LogManager.instance.addLog("リダイレクト: " + _videoId + " -> " + videoId);
 					_videoId = videoId;
 				}
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			
 			//this._videoIdの動画のページを見に行く
@@ -507,14 +507,14 @@ package org.mineap.nndd
 			//APIアクセス開始
 			this._getflvAccess.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
 				(event.target as URLLoader).close();
-				_logManager.addLog(GETFLV_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(GETFLV_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				trace(GETFLV_API_ACCESS_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(GETFLV_API_ACCESS_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._getflvAccess.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._getflvAccess.addEventListener(Event.COMPLETE, getFlvAccessSuccess);
 			this._getflvAccess.getAPIResult(this._videoId, this._isAlwaysEconomy);
@@ -549,14 +549,14 @@ package org.mineap.nndd
 				this._getWaybackkeyAccess.addEventListener(Event.COMPLETE, getWaybackkeySuccess);
 				this._getWaybackkeyAccess.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 					(event.target as ApiGetWaybackkeyAccess).close();
-					_logManager.addLog(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+					LogManager.instance.addLog(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 					trace(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 					dispatchEvent(new IOErrorEvent(GETWAYBACKKEY_API_ACCESS_FAIL, false, false, event.text));
 					close(true, true, event);
 				});
 				this._getWaybackkeyAccess.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 					trace(event);
-					_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+					LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 				});
 				this._getWaybackkeyAccess.getAPIResult(this._threadId);
 			}
@@ -598,14 +598,14 @@ package org.mineap.nndd
 			this._commentLoader.addEventListener(CommentLoader.COMMENT_GET_SUCCESS, commentGetSuccess);
 			this._commentLoader.addEventListener(CommentLoader.COMMENT_GET_FAIL, function(event:ErrorEvent):void{
 				(event.target as CommentLoader).close();
-				_logManager.addLog(COMMENT_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(COMMENT_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				trace(COMMENT_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._commentLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			//通常コメントを1000件取りにいく
 			this._commentLoader.getComment(this._videoId, 1000, false, this._getflvAccess, this._when, this._waybackkey);
@@ -676,7 +676,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(COMMENT_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(COMMENT_GET_FAIL + ":" + _saveVideoName + ".xml" + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(COMMENT_GET_FAIL + ":" + _saveVideoName + ".xml" + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(COMMENT_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
@@ -695,13 +695,13 @@ package org.mineap.nndd
 			this._ownerCommentLoader.addEventListener(CommentLoader.COMMENT_GET_FAIL, function(event:ErrorEvent):void{
 				(event.target as CommentLoader).close();
 				trace(OWNER_COMMENT_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(OWNER_COMMENT_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(OWNER_COMMENT_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(OWNER_COMMENT_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._ownerCommentLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			//isOwner=trueでコメントを取得しにいく。過去コメントは取りに行かない。
 			this._ownerCommentLoader.getComment(this._videoId, 1000, true, this._getflvAccess, null, null);
@@ -721,7 +721,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(OWNER_COMMENT_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(OWNER_COMMENT_GET_FAIL + ":" + _saveVideoName + "[Owner].xml" + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(OWNER_COMMENT_GET_FAIL + ":" + _saveVideoName + "[Owner].xml" + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(OWNER_COMMENT_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
@@ -769,7 +769,7 @@ package org.mineap.nndd
 					this._getbgmAccess.addEventListener(ApiGetBgmAccess.FAIL, function(event:IOErrorEvent):void{
 						(event.currentTarget as ApiGetBgmAccess).close();
 						trace(NICOWARI_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-						_logManager.addLog(NICOWARI_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+						LogManager.instance.addLog(NICOWARI_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 						dispatchEvent(new IOErrorEvent(NICOWARI_GET_FAIL, false, false, event.text));
 						close(true, true, event);
 					});
@@ -889,7 +889,7 @@ package org.mineap.nndd
 			this._nicowariLoader.addVideoLoaderListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(NICOWARI_GET_FAIL + ":" +  _nicowariVideoId + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(NICOWARI_GET_FAIL + ":" + _videoId + ":" + _nicowariVideoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(NICOWARI_GET_FAIL + ":" + _videoId + ":" + _nicowariVideoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(NICOWARI_GET_FAIL, false, false, event.text));
 //				close(true, true, event);
 				
@@ -907,7 +907,7 @@ package org.mineap.nndd
 			});
 			this._nicowariLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._nicowariLoader.addVideoLoaderListener(Event.COMPLETE, nicowariGetSuccess);
 			this._nicowariLoader.getVideoForApiResult(this._nicowariVideoUrl);
@@ -928,7 +928,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(NICOWARI_GET_FAIL + ":" + fileName + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(NICOWARI_GET_FAIL + ":" + fileName + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(NICOWARI_GET_FAIL + ":" + fileName + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(NICOWARI_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
@@ -965,13 +965,13 @@ package org.mineap.nndd
 			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(THUMB_INFO_GET_FAIL + ":" + videoId + "(" + _videoId + "):" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + videoId + "(" + _videoId + "):" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._thumbInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, thumbInfoGetSuccess);
 			this._thumbInfoLoader.getThumbInfo(videoId);
@@ -1013,7 +1013,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(THUMB_INFO_GET_FAIL + ":" + _saveVideoName + "[ThumbInfo].xml" + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + _saveVideoName + "[ThumbInfo].xml" + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
@@ -1029,13 +1029,13 @@ package org.mineap.nndd
 			this._thumbImgLoader.addThumbImgLoaderListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 //				(event.target as URLLoader).close();
 				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
 				downloadIchibaInfo();
 			});
 			this._thumbImgLoader.addThumbImgLoaderListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			try{
 				// サムネ情報からサムネ画像を取得
@@ -1051,7 +1051,7 @@ package org.mineap.nndd
 				}
 			}catch(error:Error){
 				trace(error + ":" + error.getStackTrace());
-				_logManager.addLog(THUMB_INFO_GET_FAIL + ":" + _videoId + ":" + error.getStackTrace());
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + _videoId + ":" + error.getStackTrace());
 				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, error.getStackTrace()));
 				close(true, true, new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, error.getStackTrace()));
 			}
@@ -1070,7 +1070,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
@@ -1095,14 +1095,14 @@ package org.mineap.nndd
 			this._ichibaInfoLoader.addEventListener(Event.COMPLETE, ichibaInfoGetSuccess);
 			this._ichibaInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
 				(event.target as IchibaInfoLoader).close();
-				_logManager.addLog(ICHIBA_INFO_GET_FAIL + ":" + _videoId + "("+ _thumbInfoId +"):" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(ICHIBA_INFO_GET_FAIL + ":" + _videoId + "("+ _thumbInfoId +"):" + event + ":" + event.target +  ":" + event.text);
 				trace(ICHIBA_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(ICHIBA_INFO_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._ichibaInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._ichibaInfoLoader.getIchibaInfo(this._thumbInfoId);
 		}
@@ -1119,7 +1119,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(ICHIBA_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(ICHIBA_INFO_GET_FAIL + ":" + _saveVideoName + "[IchibaInfo].html" + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(ICHIBA_INFO_GET_FAIL + ":" + _saveVideoName + "[IchibaInfo].html" + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(ICHIBA_INFO_GET_FAIL, false, false, event.text));
 				close(true, true);
 			});
@@ -1134,20 +1134,20 @@ package org.mineap.nndd
 			this._videoLoader.addVideoLoaderListener(VideoLoader.VIDEO_URL_GET_FAIL, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._videoLoader.addVideoLoaderListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._videoLoader.addVideoLoaderListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				_logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			
 			if(!this._isVideoNotDownload){
@@ -1202,7 +1202,7 @@ package org.mineap.nndd
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				_logManager.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, event.text));
 				close(true, true);
 			});
