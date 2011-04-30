@@ -118,6 +118,7 @@ import org.mineap.nndd.tag.TagManager;
 import org.mineap.nndd.user.UserManager;
 import org.mineap.nndd.util.*;
 import org.mineap.nndd.versionCheck.VersionChecker;
+import org.mineap.nndd.versionCheck.VersionCheckerFactory;
 import org.mineap.nndd.versionCheck.VersionUtil;
 import org.mineap.nndd.view.LoadingPicture;
 import org.mineap.util.config.ConfUtil;
@@ -355,7 +356,8 @@ public function initNNDD(nndd:NNDD):void
 	readStore();
 	
 	/* バージョンチェック */
-	VersionChecker.instance.init(this.isVersionCheckEnable);
+//	VersionChecker.instance.init(this.isVersionCheckEnable);
+	VersionCheckerFactory.create().init(this.isVersionCheckEnable);
 	
 //	var startDate:Date = new Date(2009, 0, 1);
 //	var lastDate:Date = new Date(2009, 0, 4);
@@ -633,8 +635,8 @@ private function libraryLoadCompleteEventHandler(event:LibraryLoadEvent):void{
 public function versionCheck():void{
 	
 	/* バージョンチェック */
-	VersionChecker.instance.checkUpdate(true);
-		
+//	VersionChecker.instance.checkUpdate(true);
+	VersionCheckerFactory.create().checkUpdate(true);
 }
 
 /**

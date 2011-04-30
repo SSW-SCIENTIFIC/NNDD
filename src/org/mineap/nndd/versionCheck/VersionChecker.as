@@ -10,6 +10,8 @@ package org.mineap.nndd.versionCheck
 	import flash.events.Event;
 	import flash.filesystem.File;
 	
+	import mx.core.FlexGlobals;
+	
 	import org.mineap.nndd.LogManager;
 
 	/**
@@ -18,7 +20,7 @@ package org.mineap.nndd.versionCheck
 	 * @author shiraminekeisuke
 	 * 
 	 */
-	public class VersionChecker
+	public class VersionChecker implements IVersionChecker
 	{
 		
 		private static const checker:VersionChecker = new VersionChecker();
@@ -59,6 +61,7 @@ package org.mineap.nndd.versionCheck
 			updater.addEventListener(StatusFileUpdateErrorEvent.FILE_UPDATE_ERROR, updaterErrorEventHandler);
 			updater.addEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, updaterErrorEventHandler);
 			updater.initialize();
+			
 		}
 		
 		private function updaterErrorEventHandler(event:ErrorEvent):void{
@@ -85,6 +88,7 @@ package org.mineap.nndd.versionCheck
 			LogManager.instance.addLog("バージョンチェック(currentVersion:" + updater.currentVersion + ")");
 			updater.isCheckForUpdateVisible = isCheckForUpdate;
 			updater.checkNow();
+			
 		}
 		
 	}

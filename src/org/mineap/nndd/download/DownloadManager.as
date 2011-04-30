@@ -279,8 +279,9 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * 指定されたIDを持つ動画のダウンロードを開始します
 		 * 
-		 * @param queueIndex
+		 * @param id
 		 * 
 		 */
 		private function download(id:String):void{

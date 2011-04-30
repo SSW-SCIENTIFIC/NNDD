@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="500" height="400" backgroundColor="#FFFFFF" 
+		   fontFamily="Verdana" fontSize="11"
+		   layout="absolute"
+		   resizable="false"
+		   visible="false"
+		   creationComplete="updaterWindow_creationCompleteHandler(event)">
+	<fx:Style>
+	</fx:Style>
+
+	<fx:Script>
+		<![CDATA[
+			import air.update.events.DownloadErrorEvent;
+			import air.update.events.StatusUpdateErrorEvent;
+			import air.update.events.StatusUpdateEvent;
+			import air.update.events.UpdateEvent;
+			
+			import com.riaspace.nativeApplicationUpdater.NativeApplicationUpdater;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			import org.mineap.nndd.LogManager;
+
+			public var newVersion:String = null;
+			
+			public var isAutoCheck:Boolean = false;
+			
+			private var updater:NativeApplicationUpdater = new NativeApplicationUpdater();
+			
+			protected function updaterWindow_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				progressBar.visible = false;
+				
+				updater.updateVersion = "";
+				
+				updater.updateURL = "http://sourceforge.jp/projects/nndd/wiki/Version/attach/update_v2_native.xml";
+				updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitalizedHandler);
+				updater.addEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, statusErrorHandler);
+				updater.addEventListener(StatusUpdateEvent.UPDATE_STATUS, checkForUpdateEventHandler);
+				updater.initialize();
+				
+			}
+
+			
+			protected function update_clickHandler(event:MouseEvent):void
+			{
+				update.enabled = false;
+				cancel.enabled = false;
+				
+				updater.addEventListener(DownloadErrorEvent.DOWNLOAD_ERROR, updater_downloadErrorHandler);
+				updater.addEventListener(UpdateEvent.DOWNLOAD_COMPLETE, updater_downloadCompleteHandler);
+				updater.downloadUpdate();
+				
+				progressBar.visible = true;
+			}
+
+
+			protected function cancel_clickHandler(event:MouseEvent):void
+			{
+				this.close();
+			}
+
+
+			private function updater_downloadErrorHandler(event:ErrorEvent):void
+			{
+				Alert.show("アップデートに失敗しました。¥n" + event.text, "エラー");
+				update.enabled = true;
+				cancel.enabled = true;
+			}
+
+
+			protected function updater_downloadCompleteHandler(event:UpdateEvent):void
+			{
+				updater.installUpdate();
+				
+				update.enabled = true;
+				cancel.enabled = true;
+			}
+
+
+			protected function checkCompleteHandler(event:UpdateEvent):void
+			{
+				if(updater.currentVersion == updater.updateVersion)
+				{
+					if(!isAutoCheck){
+						Alert.show("このNNDDは最新版( " + updater.currentVersion + " )です。", "通知");
+					}
+				}
+				else if(updater.updateVersion != null)
+				{
+					this.visible = true;
+					this.activate();
+				}
+				
+			}
+
+
+			protected function updaterInitalizedHandler(event:UpdateEvent):void
+			{
+				LogManager.instance.addLog("バージョンチェック(currentVersion:" + updater.currentVersion + ")");
+				updater.addEventListener(StatusUpdateEvent.UPDATE_STATUS, checkCompleteHandler);
+				updater.checkNow();
+			}
+
+
+			protected function statusErrorHandler(event:StatusUpdateErrorEvent):void
+			{
+				LogManager.instance.addLog("バージョンアップ中にエラー" + event.text);
+				Alert.show(event.text);
+			}
+
+
+			protected function checkForUpdateEventHandler(event:StatusUpdateEvent):void
+			{
+				if (event.available)
+				{
+					// checkNowの延長でダウンロードも実行されるが、これをキャンセルする。
+					event.preventDefault();
+				}
+				else
+				{
+//					Alert.show("Your application is up to date!");
+				}
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:Form height="329" horizontalCenter="70" verticalCenter="-24" fontFamily="Verdana ">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"/>
+		</s:layout>
+		<s:Form width="315">
+			<mx:Label text="新しいバージョン ( {updater.updateVersion} ) のNNDDが利用できます。" id="version"/>
+			<mx:Label text="アップデートしますか？"/>
+		</s:Form>
+		<s:Form id="form1" width="205" height="41">
+			<s:layout>
+				<s:BasicLayout/>
+			</s:layout>
+			<mx:Button label="はい" horizontalCenter="-50" verticalCenter="0" id="update" click="update_clickHandler(event)"/>
+			<mx:Button label="いいえ" horizontalCenter="50" verticalCenter="0" id="cancel" click="cancel_clickHandler(event)"/>
+		</s:Form>
+		<mx:TextArea id="details" width="316" height="190" editable="false" enabled="true" text="{updater.updateDescription}"/>
+	</s:Form>
+	<s:Image horizontalCenter="-170" scaleMode="letterbox" smooth="true" source="icon128.png"
+			 verticalCenter="0"/>
+	<mx:ProgressBar left="15" right="15" bottom="15" id="progressBar" source="{updater}" label="Downloading %3%"/>
+</mx:Window>

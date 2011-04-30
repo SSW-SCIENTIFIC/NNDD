@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="100" resizable="false" maximizable="false"
-		   title="動画を開く" creationComplete="window1_creationCompleteHandler(event)" closing="window1_closeHandler(event)">
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="400" height="100" backgroundColor="#FFFFFF" closing="window1_closeHandler(event)"
+		   creationComplete="window1_creationCompleteHandler(event)" layout="absolute"
+		   maximizable="false" resizable="false" title="動画を開く">
 	<mx:Script>
 		<![CDATA[
 			import mx.core.Application;
