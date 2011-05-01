@@ -49,8 +49,8 @@ package org.mineap.nndd
 				"\n\tネイティブプロセスAPIサポート:" + NativeProcess.isSupported +
 				"\n" +
 				"\n\tNNDDは以下のライブラリを使用しています。" +
-				"\n\t・nicovideo4as - MIT/X Consortium License ( http://sourceforge.jp/projects/nndd/svn/view/nicovideo4as/ )" +
 				"\n\t・NativeApplicationUpdater - Apache License V2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
+				"\n\t・nicovideo4as - MIT/X Consortium License ( http://sourceforge.jp/projects/nndd/svn/view/nicovideo4as/ )" +
 				"\n";
 			
 			this.logString += "\n" + tempStr;

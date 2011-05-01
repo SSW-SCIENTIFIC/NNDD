@@ -191,9 +191,8 @@
 
 			protected function pubUserLinkButton_clickHandler(event:MouseEvent):void
 			{
-				var user:String = pubUserLinkButton.label;
-				if(user.length >= 5){
-					var url:String = "http://www.nicovideo.jp/" + user;
+				var url:String = pubUserLinkButton.label;
+				if(url != null && url.length > 1){
 					navigateToURL(new URLRequest(url));
 				}else{
 					
@@ -374,7 +373,24 @@
 						</mx:Canvas>
 					</mx:TabNavigator>
 				</mx:Canvas>
-				<mx:Canvas label="投稿者" width="100%" height="100%" id="canvas_owner">
+				<mx:Canvas label="投稿者" width="100%" height="100%" id="canvas_owner" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					
+					<mx:Canvas left="5" top="0" width="50" height="50" backgroundColor="#969696"
+							   contentBackgroundColor="#969696" dropShadowVisible="false">
+						<view:SmoothImage id="image_pubUserIcon" width="48" height="48"
+										  doubleClick="pubUserLinkButton_clickHandler(event)"
+										  doubleClickEnabled="true" top="1" left="1"
+										  source="{pubUserNameIconUrl}"/>
+					</mx:Canvas>
+					<mx:Label left="63" top="0" text="投稿者名："/>
+					<mx:Label id="label_pubUserName" left="133" right="5" top="0"
+							  text="{pubUserName}"/>
+					<mx:LinkButton id="pubUserLinkButton" left="58" top="22"
+								   label="{pubUserLinkButtonText}"
+								   click="pubUserLinkButton_clickHandler(event)" 
+								   color="#0000FF" textDecoration="underline"
+								   toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
+					
 					<mx:VDividedBox left="0" top="50" bottom="0" right="0">
 						<mx:TabNavigator width="100%" height="180">
 							<mx:Canvas id="canvas_owner_onNico" label="ニコニコ" width="100%" height="100%">
@@ -392,24 +408,6 @@
 							</mx:columns>
 						</mx:DataGrid>
 					</mx:VDividedBox>
-					
-					<mx:Canvas left="5" top="0" width="50" height="50" backgroundColor="#969696"
-							   contentBackgroundColor="#969696" dropShadowVisible="false">
-						<view:SmoothImage id="image_pubUserIcon" width="48" height="48"
-								  doubleClick="pubUserLinkButton_clickHandler(event)"
-								  doubleClickEnabled="true" top="1" left="1"
-								  source="{pubUserNameIconUrl}"/>
-					</mx:Canvas>
-					<mx:Label left="63" top="0" text="投稿者名："/>
-					<mx:Label id="label_pubUserName" left="133" right="5" top="0"
-							  text="{pubUserName}"/>
-					<mx:LinkButton id="pubUserLinkButton" left="58" top="22"
-								   label="{pubUserLinkButtonText}"
-								   click="pubUserLinkButton_clickHandler(event)" 
-								   color="#0000FF" textDecoration="underline"
-								   toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
-					
-					
 				</mx:Canvas>
 				<mx:Canvas label="オススメ" width="100%" height="100%" creationComplete="relationCanvasCreationCompleteHandler(event)">
 					<mx:ComboBox left="0" top="0" width="120" dataProvider="{relationSortComboboxDataProvider}" id="combobox_relationSort" change="relationSortComboboxChange(event)"></mx:ComboBox>

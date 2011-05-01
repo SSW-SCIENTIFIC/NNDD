@@ -2797,13 +2797,28 @@ package org.mineap.nndd.player
 						}
 						
 						if(videoInfoView != null){
-							trace(watchVideoPage.watcher.getPubUserName() + ", " 
-								+ watchVideoPage.watcher.getPubUserId() + ", " 
-								+ watchVideoPage.watcher.getPubUserIconUrl());
+							if(watchVideoPage.watcher.getPubUserId() != null){
 							
-							videoInfoView.pubUserLinkButtonText = "user/" + watchVideoPage.watcher.getPubUserId();
-							videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getPubUserIconUrl();
-							videoInfoView.pubUserName = watchVideoPage.watcher.getPubUserName();
+								trace(watchVideoPage.watcher.getPubUserName() + ", " 
+									+ watchVideoPage.watcher.getPubUserId() + ", " 
+									+ watchVideoPage.watcher.getPubUserIconUrl());
+								
+								videoInfoView.pubUserLinkButtonText = "http://www.nicovideo.jp/user/" + watchVideoPage.watcher.getPubUserId();
+								videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getPubUserIconUrl();
+								videoInfoView.pubUserName = watchVideoPage.watcher.getPubUserName();
+							
+							}else{
+								
+								trace(watchVideoPage.watcher.getChannelName() + ", " 
+									+ watchVideoPage.watcher.getChannel() + ", " 
+									+ watchVideoPage.watcher.getChannelIconUrl());
+								
+								videoInfoView.pubUserLinkButtonText = "http://ch.nicovideo.jp/channel/" + watchVideoPage.watcher.getChannel();
+								videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getChannelIconUrl();
+								videoInfoView.pubUserName = watchVideoPage.watcher.getChannelName();
+								
+							}
+							
 							
 							if(videoInfoView.pubUserLinkButton != null){
 								videoInfoView.pubUserLinkButton.label = videoInfoView.pubUserLinkButtonText;
