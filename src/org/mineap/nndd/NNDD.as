@@ -3723,6 +3723,9 @@ private function searchTagListTextInputChange():void{
 	
 }
 
+/**
+ * 指定されたITreeItem下の項目を更新します
+ */
 private function updateLibraryTree(item:ITreeItem):void{
 	
 	if(item != null){

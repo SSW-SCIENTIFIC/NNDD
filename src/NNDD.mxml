@@ -21,6 +21,7 @@
 			import mx.messaging.SubscriptionInfo;
 			
 			import org.mineap.nndd.library.LibraryTreeBuilder;
+			import org.mineap.nndd.model.NNDDVideo;
 			import org.mineap.nndd.model.tree.ITreeItem;
 			import org.mineap.nndd.model.tree.TreeFileItem;
 			import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
@@ -682,8 +683,73 @@
 						// ライブラリ
 						if(oldDir != null){
 							
-							// フォルダの場所を移動
-							oldDir.moveTo(newDir);
+							var newTarget:File = newDir.resolvePath(oldDir.name);
+							
+							if(oldDir.nativePath == newTarget.nativePath)
+							{
+								Alert.show("移動先と移動元が同じです。", "通知");
+								return;
+							}
+							
+							if(newTarget.nativePath.indexOf(oldDir.nativePath) > -1)
+							{
+								Alert.show("移動先が移動元に含まれているため移動できません。", "通知");
+								return;
+							}
+							
+							var str:String = "フォルダを移動しますか?\n\n" +
+								"移動元:" + oldDir.nativePath + "\n" + 
+								"移動先:" + newTarget.nativePath;
+							
+							Alert.show(str, "通知", Alert.YES | Alert.NO, null, function(event:CloseEvent):void{
+								
+								if(Alert.YES == event.detail)
+								{
+								
+									var tempVideos:Vector.<NNDDVideo> = libraryManager.getNNDDVideoArray(oldDir, false);
+									
+									// フォルダの場所を移動
+									oldDir.moveTo(newTarget);
+									
+									for each(var video:NNDDVideo in tempVideos)
+									{
+										var newVideoFile:File = newTarget.resolvePath(video.file.name);
+										video.uri = newVideoFile.url;
+										if(video.thumbUrl == null || video.thumbUrl.indexOf("http") == -1){
+											var path:String = PathMaker.createThumbImgFilePath(video.uri);
+											
+											try{
+												var thumbImgFile:File = new File(path);
+												if(!thumbImgFile.exists){
+													video.thumbUrl = PathMaker.getThumbImgUrl(PathMaker.getVideoID(video.file.nativePath));
+												}else{
+													video.thumbUrl = path;
+												}
+											}catch(error:Error){
+												trace(error.getStackTrace());
+											}
+											
+										}
+										libraryManager.update(video, true);
+									}
+									
+									libraryManager.saveLibrary();
+									
+									var item:ITreeItem = (tree_library.selectedItem as ITreeItem);
+									if(item != null && item.file != null){
+										// ライブラリを更新する
+										if(item.parent != null && item.parent.file != null){
+											updateLibraryTree(item.parent);
+										}
+										if(dropItem != null && dropItem.file != null){
+											updateLibraryTree(dropItem);
+										}
+										updateLibraryTree(item);
+										updateLibrary(tree_library.selectedIndex);
+									}
+									
+								}
+							});
 							
 						}else{
 							
@@ -764,6 +830,7 @@
 					var item:ITreeItem = (this.tree_library.selectedItem as ITreeItem);
 					if(item != null && item.file != null){
 						// ライブラリを更新する
+						updateLibraryTree(item);
 						updateLibrary(this.tree_library.selectedIndex);
 					}else if(item != null && item.file == null){
 						// プレイリストを更新する
@@ -841,8 +908,8 @@
 				if(event.target == tree_library){
 					var index:int = tree_library.calculateDropIndex(event);
 					
-					var Initiator:* = event.currentTarget;
-					DragManager.acceptDragDrop(Initiator);
+					var initiator:* = event.currentTarget;
+					DragManager.acceptDragDrop(initiator);
 					
 					var renderer:IListItemRenderer = tree_library.indexToItemRenderer(index);
 					if(renderer == null){
@@ -862,8 +929,16 @@
 								tree_library.showDropFeedback(event);
 							}
 						}else{
-							DragManager.showFeedback(DragManager.COPY);
-							tree_library.showDropFeedback(event);
+							
+							if(event.dragInitiator is Tree && 
+									(dropItem.label == "PlayList" || dropItem.parent.label == "PlayList")){
+								// フォルダをプレイリストにドロップする事は出来ません
+								DragManager.showFeedback(DragManager.NONE);
+								tree_library.hideDropFeedback(event);
+							}else{
+								DragManager.showFeedback(DragManager.COPY);
+								tree_library.showDropFeedback(event);
+							}
 						}
 					}
 				}
@@ -1305,6 +1380,7 @@
 								 dragEnter="tree_library_dragEnterAndOverHandler(event)"
 								 dragOver="tree_library_dragEnterAndOverHandler(event)"
 								 dragExit="tree_library_dragExitHandler(event)"
+								 dragEnabled="true"
 								 dragMoveEnabled="true"
 								 itemClick="tree_library_itemClickHandler(event)"
 								 itemDoubleClick="tree_library_itemDoubleClickHandler(event)"
@@ -1630,6 +1706,9 @@
 								 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
 								 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
 					
+					<mx:Text left="142" top="30" visible="{!NativeProcess.isSupported}"
+							 text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
+					
 					<mx:Label left="29" top="56" text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
 					<mx:TextInput id="playerPath_textinput" left="122" top="54" width="300" enabled="{NativeProcess.isSupported}"
 								  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
@@ -1638,8 +1717,7 @@
 					<mx:Text left="29" right="10" top="83" bottom="10"
 							 enabled="{NativeProcess.isSupported}"
 							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
-					<mx:Text left="142" top="30" visible="{!NativeProcess.isSupported}"
-							  text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
+
 					
 				</mx:Canvas>
 				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
