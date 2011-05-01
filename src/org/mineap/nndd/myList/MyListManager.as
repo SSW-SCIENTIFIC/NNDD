@@ -452,6 +452,9 @@ package org.mineap.nndd.myList
 				var fileIO:FileIO = new FileIO(LogManager.instance);
 				var xml:XML = fileIO.loadXMLSync(saveFile.url, true);
 				
+				_tree_MyList.splice(0, _tree_MyList.length);
+				_myListMap = new Object();
+				
 				addMyListItemFromXML(xml, _tree_MyList, _myListMap);
 				
 				_logManager.addLog("マイリスト一覧の読み込み完了:" + saveFile.nativePath);

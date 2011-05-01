@@ -2376,6 +2376,8 @@ private function folderSelectButtonClicked(event:MouseEvent):void
 		}
 		
 		// 検索項目
+		searchProvider.removeAll();
+		searchListProvider.splice(0, searchListProvider.length);
 		_searchItemManager.readSearchItems(libraryManager.systemFileDir);
 		
 		// マイリスト
