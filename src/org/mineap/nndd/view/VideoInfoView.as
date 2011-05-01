@@ -33,6 +33,7 @@ import mx.events.DataGridEvent;
 import mx.events.DragEvent;
 import mx.events.FlexEvent;
 import mx.events.ListEvent;
+import mx.events.NumericStepperEvent;
 import mx.events.SliderEvent;
 
 import org.mineap.nicovideo4as.model.SearchType;
@@ -63,7 +64,8 @@ public var isHideUnderController:Boolean = false;
 public var commentScale:Number = 1.0;
 public var fps:Number = 15;
 public var isShowOnlyPermissionComment:Boolean = false;
-public var showCommentCount:int = 250;
+public var showCommentCountPerMin:int = 50;
+public var showOwnerCommentCountPerMin:int = 50;
 public var showCommentSec:int = 3;
 public var isAntiAlias:Boolean = true;
 public var commentAlpha:int = 100;
@@ -397,8 +399,15 @@ private function sliderFpsChanged(event:SliderEvent):void{
 	this.playerController.changeFps(this.fps);
 }
 
-private function sliderShowCommentCountChanged(event:SliderEvent):void{
-	this.showCommentCount = event.value;
+
+private function commentCountNumStepperChanged(event:NumericStepperEvent):void
+{
+	this.showCommentCountPerMin = event.value;
+}
+
+private function ownerCommentCountNumStepperChanged(event:NumericStepperEvent):void
+{
+	this.showOwnerCommentCountPerMin = event.value;
 }
 
 private function addNGListIdButtonClicked():void{
@@ -735,7 +744,10 @@ private function configCanvas2CreationCompleteHandler(event:FlexEvent):void{
 	
 	slider_commentScale.value = commentScale;
 	slider_fps.value = getValueByFps(fps);
-	slider_showCommentCount.value = showCommentCount;
+	
+	commentNumStepper.value = showCommentCountPerMin;
+	ownerCommentNumStepper.value = showOwnerCommentCountPerMin;
+	
 	slider_showCommentTime.value = showCommentSec;
 	slider_commentAlpha.value = commentAlpha;
 	
@@ -875,7 +887,14 @@ private function readStore():void{
 		if (confValue == null) {
 			//何もしない
 		}else{
-			showCommentCount = int(confValue);
+			showCommentCountPerMin = int(confValue);
+		}
+		
+		confValue = ConfigManager.getInstance().getItem("showOwnerCommentCount");
+		if (confValue == null) {
+			showOwnerCommentCountPerMin = showCommentCountPerMin;
+		}else{
+			showOwnerCommentCountPerMin = int(confValue);
 		}
 		
 		confValue = ConfigManager.getInstance().getItem("showCommentSec");
@@ -1134,7 +1153,10 @@ public function saveStore():void{
 		ConfigManager.getInstance().setItem("isShowOnlyPermissionComment", isShowOnlyPermissionComment);
 		
 		ConfigManager.getInstance().removeItem("showCommentCount");
-		ConfigManager.getInstance().setItem("showCommentCount", showCommentCount);
+		ConfigManager.getInstance().setItem("showCommentCount", showCommentCountPerMin);
+		
+		ConfigManager.getInstance().removeItem("showOwnerCommentCount");
+		ConfigManager.getInstance().setItem("showOwnerCommentCount", showOwnerCommentCountPerMin);
 		
 		ConfigManager.getInstance().removeItem("showCommentSec");
 		ConfigManager.getInstance().setItem("showCommentSec", showCommentSec);

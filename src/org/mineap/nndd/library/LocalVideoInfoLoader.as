@@ -42,22 +42,24 @@ package org.mineap.nndd.library
 		public function loadInfo(filePath:String):NNDDVideo{
 			var fileIO:FileIO = new FileIO(logManager);
 			var thumbInfoXML:XML = fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath), true);
+			
 			var file:File = null;
-			try{
-				file = new File(filePath);
-				if(!file.exists){
-					trace("file not found:" + filePath);
-					return null;
-				}
-			}catch(error:Error){
-				trace(error.getStackTrace());
-				return null;
-			}
 			
 			var thumbUrl:String = "";
 			var pubDate:Date = null;
 			var time:Number = 0;
 			if(thumbInfoXML == null){
+				
+				try{
+					file = new File(filePath);
+					if(!file.exists){
+						trace("file not found:" + filePath);
+						return null;
+					}
+				}catch(error:Error){
+					trace(error.getStackTrace());
+					return null;
+				}
 				
 				var id:String = PathMaker.getVideoID(file.name);
 				
@@ -90,7 +92,7 @@ package org.mineap.nndd.library
 			}
 			
 			var video:NNDDVideo = new NNDDVideo(filePath, null, false, tagArray, null, null, null, 0, time, null, pubDate);
-			var file:File = new File(filePath);
+			file = new File(filePath);
 			if(file.exists){
 				video.creationDate = file.creationDate;
 				video.modificationDate = file.modificationDate;

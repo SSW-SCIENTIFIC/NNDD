@@ -849,11 +849,22 @@ package org.mineap.nndd.player
 				
 				libraryManager.update(video, false);
 				
+				
+				var videoMin:int = video.time / 60;
+				++videoMin;
+				
 				var commentPath:String = PathMaker.createNomalCommentPathByVideoPath(video.getDecodeUrl());
 				var ownerCommentPath:String = PathMaker.createOwnerCommentPathByVideoPath(video.getDecodeUrl());
-				comments = new Comments(commentPath, ownerCommentPath, getCommentListProvider(), getOwnerCommentListProvider(), 
-					ngListManager, videoInfoView.isShowOnlyPermissionComment, videoInfoView.isHideSekaShinComment, 
-					videoInfoView.showCommentCount, videoInfoView.isNgUpEnable);
+				comments = new Comments(commentPath, 
+						ownerCommentPath, 
+						getCommentListProvider(), 
+						getOwnerCommentListProvider(), 
+						ngListManager, 
+						videoInfoView.isShowOnlyPermissionComment, 
+						videoInfoView.isHideSekaShinComment, 
+						videoInfoView.showCommentCountPerMin * videoMin, 
+						videoInfoView.showOwnerCommentCountPerMin * videoMin, 
+						videoInfoView.isNgUpEnable);
 				
 				renewDownloadManager = null;
 				
@@ -1405,16 +1416,7 @@ package org.mineap.nndd.player
 						}else{
 							this.videoPlayer.videoController.slider_timeline.enabled = true;
 							this.videoPlayer.videoController_under.slider_timeline.enabled = true;
-							if(!isStreamingPlay){
-								newComments = new Comments(PathMaker.createNomalCommentPathByVideoPath(source), 
-									PathMaker.createOwnerCommentPathByVideoPath(source), this.videoPlayer.getCommentListProvider(), 
-									this.videoPlayer.videoInfoView.ownerCommentProvider, this.ngListManager, 
-									this.videoInfoView.isShowOnlyPermissionComment, this.videoInfoView.isHideSekaShinComment, 
-									this.videoInfoView.showCommentCount, this.videoInfoView.isNgUpEnable);
-								init(source, PlayerController.WINDOW_TYPE_FLV, newComments, PathMaker.createThmbInfoPathByVideoPath(source), true, isStreamingPlay, null, this.isPlayListingPlay, this._videoID);
-							}else{
-								this.playMovie(source, null, -1, this.downLoadedURL);
-							}
+							this.playMovie(source, null, -1, this.downLoadedURL);
 						}
 						pausing = false;
 					}
@@ -1441,16 +1443,8 @@ package org.mineap.nndd.player
 							this.videoPlayer.canvas_video.removeAllChildren();
 							this.videoPlayer.videoController.slider_timeline.enabled = true;
 							this.videoPlayer.videoController_under.slider_timeline.enabled = true;
-							if(!isStreamingPlay){
-								newComments = new Comments(PathMaker.createNomalCommentPathByVideoPath(source), 
-									PathMaker.createOwnerCommentPathByVideoPath(source), this.videoPlayer.getCommentListProvider(),
-									this.videoPlayer.videoInfoView.ownerCommentProvider, this.ngListManager, 
-									this.videoInfoView.isShowOnlyPermissionComment, this.videoInfoView.isHideSekaShinComment, 
-									this.videoInfoView.showCommentCount, this.videoInfoView.isNgUpEnable);
-								init(source, PlayerController.WINDOW_TYPE_SWF, newComments, PathMaker.createThmbInfoPathByVideoPath(source), true, isStreamingPlay, null, this.isPlayListingPlay, this._videoID);
-							}else{
-								this.playMovie(source, null, -1, this.downLoadedURL);
-							}
+							this.playMovie(source, null, -1, this.downLoadedURL);
+							
 						}
 						pausing = false;
 					}
@@ -2478,18 +2472,39 @@ package org.mineap.nndd.player
 			}
 			
 			if(this.videoInfoView.ngListProvider != null){
+				
+				var videoMin:int = 1;
+				if(this.windowType==PlayerController.WINDOW_TYPE_SWF && this.mc != null){
+					videoMin = mc.totalFrames/swfFrameRate/60
+				}else if(this.windowType==PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null){
+					videoMin = videoDisplay.duration/60;
+				}
+				++videoMin;
+				
 				if(!this.isStreamingPlay && this.source != null && this.source != "" ){
-					comments = new Comments(PathMaker.createNomalCommentPathByVideoPath(source), 
-						PathMaker.createOwnerCommentPathByVideoPath(source), videoPlayer.getCommentListProvider(), 
-						this.videoPlayer.videoInfoView.ownerCommentProvider, this.ngListManager, 
-						this.videoInfoView.isShowOnlyPermissionComment, this.videoInfoView.isHideSekaShinComment, 
-						this.videoInfoView.showCommentCount, this.videoInfoView.isNgUpEnable, date);
+					comments = new Comments(
+						PathMaker.createNomalCommentPathByVideoPath(source), 
+						PathMaker.createOwnerCommentPathByVideoPath(source), 
+						this.videoPlayer.getCommentListProvider(), 
+						this.videoPlayer.videoInfoView.ownerCommentProvider, 
+						this.ngListManager, 
+						this.videoInfoView.isShowOnlyPermissionComment, 
+						this.videoInfoView.isHideSekaShinComment, 
+						this.videoInfoView.showCommentCountPerMin * videoMin,
+						this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+						this.videoInfoView.isNgUpEnable, date);
 				}else if(this.isStreamingPlay){
-					comments = new Comments(PathMaker.createNomalCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"), 
+					comments = new Comments(
+						PathMaker.createNomalCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"), 
 						PathMaker.createOwnerCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"), 
-						this.videoPlayer.getCommentListProvider(), this.videoPlayer.videoInfoView.ownerCommentProvider, 
-						this.ngListManager, videoInfoView.isShowOnlyPermissionComment, this.videoInfoView.isHideSekaShinComment, 
-						this.videoInfoView.showCommentCount, this.videoInfoView.isNgUpEnable, date);
+						this.videoPlayer.getCommentListProvider(), 
+						this.videoPlayer.videoInfoView.ownerCommentProvider, 
+						this.ngListManager, 
+						this.videoInfoView.isShowOnlyPermissionComment, 
+						this.videoInfoView.isHideSekaShinComment, 
+						this.videoInfoView.showCommentCountPerMin * videoMin,
+						this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+						this.videoInfoView.isNgUpEnable, date);
 				}
 				commentManager.setComments(comments);
 			}
@@ -3381,7 +3396,6 @@ package org.mineap.nndd.player
 //				var commentPost:CommentPost = new CommentPost();
 //				commentPost.postComment(videoID, command, postMessage, commentTimerVpos/10);
 				
-				
 				var a2n:Access2Nico = new Access2Nico(null, null, this, logManager, null);
 				a2n.addEventListener(Access2Nico.NICO_POST_COMMENT_COMPLETE, function():void{
 					var post:XML = a2n.getPostComment();
@@ -3480,6 +3494,8 @@ package org.mineap.nndd.player
 					
 					var videoId:String = LibraryUtil.getVideoKey(decodeURIComponent(file.url));
 					var videoTitle:String = videoId;
+					var videoMin:int = 5;
+					
 					if(videoId != null){
 						var video:NNDDVideo = null;
 						
@@ -3498,6 +3514,9 @@ package org.mineap.nndd.player
 										video.time = tempVideo.time;
 									}
 								}
+								videoMin = video.time / 60;
+								++videoMin;
+								
 								libraryManager.update(video, false);
 							}
 							url = video.getDecodeUrl();
@@ -3512,6 +3531,10 @@ package org.mineap.nndd.player
 								if(video == null){
 									video = new NNDDVideo(file.url, file.name);
 								}
+								
+								videoMin = video.time / 60;
+								++videoMin;
+								
 								libraryManager.add(video, false);
 								logManager.addLog("動画を管理対象に追加:" + file.nativePath);
 							}
@@ -3527,9 +3550,18 @@ package org.mineap.nndd.player
 					
 					var commentPath:String = PathMaker.createNomalCommentPathByVideoPath(url);
 					var ownerCommentPath:String = PathMaker.createOwnerCommentPathByVideoPath(url);
-					var comments:Comments = new Comments(commentPath, ownerCommentPath, this.getCommentListProvider(), 
-						this.getOwnerCommentListProvider(), this.ngListManager, this.videoInfoView.isShowOnlyPermissionComment, 
-						this.videoInfoView.isHideSekaShinComment, this.videoInfoView.showCommentCount, this.videoInfoView.isNgUpEnable);
+					var comments:Comments = new Comments(
+							commentPath, 
+							ownerCommentPath, 
+							this.getCommentListProvider(), 
+							this.getOwnerCommentListProvider(), 
+							this.ngListManager, 
+							this.videoInfoView.isShowOnlyPermissionComment, 
+							this.videoInfoView.isHideSekaShinComment, 
+							this.videoInfoView.showCommentCountPerMin * videoMin,
+							this.videoInfoView.showOwnerCommentCountPerMin * videoMin, 
+							this.videoInfoView.isNgUpEnable);
+					
 					if(url.indexOf(".swf") != -1 || url.indexOf(".SWF") != -1){
 						if(playList != null && playListIndex != -1){
 							this.initWithPlayList(url, PlayerController.WINDOW_TYPE_SWF, comments, urlArray, videoNameArray, playListName, playListIndex, true, false, null, videoTitle);
@@ -3550,9 +3582,26 @@ package org.mineap.nndd.player
 					
 					var commentPath:String = libraryManager.tempDir.url + "/nndd.xml";
 					var ownerCommentPath:String = libraryManager.tempDir.url + "/nndd[Owner].xml";
-					var comments:Comments = new Comments(commentPath, ownerCommentPath, this.getCommentListProvider(), 
-						this.getOwnerCommentListProvider(), this.ngListManager, this.videoInfoView.isShowOnlyPermissionComment, 
-						this.videoInfoView.isHideSekaShinComment, this.videoInfoView.showCommentCount, this.videoInfoView.isNgUpEnable);
+					
+					var loader:LocalVideoInfoLoader = new LocalVideoInfoLoader();
+					var video:NNDDVideo = loader.loadInfo(libraryManager.tempDir.resolvePath("nndd.flv").nativePath);
+					videoMin = 5;
+					if(video != null){
+						videoMin = video.time/60;
+						++videoMin;
+					}
+					
+					var comments:Comments = new Comments(
+							commentPath,
+							ownerCommentPath,
+							this.getCommentListProvider(), 
+							this.getOwnerCommentListProvider(),
+							this.ngListManager, 
+							this.videoInfoView.isShowOnlyPermissionComment, 
+							this.videoInfoView.isHideSekaShinComment, 
+							this.videoInfoView.showCommentCountPerMin * videoMin,
+							this.videoInfoView.showOwnerCommentCountPerMin * videoMin, 
+							this.videoInfoView.isNgUpEnable);
 					
 					videoPlayer.label_downloadStatus.text = "";
 					

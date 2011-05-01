@@ -53,7 +53,8 @@ package org.mineap.nndd.player.comment
 		 * @param ownerCommentListProvider 投稿者コメントを追加するプロバイダ
 		 * @param ngList ngリスト
 		 * @param showOnlyPermissionIDComment
-		 * @param loadCommentCount
+		 * @param loadCommentCount 読み込むコメントの数
+		 * @param loadOwnerCommentCount 読み込む投稿者コメントの数
 		 * @param isNgUpEnable
 		 * @param loadStartDate 読み込み開始日時
 		 */
@@ -64,7 +65,8 @@ package org.mineap.nndd.player.comment
 								 ngListManager:NGListManager, 
 								 showOnlyPermissionIDComment:Boolean, 
 								 hideSekaShinComment:Boolean, 
-								 loadCommentCount:int, 
+								 loadCommentCount:int,
+								 loadOwnerCommentCount:int,
 								 isNgUpEnable:Boolean,
 								 loadStartDate:Date = null)
 		{
@@ -89,6 +91,7 @@ package org.mineap.nndd.player.comment
 				commentArray = new Vector.<NNDDComment>();
 				commentArray = loadCommentByXML(comments, commentArray, loadCommentCount, loadStartDate);
 				trace("commentCount:" + commentArray.length);
+				trace("maxCommentCount:" + loadCommentCount);
 				if(commentListProvider != null){
 					addCommentToArrayCollection(commentListProvider, ngListManager, showOnlyPermissionIDComment, hideSekaShinComment, isNgUpEnable);
 				}
@@ -99,9 +102,10 @@ package org.mineap.nndd.player.comment
 				this.ownerComments = ownerCommentFileIO.loadXMLSync(ownerCommentXMLPath, false);
 				trace("Comments:投稿者コメントロード完了")
 				ownerCommentArray = new Vector.<NNDDComment>();
-				ownerCommentArray = loadCommentByXML(ownerComments, ownerCommentArray, loadCommentCount, loadStartDate);
+				ownerCommentArray = loadCommentByXML(ownerComments, ownerCommentArray, loadOwnerCommentCount, loadStartDate);
 				ngupArray = loadNgWord(ownerComments);
 				trace("commentCount:" + ownerCommentArray.length);
+				trace("maxCommentCount:" + loadOwnerCommentCount);
 				if(commentListProvider != null && ownerCommentListProvider != null){
 					addOwnerCommentToArrayCollection(commentListProvider, ownerCommentListProvider, isNgUpEnable);
 				}else if(commentListProvider != null){
