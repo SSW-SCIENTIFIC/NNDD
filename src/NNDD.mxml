@@ -970,16 +970,17 @@
 			{
 				var directory:File = File.applicationDirectory;
 				
-				var filter:FileFilter = null;
+				var array:Array = null;
 				if(Capabilities.os.toLowerCase().indexOf("windows") > -1){
-					filter = new FileFilter("実行可能ファイル", "*.exe;");
+					array = new Array(new FileFilter("実行可能ファイル", "*.exe;"));
 				}else if(Capabilities.os.toLowerCase().indexOf("mac") > -1){
-					filter = new FileFilter("実行可能ファイル", "*;");
+//					filter = new FileFilter("実行可能ファイル", "*.*;");
+					array = null;
 				}else if(Capabilities.os.toLowerCase().indexOf("linux") > -1){
-					filter = new FileFilter("実行可能ファイル", "*;");
+					array = new Array(new FileFilter("実行可能ファイル", "*.*;"));
 				}
 				
-				directory.browseForOpen("動画を再生するアプリケーションを指定", [filter]);
+				directory.browseForOpen("動画を再生するアプリケーションを指定", array);
 				directory.addEventListener(Event.SELECT, function(event:Event):void{
 					var file:File = (event.target as File);
 					NativeProcessPlayerManager.instance.executeFile = file;
@@ -1634,10 +1635,9 @@
 								  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
 					<mx:Button x="430" y="55" label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
 							   click="button_searchNativeProcess_clickHandler(event)"/>
-					<mx:Text left="29" right="10" top="109" height="58" enabled="{NativeProcess.isSupported}" 
-							 text="※Mac OS で、アプリケーションバンドル内の実行可能ファイルを起動する場合、パスには、app ファイルへのパスではなく、（バンドル内の）実行可能ファイルへのフルパスを含むようにしてください。"/>
-					<mx:Text left="29" right="10" top="84" enabled="{NativeProcess.isSupported}" 
-							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。"/>
+					<mx:Text left="29" right="10" top="83" bottom="10"
+							 enabled="{NativeProcess.isSupported}"
+							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
 					<mx:Text left="142" top="30" visible="{!NativeProcess.isSupported}"
 							  text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
 					

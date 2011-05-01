@@ -7,6 +7,7 @@ package org.mineap.nndd.nativeProcessPlayer
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
 	
 	import mx.controls.Alert;
 	import mx.messaging.Producer;
@@ -85,13 +86,41 @@ package org.mineap.nndd.nativeProcessPlayer
 				Alert.show("指定されたPlayerが存在しません。\n" + executeFile.nativePath, Message.M_MESSAGE);
 				return;
 			}
-			
+
 			LogManager.instance.addLog("Playerのパス:" + executeFile.nativePath);
-			nativeProcessStartupInfo.executable = executeFile;
-			
 			var args:Vector.<String> = new Vector.<String>;
-			args.push(path);
-			nativeProcessStartupInfo.arguments = args;
+			if(Capabilities.os.toLowerCase().indexOf("mac") > -1)
+			{
+				if ("app" == executeFile.extension)
+				{
+					// macで、appを指定されたときは open コマンドを使う
+					nativeProcessStartupInfo.executable = new File("/usr/bin/open");
+					
+					args.push("-a");
+					args.push(executeFile.nativePath);
+					args.push(path);
+					nativeProcessStartupInfo.arguments = args;
+					
+				}
+				else
+				{
+					//macだけどappファイルじゃなくて実行ファイルを直接指定されたときはそのまま実行
+					nativeProcessStartupInfo.executable = executeFile;
+					
+					args.push(path);
+					nativeProcessStartupInfo.arguments = args;
+				}
+				
+			}
+			else
+			{
+				// win,linuxの時は実行ファイルをそのまま実行
+				nativeProcessStartupInfo.executable = executeFile;
+				
+				args.push(path);
+				nativeProcessStartupInfo.arguments = args;
+					
+			}
 			
 			var process:NativeProcess = new NativeProcess();
 			
