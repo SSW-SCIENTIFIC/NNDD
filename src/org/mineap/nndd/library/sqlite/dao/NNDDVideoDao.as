@@ -499,6 +499,7 @@ package org.mineap.nndd.library.sqlite.dao
 					files.push(file);
 				}
 				
+				var needlessFiles:Vector.<NNDDFile> = new Vector.<NNDDFile>();
 				for each(var tempFile:NNDDFile in files){
 					
 					this._stmt = new SQLStatement();
@@ -513,17 +514,11 @@ package org.mineap.nndd.library.sqlite.dao
 					var result:SQLResult = this._stmt.getResult();
 					
 					if(result == null){
-						if(enableTran){
-							DbAccessHelper.instance.connection.commit();
-						}
-						return vector;
+						continue;
 					}
 					
 					if(result.data == null){
-						if(enableTran){
-							DbAccessHelper.instance.connection.commit();
-						}
-						return vector;
+						continue;
 					}
 					
 					if(result.data.length > 0){
@@ -537,6 +532,7 @@ package org.mineap.nndd.library.sqlite.dao
 				if(enableTran){
 					DbAccessHelper.instance.connection.commit();
 				}
+				FileDao.instance.deleteNeedlessFile();
 				return vector;
 				
 			}catch(error:SQLError){
