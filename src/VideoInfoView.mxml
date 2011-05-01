@@ -477,26 +477,39 @@
 						<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
 						<mx:CheckBox left="10" top="62" label="投稿者フィルターを有効にする" toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
 						
-						<mx:Label text="コメントの大きさ：" left="10" top="92"/>
-						<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="92" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
-						<mx:Label text="0.5倍" left="143" top="118"/>
-						<mx:Label right="10" top="118" text="1.5倍"/>
-						<mx:Label text="コメントのFPS：" left="10" top="144" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-						<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="144" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-						<mx:Label text="7.5fps" left="143" top="170"/>
-						<mx:Label right="10" top="170" text="120fps"/>
-						<mx:Label x="10" y="196" text="表示するコメント："/>
-						<mx:HSlider y="196" left="143" minimum="50" maximum="2500" snapInterval="50" right="10" showDataTip="true" value="250" id="slider_showCommentCount" change="sliderShowCommentCountChanged(event)" toolTip="表示するコメントの個数を指定します。ダウンロード済みのコメントの個数より大きい数字を指定しても、ダウンロード済みの個数以上は表示されません。"/>
-						<mx:Label text="50" left="143" top="222"/>
-						<mx:Label right="10" top="222" text="2500"/>
-						<mx:Label x="10" y="248" text="コメント表示時間："/>
-						<mx:HSlider y="248" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
-						<mx:Label text="1秒" left="143" top="274"/>
-						<mx:Label text="5秒" top="274" right="10"/>
-						<mx:Label x="10" y="300" text="コメントの不透明度：" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-						<mx:HSlider y="300" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-						<mx:Label text="1%" left="143" top="326"/>
-						<mx:Label text="100%" top="326" right="10"/>
+						<mx:Label left="10" top="88" text="表示する通常コメント："
+								  toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+						<mx:NumericStepper left="167" top="85" maximum="100000" stepSize="50"
+										   value="50" id="commentNumStepper"
+										   change="commentCountNumStepperChanged(event)"
+										   toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+						<mx:Label left="260" top="88" text="コメント/分"/>
+						
+						<mx:Label left="10" top="119" text="表示する投稿者コメント："
+								  toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+						<mx:NumericStepper left="167" top="116" maximum="100000" value="50" 
+										   stepSize="50" id="ownerCommentNumStepper"
+										   change="ownerCommentCountNumStepperChanged(event)"
+										   toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+						<mx:Label left="260" top="119" text="コメント/分"/>
+						
+						<mx:Label text="コメントの大きさ：" left="10" top="147"/>
+						<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
+						<mx:Label text="0.5倍" left="143" top="173"/>
+						<mx:Label right="10" top="173" text="1.5倍"/>
+						<mx:Label text="コメントのFPS：" left="10" top="199" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
+						<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
+						<mx:Label text="7.5fps" left="143" top="225"/>
+						<mx:Label right="10" top="225" text="120fps"/>
+						<mx:Label x="10" y="249" text="コメント表示時間："/>
+						<mx:HSlider y="249" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
+						<mx:Label text="1秒" left="143" top="275"/>
+						<mx:Label text="5秒" top="275" right="10"/>
+						<mx:Label x="10" y="301" text="コメントの不透明度：" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
+						<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
+						<mx:Label text="1%" left="143" top="327"/>
+						<mx:Label text="100%" top="327" right="10"/>
+						
 					</mx:Canvas>
 					<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3"
 							   creationComplete="configCanvas3CreationCompleteHandler(event)">
