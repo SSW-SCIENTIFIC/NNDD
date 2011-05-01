@@ -44,6 +44,9 @@
 				updater.addEventListener(StatusUpdateEvent.UPDATE_STATUS, checkForUpdateEventHandler);
 				updater.initialize();
 				
+				this.stage.nativeWindow.x = Capabilities.screenResolutionX/2 - this.width/2;
+				this.stage.nativeWindow.y = Capabilities.screenResolutionY/2 - this.height/2;
+				
 			}
 
 			
