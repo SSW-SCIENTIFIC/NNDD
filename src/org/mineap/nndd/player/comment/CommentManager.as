@@ -82,7 +82,11 @@ package org.mineap.nndd.player.comment
 		 */
 		public function initComment(comments:Comments, displayObject:DisplayObjectContainer):Boolean{
 			
+			// 
 			this.destructor();
+			
+			// 持ってるもの全部リセット
+			this.removeAll();
 			
 			this.comments = comments;
 			this.addText(displayObject);

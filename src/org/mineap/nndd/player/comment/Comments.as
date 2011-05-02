@@ -6,11 +6,12 @@ package org.mineap.nndd.player.comment
 	import mx.collections.Sort;
 	import mx.collections.SortField;
 	
+	import org.mineap.nicovideo4as.model.NgUp;
 	import org.mineap.nndd.FileIO;
-	import org.mineap.nndd.player.NGListManager;
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.NNDDComment;
-	import org.mineap.nicovideo4as.model.NgUp;
+	import org.mineap.nndd.player.NGListManager;
 	
 	/**
 	 * Comments.as
@@ -84,6 +85,8 @@ package org.mineap.nndd.player.comment
 				ownerCommentListProvider.removeAll();
 			}
 			
+			LogManager.instance.addLog("コメントのロード開始:" + commentXMLPath);
+			
 			if(commentXMLPath != null && new File(commentXMLPath).exists){
 				var commentFileIO:FileIO = new FileIO();
 				this.comments = commentFileIO.loadXMLSync(commentXMLPath, false);
@@ -92,9 +95,11 @@ package org.mineap.nndd.player.comment
 				commentArray = loadCommentByXML(comments, commentArray, loadCommentCount, loadStartDate);
 				trace("commentCount:" + commentArray.length);
 				trace("maxCommentCount:" + loadCommentCount);
+				LogManager.instance.addLog("通常コメントをロード:" + commentArray.length + " 件 (最大:" + loadCommentCount + " 件)");
 				if(commentListProvider != null){
 					addCommentToArrayCollection(commentListProvider, ngListManager, showOnlyPermissionIDComment, hideSekaShinComment, isNgUpEnable);
 				}
+				this.comments = null;	// XMLを解放
 			}
 			// TODO 先に読み込んだ方が効率よくない？
 			if(ownerCommentXMLPath != null && new File(ownerCommentXMLPath).exists){
@@ -106,11 +111,13 @@ package org.mineap.nndd.player.comment
 				ngupArray = loadNgWord(ownerComments);
 				trace("commentCount:" + ownerCommentArray.length);
 				trace("maxCommentCount:" + loadOwnerCommentCount);
+				LogManager.instance.addLog("投稿者コメントをロード:" + ownerCommentArray.length + " 件 (最大:" + loadOwnerCommentCount + " 件)");
 				if(commentListProvider != null && ownerCommentListProvider != null){
 					addOwnerCommentToArrayCollection(commentListProvider, ownerCommentListProvider, isNgUpEnable);
 				}else if(commentListProvider != null){
 					addOwnerCommentToArrayCollection(commentListProvider, null, isNgUpEnable);
 				}
+				this.ownerComments = null;	// XMLを解放
 			}
 			
 			this.commentListProvider = commentListProvider;
@@ -183,7 +190,7 @@ package org.mineap.nndd.player.comment
 			trace("Comments.loadCommentByXML:コメントをXMLから配列に格納");
 			var items:XMLList = xml.chat;
 
-			for(var i:int = 0; i<items.length() && i<loadCommentCount; i++){
+			for(var i:int = items.length()-1; i > -1 ; --i){
 				var p:XML = items[i];
 				
 				var date:Number = Number(p.@date);
@@ -191,6 +198,13 @@ package org.mineap.nndd.player.comment
 					continue;
 				}
 				commentArray.push(new NNDDComment(Number(p.attribute("vpos")), String(p.text()), String(p.attribute("mail")), String(p.attribute("user_id")), Number(p.attribute("no")), String(p.attribute("thread")),  true));
+				
+				if (commentArray.length >= loadCommentCount)
+				{
+					commentArray = commentArray.reverse();
+					break;
+				}
+				
 			}
 			
 			return commentArray;

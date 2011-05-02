@@ -487,13 +487,13 @@ package org.mineap.nndd.player
 						
 						var videoUrl:String = "http://www.nicovideo.jp/watch/"+PathMaker.getVideoID(this._videoID);
 						
-						renewCommentAtStart(PathMaker.getVideoID(this._videoID), videoPath, initStart);
+						renewCommentAtStart(PathMaker.getVideoID(this._videoID), videoPath, thumbInfoPath, autoPlay);
 						
 					}else{
 						
 						/* ログインしていないときは再生を開始 */
 						logManager.addLog(Message.FAIL_PLAY_EACH_COMMENT_DOWNLOAD + "(ログインしていません)");
-						initStart();
+						initStart(videoPath, thumbInfoPath, autoPlay);
 						
 					}
 					
@@ -504,7 +504,7 @@ package org.mineap.nndd.player
 					
 					var timer:Timer = new Timer(1000, 1);
 					timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
-						initStart();
+						initStart(videoPath, thumbInfoPath, autoPlay);
 						
 						timer.stop();
 						timer = null;
@@ -541,262 +541,264 @@ package org.mineap.nndd.player
 					logManager.addLog("マイリスト一覧の更新に失敗(動画IDが取得できない)");
 				}
 				
-				initStart();
-			}
-			
-			/**
-			 * 匿名メソッド。再生前の初期化を行います。
-			 */
-			function initStart():void{
-				
-				trace(videoPlayer.stage.quality);
-				
-				try{
-					if(_isEconomyMode){
-						videoPlayer.label_economyStatus.text = "エコノミーモード";
-					}else{
-						videoPlayer.label_economyStatus.text = "";
-					}
-					
-					videoPlayer.canvas_video.toolTip = null;
-					
-					if(isPlayerClosing){
-						stop();
-						destructor();
-						return;
-					}
-					
-					commentTimerVpos = 0;
-					
-					var text:Text = new Text();
-					text.text = "ユーザーニコ割がダウンロード済であれば、この領域で再生されます。\n画面をダブルクリックすると非表示に出来ます。";
-					text.setConstraintValue("left", 10);
-					text.setConstraintValue("top", 10);
-					videoPlayer.canvas_nicowari.addChild(text);
-					
-					videoPlayer.label_downloadStatus.text = "";
-					videoInfoView.image_thumbImg.source = "";
-					videoPlayer.videoInfoView.text_info.htmlText ="(タイトルを取得中)<br />(投稿日時を取得中)<br />再生: コメント: マイリスト:"
-					
-					if(isStreamingPlay){
-						//最新の情報はDL済みなのでそれを使う
-						setInfo(downLoadedURL, thumbInfoPath, thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[IchibaInfo].html", true);
-						
-						videoInfoView.image_thumbImg.source = thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[ThumbImg].jpeg";
-					}else{
-						setInfo(videoPath, thumbInfoPath, PathMaker.createNicoIchibaInfoPathByVideoPath(videoPath), false);
-						
-						var nnddVideo:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(videoPath));
-						
-						if(nnddVideo != null){
-							videoInfoView.image_thumbImg.source = nnddVideo.thumbUrl;
-						}
-					}
-					
-					changeFps(videoInfoView.fps);
-					
-					videoPlayer.videoController.label_time.text = "0:00/0:00";
-					videoPlayer.videoController_under.label_time.text = "0:00/0:00";
-
-					if(videoInfoView.isShowAlwaysNicowariArea){
-						//ニコ割領域を常に表示する
-						videoPlayer.showNicowariArea();
-						
-					}else{
-						//ニコ割は再生時のみ表示
-						videoPlayer.hideNicowariArea();
-						
-					}
-					
-					
-					var video:NNDDVideo = libraryManager.isExist(LibraryUtil.getVideoKey(_videoID));
-					if(video != null){
-						HistoryManager.instance.addVideoByNNDDVideo(video);
-					}else{
-						video = new NNDDVideo("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(_videoID), videoPlayer.title, false, null, null, null, PathMaker.getThumbImgUrl(PathMaker.getVideoID(_videoID)));
-						
-						HistoryManager.instance.addVideoByNNDDVideo(video, null, false);
-					}
-					
-					if(windowType == PlayerController.WINDOW_TYPE_FLV){
-						//WINDOW_TYPE_FLVで初期化する場合の処理
-						
-						isMovieClipPlaying = false;
-						
-						videoDisplay = new VideoDisplay();
-						
-						videoPlayer.label_downloadStatus.text = "";
-						
-						if(isStreamingPlay){
-							videoPlayer.label_downloadStatus.text = "バッファ中...";
-							videoDisplay.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
-						}
-						
-						videoPlayer.canvas_video.removeAllChildren();
-						videoPlayer.canvas_video.addChild(videoDisplay);
-						
-						videoDisplay.setConstraintValue("bottom", 0);
-						videoDisplay.setConstraintValue("left", 0);
-						videoDisplay.setConstraintValue("right", 0);
-						videoDisplay.setConstraintValue("top", 0);
-//						videoDisplay.bufferTime = 3;
-						
-						if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
-							videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
-						}else{
-							videoInfoView.videoServerUrl = videoPath;
-							var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
-							if(messageServerUrl != null){
-								videoInfoView.messageServerUrl = messageServerUrl;
-							}
-						}
-						videoInfoView.videoType = "FLV/MP4";
-						
-						videoDisplay.autoPlay = autoPlay;
-						videoDisplay.source = videoPath;
-						videoDisplay.autoRewind = false;
-						videoDisplay.volume = videoPlayer.videoController.slider_volume.value;
-						videoPlayer.videoController_under.slider_volume.value = videoPlayer.videoController.slider_volume.value;
-						
-						addVideoDisplayEventListeners(videoDisplay);
-						
-						commentManager.initComment(comments, videoPlayer.canvas_video);
-						commentManager.setCommentAlpha(videoInfoView.commentAlpha/100);
-						
-						windowReady = true;
-						
-						if(autoPlay && !isStreamingPlay){
-							time = (new Date).time;
-							commentTimer.start();
-						}
-						
-						videoDisplay.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
-						videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
-						videoDisplay.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
-							event.currentTarget.setFocus();
-						});
-						
-						videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
-						videoPlayer.videoController_under.button_play.setStyle("icon", icon_Pause);
-						setVolume(videoPlayer.videoController.slider_volume.value);
-						
-						if(videoInfoView.visible){
-							videoInfoView.restore();
-						}
-						if(videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
-							videoPlayer.restore();
-						}
-						
-						if(videoInfoView.visible){
-							videoInfoView.activate();
-						}
-						videoPlayer.activate();
-						
-						windowResized(false);
-						
-						videoPlayer.setControllerEnable(true);
-						
-					}else if(windowType == PlayerController.WINDOW_TYPE_SWF){
-						//WINODW_TYPE_SWFで初期化する場合の処理
-						
-						isMovieClipPlaying = true;
-						isSwfConverting = true;
-						
-						videoPlayer.label_downloadStatus.text = "SWFを変換しています...";
-						
-						loader = new Loader();
-						loader.contentLoaderInfo.addEventListener(Event.COMPLETE, convertCompleteHandler);
-						var fLoader:ForcibleLoader = new ForcibleLoader(loader);
-						swfLoader = new SWFLoader();
-						swfLoader.addChild(loader);
-						
-						videoPlayer.canvas_video.removeAllChildren();
-						videoPlayer.canvas_video.addChild(swfLoader);
-						
-						swfLoader.setConstraintValue("bottom", 0);
-						swfLoader.setConstraintValue("left", 0);
-						swfLoader.setConstraintValue("right", 0);
-						swfLoader.setConstraintValue("top", 0);
-						
-						swfLoader.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
-							event.currentTarget.setFocus();
-						});
-						
-						commentManager.initComment(comments, videoPlayer.canvas_video);
-						commentManager.setCommentAlpha(videoInfoView.commentAlpha/100);
-						
-						windowReady = true;
-						
-						if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
-							videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
-						}else{
-							videoInfoView.videoServerUrl = videoPath;
-							var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
-							if(messageServerUrl != null){
-								videoInfoView.messageServerUrl = messageServerUrl;
-							}
-						}
-						videoInfoView.videoType = "SWF";
-						if(autoPlay){
-							fLoader.load(new URLRequest(videoPath));
-						}
-						
-						var timer:Timer = new Timer(500, 4);
-						timer.addEventListener(TimerEvent.TIMER, function():void{
-							windowResized(false);
-						});
-						timer.start();
-						
-						videoPlayer.videoController_under.button_play.setStyle("icon", icon_Pause);
-						videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
-						
-						if(videoInfoView.visible){
-							videoInfoView.restore();
-						}
-						
-						if(videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
-							videoPlayer.restore();
-						}
-						
-						if(videoInfoView.visible){
-							videoInfoView.activate();
-						}
-						videoPlayer.activate();
-						
-						videoPlayer.setControllerEnable(true);
-						
-					}
-					
-					if(videoInfoView != null && videoInfoView.tabNavigator_comment != null){
-						if(videoInfoView.tabNavigator_comment.selectedIndex == 1){
-							// 過去コメントタブが選択されてるときはコメントを再ロード
-							videoInfoView.reloadOldComment();
-						}else{
-							// 選択されていないときは時刻をリセット
-							videoInfoView.resetOldCommentDate();
-						}
-					}
-					
-					return;
-				}catch(error:Error){
-					trace(error.getStackTrace());
-					logManager.addLog(error + ":" + error.getStackTrace());
-//					destructor();
-				}
-				
+				initStart(videoPath, thumbInfoPath, autoPlay);
 			}
 			
 		}
+		
+		/**
+		 * VideoDisplay、もしくはSWFLoaderを準備し、必要に応じて動画の再生を開始します。
+		 * 
+		 * @param videoPath 動画のパス
+		 * @param thumbInfoPath サムネイル情報のパス
+		 * @param autoPlay 動画の再生を開始するかどうか
+		 */
+		private function initStart(videoPath:String, thumbInfoPath:String, autoPlay:Boolean):void
+		{
+			trace(videoPlayer.stage.quality);
+			
+			try{
+				if(_isEconomyMode){
+					videoPlayer.label_economyStatus.text = "エコノミーモード";
+				}else{
+					videoPlayer.label_economyStatus.text = "";
+				}
+				
+				videoPlayer.canvas_video.toolTip = null;
+				
+				if(isPlayerClosing){
+					stop();
+					destructor();
+					return;
+				}
+				
+				commentTimerVpos = 0;
+				
+				var text:Text = new Text();
+				text.text = "ユーザーニコ割がダウンロード済であれば、この領域で再生されます。\n画面をダブルクリックすると非表示に出来ます。";
+				text.setConstraintValue("left", 10);
+				text.setConstraintValue("top", 10);
+				videoPlayer.canvas_nicowari.addChild(text);
+				
+				videoPlayer.label_downloadStatus.text = "";
+				videoInfoView.image_thumbImg.source = "";
+				videoPlayer.videoInfoView.text_info.htmlText ="(タイトルを取得中)<br />(投稿日時を取得中)<br />再生: コメント: マイリスト:"
+				
+				if(isStreamingPlay){
+					//最新の情報はDL済みなのでそれを使う
+					setInfo(downLoadedURL, thumbInfoPath, thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[IchibaInfo].html", true);
+					
+					videoInfoView.image_thumbImg.source = thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[ThumbImg].jpeg";
+				}else{
+					setInfo(videoPath, thumbInfoPath, PathMaker.createNicoIchibaInfoPathByVideoPath(videoPath), false);
+					
+					var nnddVideo:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(videoPath));
+					
+					if(nnddVideo != null){
+						videoInfoView.image_thumbImg.source = nnddVideo.thumbUrl;
+					}
+				}
+				
+				changeFps(videoInfoView.fps);
+				
+				videoPlayer.videoController.label_time.text = "0:00/0:00";
+				videoPlayer.videoController_under.label_time.text = "0:00/0:00";
+				
+				if(videoInfoView.isShowAlwaysNicowariArea){
+					//ニコ割領域を常に表示する
+					videoPlayer.showNicowariArea();
+					
+				}else{
+					//ニコ割は再生時のみ表示
+					videoPlayer.hideNicowariArea();
+					
+				}
+				
+				var video:NNDDVideo = libraryManager.isExist(LibraryUtil.getVideoKey(_videoID));
+				if(video != null){
+					HistoryManager.instance.addVideoByNNDDVideo(video);
+				}else{
+					video = new NNDDVideo("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(_videoID), videoPlayer.title, false, null, null, null, PathMaker.getThumbImgUrl(PathMaker.getVideoID(_videoID)));
+					
+					HistoryManager.instance.addVideoByNNDDVideo(video, null, false);
+				}
+				
+				if(windowType == PlayerController.WINDOW_TYPE_FLV){
+					//WINDOW_TYPE_FLVで初期化する場合の処理
+					
+					isMovieClipPlaying = false;
+					
+					videoDisplay = new VideoDisplay();
+					
+					videoPlayer.label_downloadStatus.text = "";
+					
+					if(isStreamingPlay){
+						videoPlayer.label_downloadStatus.text = "バッファ中...";
+						videoDisplay.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
+					}
+					
+					videoPlayer.canvas_video.removeAllChildren();
+					videoPlayer.canvas_video.addChild(videoDisplay);
+					
+					videoDisplay.setConstraintValue("bottom", 0);
+					videoDisplay.setConstraintValue("left", 0);
+					videoDisplay.setConstraintValue("right", 0);
+					videoDisplay.setConstraintValue("top", 0);
+					
+					if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
+						videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
+					}else{
+						videoInfoView.videoServerUrl = videoPath;
+						var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
+						if(messageServerUrl != null){
+							videoInfoView.messageServerUrl = messageServerUrl;
+						}
+					}
+					videoInfoView.videoType = "FLV/MP4";
+					
+					videoDisplay.autoPlay = autoPlay;
+					videoDisplay.source = videoPath;
+					videoDisplay.autoRewind = false;
+					videoDisplay.volume = videoPlayer.videoController.slider_volume.value;
+					videoPlayer.videoController_under.slider_volume.value = videoPlayer.videoController.slider_volume.value;
+					
+					addVideoDisplayEventListeners(videoDisplay);
+					
+					commentManager.initComment(comments, videoPlayer.canvas_video);
+					commentManager.setCommentAlpha(videoInfoView.commentAlpha/100);
+					
+					windowReady = true;
+					
+					if(autoPlay && !isStreamingPlay){
+						time = (new Date).time;
+						commentTimer.start();
+					}
+					
+					videoDisplay.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
+					videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
+					videoDisplay.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+						event.currentTarget.setFocus();
+					});
+					
+					videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
+					videoPlayer.videoController_under.button_play.setStyle("icon", icon_Pause);
+					setVolume(videoPlayer.videoController.slider_volume.value);
+					
+					if(videoInfoView.visible){
+						videoInfoView.restore();
+					}
+					if(videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
+						videoPlayer.restore();
+					}
+					
+					if(videoInfoView.visible){
+						videoInfoView.activate();
+					}
+					videoPlayer.activate();
+					
+					windowResized(false);
+					
+					videoPlayer.setControllerEnable(true);
+					
+				}else if(windowType == PlayerController.WINDOW_TYPE_SWF){
+					//WINODW_TYPE_SWFで初期化する場合の処理
+					
+					isMovieClipPlaying = true;
+					isSwfConverting = true;
+					
+					videoPlayer.label_downloadStatus.text = "SWFを変換しています...";
+					
+					loader = new Loader();
+					loader.contentLoaderInfo.addEventListener(Event.COMPLETE, convertCompleteHandler);
+					var fLoader:ForcibleLoader = new ForcibleLoader(loader);
+					swfLoader = new SWFLoader();
+					swfLoader.addChild(loader);
+					
+					videoPlayer.canvas_video.removeAllChildren();
+					videoPlayer.canvas_video.addChild(swfLoader);
+					
+					swfLoader.setConstraintValue("bottom", 0);
+					swfLoader.setConstraintValue("left", 0);
+					swfLoader.setConstraintValue("right", 0);
+					swfLoader.setConstraintValue("top", 0);
+					
+					swfLoader.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+						event.currentTarget.setFocus();
+					});
+					
+					commentManager.initComment(comments, videoPlayer.canvas_video);
+					commentManager.setCommentAlpha(videoInfoView.commentAlpha/100);
+					
+					windowReady = true;
+					
+					if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
+						videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
+					}else{
+						videoInfoView.videoServerUrl = videoPath;
+						var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
+						if(messageServerUrl != null){
+							videoInfoView.messageServerUrl = messageServerUrl;
+						}
+					}
+					videoInfoView.videoType = "SWF";
+					if(autoPlay){
+						fLoader.load(new URLRequest(videoPath));
+					}
+					
+					var timer:Timer = new Timer(500, 4);
+					timer.addEventListener(TimerEvent.TIMER, function():void{
+						windowResized(false);
+					});
+					timer.start();
+					
+					videoPlayer.videoController_under.button_play.setStyle("icon", icon_Pause);
+					videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
+					
+					if(videoInfoView.visible){
+						videoInfoView.restore();
+					}
+					
+					if(videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
+						videoPlayer.restore();
+					}
+					
+					if(videoInfoView.visible){
+						videoInfoView.activate();
+					}
+					videoPlayer.activate();
+					
+					videoPlayer.setControllerEnable(true);
+					
+				}
+				
+				if(videoInfoView != null && videoInfoView.tabNavigator_comment != null){
+					if(videoInfoView.tabNavigator_comment.selectedIndex == 1){
+						// 過去コメントタブが選択されてるときはコメントを再ロード
+						videoInfoView.reloadOldComment();
+					}else{
+						// 選択されていないときは時刻をリセット
+						videoInfoView.resetOldCommentDate();
+					}
+				}
+				
+				return;
+			}catch(error:Error){
+				trace(error.getStackTrace());
+				logManager.addLog(error + ":" + error.getStackTrace());
+			}
+		}
+		
 		
 		/**
 		 * コメントを最新に更新します
 		 * 
 		 * @param videoId
 		 * @param videoPath
-		 * @param initStart
+		 * @param thumbInfoPath
+		 * @param autoPlay
 		 * 
 		 */
-		private function renewCommentAtStart(videoId:String, videoPath:String, initStart:Function):void{
+		private function renewCommentAtStart(videoId:String, videoPath:String, thumbInfoPath:String, autoPlay:Boolean):void{
 			
 			var videoName:String = PathMaker.getVideoName(videoPath);
 			
@@ -870,7 +872,7 @@ package org.mineap.nndd.player
 				
 				myListGroupUpdate(PathMaker.getVideoID(_videoID));
 				
-				initStart();
+				initStart(videoPath, thumbInfoPath, autoPlay);
 			});
 			renewDownloadManager.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
 			renewDownloadManager.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
@@ -903,7 +905,7 @@ package org.mineap.nndd.player
 				var timer:Timer = new Timer(1000, 1);
 				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
 					myListGroupUpdate(PathMaker.getVideoID(_videoID));
-					initStart();
+					initStart(videoPath, thumbInfoPath, autoPlay);
 				});
 				timer.start();
 			});
@@ -915,7 +917,7 @@ package org.mineap.nndd.player
 				var timer:Timer = new Timer(1000, 1);
 				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function():void{
 					myListGroupUpdate(PathMaker.getVideoID(_videoID));
-					initStart();
+					initStart(videoPath, thumbInfoPath, autoPlay);
 				});
 				timer.start();
 			});
@@ -1849,10 +1851,12 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		private function videoPlayCompleteWaitHandler(event:TimerEvent):void{
-			if(!isCounted){
+			if (!isCounted)
+			{
 				//再生回数を加算
 				var videoId:String = LibraryUtil.getVideoKey(this.videoPlayer.title);
-				if(videoId != null){
+				if (videoId != null)
+				{
 					addVideoPlayCount(videoId, true);
 				}
 				isCounted = true;
@@ -1860,46 +1864,86 @@ package org.mineap.nndd.player
 			
 			logManager.addLog("***動画の停止***");
 			
-			if(videoPlayer.isRepeat){
-				if(isPlayListingPlay){
-					if(isStreamingPlay){
+			if (videoPlayer.isRepeat)
+			{
+				
+				/* 動画の1曲リピート */
+				
+				if (isPlayListingPlay)
+				{
+					if(isStreamingPlay)
+					{
 						logManager.addLog("***動画のリピート(ストリーミング)***");
 						this.seek(0);
-						if(this.videoDisplay != null){
+						if (this.videoDisplay != null)
+						{
 							this.videoDisplay.play();
 						}
-					}else{
+					}
+					else
+					{
 						logManager.addLog("***動画のリピート(ローカル)***");
 						this.stop();
-						playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, playingIndex, this.videoPlayer.title);
+						playMovie(
+								this.videoInfoView.getPlayListUrl(playingIndex), 
+								this.videoInfoView.playList, 
+								playingIndex, 
+								this.videoPlayer.title);
 						
 					}
-				}else if(isStreamingPlay){
+				}
+				else if(isStreamingPlay)
+				{
 					logManager.addLog("***動画のリピート(ストリーミング)***");
 					this.seek(0);
-					if(this.videoDisplay != null){
+					if (this.videoDisplay != null)
+					{
 						this.videoDisplay.play();
 					}
-				}else{
+				}
+				else
+				{
 					logManager.addLog("***動画のリピート(ローカル)***");
 					this.stop();
 					this.play();
 				}
-			}else{
+			}
+			else
+			{
+				
+				/* 動画のリピートは無効 */
+				
 				this.stop();
-				if(isPlayListingPlay){
+				
+				if (isPlayListingPlay)
+				{
+					
+					/* プレイリスト再生中 */
+					
 					logManager.addLog("***動画の再生(ローカル)***");
 					var windowType:int = PlayerController.WINDOW_TYPE_FLV;
-					if(playingIndex >= this.videoInfoView.getPlayList().length-1){
+					if (playingIndex >= this.videoInfoView.getPlayList().length-1)
+					{
+						/* プレイリストの先頭に戻る */
 						playingIndex = 0;
-						if(this.videoPlayer.videoInfoView.isRepeatAll()){
-							playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-								playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+						if (this.videoPlayer.videoInfoView.isRepeatAll())
+						{
+							playMovie(
+									this.videoInfoView.getPlayListUrl(playingIndex), 
+									this.videoInfoView.playList,
+									playingIndex, 
+									PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 						}
-					}else{
+					}
+					else
+					{
+						/* プレイリストの次の項目へ */
 						playingIndex++;
-						playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, 
-							playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+						playMovie(
+								this.videoInfoView.getPlayListUrl(playingIndex), 
+								this.videoInfoView.playList, 
+								playingIndex, 
+								PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 					}
 				}
 			}
@@ -2028,7 +2072,7 @@ package org.mineap.nndd.player
 				return;
 			}
 			
-//			音量を反映
+			//	音量を反映
 			this.setVolume(this.videoPlayer.videoController.slider_volume.value);
 			
 			var nowSec:String="00",nowMin:String="0";
@@ -3484,6 +3528,8 @@ package org.mineap.nndd.player
 				url = decodeURIComponent(url);
 				
 				if(url.indexOf("http://") == -1){
+					/* ---- ローカルの動画を再生 ---- */
+					
 					videoPlayer.title = url;
 					videoPlayer.setControllerEnable(true);
 					logManager.addLog("***動画の再生(ローカル)***");
@@ -3578,6 +3624,9 @@ package org.mineap.nndd.player
 						}
 					}
 				}else if(url.match(new RegExp("http://smile")) != null){
+					
+					/* ストリーミング再生(接続先動画サーバがわかっている時) */
+					
 					logManager.addLog("***動画の再生(ストリーミング)***");
 					
 					var commentPath:String = libraryManager.tempDir.url + "/nndd.xml";
@@ -3623,6 +3672,9 @@ package org.mineap.nndd.player
 						}
 					}
 				}else if(url.match(new RegExp("http://www.nicovideo.jp/watch/")) != null){
+					
+					/* ストリーミング再生(接続先動画サーバがまだわかっていない時) */
+					
 					logManager.addLog("***ストリーミング再生の準備***");
 					if(mailAddress == "" || password == ""){
 						Alert.show("ニコニコ動画にログインしてください。", Message.M_ERROR);
