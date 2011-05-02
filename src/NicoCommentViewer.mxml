@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="1000"
+					   height="800">
+
+	<fx:Script>
+		<![CDATA[
+			import spark.events.GridSelectionEvent;
+			import spark.events.GridSelectionEventKind;
+			protected function datagrid1_nativeDragDropHandler(event:NativeDragEvent):void
+			{
+				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{
+					
+					var object:Object = event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT);
+					
+					var file:File = (object as Array)[0];
+					
+					if ("xml" == file.extension)
+					{
+						
+						var loader:URLLoader = new URLLoader();
+						loader.addEventListener(Event.COMPLETE, commentLoadCompleteHandler);
+						loader.load(new URLRequest(file.url));
+						
+					}
+				}
+			}
+
+			protected function datagrid_nativeDragEnterHandler(event:NativeDragEvent):void
+			{
+				if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{
+					NativeDragManager.acceptDragDrop(datagrid);
+				}
+			}
+
+
+			protected function commentLoadCompleteHandler(event:Event):void
+			{
+				var loader:URLLoader = (event.currentTarget as URLLoader);
+				
+				var xml:XML = new XML(loader.data);
+				
+				datagrid.dataProvider.removeAll();
+				
+				var i:int = 0;
+				for each(var chat:XML in xml.chat){
+					
+					var object:Object = new Object();
+					object.count = ++i;
+					object.thread = chat.@thread;
+					object.no = chat.@no;
+					object.vpos = chat.@vpos;
+					object.date = chat.@date;
+					object.mail = chat.@mail;
+					object.user_id = chat.@user_id;
+					object.premium = chat.@premium;
+					object.anonymity = chat.@anonymity;
+					object.comment = chat.text();
+					datagrid.dataProvider.addItem(object);
+				
+				}
+				
+			}
+			
+
+			protected function datagrid_selectionChangeHandler(event:GridSelectionEvent):void
+			{
+				var object:Object = datagrid.selectedItem;
+				
+				attrs.text = "";
+				
+				if (object != null)
+				{
+					attrs.text += "thread:" + object.thread + "\n";
+					attrs.text += "no:" + object.no + "\n";
+					attrs.text += "vpos:" + object.vpos + "\n";
+					attrs.text += "date:" + new Date(object.date) + "\n";
+					attrs.text += "mail:" + object.mail + "\n";
+					attrs.text += "user_id:" + object.user_id + "\n";
+					attrs.text += "premium:" + object.premium + "\n";
+					attrs.text += "anonymity:" + object.anonymity + "\n";
+				}
+				
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:DataGrid left="5" right="5" top="5" bottom="135" requestedRowCount="4" 
+				nativeDragEnter="datagrid_nativeDragEnterHandler(event)"
+				nativeDragDrop="datagrid1_nativeDragDropHandler(event)"
+				id="datagrid" showDataTips="true"
+				selectionChange="datagrid_selectionChangeHandler(event)">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn dataField="count" headerText="#" width="50"></s:GridColumn>
+				<s:GridColumn dataField="thread" headerText="thread" width="100"></s:GridColumn>
+				<s:GridColumn dataField="no" headerText="no" width="50"></s:GridColumn>
+				<s:GridColumn dataField="vpos" headerText="vpos" width="70"></s:GridColumn>
+				<s:GridColumn dataField="date" headerText="date" width="70"></s:GridColumn>
+				<s:GridColumn dataField="mail" headerText="mail" width="70"></s:GridColumn>
+				<s:GridColumn dataField="user_id" headerText="user_id" width="100"></s:GridColumn>
+				<s:GridColumn dataField="premium" headerText="premium" width="50"></s:GridColumn>
+				<s:GridColumn dataField="anonymity" headerText="anonymity" width="50"></s:GridColumn>
+				<s:GridColumn dataField="comment" headerText="comment"></s:GridColumn>
+			</s:ArrayList>
+		</s:columns>
+		<s:ArrayList>
+		</s:ArrayList>
+	</s:DataGrid>
+	
+	<s:Label left="10" bottom="115" height="12" text="Attributes"/>
+	<s:TextArea left="5" bottom="5" width="256" height="109" id="attrs"/>
+	
+	<s:Label left="269" bottom="115" text="comment"/>
+	<s:TextArea right="5" bottom="5" width="726" height="109" text="{String(datagrid.selectedItem.comment)}"/>
+</s:WindowedApplication>

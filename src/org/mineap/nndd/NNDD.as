@@ -342,7 +342,7 @@ public function initNNDD(nndd:NNDD):void
 	
 	this.version = VersionUtil.instance.versionNumber;
 	
-	this.title =  "NNDD - " + VersionUtil.instance.versionLabel;
+	this.title =  "NNDD - v" + VersionUtil.instance.versionLabel;
 	
 	URLRequestDefaults.userAgent = URLRequestDefaults.userAgent + " NNDD/" + this.version;
 	
