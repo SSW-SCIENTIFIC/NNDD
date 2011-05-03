@@ -51,8 +51,6 @@ package org.mineap.nndd
 	 */
 	public class NNDDDownloader extends EventDispatcher
 	{
-		private var _logManager:LogManager;
-		
 		private var _login:Login;
 		private var _watchVideo:WatchVideoPage;
 		private var _getflvAccess:ApiGetFlvAccess;
@@ -230,7 +228,6 @@ package org.mineap.nndd
 		public function NNDDDownloader()
 		{
 			
-			this._logManager = LogManager.instance;
 			this._login = new Login();
 			this._watchVideo = new WatchVideoPage();
 			this._getflvAccess = new ApiGetFlvAccess();
@@ -433,7 +430,7 @@ package org.mineap.nndd
 			
 			//ログイン成功通知
 			trace(LOGIN_SUCCESS + ":" + event);
-			this._logManager.addLog("\t" + LOGIN_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+			LogManager.instance.addLog("\t" + LOGIN_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 			dispatchEvent(new Event(LOGIN_SUCCESS));
 			
 			//リスナ追加
@@ -477,7 +474,7 @@ package org.mineap.nndd
 			var videoId:String = this._watchVideo.getVideoId();
 			if(videoId != this._thumbInfoId){
 				this._thumbInfoId = videoId;
-				_logManager.addLog("サムネイル情報用ID:" + videoId);
+				LogManager.instance.addLog("サムネイル情報用ID:" + videoId);
 			}
 			
 			if(this._saveVideoName == null || this._saveVideoName == ""){
@@ -485,7 +482,7 @@ package org.mineap.nndd
 			}
 			this._nicoVideoName = getVideoName(event.target.data);
 			if(this._saveVideoName == null || this._saveVideoName == ""){
-				_logManager.addLog(WATCH_FAIL + ":VideoNameNotFound:" +  _videoId);
+				LogManager.instance.addLog(WATCH_FAIL + ":VideoNameNotFound:" +  _videoId);
 				trace(WATCH_FAIL + ":VideoNameNotFound");
 				dispatchEvent(new IOErrorEvent(WATCH_FAIL, false, false, "VideoNameNotFound"));
 				close(true, true, new IOErrorEvent(WATCH_FAIL, false, false, "VideoNameNotFound"));
@@ -495,7 +492,7 @@ package org.mineap.nndd
 			
 			//動画ページアクセス完了通知(動画ページへのアクセスは閉じない)
 			trace(WATCH_SUCCESS + ":" + event);
-			this._logManager.addLog("\t" + WATCH_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+			LogManager.instance.addLog("\t" + WATCH_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 			dispatchEvent(new Event(WATCH_SUCCESS));
 			
 			//動画ページの閲覧のみ。
@@ -532,7 +529,7 @@ package org.mineap.nndd
 			
 			//APIアクセス成功(アクセスは閉じない)
 			trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
-			this._logManager.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+			LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 			dispatchEvent(new Event(GETFLV_API_ACCESS_SUCCESS));
 			
 			this._flvResultAnalyzer = new GetFlvResultAnalyzer();
@@ -582,7 +579,7 @@ package org.mineap.nndd
 			}else{
 				// waybackkey取得失敗。中断。
 				(event.target as ApiGetWaybackkeyAccess).close();
-				_logManager.addLog(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target);
+				LogManager.instance.addLog(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target);
 				trace(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + event + ":" + event.target);
 				dispatchEvent(new IOErrorEvent(GETWAYBACKKEY_API_ACCESS_FAIL, false, false));
 				close(true, true);
@@ -687,7 +684,7 @@ package org.mineap.nndd
 			//通常コメントの取得完了を通知
 			loader.close();
 			this._commentLoader.close();
-			this._logManager.addLog("\t" + COMMENT_GET_SUCCESS + ":" + path);
+			LogManager.instance.addLog("\t" + COMMENT_GET_SUCCESS + ":" + path);
 			trace(COMMENT_GET_SUCCESS + ":" + loader + "\n" + path);
 			dispatchEvent(new Event(COMMENT_GET_SUCCESS));
 			
@@ -745,7 +742,7 @@ package org.mineap.nndd
 			//投稿者コメントの取得完了を通知
 			(event.currentTarget as CommentLoader).close();
 			this._ownerCommentLoader.close();
-			this._logManager.addLog("\t" + OWNER_COMMENT_GET_SUCCESS + ":" + path);
+			LogManager.instance.addLog("\t" + OWNER_COMMENT_GET_SUCCESS + ":" + path);
 			trace(OWNER_COMMENT_GET_SUCCESS + ":" + event + "\n" + path);
 			dispatchEvent(new Event(OWNER_COMMENT_GET_SUCCESS));
 			
@@ -871,7 +868,7 @@ package org.mineap.nndd
 				}
 				
 				trace("getbgm:" + this._nicowariVideoIds);
-				_logManager.addLog("\tgetbgm:" + this._nicowariVideoIds);
+				LogManager.instance.addLog("\tgetbgm:" + this._nicowariVideoIds);
 				
 				//ニコ割あり
 				getNicowari();
@@ -938,7 +935,7 @@ package org.mineap.nndd
 			(event.target as URLLoader).close();
 			this._nicowariLoader.close();
 			trace(event + "\n" + file.nativePath);
-			_logManager.addLog("\t" + NICOWARI_GET_SUCCESS + ":" + file.nativePath);
+			LogManager.instance.addLog("\t" + NICOWARI_GET_SUCCESS + ":" + file.nativePath);
 			dispatchEvent(new Event(NICOWARI_GET_SUCCESS));
 			
 			if(this._nicowariVideoIds.length <= 0 || this._nicowariVideoUrls.length <= 0){
@@ -1022,7 +1019,7 @@ package org.mineap.nndd
 			//サムネイル情報取得完了通知
 			this._thumbInfoLoader.close();
 			trace(THUMB_INFO_GET_SUCCESS + ":" + event + "\n" + path);
-			_logManager.addLog("\t" + THUMB_INFO_GET_SUCCESS + ":" + path);
+			LogManager.instance.addLog("\t" + THUMB_INFO_GET_SUCCESS + ":" + path);
 			dispatchEvent(new Event(THUMB_INFO_GET_SUCCESS));
 			
 			this._thumbImgLoader.addThumbImgLoaderListener(Event.COMPLETE, thumbImgGetSuccess);
@@ -1079,7 +1076,7 @@ package org.mineap.nndd
 			//サムネイル画像取得完了通知
 			(event.target as URLLoader).close();
 			this._thumbImgLoader.close();
-			this._logManager.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
+			LogManager.instance.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
 			trace(THUMB_IMG_GET_SUCCESS + ":" + event + "\n" + (new File(this._thumbPath)).nativePath);
 			dispatchEvent(new Event(THUMB_IMG_GET_SUCCESS));
 			
@@ -1127,7 +1124,7 @@ package org.mineap.nndd
 			
 			//市場情報取得完了通知
 			this._ichibaInfoLoader.close();
-			this._logManager.addLog("\t" + ICHIBA_INFO_GET_SUCCESS + ":" + path);
+			LogManager.instance.addLog("\t" + ICHIBA_INFO_GET_SUCCESS + ":" + path);
 			trace(ICHIBA_INFO_GET_SUCCESS + ":" + event + "\n" + path);
 			dispatchEvent(new Event(ICHIBA_INFO_GET_SUCCESS));
 			
@@ -1245,7 +1242,7 @@ package org.mineap.nndd
 			//動画取得成功
 			(event.target as URLLoader).close();
 			this._videoLoader.close();
-			this._logManager.addLog("\t" + VIDEO_GET_SUCCESS + ":" + file.nativePath);
+			LogManager.instance.addLog("\t" + VIDEO_GET_SUCCESS + ":" + file.nativePath);
 			trace(VIDEO_GET_SUCCESS + ":" + event + "\n" + file.nativePath);
 			dispatchEvent(new Event(VIDEO_GET_SUCCESS));
 			
@@ -1346,7 +1343,6 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function terminate():void{
-			this._logManager = null;
 			this._login = null;
 			this._watchVideo = null;
 			this._getflvAccess = null;
