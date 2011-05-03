@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="NNDD.mxml" projectUUID="7ff4278c-aaed-4e45-bc39-ea9ef5f1f929" version="7">
-  <compiler additionalCompilerArguments="-locale ja_JP" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="NNDD.mxml" projectUUID="7ff4278c-aaed-4e45-bc39-ea9ef5f1f929" version="10">
+  <compiler additionalCompilerArguments="-locale ja_JP" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -8,8 +8,8 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/flex.swc" useDefaultLinkType="false"/>
         </excludedEntries>
       </libraryPathEntry>
-      <libraryPathEntry kind="3" linkType="1" path="/nicovideo4as/bin/nicovideo4as.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="libs/nicovideo4as.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="libs/NativeApplicationUpdater-0.5.1.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -26,7 +26,7 @@
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
     <buildTarget buildTargetName="default">
-      <airSettings airCertificatePath="/Users/shiraminekeisuke/Documents/AdobeAIRデジタル証明書.p12" airTimestamp="true" version="1">
+      <airSettings airCertificatePath="" airTimestamp="true" version="1">
         <airExcludes/>
       </airSettings>
       <actionScriptSettings version="1"/>
