@@ -3,7 +3,6 @@
 	<name>NNDDv2</name>
 	<comment></comment>
 	<projects>
-		<project>nicovideo4as</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
