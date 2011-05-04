@@ -6,22 +6,31 @@
  */	
 
 import flash.data.EncryptedLocalStore;
+import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
 import flash.desktop.NativeDragManager;
+import flash.display.NativeMenu;
 import flash.display.NativeWindowDisplayState;
+import flash.display.NativeWindowType;
 import flash.display.StageDisplayState;
 import flash.events.ContextMenuEvent;
 import flash.events.Event;
+import flash.events.FullScreenEvent;
+import flash.events.IOErrorEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.events.NativeDragEvent;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.TextEvent;
+import flash.events.TimerEvent;
 import flash.filesystem.File;
+import flash.filters.DropShadowFilter;
 import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.text.TextField;
+import flash.ui.ContextMenuItem;
 import flash.ui.Keyboard;
+import flash.ui.Mouse;
 import flash.utils.Timer;
 
 import mx.collections.ArrayCollection;
@@ -52,7 +61,6 @@ import org.mineap.nndd.util.PathMaker;
 import org.mineap.nndd.util.ShortUrlChecker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
-import org.mineap.util.font.FontUtil;
 
 public var isShowComment:Boolean = true;
 
@@ -1147,8 +1155,6 @@ public function videoReload(event:Event):void{
 	{
 		return;
 	}
-	
-	videoId = "http://www.nicovideo.jp/watch/" + videoId;
 	
 	playerController.reload(videoId);
 	

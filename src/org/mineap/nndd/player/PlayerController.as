@@ -2475,16 +2475,28 @@ package org.mineap.nndd.player
 		}
 		
 		/**
+		 * 指定された動画IDを動画を再生し直します。
+		 * このメソッドは、現在の再生状況(ストリーミング再生中か、ローカル再生中か)によって、
+		 * 再生するソースを切り替えます。
 		 * 
-		 * @param url
+		 * @param videoId
 		 * 
 		 */
-		public function reload(url:String):void
+		public function reload(videoId:String):void
 		{
 			
 			stop();
 			
-			playMovie(url);
+			var nnddVideo:NNDDVideo = libraryManager.isExist(videoId);
+			
+			if (isStreamingPlay || nnddVideo == null)
+			{
+				playMovie("http://www.nicovideo.jp/watch/" + videoId);
+			}
+			else
+			{	
+				playMovie(nnddVideo.getDecodeUrl());
+			}
 			
 		}
 		
