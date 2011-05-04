@@ -241,7 +241,24 @@ private function windowResized(event:NativeWindowBoundsEvent):void{
 
 private function windowMove(event:NativeWindowBoundsEvent):void{
 	lastRect = event.afterBounds;
-	followInfoView(lastRect);
+	
+	if (Capabilities.os.toLowerCase().indexOf("linux") > -1)
+	{
+		var timer:Timer = new Timer(100, 1);
+		timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
+			var rect:Rectangle = new Rectangle(
+					this.nativeWindow.x,
+					this.nativeWindow.y,
+					this.nativeWindow.width,
+					this.nativeWindow.height);
+			lastRect = rect;
+			followInfoView(lastRect);
+		}, false, 0, true);
+	}
+	else
+	{
+		followInfoView(lastRect);
+	}
 }
 
 public function followInfoView(lastRect:Rectangle):void{

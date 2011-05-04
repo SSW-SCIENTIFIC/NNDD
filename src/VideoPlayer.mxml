@@ -149,6 +149,8 @@
 				canvas_video.setFocus();
 			}
 
+			
+			
 		]]>
 	</mx:Script>
 
