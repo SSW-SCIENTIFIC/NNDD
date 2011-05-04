@@ -6793,6 +6793,9 @@ protected function getMyListIds(event:Event):void{
 protected function myListRenewCompleteHandler(event:Event):void{
 	MyListManager.instance.removeEventListener(MyListManager.MYLIST_RENEW_COMPLETE, myListRenewCompleteHandler);
 	renewMyListUnPlayCount();
+	
+	tree_myList.invalidateList();
+	tree_myList.validateNow();
 }
 
 protected function logAreaRenewButtonClicked(event:Event):void{
