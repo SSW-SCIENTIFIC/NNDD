@@ -1,6 +1,6 @@
 package org.mineap.nndd.library
 {
-	import org.mineap.nndd.library.namedarray.LibraryManager;
+	import org.mineap.nndd.library.namedarray.NamedArrayLibraryManager;
 	import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
 
 	/**
@@ -67,7 +67,7 @@ package org.mineap.nndd.library
 		public function get libraryManager():ILibraryManager{
 			
 			if(LIBRARY_TYPE_NAMED_ARRAY == this._type){
-				return LibraryManager.instance;
+				return NamedArrayLibraryManager.instance;
 			}else{
 				return SQLiteLibraryManager.instance;
 			}

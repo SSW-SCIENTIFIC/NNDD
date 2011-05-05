@@ -26,7 +26,7 @@ package org.mineap.nndd.library.namedarray
 	 * @author shiraminekeisuke (MineAP)
 	 * 
 	 */
-	public class LibraryManager extends EventDispatcher implements ILibraryManager
+	public class NamedArrayLibraryManager extends EventDispatcher implements ILibraryManager
 	{
 		
 		/**
@@ -57,7 +57,7 @@ package org.mineap.nndd.library.namedarray
 		/**
 		 * LibraryManagerの唯一のインスタンス
 		 */
-		private static const _libraryManager:LibraryManager = new LibraryManager();
+		private static const _libraryManager:NamedArrayLibraryManager = new NamedArrayLibraryManager();
 		
 		/**
 		 * ライブラリファイルの名前です
@@ -98,7 +98,7 @@ package org.mineap.nndd.library.namedarray
 		 * 
 		 * 
 		 */
-		public function LibraryManager()
+		public function NamedArrayLibraryManager()
 		{
 			if(_libraryManager != null){
 				throw new ArgumentError("LibraryManagerはインスタンス化出来ません。");
@@ -115,7 +115,7 @@ package org.mineap.nndd.library.namedarray
 		 * @return 
 		 * 
 		 */
-		public static function get instance():LibraryManager{
+		public static function get instance():NamedArrayLibraryManager{
 			return _libraryManager;
 		}
 		
@@ -126,9 +126,9 @@ package org.mineap.nndd.library.namedarray
 		 */
 		public function get libraryFile():File{
 			if(_useAppDirLibFile){
-				return File.applicationStorageDirectory.resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+				return File.applicationStorageDirectory.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 			}else{
-				return this.systemFileDir.resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+				return this.systemFileDir.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 			}
 		}
 		

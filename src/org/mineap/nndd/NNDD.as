@@ -98,7 +98,7 @@ import org.mineap.nndd.library.ILibraryManager;
 import org.mineap.nndd.library.LibraryManagerBuilder;
 import org.mineap.nndd.library.LibraryTreeBuilder;
 import org.mineap.nndd.library.LocalVideoInfoLoader;
-import org.mineap.nndd.library.namedarray.LibraryManager;
+import org.mineap.nndd.library.namedarray.NamedArrayLibraryManager;
 import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
 import org.mineap.nndd.model.*;
 import org.mineap.nndd.model.tree.ITreeItem;
@@ -399,7 +399,7 @@ public function initNNDD(nndd:NNDD):void
 			
 			//古いライブラリファイル(SQL)をアプリケーションディレクトリにコピー
 			var oldLibFile:File = _libraryDir.resolvePath("system/").resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
-			var oldXMLLibFile:File = _libraryDir.resolvePath("system/").resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+			var oldXMLLibFile:File = _libraryDir.resolvePath("system/").resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 			
 			this.libraryManager.useAppDirLibFile = true;
 			var newLibFile:File = File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
@@ -409,7 +409,7 @@ public function initNNDD(nndd:NNDD):void
 			}
 			
 			//古いライブラリファイル(XML)をアプリケーションディレクトリにコピー
-			var newXMLFile:File = File.applicationStorageDirectory.resolvePath(LibraryManager.LIBRARY_FILE_NAME);
+			var newXMLFile:File = File.applicationStorageDirectory.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 			if(oldXMLLibFile.exists && !newXMLFile.exists){
 				oldXMLLibFile.copyTo(newXMLFile);
 			}
@@ -428,13 +428,13 @@ public function initNNDD(nndd:NNDD):void
 	this.libraryManager.addEventListener(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, libraryLoadCompleteEventHandler);
 	if(!isSuccess){
 		//システムディレクトリにライブラリが無い
-		var file:File = new File(libraryManager.libraryDir.url + "/" + LibraryManager.LIBRARY_FILE_NAME);
+		var file:File = new File(libraryManager.libraryDir.url + "/" + NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 		
 		//古いライブラリファイル(XML)はあるか？
 		if(file.exists){
 			//あるなら持ってくる
 			try{
-				file.copyTo(new File(libraryManager.systemFileDir + "/" + LibraryManager.LIBRARY_FILE_NAME));
+				file.copyTo(new File(libraryManager.systemFileDir + "/" + NamedArrayLibraryManager.LIBRARY_FILE_NAME));
 				isSuccess = this.libraryManager.loadLibrary();
 			}catch(error:Error){
 				error.getStackTrace();
@@ -1412,11 +1412,16 @@ private function invokeEventHandler(event:InvokeEvent):void{
 					url = "http://www.nicovideo.jp/watch/" + videoId;
 				}
 				
-				if(url.match(new RegExp("http://www.nicovideo.jp/watch/")) != null){
+				if(url.indexOf("http://www.nicovideo.jp/watch/") > -1){
 					//DLリストに追加
+					
 					var video:NNDDVideo = new NNDDVideo(url, "-");
-					addDownloadList(video, -1);
-				}else if(url.match(new RegExp("http://")) != null){
+					var timer:Timer = new Timer(1000, 1);
+					timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
+						addDownloadList(video, -1);
+					}, false, 0, true);
+					timer.start();
+				}else if(url.indexOf("http://") > -1){
 					var checker:ShortUrlChecker = new ShortUrlChecker();
 					if (checker.isShortUrl(url))
 					{
@@ -1427,17 +1432,23 @@ private function invokeEventHandler(event:InvokeEvent):void{
 							{
 								logManager.addLog("短縮URLを展開:" + checker.url);
 								
-								if(checker.url.match(new RegExp("http://www.nicovideo.jp/watch/")) != null){
+								if(checker.url.indexOf("http://www.nicovideo.jp/watch/") > -1){
 									//DLリストに追加
 									var video:NNDDVideo = new NNDDVideo(checker.url, "-");
-									addDownloadList(video, -1);
-								}else
+									var timer:Timer = new Timer(1000, 1);
+									timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:TimerEvent):void{
+										addDownloadList(video, -1);
+									}, false, 0, true);
+									timer.start();
+								}
+								else
 								{
 									//これはニコ動のURL or 動画IDじゃない
 									logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);
 									Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
 								}
-							} else
+							} 
+							else
 							{
 								logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":ShortUrlChecker.url is null.");
 								Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
@@ -1463,7 +1474,7 @@ private function invokeEventHandler(event:InvokeEvent):void{
 					this.playingVideoPath = decodeURIComponent(file.nativePath);
 					playMovie(decodeURIComponent(file.url), -1);
 				}
-			}else if(arg1.match(new RegExp("http://www.nicovideo.jp/watch/")) != null){
+			}else if(arg1.indexOf("http://www.nicovideo.jp/watch/") > -1){
 				// ニコ動
 				
 				if(MAILADDRESS == ""){
@@ -1473,7 +1484,7 @@ private function invokeEventHandler(event:InvokeEvent):void{
 					this.playingVideoPath = arg1;
 					this.videoStreamingPlayStart(arg1);
 				}
-			}else if(arg1.match(new RegExp("http://")) != null){
+			}else if(arg1.indexOf("http://") > -1){
 				var checker:ShortUrlChecker = new ShortUrlChecker();
 				if (checker.isShortUrl(arg1))
 				{
@@ -2437,8 +2448,15 @@ private function tabChanged():void{
 			break;
 		case DOWNLOAD_LIST_TAB_NUM:
 			
-			label_nextDownloadTime.text = scheduleManager.scheduleString;
+			if (scheduleManager != null)
+			{
+				label_nextDownloadTime.text = scheduleManager.scheduleString;
+			}
 			dataGrid_downloadList.setFocus();
+			
+			(dataGrid_downloadList.dataProvider as ArrayCollection).refresh();
+			dataGrid_downloadList.invalidateList();
+			dataGrid_downloadList.validateNow();
 			
 			if(downloadManager.listLength > 100){
 				Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{

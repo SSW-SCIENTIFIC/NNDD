@@ -9,11 +9,8 @@ package org.mineap.nndd.library.sqlite
 	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
-	import mx.core.Application;
 	import mx.core.FlexGlobals;
-	import mx.events.AIREvent;
 	import mx.events.CloseEvent;
-	import mx.events.FlexEvent;
 	import mx.managers.PopUpManager;
 	
 	import org.mineap.nndd.LogManager;
@@ -22,9 +19,8 @@ package org.mineap.nndd.library.sqlite
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryDirSearchUtil;
 	import org.mineap.nndd.library.LocalVideoInfoLoader;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
+	import org.mineap.nndd.library.namedarray.NamedArrayLibraryManager;
 	import org.mineap.nndd.library.sqlite.dao.NNDDVideoDao;
-	import org.mineap.nndd.library.sqlite.dao.NNDDVideoTagStringDao;
 	import org.mineap.nndd.library.sqlite.dao.TagStringDao;
 	import org.mineap.nndd.library.sqlite.dao.VersionDao;
 	import org.mineap.nndd.library.sqlite.util.DbMigrationUtil;
@@ -32,9 +28,6 @@ package org.mineap.nndd.library.sqlite
 	import org.mineap.nndd.model.TagString;
 	import org.mineap.nndd.tag.TagManager;
 	import org.mineap.nndd.util.LibraryUtil;
-	import org.mineap.nndd.versionCheck.VersionUtil;
-	
-	import spark.components.Application;
 	
 	/**
 	 * SQLite版ライブラリとのコネクションを管理するクラスです。
@@ -321,7 +314,7 @@ package org.mineap.nndd.library.sqlite
 				_dbAccessHelper.dropTables();
 				_dbAccessHelper.createTables();
 				
-				var libraryManager:LibraryManager = LibraryManager.instance;
+				var libraryManager:NamedArrayLibraryManager = NamedArrayLibraryManager.instance;
 				libraryManager.changeLibraryDir(this.libraryDir, false);
 				_logger.addLog("読み込み先XML:" + libraryManager.libraryFile.nativePath);
 				if(!libraryManager.loadLibrary()){

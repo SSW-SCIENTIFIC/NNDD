@@ -184,8 +184,10 @@
 					slider_thumbImageSizeForHistory.value = this.thumbImgSizeHistory;
 					dataGrid_history.rowHeight = 30*slider_thumbImageSizeForHistory.value;
 					dataGridColumn_thumbImage_history.width = 35*slider_thumbImageSizeForHistory.value
-					this.validateNow();
+					
 				}
+				
+				this.validateNow();
 				
 			}
 
@@ -211,9 +213,9 @@
 				if(this.thumbImgSizeForDLList != -1){
 					slider_thumbImageSizeForDLList.value = this.thumbImgSizeForDLList;
 					dataGrid_downloadList.rowHeight = 50*slider_thumbImageSizeForDLList.value;
-					this.validateNow();
+					
 				}
-				
+				this.validateNow();
 			}
 
 
@@ -1334,9 +1336,9 @@
 						 nativeDragDrop="dlListDroped(event)">
 						 <!-- dropEnabled="true" dragEnabled="true" horizontalScrollPolicy="on"> -->
 				<mx:columns>
-					<mx:DataGridColumn headerText="動画名" dataField="col_videoName" width="200"/>
-					<mx:DataGridColumn headerText="動画URL" dataField="col_videoUrl" width="100"/>
-					<mx:DataGridColumn headerText="進捗" dataField="col_status" width="50"/>
+					<mx:DataGridColumn width="200" dataField="col_videoName" headerText="動画名"/>
+					<mx:DataGridColumn width="100" dataField="col_videoUrl" headerText="動画URL"/>
+					<mx:DataGridColumn width="50" dataField="col_status" headerText="進捗"/>
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:Button id="button_downloadStart" left="10" top="0" width="65" label="DL開始"

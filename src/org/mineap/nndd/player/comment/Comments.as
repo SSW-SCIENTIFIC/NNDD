@@ -9,7 +9,8 @@ package org.mineap.nndd.player.comment
 	import org.mineap.nicovideo4as.model.NgUp;
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.LogManager;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
+	import org.mineap.nndd.library.ILibraryManager;
+	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDComment;
 	import org.mineap.nndd.player.NGListManager;
 	
@@ -516,7 +517,7 @@ package org.mineap.nndd.player.comment
 		 * 
 		 */
 		public function get commentFile():File{
-			var file:File = LibraryManager.instance.tempDir;
+			var file:File = LibraryManagerBuilder.instance.libraryManager.tempDir;
 			file.url = file.url + "nndd.xml";
 			try{
 				file = new File(this._commentPath);
@@ -533,7 +534,7 @@ package org.mineap.nndd.player.comment
 		 */
 		public function get ownerCommentFile():File{
 			
-			var file:File = LibraryManager.instance.tempDir;
+			var file:File = LibraryManagerBuilder.instance.libraryManager.tempDir;
 			file.url = file.url + "nndd[Owner].xml";
 			try{
 				file = new File(this._ownerCommentPath);

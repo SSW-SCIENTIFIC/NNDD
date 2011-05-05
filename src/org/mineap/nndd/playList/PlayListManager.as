@@ -19,7 +19,6 @@ package org.mineap.nndd.playList
 	import org.mineap.nndd.Message;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.model.PlayList;
 	import org.mineap.nndd.util.DateUtil;

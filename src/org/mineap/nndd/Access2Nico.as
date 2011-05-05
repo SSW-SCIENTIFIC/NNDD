@@ -28,7 +28,6 @@ package org.mineap.nndd
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.library.LocalVideoInfoLoader;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.player.PlayerController;
 	import org.mineap.nndd.util.NicoPattern;

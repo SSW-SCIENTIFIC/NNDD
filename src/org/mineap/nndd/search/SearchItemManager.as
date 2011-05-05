@@ -7,7 +7,6 @@ package org.mineap.nndd.search
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.library.ILibraryManager;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.SearchItem;
 	import org.mineap.nndd.model.SearchSortString;
