@@ -497,16 +497,16 @@
 						<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
 						<mx:Label text="0.5倍" left="143" top="173"/>
 						<mx:Label right="10" top="173" text="1.5倍"/>
-						<mx:Label text="コメントのFPS：" left="10" top="199" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
-						<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります"/>
+						<mx:Label text="コメントのFPS：" left="10" top="199" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
+						<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
 						<mx:Label text="7.5fps" left="143" top="225"/>
 						<mx:Label right="10" top="225" text="120fps"/>
 						<mx:Label x="10" y="249" text="コメント表示時間："/>
 						<mx:HSlider y="249" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
 						<mx:Label text="1秒" left="143" top="275"/>
 						<mx:Label text="5秒" top="275" right="10"/>
-						<mx:Label x="10" y="301" text="コメントの不透明度：" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
-						<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください"/>
+						<mx:Label x="10" y="301" text="コメントの不透明度：" toolTip="コメントを消す場合はPlayer右下の[Comment]ボタンで表示/非表示を切り替えてください。"/>
+						<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください。"/>
 						<mx:Label text="1%" left="143" top="327"/>
 						<mx:Label text="100%" top="327" right="10"/>
 						
@@ -516,22 +516,26 @@
 						<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" change="checkBoxPlayerAlwaysFrontChanged(event)" minHeight="20" left="10" top="10"/>
 						<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="38"/>
 						<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" change="checkboxPlayerFollowChanged(event)" left="10" top="66"/>
+						<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" change="checkboxFollowInfoViewHeight(event)" left="10" top="93"
+									 toolTip="InfoViewの大きさをPlayerの大きさに合わせて変更します。"/>
 						
-						<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="173" id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
-						<mx:CheckBox label="動画以外をすべて更新する" left="35" top="195" id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
-						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" left="35" top="215" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
-						
-						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="92" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
-						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="118" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
-						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="144" height="22"
+						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="133" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
+						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="159" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
+						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="185" height="22"
 									 label="Player下のコントローラを表示しない"
 									 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
 									 rollOut="videoPlayer.videoController.rollOut(event)"
 									 rollOver="videoPlayer.videoController.rollOver(event)"
 									 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
 						
-						<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="241" id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
-						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="35" top="262" id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
+						<mx:CheckBox label="コメントを再生のたびに更新する" left="11" top="225" id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
+						<mx:CheckBox label="動画以外をすべて更新する" left="36" top="247" id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
+						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" left="36" top="267" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
+						
+						<mx:CheckBox label="ジャンプ命令を有効にする" left="11" top="293" id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
+						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="314" id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
+						<mx:HRule left="10" right="10" top="120" height="5"/>
+						<mx:HRule left="10" right="10" top="212" height="5"/>
 						
 						
 					</mx:Canvas>

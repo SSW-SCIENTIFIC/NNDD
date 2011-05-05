@@ -237,8 +237,14 @@ private function mouseMove(event:MouseEvent):void{
 private function windowResized(event:NativeWindowBoundsEvent):void{
 	lastRect = event.afterBounds;
 	followInfoView(lastRect);
+	resizeInfoView();
 }
 
+/**
+ * ウィンドウの移動の際に呼ばれるイベントハンドラ。
+ * @param event
+ * 
+ */
 private function windowMove(event:NativeWindowBoundsEvent):void{
 	lastRect = event.afterBounds;
 	
@@ -259,6 +265,22 @@ private function windowMove(event:NativeWindowBoundsEvent):void{
 	{
 		followInfoView(lastRect);
 	}
+}
+
+public function resizeInfoView():void
+{
+	if(this.videoInfoView != null
+		&& this.videoInfoView.nativeWindow != null
+		&& this.videoInfoView.visible 
+		&& this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
+		&& this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED 	// videoPlayerが最小化されていない
+		&& this.videoInfoView.isFollowInfoViewHeight 										// 追従が有効になっている
+		&& this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){	// videoPlayerがフルスクリーンではない
+		
+		this.videoInfoView.nativeWindow.height = this.height;
+		
+	}
+			
 }
 
 public function followInfoView(lastRect:Rectangle):void{

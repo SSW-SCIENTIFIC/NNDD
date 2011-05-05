@@ -27,6 +27,7 @@ import mx.controls.RadioButton;
 import mx.core.Application;
 import mx.core.DragSource;
 import mx.core.FlexGlobals;
+import mx.core.Window;
 import mx.events.AIREvent;
 import mx.events.CloseEvent;
 import mx.events.DataGridEvent;
@@ -86,6 +87,7 @@ public var relationOrderIndex:int = 0;
 public var isNgUpEnable:Boolean = true;
 public var isSmoothing:Boolean = true;
 public var playerQuality:int = 2;
+public var isFollowInfoViewHeight:Boolean = false;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -280,6 +282,15 @@ private function checkboxPlayerFollowChanged(event:Event):void{
 	this.isPlayerFollow = this.checkbox_playerFollow.selected;
 	if((event.currentTarget as CheckBox).selected){
 		this.videoPlayer.followInfoView(this.videoPlayer.lastRect);
+	}
+}
+
+private function checkboxFollowInfoViewHeight(event:Event):void
+{
+	this.isFollowInfoViewHeight = this.checkbox_followInfoViewHeight.selected;
+	if ((event.currentTarget as CheckBox).selected)
+	{
+		this.videoPlayer.resizeInfoView();
 	}
 }
 
@@ -1097,6 +1108,12 @@ private function readStore():void{
 			isEnableWideMode = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("isFollowInfoViewHeight");
+		if (confValue != null)
+		{
+			isFollowInfoViewHeight = ConfUtil.parseBoolean(confValue);
+		}
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -1223,6 +1240,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isEnableWideMode");
 		ConfigManager.getInstance().setItem("isEnableWideMode", isEnableWideMode);
+		
+		ConfigManager.getInstance().removeItem("isFollowInfoViewHeight");
+		ConfigManager.getInstance().setItem("isFollowInfoViewHeight", isFollowInfoViewHeight);
 		
 		ConfigManager.getInstance().save();
 		
