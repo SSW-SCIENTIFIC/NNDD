@@ -12,8 +12,8 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
 	import org.mineap.nndd.NNDDMyListLoader;
+	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.MyListSortType;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.MyListUtil;
@@ -43,7 +43,7 @@ package org.mineap.nndd.myList
 		/**
 		 * 
 		 */
-		private var _libraryManager:LibraryManager;
+		private var _libraryManager:ILibraryManager;
 		
 		/**
 		 * 
@@ -103,7 +103,7 @@ package org.mineap.nndd.myList
 		public function initialize(tree_myList:Array):void{
 			this._tree_MyList = tree_myList;
 			
-			this._libraryManager = LibraryManager.instance;
+			this._libraryManager = LibraryManagerBuilder.instance.libraryManager;
 			this._logManager = LogManager.instance;
 			
 		}
@@ -285,7 +285,7 @@ package org.mineap.nndd.myList
 			var deletedObject:Object = deleteMyListItemFromTree(myListName, this._tree_MyList);
 			if(deletedObject != null){
 				if(isSave){
-					this.saveMyListSummary(LibraryManager.instance.systemFileDir);
+					this.saveMyListSummary(this._libraryManager.systemFileDir);
 				}
 				delete this._myListMap[myListName];
 				return deletedObject;
@@ -442,7 +442,7 @@ package org.mineap.nndd.myList
 		public function readMyListSummary(dir:File = null):Boolean{
 			
 			if(dir == null){
-				dir = LibraryManager.instance.systemFileDir;
+				dir = this._libraryManager.systemFileDir;
 			}
 			
 			var saveFile:File = new File(dir.url + "/myLists.xml");
@@ -707,7 +707,7 @@ package org.mineap.nndd.myList
 			
 			try{
 			
-				var file:File = LibraryManager.instance.systemFileDir;
+				var file:File = this._libraryManager.systemFileDir;
 				
 				var vector:Vector.<String> = null;
 				
@@ -752,7 +752,7 @@ package org.mineap.nndd.myList
 			
 			try{
 				
-				var file:File = LibraryManager.instance.systemFileDir;
+				var file:File = this._libraryManager.systemFileDir;
 				
 				file = new File(file.url + "/myList/" + myListId + ".xml");
 				
@@ -994,8 +994,8 @@ package org.mineap.nndd.myList
 						if(items == null || (items != null && items.length() == 0) ){
 							
 							var videoId:String = PathMaker.getVideoID(tempXML.link);
-							if(LibraryManager.instance.isExistByVideoId(videoId) == null){
-								videoIds.splice(-1, 0, videoId);
+							if(this._libraryManager.isExistByVideoId(videoId) == null){
+								videoIds.push(videoId);
 							}
 						}
 					}catch(error:Error){

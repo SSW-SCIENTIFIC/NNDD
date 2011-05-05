@@ -6,7 +6,6 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
-	import org.mineap.nndd.library.namedarray.LibraryManager;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.NicoPattern;
 	import org.mineap.nndd.util.PathMaker;
