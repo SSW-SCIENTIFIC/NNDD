@@ -778,6 +778,8 @@ private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
 	checkBox_isAppendComment.selected = isAppendComment;
 	checkBox_isAppendComment.enabled = isRenewCommentEachPlay;
 	
+	checkbox_followInfoViewHeight.selected = isFollowInfoViewHeight;
+	
 	
 	checkBox_showAlwaysNicowariArea.selected = isShowAlwaysNicowariArea;
 	checkbox_hideTagArea.selected = isHideTagArea;
