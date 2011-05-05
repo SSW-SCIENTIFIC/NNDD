@@ -345,7 +345,8 @@ package org.mineap.nndd.library.sqlite
 				trace(error.getStackTrace());
 				_logger.addLog("ライブラリの変換に失敗:" + error);
 				Alert.show("ライブラリの変換に失敗しました。\n" +
-					"手動でライブラリを更新してください。\n\n" + error, Message.M_ERROR);
+					"手動でライブラリを更新してください。\n" +
+					"(設定>全般>ライブラリを更新)\n\n" + error, Message.M_ERROR);
 			}
 			
 		}
