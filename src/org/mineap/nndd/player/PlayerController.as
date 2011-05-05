@@ -244,7 +244,6 @@ package org.mineap.nndd.player
 			this.videoPlayer.init(this, videoInfoView, logManager);
 			this.videoInfoView.init(this, videoPlayer, logManager);
 			this.videoPlayer.addEventListener(AIREvent.WINDOW_COMPLETE, function():void{
-//				dispatchEvent(new Event(Event.ACTIVATE));
 				videoInfoView.activate();
 				videoPlayer.activate();
 			});
@@ -1371,6 +1370,26 @@ package org.mineap.nndd.player
 						//ネイティブなウィンドウの大きさと、ウィンドウ内部の利用可能な領域の大きさの差
 //						var diffH:int = this.videoPlayer.nativeWindow.height - this.videoPlayer.stage.stageHeight;
 //						var diffW:int = this.videoPlayer.nativeWindow.width - this.videoPlayer.stage.stageWidth;
+						
+					}
+					else
+					{
+						// ウィンドウの大きさ調整が無効
+						if(this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoObject != null){
+							//FLV再生か？
+							
+							// スムージングを設定
+							this.videoDisplay.videoObject.smoothing = videoInfoView.isSmoothing;
+							
+							if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
+								//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
+								videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
+							}
+							if(videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)){
+								videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
+							}
+							
+						}
 						
 					}
 					
