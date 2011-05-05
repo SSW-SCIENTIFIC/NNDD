@@ -10,7 +10,6 @@
 			import mx.events.ListEvent;
 			import org.mineap.nndd.myList.MyListBuilder;
 			import org.mineap.nndd.Message;
-			import org.mineap.nndd.library.namedarray.LibraryManager;
 			import mx.events.IndexChangedEvent;
 			import mx.managers.PopUpManager;
 			import org.mineap.nndd.LogManager;

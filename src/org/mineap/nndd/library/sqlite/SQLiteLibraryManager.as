@@ -315,6 +315,7 @@ package org.mineap.nndd.library.sqlite
 				_dbAccessHelper.createTables();
 				
 				var libraryManager:NamedArrayLibraryManager = NamedArrayLibraryManager.instance;
+				libraryManager.useAppDirLibFile = this._useAppDirLibFile;
 				libraryManager.changeLibraryDir(this.libraryDir, false);
 				_logger.addLog("読み込み先XML:" + libraryManager.libraryFile.nativePath);
 				if(!libraryManager.loadLibrary()){

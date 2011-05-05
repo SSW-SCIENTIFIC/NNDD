@@ -428,16 +428,16 @@ public function initNNDD(nndd:NNDD):void
 	this.libraryManager.addEventListener(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, libraryLoadCompleteEventHandler);
 	if(!isSuccess){
 		//システムディレクトリにライブラリが無い
-		var file:File = new File(libraryManager.libraryDir.url + "/" + NamedArrayLibraryManager.LIBRARY_FILE_NAME);
+		var file:File = libraryManager.libraryDir.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 		
 		//古いライブラリファイル(XML)はあるか？
 		if(file.exists){
 			//あるなら持ってくる
 			try{
-				file.copyTo(new File(libraryManager.systemFileDir + "/" + NamedArrayLibraryManager.LIBRARY_FILE_NAME));
+				file.copyTo(libraryManager.systemFileDir.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME));
 				isSuccess = this.libraryManager.loadLibrary();
 			}catch(error:Error){
-				error.getStackTrace();
+				trace(error.getStackTrace());
 			}
 		}
 		
