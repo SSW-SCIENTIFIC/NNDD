@@ -31,6 +31,7 @@ package org.mineap.nndd.player
 	import mx.events.FlexEvent;
 	import mx.events.VideoEvent;
 	import mx.formatters.DateFormatter;
+	import mx.formatters.NumberFormatter;
 	
 	import org.libspark.utils.ForcibleLoader;
 	import org.mineap.nicovideo4as.MyListLoader;
@@ -176,8 +177,6 @@ package org.mineap.nndd.player
 		
 		private var isSwfConverting:Boolean = false;
 		
-		private var streamingProgressCount:int = 0;
-		
 		private var streamingProgressTimer:Timer = null;
 		
 		private var _videoID:String = null;
@@ -203,6 +202,8 @@ package org.mineap.nndd.player
 		private var nicoVideoAccessRetryTimer:Timer;
 		
 		private var nicoRelationInfoLoader:ApiGetRelation = null;
+		
+		private var lastLoadedBytes:Number = 0;
 		
 		[Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play:Class;
@@ -341,7 +342,6 @@ package org.mineap.nndd.player
 				streamingProgressTimer.stop();
 				streamingProgressTimer = null;
 			}
-			streamingProgressCount = 0;
 			
 			playingJihou = null;
 			
@@ -357,6 +357,8 @@ package org.mineap.nndd.player
 			
 			this.lastFrame = 0;
 			this.lastNicowariFrame = 0;
+			
+			this.lastLoadedBytes = 0;
 			
 			if(videoInfoView != null){
 				videoInfoView.pubUserLinkButtonText = "(未取得)";
@@ -435,11 +437,10 @@ package org.mineap.nndd.player
 					streamingProgressTimer.stop();
 					streamingProgressTimer = null;
 				}
-				streamingProgressCount = 0;
 				
-				this.videoPlayer.label_playSourceStatus.text = "Streaming:0%   ";
+				this.videoPlayer.label_playSourceStatus.text = "Streaming:0%";
 				videoInfoView.connectionType = "Streaming";
-				streamingProgressTimer = new Timer(200);
+				streamingProgressTimer = new Timer(500);
 				streamingProgressTimer.addEventListener(TimerEvent.TIMER, streamingProgressHandler);
 				streamingProgressTimer.start();
 				
@@ -1739,6 +1740,47 @@ package org.mineap.nndd.player
 			return value;
 		}
 		
+		
+		/**
+		 * ストリーミングのダウンロード速度をMB/sで返します。
+		 * @return 
+		 * 
+		 */
+		public function getStreamingSpeed():Number 
+		{
+			
+			// timerから1000msごとに呼ばれる
+			
+			var value:Number = 0;
+			if (isStreamingPlay)
+			{
+				if(videoDisplay != null){
+					value = videoDisplay.bytesLoaded - this.lastLoadedBytes;
+					this.lastLoadedBytes = videoDisplay.bytesLoaded;
+				}else if(loader != null && loader.contentLoaderInfo != null){
+					value = loader.contentLoaderInfo.bytesLoaded - this.lastLoadedBytes;
+					this.lastLoadedBytes = loader.contentLoaderInfo.bytesLoaded;
+				}else{
+					return value;
+				}
+				
+				trace(value);
+				
+				//MBに直す
+				value = value / 1000000;
+				
+				// MB/sに直す
+				value = value / 1;
+			}
+			else
+			{
+				// 何もしない
+			}
+			
+			return value;
+			
+		}
+		
 		/**
 		 * 
 		 * @return 
@@ -1765,9 +1807,9 @@ package org.mineap.nndd.player
 		private function streamingProgressHandler(event:TimerEvent):void{
 			if(isStreamingPlay){
 				var value:int = getStreamingProgress();
+				var speed:Number = getStreamingSpeed();
 				if(value >= 100){
 					this.videoPlayer.label_playSourceStatus.text = "Streaming:100%";
-					streamingProgressCount = 0;
 					videoPlayer.videoController.resetStatusAlpha();
 					if(streamingProgressTimer != null){
 						streamingProgressTimer.stop();
@@ -1805,21 +1847,11 @@ package org.mineap.nndd.player
 					
 				}else{
 					
-					var str:String = "   ";
-					if(streamingProgressCount <= 10){
-						str = ".  ";
-					}else if(streamingProgressCount > 10 && streamingProgressCount <= 20){
-						str = ".. ";
-					}else if(streamingProgressCount > 20 && streamingProgressCount <= 30){
-						str = "...";
-					}
+					var formatter:NumberFormatter = new NumberFormatter();
+					formatter.precision = 2;
+					var str:String = formatter.format(speed) + "MB/s"
 					
-					this.videoPlayer.label_playSourceStatus.text = "Streaming:" + value + "%" + str;
-					if(streamingProgressCount >= 30){
-						streamingProgressCount = 0;
-					}else{
-						streamingProgressCount = streamingProgressCount + 2;
-					}
+					this.videoPlayer.label_playSourceStatus.text = "Streaming:" + value + "% (" + str + ")";
 				}
 			}else{
 				if(streamingProgressTimer != null){

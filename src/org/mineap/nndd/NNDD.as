@@ -2456,7 +2456,7 @@ private function tabChanged():void{
 			
 			(dataGrid_downloadList.dataProvider as ArrayCollection).refresh();
 			dataGrid_downloadList.invalidateList();
-			dataGrid_downloadList.validateNow();
+//			dataGrid_downloadList.validateNow();
 			
 			if(downloadManager.listLength > 100){
 				Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{

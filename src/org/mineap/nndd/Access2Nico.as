@@ -2532,6 +2532,9 @@ package org.mineap.nndd
 				var thumbInfoXML:XML = new XML(event.currentTarget.data);
 //				trace(thumbInfoXML);
 				var status:String = Message.L_VIDEO_DELETED;
+				if(rankingListProvider.length <= index){
+					return;
+				}
 				var videoName:String = rankingListProvider.getItemAt(index).dataGridColumn_videoName;
 				var videoNameFooter:String = "";
 				

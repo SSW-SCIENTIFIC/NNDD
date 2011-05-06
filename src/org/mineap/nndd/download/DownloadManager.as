@@ -77,6 +77,8 @@ package org.mineap.nndd.download
 		
 		private var lastStatusUpdateTime:Date = new Date();
 		
+		private var loadedBytes:Number = 0.0;
+		
 		/**
 		 * 
 		 * @param downloadProvider
@@ -289,6 +291,9 @@ package org.mineap.nndd.download
 			if(mailaddress != "" && password != ""){
 				
 				var index:int = searchQueueIndexByQueueId(id);
+				
+				this.loadedBytes = 0;
+				this.lastStatusUpdateTime = new Date();
 				
 				this.queueVideoName = downloadProvider[index].col_videoName;
 				
@@ -656,18 +661,35 @@ package org.mineap.nndd.download
 		 */
 		public function downloadProgressHandler(event:ProgressEvent):void{
 			var date:Date = new Date();
-			if(date.time - lastStatusUpdateTime.time > 100){
+			var diff:Number = date.time - lastStatusUpdateTime.time;
+			var lastByteLoaded:Number = this.loadedBytes;
+			if(diff > 100){
 				if(event.type == NNDDDownloader.VIDEO_DOWNLOAD_PROGRESS){
 					
 					this.lastStatusUpdateTime = date;
+					this.loadedBytes = event.bytesLoaded;
 					
 					var loadedValue:Number = new Number(event.bytesLoaded/1000000);
 					var totalValue:Number = new Number(event.bytesTotal/1000000);
 					var formatter:NumberFormatter = new NumberFormatter();
 					formatter.precision = 1;
 					
+					var formatter2:NumberFormatter = new NumberFormatter();
+					formatter2.precision = 2;
+					
+					// 秒に直す
+					var sec:Number = diff / 1000;
+					// 今回DLしたバイト数
+					var loadBytes:Number = event.bytesLoaded - lastByteLoaded;
+					
+					var value:Number = loadBytes / sec;
+					
+					// MB/秒に変換
+					value = value / 1000000;
+					trace(value);
+					
 					var index:int = searchQueueIndexByQueueId(queueId);
-					setStatus("動画をDL中\n" + new int((event.bytesLoaded/event.bytesTotal)*100) + "%\n" + 
+					setStatus("動画をDL中\n" + new int((event.bytesLoaded/event.bytesTotal)*100) + "% (" + formatter2.format(value) + " MB/s)\n" + 
 							formatter.format(loadedValue)+"MB/"+formatter.format(totalValue)+"MB", DownloadStatusType.DOWNLOADEING, queueVideoName, index);
 				}
 			}
