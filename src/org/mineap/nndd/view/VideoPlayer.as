@@ -172,34 +172,16 @@ private var inhibitActivate:Boolean = false;
 public function showVideoInfoView():void{
 	if(videoInfoView != null){
 		
-		var os:String = Capabilities.os.toLocaleUpperCase();
-		if(os.indexOf("MAC") != -1 || os.indexOf("WINDOWS") != -1){
-			// MacとWindowsのとき
-			
-			(videoInfoView as Window).visible = true;
-			
-			var oldAlwaysInFront:Boolean = (videoInfoView as Window).alwaysInFront;
-			
-			(videoInfoView as Window).alwaysInFront = true;
-
-			(videoInfoView as Window).alwaysInFront = oldAlwaysInFront;
-			
-		}else{
-			// Linuxのとき
-			// UbuntuだとalwaysInFront=trueにしただけではウィンドウの絶対位置が手前に来ない
-			
-			if(inhibitActivate == false){
-				
-				inhibitActivate = true;
-				
-				// なのでactivateを実行する。その後Playerに対してactivate。
-				(videoInfoView as Window).activate();
-				
-				this.activate();
-				
-			}else{
-				inhibitActivate = false;
-			}
+		trace("ShowVideoInfoView");
+		
+		if (videoInfoView.nativeWindow != null)
+		{
+			videoInfoView.nativeWindow.orderToFront();
+		}
+		
+		if (this.nativeWindow != null)
+		{
+			this.nativeWindow.orderToFront();
 		}
 		
 		if(videoInfoView.isPlayerFollow){
@@ -238,6 +220,11 @@ private function windowResized(event:NativeWindowBoundsEvent):void{
 	lastRect = event.afterBounds;
 	followInfoView(lastRect);
 	resizeInfoView();
+	
+	if (playerController != null)
+	{
+		(playerController as PlayerController).setVideoSmoothing(videoInfoView.isSmoothing);
+	}
 }
 
 /**
@@ -259,11 +246,13 @@ private function windowMove(event:NativeWindowBoundsEvent):void{
 					this.nativeWindow.height);
 			lastRect = rect;
 			followInfoView(lastRect);
+			resizeInfoView();
 		}, false, 0, true);
 	}
 	else
 	{
 		followInfoView(lastRect);
+		resizeInfoView();
 	}
 }
 
@@ -278,6 +267,7 @@ public function resizeInfoView():void
 		&& this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){	// videoPlayerがフルスクリーンではない
 		
 		this.videoInfoView.nativeWindow.height = this.height;
+		this.videoInfoView.validateNow();
 		
 	}
 			
