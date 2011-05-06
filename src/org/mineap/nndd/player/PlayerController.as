@@ -71,6 +71,7 @@ package org.mineap.nndd.player
 	import org.osmf.events.LoadEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.TimeEvent;
+	import org.osmf.layout.ScaleMode;
 	import org.osmf.media.MediaPlayerState;
 	
 	import spark.components.VideoDisplay;
@@ -160,8 +161,10 @@ package org.mineap.nndd.player
 		public static const NICO_SWF_WIDTH:int = 512;
 		
 		public static const NICO_VIDEO_WINDOW_HEIGHT:int = 384;
-		public static const NICO_VIDEO_WINDOW_WIDTH:int = 544;
-		public static const NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE:int = 683;
+		public static const NICO_VIDEO_WINDOW_WIDTH:int = 512;
+		public static const NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE:int = 640;
+		
+		public static const NICO_VIDEO_PADDING:int = 10;
 		
 		public static const WIDE_MODE_ASPECT_RATIO:Number = 1.7;
 		
@@ -401,7 +404,7 @@ package org.mineap.nndd.player
 			
 			if(videoInfoView != null){
 				videoInfoView.resetInfo();
-				videoInfoView.restore();
+//				videoInfoView.restore();
 			}
 			
 			videoPlayer.setControllerEnable(false);
@@ -581,7 +584,7 @@ package org.mineap.nndd.player
 				
 				videoPlayer.label_downloadStatus.text = "";
 				videoInfoView.image_thumbImg.source = "";
-				videoPlayer.videoInfoView.text_info.htmlText ="(タイトルを取得中)<br />(投稿日時を取得中)<br />再生: コメント: マイリスト:"
+				videoInfoView.text_info.htmlText ="(タイトルを取得中)<br />(投稿日時を取得中)<br />再生: コメント: マイリスト:"
 				
 				if(isStreamingPlay){
 					//最新の情報はDL済みなのでそれを使う
@@ -683,16 +686,16 @@ package org.mineap.nndd.player
 					videoPlayer.videoController_under.button_play.setStyle("icon", icon_Pause);
 					setVolume(videoPlayer.videoController.slider_volume.value);
 					
-					if(videoInfoView.visible){
-						videoInfoView.restore();
-					}
+//					if(videoInfoView.visible){
+//						videoInfoView.restore();
+//					}
 					if(videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
 						videoPlayer.restore();
 					}
 					
-					if(videoInfoView.visible){
-						videoInfoView.activate();
-					}
+//					if(videoInfoView.visible){
+//						videoInfoView.activate();
+//					}
 					videoPlayer.activate();
 					
 					windowResized(false);
@@ -753,17 +756,17 @@ package org.mineap.nndd.player
 					videoPlayer.videoController_under.button_play.setStyle("icon", icon_Pause);
 					videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
 					
-					if(videoInfoView.visible){
-						videoInfoView.restore();
-					}
+//					if(videoInfoView.visible){
+//						videoInfoView.restore();
+//					}
 					
 					if(videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
 						videoPlayer.restore();
 					}
 					
-					if(videoInfoView.visible){
-						videoInfoView.activate();
-					}
+//					if(videoInfoView.visible){
+//						videoInfoView.activate();
+//					}
 					videoPlayer.activate();
 					
 					videoPlayer.setControllerEnable(true);
@@ -1208,8 +1211,40 @@ package org.mineap.nndd.player
 		 */
 		public function setVideoSmoothing(isSmoothing:Boolean):void{
 			
-			if(videoDisplay != null && videoDisplay.videoObject != null){
-				videoDisplay.videoObject.smoothing = isSmoothing;
+			if (videoDisplay != null && videoDisplay.videoObject != null)
+			{
+				
+				if (isSmoothing)
+				{
+					// スムージングする
+					
+					if (videoDisplay.videoObject.videoWidth == videoDisplay.videoObject.width)
+					{
+						// 動画がピクセル等倍で表示されている
+						if (videoInfoView.isSmoothingOnlyNotPixelIdenticalDimensions)
+						{
+							// ピクセル等倍のときはスムージングしない
+							videoDisplay.videoObject.smoothing = false;
+						}
+						else
+						{
+							// ピクセル等倍のときもスムージングする	
+							videoDisplay.videoObject.smoothing = true;
+						}
+					}
+					else
+					{
+						// 動画がピクセル等倍以外で表示されている
+						videoDisplay.videoObject.smoothing = true;
+					}
+					
+				}
+				else
+				{
+					// スムージングしない
+					videoDisplay.videoObject.smoothing = false;
+				}
+				
 			}
 			
 		}
@@ -1280,8 +1315,7 @@ package org.mineap.nndd.player
 							//FLV再生か？
 							
 							// スムージングを設定
-							
-							this.videoDisplay.videoObject.smoothing = videoInfoView.isSmoothing;
+							this.setVideoSmoothing(videoInfoView.isSmoothing);
 							
 							if(this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoObject.videoHeight > 0){
 								
@@ -1296,19 +1330,17 @@ package org.mineap.nndd.player
 								videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
 								if(this.videoInfoView.isEnableWideMode && isWideVideo){
 //									logManager.addLog("ワイド(16:9)モード");
-									videoWindowWidth = PlayerController.NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE * ratio;
-									//動画そのものはセンターに表示
-									this.videoDisplay.setConstraintValue("left", (PlayerController.NICO_VIDEO_WINDOW_WIDTH - PlayerController.NICO_SWF_WIDTH)/2);
-									this.videoDisplay.setConstraintValue("right", (PlayerController.NICO_VIDEO_WINDOW_WIDTH - PlayerController.NICO_SWF_WIDTH)/2);
-									
+									videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
 								}else{
 //									logManager.addLog("ノーマル(4:3)モード");
-									videoWindowWidth = PlayerController.NICO_VIDEO_WINDOW_WIDTH * ratio;
-									//動画そのものはセンターに表示
-									this.videoDisplay.setConstraintValue("left", (PlayerController.NICO_VIDEO_WINDOW_WIDTH - PlayerController.NICO_SWF_WIDTH)/2);
-									this.videoDisplay.setConstraintValue("right", (PlayerController.NICO_VIDEO_WINDOW_WIDTH - PlayerController.NICO_SWF_WIDTH)/2);
-									
+									videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
 								}
+								
+								//動画そのものはセンターに表示
+								this.videoDisplay.setConstraintValue("left", PlayerController.NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("right", PlayerController.NICO_VIDEO_PADDING);
+								
+								trace(videoDisplay.width + "," + videoDisplay.height);
 								
 								if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
 									//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
@@ -1379,7 +1411,7 @@ package org.mineap.nndd.player
 							//FLV再生か？
 							
 							// スムージングを設定
-							this.videoDisplay.videoObject.smoothing = videoInfoView.isSmoothing;
+							this.setVideoSmoothing(videoInfoView.isSmoothing);
 							
 							if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
 								//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする

@@ -86,6 +86,7 @@ public var relationSortIndex:int = 0;
 public var relationOrderIndex:int = 0;
 public var isNgUpEnable:Boolean = true;
 public var isSmoothing:Boolean = true;
+public var isSmoothingOnlyNotPixelIdenticalDimensions:Boolean = true;
 public var playerQuality:int = 2;
 public var isFollowInfoViewHeight:Boolean = false;
 
@@ -213,7 +214,7 @@ private function stop():void{
 
 private function checkBoxAppendCommentChanged(event:Event):void{
 	this.isAppendComment = event.target.selected;
-	Application.application.setAppendComment(this.isAppendComment);
+	FlexGlobals.topLevelApplication.setAppendComment(this.isAppendComment);
 }
 
 public function setAppendComment(boolean:Boolean):void{
@@ -244,7 +245,17 @@ public function checkBoxNgUpChanged(event:Event):void{
 
 public function checkBoxSmoothingChanged(event:Event):void{
 	this.isSmoothing = checkBox_isSmoothing.selected;
+	checkBox_isSmoothingOnlyNotPixelIdenticalDimensions.enabled = this.isSmoothing;
 	if(this.playerController != null){
+		this.playerController.setVideoSmoothing(this.isSmoothing);
+	}
+}
+
+public function checkBoxSmoothingOnlyNotPixelIdenticalDimensionsChanged(event:Event):void
+{
+	this.isSmoothingOnlyNotPixelIdenticalDimensions = checkBox_isSmoothingOnlyNotPixelIdenticalDimensions.selected;
+	if (this.playerController != null)
+	{
 		this.playerController.setVideoSmoothing(this.isSmoothing);
 	}
 }
@@ -737,6 +748,8 @@ private function configCanvas1CreationCompleteHandler(event:FlexEvent):void{
 	
 	checkbox_enableWideMode.selected = isEnableWideMode;
 	checkBox_isSmoothing.selected = isSmoothing;
+	checkBox_isSmoothingOnlyNotPixelIdenticalDimensions.enabled = isSmoothing;
+	checkBox_isSmoothingOnlyNotPixelIdenticalDimensions.selected = isSmoothingOnlyNotPixelIdenticalDimensions;
 	
 	if(playerController.getCommentManager() != null){
 		playerController.getCommentManager().setAntiAlias(isAntiAlias);
@@ -1097,6 +1110,11 @@ private function readStore():void{
 			playerController.setVideoSmoothing(this.isSmoothing);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("isSmoothingOnlyNotPixelIdenticalDimensions");
+		if(confValue != null){
+			isSmoothingOnlyNotPixelIdenticalDimensions = ConfUtil.parseBoolean(confValue);
+		}
+		
 		confValue = ConfigManager.getInstance().getItem("playerQuality");
 		if(confValue != null){
 			playerQuality = int(confValue);
@@ -1236,6 +1254,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isSmoothing");
 		ConfigManager.getInstance().setItem("isSmoothing",isSmoothing);
+		
+		ConfigManager.getInstance().removeItem("isSmoothingOnlyNotPixelIdenticalDimensions");
+		ConfigManager.getInstance().setItem("isSmoothingOnlyNotPixelIdenticalDimensions", isSmoothingOnlyNotPixelIdenticalDimensions);
 		
 		ConfigManager.getInstance().removeItem("playerQuality");
 		ConfigManager.getInstance().setItem("playerQuality", playerQuality);
