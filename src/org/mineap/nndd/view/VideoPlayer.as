@@ -57,6 +57,7 @@ import org.mineap.nndd.model.SearchItem;
 import org.mineap.nndd.model.SearchSortString;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
+import org.mineap.nndd.player.model.PlayerTagString;
 import org.mineap.nndd.util.PathMaker;
 import org.mineap.nndd.util.ShortUrlChecker;
 import org.mineap.util.config.ConfUtil;
@@ -143,13 +144,27 @@ public function resetInfo():void{
  * @param tags
  * 
  */
-public function setTagArray(tags:Array):void{
+public function setTagArray(tags:Vector.<PlayerTagString>):void{
 	var text:String = "";
-	for each(var tag:String in tags){
-		if(tag.indexOf("(取得できなかった") == -1 && tag.indexOf("(タグ情報の取得に失敗)") == -1 ){
+	for each(var tagStr:PlayerTagString in tags)
+	{
+		var tag:String = tagStr.tag;
+		
+		if (tag != null 
+				&& tag.indexOf("(取得できなかった") == -1 
+				&& tag.indexOf("(タグ情報の取得に失敗)") == -1 )
+		{
+			var lockStr:String = "";
+			if (tagStr.lock)
+			{
+				lockStr = "<font color=\"#ff0000\" size=\"8\">[LOCK]</font>";
+			}
+			
 			text += "<a href=\"event:" + tag + "\"><u><font color=\"#0000ff\">" + tag + "</font></u></a>" +
-				"<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) + "\"><font color=\"#0000ff\">【<u>百</u>】</font></a>  ";
-		}else{
+				"<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) + "\"><font color=\"#0000ff\">【<u>百</u>】</font>" + lockStr + "</a>  ";
+		}
+		else
+		{
 			text += tag + "  ";
 		}
 	}

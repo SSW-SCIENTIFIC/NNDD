@@ -3,6 +3,8 @@ package org.mineap.nndd.util
 
 	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.Message;
+	import org.mineap.nndd.player.model.PlayerTagString;
+	import org.mineap.util.config.ConfUtil;
 	
 	public class ThumbInfoAnalyzer
 	{
@@ -18,6 +20,7 @@ package org.mineap.nndd.util
 		private var _status:String;
 		private var _length:String;
 		private var _errorCode:String;
+		private var _tagStrings:Vector.<PlayerTagString>;
 		
 		public static const STATUS_OK:String = "ok";
 		
@@ -42,6 +45,7 @@ package org.mineap.nndd.util
 		public function ThumbInfoAnalyzer(xml:XML)
 		{
 			this._tagArray = new Array();
+			this._tagStrings = new Vector.<PlayerTagString>();
 			this.analyze(xml);
 		}
 		
@@ -88,14 +92,31 @@ package org.mineap.nndd.util
 					this._length = xml.thumb.length;
 					
 					var tags:XMLList = xml.thumb.tags;
-					for(var i:int=0; i<tags.tag.length(); i++){
-						this._tagArray.push(HtmlUtil.convertSpecialCharacterNotIncludedString((tags.tag[i] as XML).text()));
+					for each(var temptags:XML in xml.thumb.tags){
+						var loc:String = tags.@domain;
+						
+						for each(var tag:XML in temptags.tag){
+							var str:String = HtmlUtil.convertSpecialCharacterNotIncludedString(tag.text())
+							this._tagArray.push(str);
+							
+							var tagString:PlayerTagString = new PlayerTagString();
+							tagString.tag = str;
+							if(tag.@lock == "1")
+							{
+								tagString.lock = true;
+							}
+							tagString.loc = loc;
+							this._tagStrings.push(tagString);
+						}
 					}
+					
 					if(tags.length() == 0){
 						//タグが一つも無い。削除されている模様。
 						this._tagArray.push(Message.L_VIDEO_DELETED);
 					}
-				}else if(this._status == STATUS_FAIL){
+				}
+				else if(this._status == STATUS_FAIL)
+				{
 					
 					if(xml.error != null && xml.error.code != null){
 						this._errorCode = xml.error.code;
@@ -221,6 +242,16 @@ package org.mineap.nndd.util
 		 */
 		public function get tagArray():Array{
 			return this._tagArray;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get tagStrings():Vector.<PlayerTagString>
+		{
+			return this._tagStrings;			
 		}
 		
 		/**

@@ -57,6 +57,7 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.player.comment.CommentManager;
 	import org.mineap.nndd.player.comment.Comments;
+	import org.mineap.nndd.player.model.PlayerTagString;
 	import org.mineap.nndd.util.DateUtil;
 	import org.mineap.nndd.util.IchibaBuilder;
 	import org.mineap.nndd.util.LibraryUtil;
@@ -2700,7 +2701,7 @@ package org.mineap.nndd.player
 						
 						videoPlayer.videoInfoView.nicoTagProvider = thumbInfoAnalyzer.tagArray;
 						videoPlayer.videoInfoView.nicoTagProvider.push("(取得できなかったためローカルのデータを使用)");
-						videoPlayer.setTagArray(videoPlayer.videoInfoView.nicoTagProvider);
+						videoPlayer.setTagArray(thumbInfoAnalyzer.tagStrings);
 						
 					}else{
 					
@@ -2709,7 +2710,14 @@ package org.mineap.nndd.player
 						
 						videoPlayer.videoInfoView.nicoTagProvider = videoPlayer.videoInfoView.localTagProvider;
 						videoPlayer.videoInfoView.nicoTagProvider.push("(取得できなかったためローカルのデータを使用)");
-						videoPlayer.setTagArray(videoPlayer.videoInfoView.nicoTagProvider);
+						
+						var tagStrings:Vector.<PlayerTagString> = new Vector.<PlayerTagString>();
+						for each(var string:String in videoPlayer.videoInfoView.nicoTagProvider)
+						{
+							var tagString:PlayerTagString = new PlayerTagString(string);
+							tagStrings.push(tagString);
+						}
+						videoPlayer.setTagArray(tagStrings);
 						
 					}
 				}
@@ -3020,12 +3028,19 @@ package org.mineap.nndd.player
 		private function setNicoThumbInfo(analyzer:ThumbInfoAnalyzer):void{
 			
 			videoPlayer.videoInfoView.nicoTagProvider = analyzer.tagArray;
-			videoPlayer.setTagArray(analyzer.tagArray);
+			videoPlayer.setTagArray(analyzer.tagStrings);
 			
 			if(analyzer.tagArray.length == 0 && videoPlayer.videoInfoView.localTagProvider.length > 0){
 				videoPlayer.videoInfoView.nicoTagProvider = videoPlayer.videoInfoView.localTagProvider;
 				videoPlayer.videoInfoView.nicoTagProvider.push("(取得できなかったためローカルのデータを使用)");
-				videoPlayer.setTagArray(videoPlayer.videoInfoView.nicoTagProvider);
+				
+				var tagStrings:Vector.<PlayerTagString> = new Vector.<PlayerTagString>();
+				for each(var string:String in videoPlayer.videoInfoView.nicoTagProvider)
+				{
+					var tagString:PlayerTagString = new PlayerTagString(string);
+					tagStrings.push(tagString);
+				}
+				videoPlayer.setTagArray(tagStrings);
 			}
 			
 			var dateString:String = "(投稿日時の取得に失敗)";
@@ -3166,8 +3181,7 @@ package org.mineap.nndd.player
 							videoPlayer.videoInfoView.owner_text_temp = thumbInfoAnalyzer.thumbInfoHtml;
 						}
 						
-						//					videoPlayer.videoInfoView.owner_text_nico = thumbInfoAnalyzer.thumbInfoHtml;
-						videoPlayer.setTagArray(thumbInfoAnalyzer.tagArray);
+						videoPlayer.setTagArray(thumbInfoAnalyzer.tagStrings);
 						videoPlayer.videoInfoView.text_info.htmlText = thumbInfoAnalyzer.htmlTitle + "<br />" + dateString + "<br />" + thumbInfoAnalyzer.playCountAndCommentCountAndMyListCount;
 					}
 					
@@ -3183,7 +3197,11 @@ package org.mineap.nndd.player
 					videoPlayer.videoInfoView.text_info.htmlText = videoPlayer.title + "<br />(投稿日の取得に失敗)<br />(再生回数等の取得に失敗)";
 					videoPlayer.videoInfoView.nicoTagProvider = new Array("タグ情報の取得に失敗");
 					videoPlayer.videoInfoView.owner_text_nico = "(投稿者説明文の取得に失敗)";
-					videoPlayer.setTagArray(new Array("(タグ情報の取得に失敗)"));
+					
+					var temptags:Vector.<PlayerTagString> = new Vector.<PlayerTagString>();
+					var tagString:PlayerTagString = new PlayerTagString("(タグ情報の取得に失敗)");
+					temptags.push(tagString);
+					videoPlayer.setTagArray(temptags);
 				}else{
 					var array:Array = new Array();
 					array.push("(ローカルにタグ情報無し)");
