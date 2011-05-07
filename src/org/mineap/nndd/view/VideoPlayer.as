@@ -275,6 +275,7 @@ private function windowMove(event:NativeWindowBoundsEvent):void{
 public function resizeInfoView():void
 {
 	if(this.videoInfoView != null
+		&& this.nativeWindow != null
 		&& this.videoInfoView.nativeWindow != null
 		&& this.videoInfoView.visible 
 		&& this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
@@ -282,7 +283,7 @@ public function resizeInfoView():void
 		&& this.videoInfoView.isFollowInfoViewHeight 										// 追従が有効になっている
 		&& this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){	// videoPlayerがフルスクリーンではない
 		
-		this.videoInfoView.nativeWindow.height = this.height;
+		this.videoInfoView.nativeWindow.height = this.nativeWindow.height;
 		this.videoInfoView.validateNow();
 		
 	}
