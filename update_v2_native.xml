@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.0.1</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/51632/NNDDv200b4.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/51892/NNDDv20.dmg</url>
 	<description><![CDATA[
 v2.0 正式版(2.0.1)
 【変更・新機能】
@@ -85,7 +85,7 @@ v2.0.0 Alpha -> Beta
 
 <exe>
 	<version>2.0.1</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/51632/NNDDv200b4.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/51892/NNDDv20.exe</url>
 	<description><![CDATA[
 v2.0 正式版(2.0.1)
 【変更・新機能】
