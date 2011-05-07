@@ -30,6 +30,11 @@
 			
 			protected function window1_activateHandler(event:Event):void
 			{
+				if (videoPlayer != null)
+				{
+					videoPlayer.showVideoPlayerAndVideoInfoView();
+				}
+				
 				Mouse.show();
 			}
 

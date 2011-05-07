@@ -698,7 +698,8 @@ package org.mineap.nndd.player
 //					if(videoInfoView.visible){
 //						videoInfoView.activate();
 //					}
-					videoPlayer.activate();
+//					videoPlayer.activate();
+					videoPlayer.showVideoPlayerAndVideoInfoView();
 					
 					windowResized(false);
 					
@@ -769,7 +770,8 @@ package org.mineap.nndd.player
 //					if(videoInfoView.visible){
 //						videoInfoView.activate();
 //					}
-					videoPlayer.activate();
+//					videoPlayer.activate();
+					videoPlayer.showVideoPlayerAndVideoInfoView();
 					
 					videoPlayer.setControllerEnable(true);
 					

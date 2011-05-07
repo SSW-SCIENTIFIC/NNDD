@@ -41,6 +41,7 @@ import mx.controls.HSlider;
 import mx.controls.Text;
 import mx.controls.TextArea;
 import mx.core.Application;
+import mx.core.FlexGlobals;
 import mx.core.UITextField;
 import mx.core.Window;
 import mx.events.AIREvent;
@@ -157,11 +158,11 @@ public function setTagArray(tags:Vector.<PlayerTagString>):void{
 			var lockStr:String = "";
 			if (tagStr.lock)
 			{
-				lockStr = "<font color=\"#ff0000\" size=\"8\">[LOCK]</font>";
+				lockStr = "<font color=\"#ff0000\" size=\"8\">[LOCK]</font> ";
 			}
 			
 			text += "<a href=\"event:" + tag + "\"><u><font color=\"#0000ff\">" + tag + "</font></u></a>" +
-				"<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) + "\"><font color=\"#0000ff\">【<u>百</u>】</font>" + lockStr + "</a>  ";
+				"<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) + "\"><font color=\"#0000ff\">【<u>百</u>】</font></a>" + lockStr + "  ";
 		}
 		else
 		{
@@ -177,17 +178,17 @@ protected function changeShowVideoInfoView(event:Event):void{
 		if((videoInfoView as Window).visible){
 			hideVideoInfoView();
 		}else{
-			showVideoInfoView();
+			showVideoPlayerAndVideoInfoView();
 		}
 	}
 }
 
 private var inhibitActivate:Boolean = false;
 
-public function showVideoInfoView():void{
+public function showVideoPlayerAndVideoInfoView():void{
 	if(videoInfoView != null){
 		
-		trace("ShowVideoInfoView");
+//		trace("ShowVideoInfoView");
 		
 		if (videoInfoView.nativeWindow != null)
 		{
@@ -221,7 +222,7 @@ public function tagListDoubleClickEventHandler(event:ListEvent):void{
 	if(event.itemRenderer.data != null){
 		if(event.itemRenderer.data is String){
 			var word:String = String(event.itemRenderer.data);
-			Application.application.search(new SearchItem(word, 
+			FlexGlobals.topLevelApplication.search(new SearchItem(word, 
 				SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, word));
 		}
 	}
@@ -597,7 +598,7 @@ private function keyListener(event:KeyboardEvent):void{
 		this.changeFull();
 	}else if(event.keyCode == Keyboard.I){
 		trace(event.keyCode + ":" + event);
-		this.showVideoInfoView();
+		this.showVideoPlayerAndVideoInfoView();
 	}else if(event.keyCode == Keyboard.LEFT){
 		//左キー。戻る
 		if(event.target as UITextField){
@@ -1014,7 +1015,7 @@ public function setControllerEnable(isEnable:Boolean):void{
 }
 
 private function changeShowInfoViewButtonClicked(event:MouseEvent):void{
-	showVideoInfoView();
+	showVideoPlayerAndVideoInfoView();
 	(this.canvas_video_back as Canvas).setFocus();
 }
 

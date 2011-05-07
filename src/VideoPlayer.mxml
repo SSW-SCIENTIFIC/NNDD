@@ -138,7 +138,8 @@
 			{
 				if(this.videoInfoView != null && (this.videoInfoView as Window).visible){
 					if(this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
-						showVideoInfoView();
+//						showVideoInfoView();
+						this.showVideoPlayerAndVideoInfoView();
 					}
 				}
 			}
