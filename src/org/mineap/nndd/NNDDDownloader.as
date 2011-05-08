@@ -1342,19 +1342,19 @@ package org.mineap.nndd
 		 * 
 		 * 
 		 */
-		private function terminate():void{
-			this._login = null;
-			this._watchVideo = null;
-			this._getflvAccess = null;
-			this._commentLoader = null;
-			this._ownerCommentLoader = null;
-			this._nicowariLoader = null;
-			this._getbgmAccess = null;
-			this._thumbInfoLoader = null;
-			this._thumbImgLoader = null;
-			this._ichibaInfoLoader = null;
-			this._videoLoader = null;
-		}
+//		private function terminate():void{
+//			this._login = null;
+//			this._watchVideo = null;
+//			this._getflvAccess = null;
+//			this._commentLoader = null;
+//			this._ownerCommentLoader = null;
+//			this._nicowariLoader = null;
+//			this._getbgmAccess = null;
+//			this._thumbInfoLoader = null;
+//			this._thumbImgLoader = null;
+//			this._ichibaInfoLoader = null;
+//			this._videoLoader = null;
+//		}
 		
 		/**
 		 * Loaderをすべて閉じます。
@@ -1434,7 +1434,7 @@ package org.mineap.nndd
 //				trace(error.getStackTrace());
 			}
 			
-			terminate();
+//			terminate();
 			
 			var eventText:String = "";
 			if(event != null){
