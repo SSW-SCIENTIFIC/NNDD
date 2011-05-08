@@ -73,7 +73,7 @@ package org.mineap.nndd.versionCheck
 		 */
 		public function checkUpdate(isCheckForUpdate:Boolean=false):void
 		{
-			if(updater == null){
+			if(updater != null){
 				if(!updater.closed){
 					updater.close();
 				}
