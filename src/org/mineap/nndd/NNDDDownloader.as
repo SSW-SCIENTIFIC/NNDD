@@ -538,12 +538,6 @@ package org.mineap.nndd
 		 */
 		private function getFlvAccessSuccess(event:Event):void{
 			
-			// closeが呼ばれていないか？
-			if (this._getWaybackkeyAccess == null)
-			{
-				return;
-			}
-			
 			//APIアクセス成功(アクセスは閉じない)
 			trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
 			LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
