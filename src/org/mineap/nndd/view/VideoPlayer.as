@@ -1016,6 +1016,10 @@ public function setControllerEnable(isEnable:Boolean):void{
 }
 
 private function changeShowInfoViewButtonClicked(event:MouseEvent):void{
+	if (videoInfoView != null)
+	{
+		videoInfoView.visible = true;
+	}
 	showVideoPlayerAndVideoInfoView();
 	(this.canvas_video_back as Canvas).setFocus();
 }
