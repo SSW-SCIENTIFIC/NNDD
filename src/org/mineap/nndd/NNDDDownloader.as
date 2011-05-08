@@ -433,6 +433,12 @@ package org.mineap.nndd
 			LogManager.instance.addLog("\t" + LOGIN_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 			dispatchEvent(new Event(LOGIN_SUCCESS));
 			
+			// closeが呼ばれていないか？
+			if (this._watchVideo == null)
+			{
+				return;
+			}
+			
 			//リスナ追加
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_SUCCESS, watchSuccess);
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_FAIL, function(event:ErrorEvent):void{
@@ -470,6 +476,12 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function watchSuccess(event:Event):void{
+			
+			// closeが呼ばれていないか？
+			if (this._getflvAccess == null)
+			{
+				return;
+			}
 			
 			var videoId:String = this._watchVideo.getVideoId();
 			if(videoId != this._thumbInfoId){
@@ -525,7 +537,12 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function getFlvAccessSuccess(event:Event):void{
-//			trace(encodeURI(decodeURIComponent(event.target.data)));
+			
+			// closeが呼ばれていないか？
+			if (this._getWaybackkeyAccess == null)
+			{
+				return;
+			}
 			
 			//APIアクセス成功(アクセスは閉じない)
 			trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
@@ -591,6 +608,13 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function getNormalComment():void{
+			
+			// closeが呼ばれていないか？
+			if (this._commentLoader == null)
+			{
+				return;
+			}
+			
 			//リスナ追加
 			this._commentLoader.addEventListener(CommentLoader.COMMENT_GET_SUCCESS, commentGetSuccess);
 			this._commentLoader.addEventListener(CommentLoader.COMMENT_GET_FAIL, function(event:ErrorEvent):void{
@@ -670,6 +694,12 @@ package org.mineap.nndd
 		 */
 		private function ownerCommentGetStart(loader:CommentLoader):void{
 			
+			// closeが呼ばれていないか？
+			if (this._ownerCommentLoader == null)
+			{
+				return;
+			}
+			
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				trace(COMMENT_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
@@ -714,6 +744,12 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function ownerCommentGetSuccess(event:Event):void{
+			
+			// closeが呼ばれていないか？
+			if (this._getbgmAccess == null)
+			{
+				return;
+			}
 			
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
@@ -959,6 +995,12 @@ package org.mineap.nndd
 		 */
 		private function getThumbInfo(videoId:String):void{
 			
+			// closeが呼ばれていないか？
+			if (this._thumbInfoLoader == null)
+			{
+				return;
+			}
+			
 			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
@@ -983,6 +1025,12 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function thumbInfoGetSuccess(event:Event):void{
+			
+			// closeが呼ばれていないか？
+			if (this._thumbImgLoader == null)
+			{
+				return;
+			}
 			
 			try{
 			
@@ -1089,6 +1137,13 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function downloadIchibaInfo():void{
+			
+			// closeがよばれていないか？
+			if (this._ichibaInfoLoader == null)
+			{
+				return;
+			}
+			
 			this._ichibaInfoLoader.addEventListener(Event.COMPLETE, ichibaInfoGetSuccess);
 			this._ichibaInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
 				(event.target as IchibaInfoLoader).close();
@@ -1112,6 +1167,12 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function ichibaInfoGetSuccess(event:Event):void{
+			
+			// closeがよばれていないか？
+			if (this._videoLoader == null)
+			{
+				return;
+			}
 			
 			var fileIO:FileIO = new FileIO();
 			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
@@ -1342,19 +1403,19 @@ package org.mineap.nndd
 		 * 
 		 * 
 		 */
-//		private function terminate():void{
-//			this._login = null;
-//			this._watchVideo = null;
-//			this._getflvAccess = null;
-//			this._commentLoader = null;
-//			this._ownerCommentLoader = null;
-//			this._nicowariLoader = null;
-//			this._getbgmAccess = null;
-//			this._thumbInfoLoader = null;
-//			this._thumbImgLoader = null;
-//			this._ichibaInfoLoader = null;
-//			this._videoLoader = null;
-//		}
+		private function terminate():void{
+			this._login = null;
+			this._watchVideo = null;
+			this._getflvAccess = null;
+			this._commentLoader = null;
+			this._ownerCommentLoader = null;
+			this._nicowariLoader = null;
+			this._getbgmAccess = null;
+			this._thumbInfoLoader = null;
+			this._thumbImgLoader = null;
+			this._ichibaInfoLoader = null;
+			this._videoLoader = null;
+		}
 		
 		/**
 		 * Loaderをすべて閉じます。
@@ -1434,7 +1495,7 @@ package org.mineap.nndd
 //				trace(error.getStackTrace());
 			}
 			
-//			terminate();
+			terminate();
 			
 			var eventText:String = "";
 			if(event != null){
