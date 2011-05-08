@@ -1133,8 +1133,9 @@ private function fileSystemTreeItemHandler(event:ContextMenuEvent):void{
 	}else if((event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_PLAYALL){
 		var itreeItem:ITreeItem = null;
 		itreeItem = (tree_library.selectedItem as ITreeItem);
-			
-		if(itreeItem != null){
+		
+		if (itreeItem != null)
+		{
 			var labelName:String = itreeItem.label;
 			if(itreeItem.file == null){
 				// ファイルを持っていないのはプレイリスト
@@ -1145,6 +1146,15 @@ private function fileSystemTreeItemHandler(event:ContextMenuEvent):void{
 					// ファイルを持っているのはライブラリ
 					playMovieByLibraryDir(itreeItem.file);
 				}
+			}
+		}
+		else
+		{
+			// treeが選択されていない時は自分が居るディレクトリから調べる
+			var obj:Object = dataGrid_downloaded.selectedItem;
+			if(obj != null){
+				var file:File = new File(obj.dataGridColumn_videoPath as String);
+				playMovieByLibraryDir(file.parent);
 			}
 		}
 	}
