@@ -1433,10 +1433,17 @@
 							<mx:Label text="※ダブルクリックでタグ検索" left="152" bottom="0"/>
 							<mx:TabNavigator left="0" top="0" bottom="25" right="0" id="tag_tabNavigator">
 								<mx:Canvas label="タグ一覧" width="100%" height="100%" id="canvas_tagList">
-									<mx:TileList dataProvider="{tagProvider}" id="tileList_tag" allowMultipleSelection="true" itemRenderer="TagTileListRenderer" 
-										itemClick="tagTileListClicked(event)" allowDragSelection="false" itemDoubleClick="tagTileListItemDoubleClickEventHandler(event)"
-										doubleClickEnabled="true" left="0" top="0" bottom="0" right="0"
-										creationComplete="tileList_tag_creationCompleteHandler(event)"></mx:TileList>
+									<mx:TileList dataProvider="{tagProvider}" 
+												 id="tileList_tag" 
+												 allowMultipleSelection="true" 
+												 itemRenderer="TagTileListRenderer"
+												 itemClick="tagTileListClicked(event)" 
+												 allowDragSelection="false" 
+												 itemDoubleClick="tagTileListItemDoubleClickEventHandler(event)"
+												 doubleClickEnabled="true" 
+												 left="0" top="0" bottom="0" right="0"
+												 creationComplete="tileList_tag_creationCompleteHandler(event)">
+									</mx:TileList>
 								</mx:Canvas>
 								<mx:Canvas label="タグフィルタ" width="100%" height="100%" id="canvas_tagFilter">
 									<mx:TileList id="tileList_filterTag" left="0" right="0" top="0"

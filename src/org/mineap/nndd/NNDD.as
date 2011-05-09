@@ -1258,9 +1258,17 @@ private function tagListItemHandler(event:ContextMenuEvent):void {
 		}
 		
 		var textField:UITextField = (event.mouseTarget as UITextField);
-		var tag:String = textField.text;
-		if(tag != null){
-			tags.push(tag);
+		if (textField != null)
+		{
+			var renderer:IListItemRenderer = (textField.automationOwner as IListItemRenderer);
+			if (renderer != null)
+			{
+				var tag:String = String(renderer.data);
+				if (tag != null)
+				{
+					tags.push(tag);
+				}
+			}
 		}
 		
 		var label:String = (event.target as ContextMenuItem).label;
