@@ -2,7 +2,6 @@ package org.mineap.util.font
 {
 	import flash.text.Font;
 	
-	import mx.core.Application;
 	import mx.core.FlexGlobals;
 	
 	/**
@@ -67,7 +66,7 @@ package org.mineap.util.font
 		 * 
 		 */
 		public static function get applicationFont():String{
-			return Application.application.getStyle("fontFamily");
+			return FlexGlobals.topLevelApplication.getStyle("fontFamily");
 		}
 		
 		/**

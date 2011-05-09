@@ -1400,8 +1400,8 @@ package org.mineap.nndd.player
 						this.videoPlayer.nativeWindow.height += int(videoWindowHeight - this.videoPlayer.canvas_video_back.height);
 						this.videoPlayer.nativeWindow.width += int(videoWindowWidth - this.videoPlayer.canvas_video_back.width);
 						
-						(this.videoPlayer as Window).validateDisplayList();
-						(this.videoPlayer as Window).validateNow();
+//						(this.videoPlayer as Window).validateDisplayList();
+//						(this.videoPlayer as Window).validateNow();
 						
 						//ネイティブなウィンドウの大きさと、ウィンドウ内部の利用可能な領域の大きさの差
 //						var diffH:int = this.videoPlayer.nativeWindow.height - this.videoPlayer.stage.stageHeight;

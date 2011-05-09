@@ -543,8 +543,8 @@ public function initNNDD(nndd:NNDD):void
 	// サムネイル画像拡大表示用Image
 	thumbImageView.visible = false;
 	thumbImageView.alpha = 0.9;
-	this.addChild(thumbImageView);
-	
+//	this.addChild(thumbImageView);
+	this.addElement(thumbImageView);
 }
 
 public function myListStatusRenew(loaded:Number, total:Number, myListId:String):void{
@@ -1802,9 +1802,10 @@ private function readStore(isLogout:Boolean = false):void{
 		}else{
 			thumbImageSize = Number(confValue);
 			if(dataGrid_ranking != null && dataGrid_ranking != null && dataGridColumn_thumbImage != null){
+				// 一番手前のタブだけはプロパティ読み込み前に初期化が終わっているのでココで設定
 				slider_thumbImageSize.value = thumbImageSize;
-				dataGrid_ranking.rowHeight = 50*slider_thumbImageSize.value;
-				dataGridColumn_thumbImage.width = 60*slider_thumbImageSize.value;
+				dataGrid_ranking.rowHeight = 55*slider_thumbImageSize.value;
+				dataGridColumn_thumbImage.width = 70*slider_thumbImageSize.value;
 				this.validateNow();
 			}
 		}
@@ -5263,38 +5264,38 @@ private function savePlayListByDataGridSort():void{
 
 private function thumbSizeChanged(event:SliderEvent):void{
 	this.thumbImageSize = event.value;
-	dataGrid_ranking.rowHeight = 50*event.value;
-	dataGridColumn_thumbImage.width = 60*event.value;
+	dataGrid_ranking.rowHeight = 55*event.value;
+	dataGridColumn_thumbImage.width = 70*event.value;
 }
 
 private function thumbSizeChangedForSearch(event:SliderEvent):void{
 	this.thumbImgSizeForSearch = event.value;
-	dataGrid_search.rowHeight = 50*event.value;
-	dataGridColumn_thumbImage_Search.width = 60*event.value;
+	dataGrid_search.rowHeight = 55*event.value;
+	dataGridColumn_thumbImage_Search.width = 70*event.value;
 }
 
 private function thumbSizeChangedForMyList(event:SliderEvent):void{
 	this.thumbImgSizeForMyList = event.value;
-	dataGrid_myList.rowHeight = 50*event.value;
-	dataGridColumn_thumbUrl.width = 60*event.value;
+	dataGrid_myList.rowHeight = 55*event.value;
+	dataGridColumn_thumbUrl.width = 70*event.value;
 }
 
 private function thumbSizeChangedForDLList(event:SliderEvent):void
 {
 	this.thumbImgSizeForDLList = event.value;
-	dataGrid_downloadList.rowHeight = 50*event.value;
+	dataGrid_downloadList.rowHeight = 55*event.value;
 }
 
 private function thumbSizeChangedForLibrary(event:SliderEvent):void{
 	this.thumbImgSizeForLibrary = event.value;
-	dataGrid_downloaded.rowHeight = 30*event.value;
-	dataGridColumn_LibraryThumbImage.width = 35*event.value;
+	dataGrid_downloaded.rowHeight = 20*event.value;
+	dataGridColumn_LibraryThumbImage.width = 25*event.value;
 }
 
 private function thumbSizeChangedForHistory(event:SliderEvent):void{
 	this.thumbImgSizeHistory = event.value;
-	dataGrid_history.rowHeight = 30*event.value;
-	dataGridColumn_thumbImage_history.width = 35*event.value;
+	dataGrid_history.rowHeight = 20*event.value;
+	dataGridColumn_thumbImage_history.width = 25*event.value;
 }
 
 private function donation():void{

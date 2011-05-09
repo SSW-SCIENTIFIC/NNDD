@@ -3,17 +3,24 @@
 <!-- VideoPlayer.mxml -->
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
 	
-<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
-		   xmlns:ns1="*"
-		   width="550" height="540" minWidth="300" minHeight="300" backgroundColor="#FFFFFF"
-		   close="windowClosed()" closing="windowClosing(event)" horizontalScrollPolicy="off"
-		   layout="absolute" resize="resizeNow(event)" title="NNDD - Player"
-		   updateComplete="updateComplete()" verticalScrollPolicy="off"
-		   windowActivate="window1_windowActivateHandler(event)"
-		   windowComplete="windowComplete(event)" windowMove="windowMove(event)"
-		   windowResize="windowResized(event)">
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:ns1="*"
+		  width="550" height="540" minWidth="300" minHeight="300" 
+		  backgroundColor="#FFFFFF"
+		  close="windowClosed()" 
+		  closing="windowClosing(event)" 
+		  resize="resizeNow(event)" 
+		  title="NNDD - Player"
+		  updateComplete="updateComplete()" 
+		  windowActivate="window1_windowActivateHandler(event)"
+		  windowComplete="windowComplete(event)" 
+		  windowMove="windowMove(event)"
+		  windowResize="windowResized(event)"
+		  showStatusBar="false">
 
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import mx.containers.ViewStack;
 			
@@ -153,10 +160,10 @@
 			
 			
 		]]>
-	</mx:Script>
+	</fx:Script>
 
 
-	<mx:Script source="org/mineap/nndd/view/VideoPlayer.as" />
+	<fx:Script source="org/mineap/nndd/view/VideoPlayer.as" />
 	
 	<mx:Canvas width="100%" x="0" height="100%" y="0" id="canvas_videoPlayer" creationComplete="canvas_videoPlayer_creationCompleteHandler(event)" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 		<mx:TextArea id="textArea_tag" minHeight="10" height="50" htmlText="{textAreaTagProvider}" link="tagTextAreaLinkClikced(event)" fontSize="11" left="5" top="5" right="5" 
@@ -205,4 +212,4 @@
 			</mx:Canvas>
 		</mx:VBox>
 	</mx:Canvas>
-</mx:Window>
+</s:Window>

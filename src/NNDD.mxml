@@ -2,20 +2,27 @@
 
 <!--NNDD.mxml -->
 
-<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml"
-						xmlns:ns1="*"
-						width="850" height="600" minWidth="800" minHeight="500"
-						activate="windowedapplication1_activateHandler(event)" autoExit="false"
-						backgroundColor="#FFFFFF" borderStyle="solid" closing="windowClose(event)"
-						creationComplete="initNNDD(this)" error="error(event)" fontFamily="Verdana"
-						fontSize="11" horizontalScrollPolicy="off"
-						initialize="windowedapplication1_initializeHandler(event)"
-						invoke="invokeEventHandler(event)" layout="absolute"
-						preloaderChromeColor="#FFFFFF" verticalScrollPolicy="off"
-						windowMove="windowMove(event)" windowResize="windowMove(event)">
-	
-	<mx:Script>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:ns1="*"
+					   width="850" height="600" minWidth="800" minHeight="500"
+					   activate="windowedapplication1_activateHandler(event)"
+					   autoExit="false"
+					   backgroundColor="#FFFFFF"
+					   closing="windowClose(event)"
+					   creationComplete="initNNDD(this)" 
+					   error="error(event)"
+					   fontFamily="Verdana"
+					   fontSize="11"
+					   initialize="windowedapplication1_initializeHandler(event)"
+					   invoke="invokeEventHandler(event)"
+					   windowMove="windowMove(event)" 
+					   windowResize="windowMove(event)">
+
+	<fx:Script>
 		<![CDATA[
+			import mx.events.ToolTipEvent;
 			import mx.controls.listClasses.IListItemRenderer;
 			import mx.core.UITextField;
 			import mx.messaging.SubscriptionInfo;
@@ -182,8 +189,8 @@
 				
 				if(this.thumbImgSizeHistory != -1){
 					slider_thumbImageSizeForHistory.value = this.thumbImgSizeHistory;
-					dataGrid_history.rowHeight = 30*slider_thumbImageSizeForHistory.value;
-					dataGridColumn_thumbImage_history.width = 35*slider_thumbImageSizeForHistory.value
+					dataGrid_history.rowHeight = 20*slider_thumbImageSizeForHistory.value;
+					dataGridColumn_thumbImage_history.width = 25*slider_thumbImageSizeForHistory.value
 					this.validateNow();
 				}
 				
@@ -212,7 +219,7 @@
 				
 				if(this.thumbImgSizeForDLList != -1){
 					slider_thumbImageSizeForDLList.value = this.thumbImgSizeForDLList;
-					dataGrid_downloadList.rowHeight = 50*slider_thumbImageSizeForDLList.value;
+					dataGrid_downloadList.rowHeight = 55*slider_thumbImageSizeForDLList.value;
 					this.validateNow();
 				}
 				
@@ -245,8 +252,8 @@
 				
 				if(this.thumbImgSizeForMyList != -1){
 					slider_thumbImageSizeForMyList.value = this.thumbImgSizeForMyList;
-					dataGrid_myList.rowHeight = 50*slider_thumbImageSizeForMyList.value;
-					dataGridColumn_thumbUrl.width = 60*slider_thumbImageSizeForMyList.value;
+					dataGrid_myList.rowHeight = 55*slider_thumbImageSizeForMyList.value;
+					dataGridColumn_thumbUrl.width = 70*slider_thumbImageSizeForMyList.value;
 					this.validateNow();
 				}
 				
@@ -279,8 +286,8 @@
 				
 				if(this.thumbImgSizeForSearch != -1){
 					slider_thumbImageSize_search.value = this.thumbImgSizeForSearch;
-					dataGrid_search.rowHeight = 50*slider_thumbImageSize_search.value;
-					dataGridColumn_thumbImage_Search.width = 60*slider_thumbImageSize_search.value;
+					dataGrid_search.rowHeight = 55*slider_thumbImageSize_search.value;
+					dataGridColumn_thumbImage_Search.width = 70*slider_thumbImageSize_search.value;
 					this.validateNow();
 				}
 				
@@ -312,8 +319,8 @@
 				
 				if(this.thumbImageSize != -1){
 					slider_thumbImageSize.value = this.thumbImageSize;
-					dataGrid_ranking.rowHeight = 50*slider_thumbImageSize.value;
-					dataGridColumn_thumbImage.width = 60*slider_thumbImageSize.value;
+					dataGrid_ranking.rowHeight = 55*slider_thumbImageSize.value;
+					dataGridColumn_thumbImage.width = 70*slider_thumbImageSize.value;
 					this.validateNow();
 				}
 				
@@ -405,8 +412,8 @@
 				
 				if(this.thumbImgSizeForLibrary != -1){
 					slider_thumbImageSizeForLibrary.value = this.thumbImgSizeForLibrary;
-					dataGrid_downloaded.rowHeight = 30*slider_thumbImageSizeForLibrary.value;
-					dataGridColumn_LibraryThumbImage.width = 35*slider_thumbImageSizeForLibrary.value;
+					dataGrid_downloaded.rowHeight = 20*slider_thumbImageSizeForLibrary.value;
+					dataGridColumn_LibraryThumbImage.width = 25*slider_thumbImageSizeForLibrary.value;
 					this.validateNow();
 				}
 				
@@ -1119,9 +1126,9 @@
 			}
 
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
-	<mx:Script source="org/mineap/nndd/NNDD.as"/>
+	<fx:Script source="org/mineap/nndd/NNDD.as"/>
 	
 	<mx:ApplicationControlBar top="5" left="10" right="10">
 		<mx:ToggleButtonBar dataProvider="viewstack1" id="viewStack">
@@ -1172,16 +1179,16 @@
 					<mx:Button id="button_next" left="116" top="0" width="35" label="&gt;"
 							   click="nextButtonClicked()"/>
 					
-					<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_ranking" dataProvider="{rankingProvider}" 
+					<mx:DataGrid editable="false" rowHeight="55" sortableColumns="true" id="dataGrid_ranking" dataProvider="{rankingProvider}" 
 						top="25" left="0" right="0" bottom="0" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
 						itemDoubleClick="rankingDataGridDoubleClicked(event)" allowMultipleSelection="true" dragEnabled="true" 
 						creationComplete="dataGrid_ranking_creationCompleteHandler(event)">
 						<!-- horizontalScrollPolicy="on"> -->
 						<mx:columns>
 							<mx:DataGridColumn headerText="順位" width="30" dataField="dataGridColumn_ranking" id="dataGridColumn_rank"/>
-							<mx:DataGridColumn headerText="サムネイル" width="60" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage">
+							<mx:DataGridColumn headerText="サムネイル" width="70" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage">
 								<mx:itemRenderer>
-									<mx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></mx:Component>
+									<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true" horizontalCenter="0" verticalCenter="0"/></fx:Component>
 								</mx:itemRenderer>
 							</mx:DataGridColumn>
 							<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" id="dataGridColumn_videoName"/>
@@ -1241,16 +1248,16 @@
 					<mx:Button id="button_next_search" left="116" top="0" width="35" label="&gt;"
 							   click="searchNextButtonClicked()"/>
 					
-					<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_search" dataProvider="{searchProvider}"
+					<mx:DataGrid editable="false" rowHeight="55" sortableColumns="true" id="dataGrid_search" dataProvider="{searchProvider}"
 								 top="25" left="0" right="0" bottom="30" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
 								 itemDoubleClick="searchDataGridDoubleClicked(event)" allowMultipleSelection="true" dragEnabled="true" 
 								 creationComplete="dataGrid_search_creationCompleteHandler(event)">
 						<!-- horizontalScrollPolicy="on"> -->
 						<mx:columns>
 							<mx:DataGridColumn headerText="#" width="30" dataField="dataGridColumn_ranking" id="dataGridColumn_rank_Search"/>
-							<mx:DataGridColumn headerText="サムネイル" width="60" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage_Search">
+							<mx:DataGridColumn headerText="サムネイル" width="70" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage_Search">
 								<mx:itemRenderer>
-									<mx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></mx:Component>
+									<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true" horizontalCenter="0" verticalCenter="0"/></fx:Component>
 								</mx:itemRenderer>
 							</mx:DataGridColumn>
 							<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" id="dataGridColumn_videoName_Search"/>
@@ -1294,7 +1301,7 @@
 						<mx:TextArea left="0" top="25" right="0" bottom="480" id="textArea_myList" width="100%" height="50" 
 									 verticalScrollPolicy="on" creationComplete="textArea_myList_creationCompleteHandler(event)"/>
 						<mx:Canvas width="100%" height="100%" id="canvas_myListItem">
-							<mx:DataGrid editable="false" rowHeight="50" sortableColumns="true" id="dataGrid_myList" dataProvider="{myListItemProvider}" 
+							<mx:DataGrid editable="false" rowHeight="55" sortableColumns="true" id="dataGrid_myList" dataProvider="{myListItemProvider}" 
 										 top="0" left="0" bottom="0" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
 										 itemDoubleClick="myListItemDataGridDoubleClicked()" right="0" allowMultipleSelection="true" dragEnabled="true"
 										 creationComplete="dataGrid_myList_creationCompleteHandler(event)"
@@ -1302,9 +1309,9 @@
 								<!-- horizontalScrollPolicy="on"> -->
 								<mx:columns>
 									<mx:DataGridColumn headerText="#" width="30" dataField="dataGridColumn_index"/>
-									<mx:DataGridColumn headerText="サムネイル" width="60" dataField="dataGridColumn_preview" id="dataGridColumn_thumbUrl">
+									<mx:DataGridColumn headerText="サムネイル" width="70" dataField="dataGridColumn_preview" id="dataGridColumn_thumbUrl">
 										<mx:itemRenderer>
-											<mx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></mx:Component>
+											<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true" horizontalCenter="0" verticalCenter="0"/></fx:Component>
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
 									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName"/>
@@ -1327,7 +1334,7 @@
 		</mx:Canvas>
 		<mx:Canvas label="DLリスト" width="100%" height="100%" id="canvas_queue"
 				   toolTip="ニコニコ動画から動画をダウンロードする際のキューです">
-			<mx:DataGrid left="10" top="28" right="10" bottom="30" rowHeight="50" 
+			<mx:DataGrid left="10" top="28" right="10" bottom="30" rowHeight="55" 
 						 sortableColumns="false" dataProvider="{downloadProvider}" 
 						 id="dataGrid_downloadList" allowMultipleSelection="true"
 						 doubleClickEnabled="true" itemDoubleClick="downloadListDoubleClicked(event)"
@@ -1448,7 +1455,7 @@
 						<mx:Canvas height="100%" width="100%" id="canvas_libraryDataGrid">
 							<mx:DataGrid right="0" top="0" bottom="0" left="0" 
 										 enabled="true" 
-										 rowHeight="30" 
+										 rowHeight="20" 
 										 sortableColumns="true" 
 										 id="dataGrid_downloaded" 
 										 dataProvider="{downloadedProvider}" 
@@ -1467,13 +1474,18 @@
 										 creationComplete="dataGrid_downloaded_creationCompleteHandler(event)">
 								<!-- horizontalScrollPolicy="on"> -->
 								<mx:columns>
-									<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="35" id="dataGridColumn_LibraryThumbImage">
+									<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="25" id="dataGridColumn_LibraryThumbImage">
 										<mx:itemRenderer>
-											<mx:Component><mx:Image width="100%" height="100%" mouseOver="image1_mouseOverHandler(event)" 
-																	mouseMove="image1_mouseMoveHandler(event)" 
-																	mouseOut="image1_mouseOutHandler(event)"
-																	complete="image1_completeHandler(event)">
-															  <mx:Script>
+											<fx:Component>
+												<mx:Image width="100%" 
+														  height="100%" 
+														  cacheAsBitmap="true" 
+														  mouseOver="image1_mouseOverHandler(event)" 
+														  mouseMove="image1_mouseMoveHandler(event)" 
+														  mouseOut="image1_mouseOutHandler(event)"
+														  complete="image1_completeHandler(event)"
+														  horizontalCenter="0" verticalCenter="0">
+															  <fx:Script>
 																  <![CDATA[
 																	  import mx.core.FlexGlobals;
 																	  protected function image1_mouseOverHandler(event:MouseEvent):void
@@ -1553,9 +1565,9 @@
 																	  }
 
 																  ]]>
-															  </mx:Script>
-														  </mx:Image>
-											</mx:Component>
+													</fx:Script>
+												</mx:Image>
+											</fx:Component>
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
 									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300" />
@@ -1599,16 +1611,16 @@
 			
 		</mx:Canvas>
 		<mx:Canvas label="履歴" width="100%" height="100%" id="canvas_history" toolTip="NNDDで再生した動画の履歴を閲覧できます">
-			<mx:DataGrid rowHeight="30" sortableColumns="true" id="dataGrid_history" doubleClickEnabled="true"
+			<mx:DataGrid rowHeight="20" sortableColumns="true" id="dataGrid_history" doubleClickEnabled="true"
 				right="10" top="0" bottom="30" left="10" dataProvider="{historyProvider}" 
 				itemDoubleClick="historyItemDoubleClickEventHandler(event)" allowMultipleSelection="true" 
 				creationComplete="dataGrid_history_creationCompleteHandler(event)">
 				<!-- horizontalScrollPolicy="on"> -->
 				<mx:columns>
 					<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage"
-									   id="dataGridColumn_thumbImage_history" width="35">
+									   id="dataGridColumn_thumbImage_history" width="25">
 						<mx:itemRenderer>
-							<mx:Component><mx:Image width="100%" height="100%"/></mx:Component>
+							<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true"/></fx:Component>
 						</mx:itemRenderer>
 					</mx:DataGridColumn>
 					<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName" width="300"/>
@@ -1742,4 +1754,4 @@
 		
 	</mx:ViewStack>
 	
-</mx:WindowedApplication>
+</s:WindowedApplication>

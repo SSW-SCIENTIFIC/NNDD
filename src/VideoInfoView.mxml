@@ -3,16 +3,22 @@
 <!-- VideoInfoView.mxml -->
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
 
-<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
-		   xmlns:ns1="*"
-		   xmlns:view="org.mineap.nndd.view.*"
-		   width="400" height="580" minWidth="300" minHeight="300"
-		   activate="window1_activateHandler(event)" backgroundColor="#FFFFFF"
-		   closing="windowClosing(event)" horizontalScrollPolicy="off" layout="absolute"
-		   title="Info" verticalScrollPolicy="off" windowComplete="windowCompleteHandler()"
-		   windowMove="windowMove(event)" windowResize="windowResized(event)">
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:ns1="*"
+		  xmlns:view="org.mineap.nndd.view.*"
+		  width="400" height="580" minWidth="300" minHeight="300"
+		  activate="window1_activateHandler(event)" 
+		  backgroundColor="#FFFFFF"
+		  closing="windowClosing(event)" 
+		  title="Info" 
+		  windowComplete="windowCompleteHandler()"
+		  windowMove="windowMove(event)" 
+		  windowResize="windowResized(event)"
+		  showStatusBar="false">
 
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import flash.net.navigateToURL;
 			
@@ -228,9 +234,9 @@
 
 			
 		]]>
-	</mx:Script>
+	</fx:Script>
 
-	<mx:Script source="org/mineap/nndd/view/VideoInfoView.as" />
+	<fx:Script source="org/mineap/nndd/view/VideoInfoView.as" />
 	
 	<mx:Canvas left="5" top="2" width="90" height="70" backgroundColor="#969696"
 			   contentBackgroundColor="#969696" dropShadowVisible="false">
@@ -358,7 +364,7 @@
 								<mx:columns>
 									<mx:DataGridColumn dataField="col_image" width="80">
 										<mx:itemRenderer>
-											<mx:Component><mx:Image width="80" height="80" /></mx:Component>
+											<fx:Component><mx:Image width="80" height="80" /></fx:Component>
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
 									<mx:DataGridColumn dataField="col_info"/>
@@ -370,7 +376,7 @@
 								<mx:columns>
 									<mx:DataGridColumn dataField="col_image" width="80">
 										<mx:itemRenderer>
-											<mx:Component><mx:Image width="80" height="80" /></mx:Component>
+											<fx:Component><mx:Image width="80" height="80" /></fx:Component>
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
 									<mx:DataGridColumn dataField="col_info"/>
@@ -423,7 +429,7 @@
 						<mx:columns>
 							<mx:DataGridColumn dataField="col_image" width="80">
 								<mx:itemRenderer>
-									<mx:Component><mx:Image width="80" height="70" /></mx:Component>
+									<fx:Component><mx:Image width="80" height="70" /></fx:Component>
 								</mx:itemRenderer>
 							</mx:DataGridColumn>
 							<mx:DataGridColumn dataField="col_info"/>
@@ -567,4 +573,4 @@
 			   click="button_videoOpen_clickHandler(event)"/>
 
 	
-</mx:Window>
+</s:Window>
