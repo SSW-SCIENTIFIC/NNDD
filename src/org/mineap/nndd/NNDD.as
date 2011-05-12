@@ -5045,10 +5045,17 @@ private function moveFile(oldFile:File, newFile:File, isSaveLibrary:Boolean):voi
 	try{
 		
 		//動画を移動
-		if(newFile.exists){
-			newFile.deleteFile();
+		
+		if(!oldFile.exists && newFile.exists){
+			// 移動先の動画がすでにあって、移動元の動画が無い場合は、なにもしない。
+		}else{
+			if(oldFile.exists && newFile.exists){
+				// 移動先に動画がすでにあって、移動元の動画も既にある場合は、移動先の動画をゴミ箱に入れる
+				newFile.moveToTrash();
+			}
+			// 動画を実際に移動
+			oldFile.moveTo(newFile);
 		}
-		oldFile.moveTo(newFile);
 		logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " + decodeURIComponent(newFile.url));
 		
 		//ライブラリを更新
