@@ -1664,9 +1664,10 @@
 					
 					<mx:HRule left="30" right="10" top="117" height="10"/>
 					
-					<mx:Label text="NNDDのライブラリ情報をインポートする" left="30" top="137"/>
+					<mx:Label text="NNDDのライブラリ情報をインポートする" left="30" top="137"
+							  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
 					<mx:Button label="読み込み..." left="279" top="135" click="importButtonChecked()" 
-							   toolTip="xml形式の古いNNDDのライブラリ情報をインポートします"/>
+							   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
 					<mx:CheckBox label="現在のNNDDのライブラリ情報を削除してからインポート" selected="false" id="checkBox_initalize"
 								 left="49" top="164" 
 								 toolTip="現在のNNDDのライブラリ情報を一度削除したあと、ライブラリ情報を読み込みます。このチェックを外してインポートした場合は、現在のNNDDのライブラリ情報に上書きされます。"/>

@@ -5250,13 +5250,35 @@ private function importButtonChecked():void
 		
 		var targetXMLFile:File = event.target as File;
 		
-		var isInit:Boolean = checkBox_initalize.selected;
-		
-		var isOverWrite:Boolean = true;
-		if(isInit){
-			isOverWrite = false;
+		if(targetXMLFile.name != "library.xml"){
+			Alert.show("「library.xml」を指定してください。", Message.M_ERROR);
+			return;
 		}
-		SQLiteLibraryManager.instance.convertFromXML(targetXMLFile, isOverWrite);
+		
+		var loadWindow:LoadWindow = PopUpManager.createPopUp(nndd, LoadWindow, true) as LoadWindow;
+		loadWindow.label_loadingInfo.text = "インポートしています";
+		loadWindow.progressBar_loading.label = "インポート中...";
+		PopUpManager.centerPopUp(loadWindow);
+		
+		var timer:Timer = new Timer(100, 1);
+		timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
+		
+			var isInit:Boolean = checkBox_initalize.selected;
+			
+			var isOverWrite:Boolean = true;
+			if(isInit){
+				isOverWrite = false;
+				var libraryDBFile:File = SQLiteLibraryManager.instance.libraryFile;
+				libraryDBFile.copyTo(new File(libraryDBFile.url + ".back"), true);
+			}
+			SQLiteLibraryManager.instance.convertFromXML(targetXMLFile, isOverWrite);
+			
+			PopUpManager.removePopUp(loadWindow);
+			
+			checkBox_initalize.selected = false;
+			
+		}, false, 0, true);
+		timer.start();
 		
 	}, false, 0, true);
 	libraryDir.browseForOpen("インポートするライブラリファイル(library.xml)を選択", typeArray);

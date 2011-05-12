@@ -320,7 +320,7 @@ package org.mineap.nndd.library.sqlite
 				
 				var libraryManager:NamedArrayLibraryManager = NamedArrayLibraryManager.instance;
 				libraryManager.useAppDirLibFile = this._useAppDirLibFile;
-				libraryManager.changeLibraryDir(this.libraryDir);
+//				libraryManager.changeLibraryDir(this.libraryDir);
 				
 				var libraryFile:File = this.systemFileDir.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 				if(xmlFile != null){
