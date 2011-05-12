@@ -258,17 +258,49 @@ package org.mineap.nndd.library.namedarray
 		}
 		
 		/**
+		 * 指定されたライブラリファイル(library.xml)を読み込んでメモリ中に展開します。
+		 * 
+		 * @param libraryFile
+		 * @return 
+		 * 
+		 */
+		public function loadLibraryByFile(libraryFile:File):Vector.<NNDDVideo>
+		{
+			
+			var vector:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
+			if(libraryFile == null){
+				return vector;
+			}
+			if(!libraryFile.exists){
+				return vector;
+			}
+			
+			loadLibraryFile(libraryFile);
+			
+			for each(var nnddVideo:NNDDVideo in this._libraryVideoIdMap)
+			{
+				vector.push(nnddVideo);
+			}
+			
+			return vector;
+		}
+		
+		/**
 		 * ライブラリを読み込みます。
 		 * 
 		 * @return 正常に読み込みが完了したかどうか。成功していればtrueを返す。
 		 * 
 		 */
-		private function loadLibraryFile():Boolean{
+		private function loadLibraryFile(libraryFile:File = null):Boolean{
 			var fileIO:FileIO = new FileIO(_logger);
 			
 			try{
 				
-				var libraryXML:XML = fileIO.loadXMLSync(this.libraryFile.url, true);
+				if(libraryFile == null){
+					libraryFile = this.libraryFile;
+				}
+				
+				var libraryXML:XML = fileIO.loadXMLSync(libraryFile.url, true);
 				
 				if(libraryXML != null){
 					

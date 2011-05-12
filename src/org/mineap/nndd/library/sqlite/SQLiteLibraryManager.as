@@ -302,34 +302,44 @@ package org.mineap.nndd.library.sqlite
 		
 		/**
 		 * 
+		 * @param xmlFile library.xmlファイル
+		 * @param isOverwrite 既存のデータを上書きするかどうか
 		 * 
 		 */
-		private function convertFromXML():void{
+		public function convertFromXML(xmlFile:File = null, isOverwrite:Boolean = false):void{
 			_logger.addLog("library.xmlをlibrary.dbに変換中...");
 			trace("変換開始");
 			
 			try{
 				
-				_logger.addLog("データベースのテーブルを作成");
-				_dbAccessHelper.dropTables();
-				_dbAccessHelper.createTables();
+				if(!isOverwrite){
+					_logger.addLog("データベースのテーブルを作成");
+					_dbAccessHelper.dropTables();
+					_dbAccessHelper.createTables();
+				}
 				
 				var libraryManager:NamedArrayLibraryManager = NamedArrayLibraryManager.instance;
 				libraryManager.useAppDirLibFile = this._useAppDirLibFile;
-				libraryManager.changeLibraryDir(this.libraryDir, false);
-				_logger.addLog("読み込み先XML:" + libraryManager.libraryFile.nativePath);
-				if(!libraryManager.loadLibrary()){
+				libraryManager.changeLibraryDir(this.libraryDir);
+				
+				var libraryFile:File = this.systemFileDir.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
+				if(xmlFile != null){
+					libraryFile = xmlFile;
+				}
+				
+				_logger.addLog("読み込み先XML:" + libraryFile.nativePath);
+				if(!libraryFile.exists){
 					_logger.addLog("読み込み先XMLが存在しないため中断");
 					throw new Error("読み込み先XMLが存在しないため中断");
 				}
-				var vector:Vector.<NNDDVideo> = libraryManager.getNNDDVideoArray(this._libraryDir, true);
+				var vector:Vector.<NNDDVideo> = libraryManager.loadLibraryByFile(libraryFile);
 				trace(vector.length);
 				_logger.addLog("変換対象動画数:" + vector.length);
 				
 				var date:Date = new Date();
 				
 				for each(var nnddVideo:NNDDVideo in vector){
-					add(nnddVideo, false, false);
+					add(nnddVideo, false, isOverwrite);
 				}
 				
 				var time:Number = (new Date().time - date.time);

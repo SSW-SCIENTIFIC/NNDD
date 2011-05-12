@@ -28,6 +28,7 @@ import flash.events.ProgressEvent;
 import flash.events.TimerEvent;
 import flash.filesystem.File;
 import flash.geom.Rectangle;
+import flash.net.FileFilter;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.net.URLRequestDefaults;
@@ -5236,6 +5237,29 @@ private function windowPositionReset():void{
 private function renewLibraryButtonClicked():void{
 	
 	renewAndShowDialog(libraryManager.libraryDir, true);
+	
+}
+
+private function importButtonChecked():void
+{
+	var libraryDir:File = libraryManager.systemFileDir;
+	
+	var typeArray:Array = new Array(new FileFilter("Library File", "library.xml"));
+	
+	libraryDir.addEventListener(Event.SELECT, function(event:Event):void{
+		
+		var targetXMLFile:File = event.target as File;
+		
+		var isInit:Boolean = checkBox_initalize.selected;
+		
+		var isOverWrite:Boolean = true;
+		if(isInit){
+			isOverWrite = false;
+		}
+		SQLiteLibraryManager.instance.convertFromXML(targetXMLFile, isOverWrite);
+		
+	}, false, 0, true);
+	libraryDir.browseForOpen("インポートするライブラリファイル(library.xml)を選択", typeArray);
 	
 }
 
