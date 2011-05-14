@@ -36,12 +36,17 @@ package org.mineap.nndd.library
 		 * また、古いライブラリ情報から動画がエコノミーモードかどうかもチェックし、該当するVideoがあればそのデータを反映します。
 		 * 
 		 * @param filePath
+		 * @param skipLoadThumbInfoXML
 		 * @return 収集した結果のNNDDVideoオブジェクト。失敗した場合はnullを返す。
 		 * 
 		 */
-		public function loadInfo(filePath:String):NNDDVideo{
-			var fileIO:FileIO = new FileIO(logManager);
-			var thumbInfoXML:XML = fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath), true);
+		public function loadInfo(filePath:String, skipLoadThumbInfoXML:Boolean = false):NNDDVideo{
+			var thumbInfoXML:XML = null;
+
+			if(!skipLoadThumbInfoXML){
+				var fileIO:FileIO = new FileIO(logManager);
+				thumbInfoXML = fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath), true);
+			}
 			
 			var file:File = null;
 			

@@ -338,8 +338,39 @@ package org.mineap.nndd.library.sqlite
 				
 				var date:Date = new Date();
 				
+				var failVideos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
+				
 				for each(var nnddVideo:NNDDVideo in vector){
-					add(nnddVideo, false, isOverwrite);
+					if (isOverwrite)
+					{
+						tempVideo = null;
+						tempVideo = isExist(nnddVideo.key);
+						
+						if (tempVideo == null)
+						{
+							// 存在しない物は追加
+							if (!add(nnddVideo, false, true))
+							{
+								failVideos.push(nnddVideo);
+							}
+						}
+						else
+						{
+							// 存在する物は上書き
+							if (!update(nnddVideo, false))
+							{
+								failVideos.push(nnddVideo);
+							}
+						}
+					}
+					else
+					{
+						// 全てinsertになるはず
+						if (!add(nnddVideo, false, false))
+						{
+							failVideos.push(nnddVideo);
+						}
+					}
 				}
 				
 				var time:Number = (new Date().time - date.time);
@@ -347,10 +378,21 @@ package org.mineap.nndd.library.sqlite
 				
 				_logger.addLog("変換完了(" + time + " ms)");
 				
+				for each(var tempVideo:NNDDVideo in failVideos)
+				{
+					_logger.addLog("次の動画をデータベースに追加できませんでした:" + tempVideo.getDecodeUrl());
+				}
+				
 				updateVersion();
 				
-				Alert.show("再構築が完了しました。", Message.M_MESSAGE);
-				
+				if (failVideos.length == 0)
+				{
+					Alert.show("再構築が完了しました。", Message.M_MESSAGE);
+				}
+				else
+				{
+					Alert.show("再構築が完了しましたが、データベースに追加できなかった動画があります。\n(詳細はログを参照してください。))", Message.M_MESSAGE);
+				}
 			}catch(error:Error){
 				trace(error.getStackTrace());
 				_logger.addLog("ライブラリの変換に失敗:" + error);
@@ -433,7 +475,6 @@ package org.mineap.nndd.library.sqlite
 			
 		}
 		
-		
 		/**
 		 * 動画一覧生成済みのArrayから呼ばれるコールバック関数です。
 		 * 
@@ -463,33 +504,41 @@ package org.mineap.nndd.library.sqlite
 					return;
 				}
 				
-				
 				var loader:LocalVideoInfoLoader = new LocalVideoInfoLoader();
 				var nnddVideo:NNDDVideo = loader.loadInfo(file.url);
 				
-				var key:String = nnddVideo.key;
+				if (nnddVideo == null)
+				{
+					return;
+				}
 				
+				var key:String = nnddVideo.key;
 				_tempLibraryMap[key] = nnddVideo;
 				
-				if(index%10 == 0){
+				var tempVideo:NNDDVideo = isExistByVideoId(nnddVideo.key);
+				if(tempVideo == null){
+					if(!add(nnddVideo, false, true))
+					{
+						_logger.addLog("データベースに登録失敗:" + nnddVideo.getDecodeUrl());
+						trace(nnddVideo.getDecodeUrl());
+					}
+				}else{
+					nnddVideo.id = tempVideo.id;
+					if(!update(nnddVideo, false))
+					{
+						_logger.addLog("データベースに登録失敗:" + nnddVideo.getDecodeUrl());
+						trace(nnddVideo.getDecodeUrl());
+					}
+				}
+				
+				if(_videoCount%10 == 0){
 					dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOADING, false, false, _totalVideoCount, _videoCount, file));
-					trace(_videoCount + "(" + index + "):" + file.nativePath);
+					trace(_videoCount + "/" + array.length + ":" + file.nativePath);
+					_logger.addLog("ライブラリを更新中... :" + _videoCount + "/" + array.length + ":" + file.name + " (" + file.nativePath + ")");
 				}
 				
 				if(_videoCount >= _totalVideoCount){
 					var tempKey:Object = null;
-					// ライブラリに今回見つかった物を追加
-					for(tempKey in _tempLibraryMap){
-						var nnddVideo:NNDDVideo = _tempLibraryMap[tempKey];
-						
-						var tempVideo:NNDDVideo = isExistByVideoId(nnddVideo.key);
-						if(tempVideo == null){
-							add(nnddVideo, false, true);
-						}else{
-							nnddVideo.id = tempVideo.id;
-							update(nnddVideo, false);
-						}
-					}
 					
 					if(_allDirRenew){
 						//全ディレクトリ探索の場合は単純に削除判定が出来る
@@ -543,6 +592,8 @@ package org.mineap.nndd.library.sqlite
 					
 					updateVersion();
 					
+					_logger.addLog("ライブラリの更新が完了");
+					
 					dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
 				}
 				
@@ -559,6 +610,8 @@ package org.mineap.nndd.library.sqlite
 					this._tagManager.loadTag();
 					
 					updateVersion();
+					
+					_logger.addLog("ライブラリの更新が完了");
 					
 					dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount))
 				}
@@ -671,8 +724,9 @@ package org.mineap.nndd.library.sqlite
 		}
 		
 		/**
+		 * このメソッドは、SQLite版Libraryでは isExist(key:String) と同じ動きをします。
 		 * 
-		 * @param videoId
+		 * @param videoId 動画に割り振られている番号。(sm***)
 		 * @return 
 		 * 
 		 */
@@ -683,7 +737,7 @@ package org.mineap.nndd.library.sqlite
 		
 		/**
 		 * 
-		 * @param key
+		 * @param key NNDD上で動画を管理するためのキー
 		 * @return 
 		 * 
 		 */
