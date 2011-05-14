@@ -294,6 +294,7 @@ public function resizeInfoView():void
 public function followInfoView(lastRect:Rectangle):void{
 	if(lastRect != null && this.videoInfoView != null 
 			&& this.nativeWindow != null
+			&& this.nativeWindow.visible
 		    && this.videoInfoView.nativeWindow != null
 			&& this.videoInfoView.visible 
 			&& this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
