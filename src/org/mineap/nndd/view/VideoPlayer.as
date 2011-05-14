@@ -192,6 +192,7 @@ public function showVideoPlayerAndVideoInfoView():void{
 		
 		if (videoInfoView.nativeWindow != null)
 		{
+			videoInfoView.visible = true;
 			videoInfoView.nativeWindow.orderToFront();
 		}
 		
