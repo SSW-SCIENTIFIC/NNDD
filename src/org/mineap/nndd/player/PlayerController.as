@@ -2474,7 +2474,8 @@ package org.mineap.nndd.player
 			trace(seekTime);
 			if(this.windowReady){
 				if((new Date().time)-lastSeekTime > 1000){
-					if((videoDisplay != null && videoDisplay.initialized && videoDisplay.duration > 0) || (swfLoader != null && swfLoader.initialized)){
+					if((videoDisplay != null && videoDisplay.initialized && videoDisplay.duration > 0) 
+							|| (swfLoader != null && swfLoader.initialized)){
 						
 						
 						trace("seekStart:" + seekTime);
@@ -2491,13 +2492,19 @@ package org.mineap.nndd.player
 							videoDisplay.seek(seekTime);
 							commentTimerVpos = seekTime*1000;
 						}else if(this.windowType == PlayerController.WINDOW_TYPE_SWF){
-							mc.gotoAndPlay(int(seekTime));
+							if(pausing){
+								mc.gotoAndStop(int(seekTime));
+							}
+							else
+							{
+								mc.gotoAndPlay(int(seekTime));
+							}
 							commentTimerVpos = (seekTime/swfFrameRate)*1000;
 						}
 						
 						commentManager.removeAll();
 
-						if(!this.pausing || this.windowType == PlayerController.WINDOW_TYPE_SWF){
+						if(!this.pausing){
 							commentTimer.start();
 						}
 						lastSeekTime = new Date().time;

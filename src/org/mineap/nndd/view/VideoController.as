@@ -257,9 +257,15 @@ private function sliderVolumeChanged(evt:SliderEvent):void{
 
 private function myDataTipFormatFunction(value:Number):String{
 	var nowSec:String="00",nowMin:String="0";
+	
+	if(this.playerController.windowType == PlayerController.WINDOW_TYPE_SWF)
+	{
+		var rate:Number = this.playerController.swfFrameRate
+		value = value/rate;
+	}
+	
 	nowSec = String(int(value%60));
 	nowMin = String(int(value/60));
-	
 	if(nowSec.length == 1){
 		nowSec = "0" + nowSec; 
 	}
