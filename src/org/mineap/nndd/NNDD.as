@@ -81,6 +81,8 @@ import mx.managers.FocusManager;
 import mx.managers.PopUpManager;
 
 import org.mineap.nicovideo4as.*;
+import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
+import org.mineap.nicovideo4as.loader.api.ApiGetThumbInfoAccess;
 import org.mineap.nicovideo4as.model.*;
 import org.mineap.nicovideo4as.util.HtmlUtil;
 import org.mineap.nndd.*;
@@ -5871,6 +5873,76 @@ private function myListRenewButtonClicked(event:Event):void{
 					textArea_myList.text = HtmlUtil.convertSpecialCharacterNotIncludedString(text);
 					_myListManager.lastTitle = HtmlUtil.convertSpecialCharacterNotIncludedString(title);
 					
+					//マイリストで動画のサムネイル情報を見せる機能。マイリスト再読み込みで消えてしまう。
+					//保存するとかなんとか考えた方がいい
+					
+//					var obj_index_map:Object = new Object();
+//					
+//					var index:int = 0;
+//					for each(var object:Object in myListItemProvider)
+//					{
+//						var videoId:String = object.dataGridColumn_videoId;
+//						object.dataGridColumn_videoInfo = "取得中...";
+//						
+//						obj_index_map[videoId] = index;
+//						index++;
+//						
+//						var loader:ApiGetThumbInfoAccess = new ApiGetThumbInfoAccess();
+//						loader.addEventListener(Event.COMPLETE, function(event:Event):void{
+//							var status:String = "取得に失敗";
+//							if(loader != null)
+//							{
+//								
+//								var analyzer:org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer = 
+//										new org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer(new XML(event.currentTarget.data));
+//								if(analyzer != null)
+//								{
+//									if(analyzer.status.toLowerCase() == "ok")
+//									{
+//										status = "再生:" + analyzer.viewCounter +
+//											",コメント:" + analyzer.commentNum +
+//											"\nマイリスト:" + analyzer.myListNum +
+//											"\n" + analyzer.lastResBody;
+//									}
+//									else
+//									{
+//										status = Message.L_VIDEO_DELETED;
+//									}
+//								}
+//								
+//								var index:int = obj_index_map[analyzer.videoId];
+//								var target:Object = null;
+//								if(index > -1 && (dataGrid_myList.dataProvider as ArrayCollection).length > index)
+//								{
+//									target = dataGrid_myList.dataProvider[index];
+//								}
+//								
+//								if(target != null)
+//								{
+//									target.dataGridColumn_videoInfo = status;
+//									(dataGrid_myList.dataProvider as ArrayCollection).setItemAt(target, index);
+//								}
+//							}
+//						});
+//						loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
+//							var status:String = "取得に失敗";
+//							var index:int = obj_index_map[PathMaker.getVideoID(loader.url)];
+//							var target:Object = null;
+//							if(index > -1 && (dataGrid_myList.dataProvider as ArrayCollection).length > index)
+//							{
+//								target = dataGrid_myList.dataProvider[index];
+//							}
+//							
+//							if(target != null)
+//							{
+//								target.dataGridColumn_videoInfo = status;
+//								(dataGrid_myList.dataProvider as ArrayCollection).setItemAt(target, index);
+//							}
+//						});
+//						loader.load(new URLRequest("http://ext.nicovideo.jp/api/getthumbinfo/" + videoId));
+//						
+//					}
+					
 					button_myListRenew.label == "更新";
 					dataGrid_myList.validateNow();
 					if(loading != null){
@@ -5878,6 +5950,7 @@ private function myListRenewButtonClicked(event:Event):void{
 						loading.remove();
 						loading = null;
 					}
+					
 					_nnddMyListLoader = null;
 					tree_myList.enabled = true;
 					dataGrid_myList.enabled = true;

@@ -1315,8 +1315,10 @@
 										</mx:itemRenderer>
 									</mx:DataGridColumn>
 									<mx:DataGridColumn headerText="動画名" dataField="dataGridColumn_videoName"/>
-									<mx:DataGridColumn headerText="情報" dataField="dataGridColumn_videoInfo" width="180"/>
+									<!-- <mx:DataGridColumn headerText="情報" dataField="dataGridColumn_videoInfo" width="180"/> -->
+									<mx:DataGridColumn headerText="投稿者" dataField="dataGridColumn_ownerInfo" width="180" />
 									<mx:DataGridColumn headerText="状況" dataField="dataGridColumn_condition" width="100"/>
+									<mx:DataGridColumn headerText="" dataField="dataGridColumn_videoId" width="0" visible="false"/>
 								</mx:columns>
 							</mx:DataGrid>
 						</mx:Canvas>
