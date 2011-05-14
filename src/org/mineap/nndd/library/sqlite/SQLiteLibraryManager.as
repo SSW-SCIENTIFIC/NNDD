@@ -356,6 +356,11 @@ package org.mineap.nndd.library.sqlite
 						}
 						else
 						{
+							
+							// xml版で取得していないデータはSQLite版のデータを上書き
+							nnddVideo.time = tempVideo.time;
+							nnddVideo.pubDate = tempVideo.pubDate;
+							
 							// 存在する物は上書き
 							if (!update(nnddVideo, false))
 							{
