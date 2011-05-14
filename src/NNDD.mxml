@@ -1486,7 +1486,6 @@
 											<fx:Component>
 												<mx:Image width="100%" 
 														  height="100%" 
-														  cacheAsBitmap="true" 
 														  mouseOver="image1_mouseOverHandler(event)" 
 														  mouseMove="image1_mouseMoveHandler(event)" 
 														  mouseOut="image1_mouseOutHandler(event)"
@@ -1563,6 +1562,8 @@
 																		  }
 																		  
 																		  var image:Image = (FlexGlobals.topLevelApplication as NNDD).thumbImageView;
+																		  image.width = 130;
+																		  image.height = 100;
 																		  if(image.source != null){
 																			  image.visible = true;
 																			  if(image.height + image.y > FlexGlobals.topLevelApplication.height - 15){
@@ -1605,7 +1606,7 @@
 								  focusIn="textInput_focusInHandler(event)"
 								  focusOut="textInput_searchInDLList_focusOutHandler(event)"/>
 					
-					<mx:HSlider width="110" minimum="0.5" maximum="5.0" 
+					<mx:HSlider width="110" minimum="1.0" maximum="5.0" 
 								snapInterval="0.1" value="1" right="10" bottom="5" 
 								liveDragging="true" change="thumbSizeChangedForLibrary(event)" 
 								id="slider_thumbImageSizeForLibrary"
@@ -1644,7 +1645,7 @@
 			<mx:Button left="10" bottom="5" width="50" label="再生" click="historyItemPlay(event)"/>
 			<mx:Button label="DLリストに追加" click="historyItemDownload(event)" left="64" bottom="5"/>
 			<mx:VRule height="22" width="10" left="173" bottom="5"/>
-			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForHistory(event)" id="slider_thumbImageSizeForHistory" toolTip="履歴の行の高さを変更します"/>
+			<mx:HSlider width="110" minimum="1.0" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForHistory(event)" id="slider_thumbImageSizeForHistory" toolTip="履歴の行の高さを変更します"/>
 		</mx:Canvas>
 		
 		<mx:Canvas label="設定" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_option" 
@@ -1679,7 +1680,7 @@
 					
 					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="237"/>
 					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="259" top="236"/>
-					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="31" top="265"/>
+					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="265"/>
 					<mx:HRule left="47" right="10" top="0" height="21"/>
 					<mx:HRule left="31" right="10" top="295" height="10"/>
 					
@@ -1687,12 +1688,12 @@
 					<!--
 					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
 					-->
-					<mx:Label text="アプリケーションで使用するフォント：" left="31" top="316"/>
+					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="316"/>
 					<mx:ComboBox left="260" top="316" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
 					<mx:Button label="デフォルト" left="472" top="315" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
 					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="54" top="339"/>
 					
-					<mx:Label x="31" y="368" text="フォントのサイズ："/>
+					<mx:Label left="30" top="368" text="フォントのサイズ："/>
 					<mx:ComboBox left="152" top="368" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
