@@ -190,20 +190,26 @@ public function showVideoPlayerAndVideoInfoView():void{
 		
 //		trace("ShowVideoInfoView");
 		
-		if (videoInfoView.nativeWindow != null)
+		if (this.nativeWindow != null 
+				&& !this.closed 
+				&& videoInfoView.nativeWindow != null)
 		{
 			videoInfoView.visible = true;
 			videoInfoView.nativeWindow.orderToFront();
+			
+			if(videoInfoView.isPlayerFollow){
+				followInfoView(lastRect);
+			}
+			
 		}
 		
-		if (this.nativeWindow != null)
+		if (this.nativeWindow != null
+				&& !this.closed)
 		{
 			this.nativeWindow.orderToFront();
 		}
 		
-		if(videoInfoView.isPlayerFollow){
-			followInfoView(lastRect);
-		}
+		
 		
 	}
 }
@@ -294,8 +300,10 @@ public function resizeInfoView():void
 public function followInfoView(lastRect:Rectangle):void{
 	if(lastRect != null && this.videoInfoView != null 
 			&& this.nativeWindow != null
-			&& this.nativeWindow.visible
+			&& !this.closed	// playerが閉じられたあとではない
+			&& this.visible
 		    && this.videoInfoView.nativeWindow != null
+			&& !this.videoInfoView.closed	// infoviewが閉じられたあとではない
 			&& this.videoInfoView.visible 
 			&& this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
 			&& this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED 	// videoPlayerが最小化されていない
