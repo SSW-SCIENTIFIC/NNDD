@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>2.0.2</versionNumber>
-	<url>http://osdn.dl.sourceforge.jp/nndd/51979/NNDDv2_0_2.air</url>
+	<versionNumber>2.0.3</versionNumber>
+	<url>http://osdn.dl.sourceforge.jp/nndd/51983/NNDDv2_0_2.air</url>
 	<description><![CDATA[
+v2.0.3
+・【バグフィックス】InfoViewが複数表示される不具合を修正
+
 v2.0.2
 ・古いバージョンのライブラリ情報(library.xml)の手動インポート機能を実装
 ・ライブラリの更新速度改善およびログ出力強化

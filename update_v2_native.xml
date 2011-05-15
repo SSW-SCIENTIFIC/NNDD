@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.0.2</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/51979/NNDDv2_0_2.dmg</url>
+	<version>2.0.3</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/51983/NNDDv2_0_2.dmg</url>
 	<description><![CDATA[
+v2.0.3
+・【バグフィックス】InfoViewが複数表示される不具合を修正
+
+
 v2.0.2
 ・古いバージョンのライブラリ情報(library.xml)の手動インポート機能を実装
 ・ライブラリの更新速度改善およびログ出力強化
@@ -97,9 +101,13 @@ v2.0.0 Alpha -> Beta
 </dmg>
 
 <exe>
-	<version>2.0.2</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/51979/NNDDv2_0_2.exe</url>
+	<version>2.0.3</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/51983/NNDDv2_0_2.exe</url>
 	<description><![CDATA[
+v2.0.3
+・【バグフィックス】InfoViewが複数表示される不具合を修正
+
+
 v2.0.2
 ・古いバージョンのライブラリ情報(library.xml)の手動インポート機能を実装
 ・ライブラリの更新速度改善およびログ出力強化
