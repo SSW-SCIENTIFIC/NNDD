@@ -1,10 +1,11 @@
 package org.mineap.nndd.util
 {
 	import flash.net.URLRequest;
+	import flash.net.URLVariables;
 	import flash.net.navigateToURL;
 	
-	import org.mineap.nndd.LogManager;
 	import org.mineap.nicovideo4as.WatchVideoPage;
+	import org.mineap.nndd.LogManager;
 
 	/**
 	 * ニコニコ動画以外のウェブサービスへのアクセスを行うユーティリティクラスです
@@ -93,7 +94,13 @@ package org.mineap.nndd.util
 				
 				tweet = title + " " + url;
 				
-				navigateToURL(new URLRequest("http://twitter.com/home/?status=" + encodeURIComponent(tweet)));
+				var urlRequest:URLRequest = new URLRequest("https://twitter.com/");
+				var variables:URLVariables = new URLVariables();
+				variables.status = tweet;
+				
+				urlRequest.data = variables;
+				
+				navigateToURL(urlRequest);
 				LogManager.instance.addLog("twitterでつぶやく:" + title);
 			}
 		}
