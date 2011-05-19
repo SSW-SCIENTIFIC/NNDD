@@ -623,7 +623,7 @@ package org.mineap.nndd.library.sqlite
 			
 			for each(var video:NNDDVideo in videoMap)
 			{
-				var tempVideo:NNDDVideo = isExistByVideoId(video.key);
+				var tempVideo:NNDDVideo = NNDDVideoDao.instance.selectNNDDVideoByKey(video.key, false);
 				var result:Boolean = false;
 				if(tempVideo == null){
 					

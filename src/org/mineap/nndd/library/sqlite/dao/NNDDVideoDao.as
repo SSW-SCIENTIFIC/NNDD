@@ -78,7 +78,7 @@ package org.mineap.nndd.library.sqlite.dao
 		 * @return 
 		 * 
 		 */
-		public function insertNNDDVideo(nnddVideo:NNDDVideo, transactionEnable:Boolean = false):Boolean{
+		public function insertNNDDVideo(nnddVideo:NNDDVideo, transactionEnable:Boolean = true):Boolean{
 			
 			try{
 				
@@ -184,7 +184,7 @@ package org.mineap.nndd.library.sqlite.dao
 		 * @return 
 		 * 
 		 */
-		public function updateNNDDVideo(nnddVideo:NNDDVideo, transactionEnable:Boolean = false):Boolean{
+		public function updateNNDDVideo(nnddVideo:NNDDVideo, transactionEnable:Boolean = true):Boolean{
 			
 			try{
 				
