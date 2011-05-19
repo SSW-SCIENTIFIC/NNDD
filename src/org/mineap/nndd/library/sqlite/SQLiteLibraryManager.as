@@ -520,35 +520,23 @@ package org.mineap.nndd.library.sqlite
 				var key:String = nnddVideo.key;
 				_tempLibraryMap[key] = nnddVideo;
 				
-				var tempVideo:NNDDVideo = isExistByVideoId(nnddVideo.key);
-				if(tempVideo == null){
-					if(!add(nnddVideo, false, true))
-					{
-						_logger.addLog("データベースに登録失敗:" + nnddVideo.getDecodeUrl());
-						trace(nnddVideo.getDecodeUrl());
-					}
-				}else{
-					nnddVideo.id = tempVideo.id;
-					if(!update(nnddVideo, false))
-					{
-						_logger.addLog("データベースに登録失敗:" + nnddVideo.getDecodeUrl());
-						trace(nnddVideo.getDecodeUrl());
-					}
-				}
-				
 				if(_videoCount%10 == 0){
 					dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOADING, false, false, _totalVideoCount, _videoCount, file));
 					trace(_videoCount + "/" + array.length + ":" + file.nativePath);
-					_logger.addLog("ライブラリを更新中... :" + _videoCount + "/" + array.length + ":" + file.name + " (" + file.nativePath + ")");
+					_logger.addLog("動画情報を収集中... :" + _videoCount + "/" + array.length + ":" + file.name + " (" + file.nativePath + ")");
 				}
 				
 				if(_videoCount >= _totalVideoCount){
 					var tempKey:Object = null;
 					
+					_logger.addLog("動画をデータベースに登録中...");
+					
+					addVideos(_tempLibraryMap);
+					
 					if(_allDirRenew){
 						//全ディレクトリ探索の場合は単純に削除判定が出来る
 						tempKey = null;
-						_logger.addLog("見つからなかった動画をライブラリから除去中...");
+						_logger.addLog("見つからなかった動画をデータベースから除去中...");
 						
 						var vector:Vector.<NNDDVideo> = NNDDVideoDao.instance.selectAllNNDDVideo();
 						
@@ -562,7 +550,7 @@ package org.mineap.nndd.library.sqlite
 						}
 					}else{
 						// 今回探索したフォルダについて、無くなったファイルを取り除く
-						_logger.addLog("見つからなかった動画をライブラリから除去中...");
+						_logger.addLog("見つからなかった動画をデータベースから除去中...");
 						
 						// 今回探索したフォルダの一覧を作る
 						var folders:Object = new Object();
@@ -622,6 +610,44 @@ package org.mineap.nndd.library.sqlite
 				}
 			}
 			
+		}
+		
+		/**
+		 * 
+		 * @param videoMap
+		 * 
+		 */
+		private function addVideos(videoMap:Object):void
+		{
+			NNDDVideoDao.instance.transactionStart();
+			
+			for each(var video:NNDDVideo in videoMap)
+			{
+				var tempVideo:NNDDVideo = isExistByVideoId(video.key);
+				var result:Boolean = false;
+				if(tempVideo == null){
+					
+					result = NNDDVideoDao.instance.insertNNDDVideo(video, false);
+					
+					if(!result)
+					{
+						_logger.addLog("データベースに登録失敗:" + video.getDecodeUrl());
+						trace(video.getDecodeUrl());
+					}
+				}else{
+					video.id = tempVideo.id;
+					
+					result = NNDDVideoDao.instance.updateNNDDVideo(video, false);
+					
+					if(!result)
+					{
+						_logger.addLog("データベースに登録失敗:" + video.getDecodeUrl());
+						trace(video.getDecodeUrl());
+					}
+				}
+			}
+			
+			NNDDVideoDao.instance.transactionEnd();
 		}
 		
 		/**

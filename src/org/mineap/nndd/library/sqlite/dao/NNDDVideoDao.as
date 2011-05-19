@@ -45,17 +45,47 @@ package org.mineap.nndd.library.sqlite.dao
 		}
 		
 		/**
+		 * トランザクションを開始します。
+		 * 
+		 */		
+		public function transactionStart():void
+		{
+			DbAccessHelper.instance.connection.begin();
+		}
+		
+		/**
+		 * トランザクションを終了し、コミットします。
+		 * 
+		 */
+		public function transactionEnd():void
+		{
+			DbAccessHelper.instance.connection.commit();
+		}
+		
+		/**
+		 * ロールバックします。
+		 * 
+		 */
+		public function rollback():void
+		{
+			DbAccessHelper.instance.connection.rollback();
+		}
+		
+		/**
 		 * 動画を追加します
 		 * 
 		 * @param nnddVideo
 		 * @return 
 		 * 
 		 */
-		public function insertNNDDVideo(nnddVideo:NNDDVideo):Boolean{
+		public function insertNNDDVideo(nnddVideo:NNDDVideo, transactionEnable:Boolean = false):Boolean{
 			
 			try{
 				
-				DbAccessHelper.instance.connection.begin();
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.begin();
+				}
 				
 				/* ディレクトリ情報を探す */
 				var dir:NNDDFile = FileDao.instance.selectFileByFile(nnddVideo.dir);
@@ -129,12 +159,18 @@ package org.mineap.nndd.library.sqlite.dao
 				/* タグとの関連情報を保存 */
 				NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray);
 				
-				DbAccessHelper.instance.connection.commit();
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.commit();
+				}
 				
 				return true;
 				
 			}catch(error:SQLError){
-				DbAccessHelper.instance.connection.rollback();
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.rollback();
+				}
 				trace(error.getStackTrace());
 			}
 			
@@ -148,11 +184,14 @@ package org.mineap.nndd.library.sqlite.dao
 		 * @return 
 		 * 
 		 */
-		public function updateNNDDVideo(nnddVideo:NNDDVideo):Boolean{
+		public function updateNNDDVideo(nnddVideo:NNDDVideo, transactionEnable:Boolean = false):Boolean{
 			
 			try{
 				
-				DbAccessHelper.instance.connection.begin();
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.begin();
+				}
 				
 				/* ディレクトリ情報を探す */
 				var dir:NNDDFile = FileDao.instance.selectFileByFile(nnddVideo.dir);
@@ -228,13 +267,20 @@ package org.mineap.nndd.library.sqlite.dao
 				// 動画とタグの関連を再設定
 				NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray);
 				
-				DbAccessHelper.instance.connection.commit();
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.commit();
+				}					
 				
 				return true;
 				
 			}catch(error:SQLError){
 				trace(error.getStackTrace());
-				DbAccessHelper.instance.connection.rollback();
+				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.rollback();
+				}
 			}
 			
 			return false;
