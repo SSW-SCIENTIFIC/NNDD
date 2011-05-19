@@ -115,6 +115,7 @@ import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
 import org.mineap.nndd.playList.PlayListDataGridBuilder;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
+import org.mineap.nndd.player.PlayerManager;
 import org.mineap.nndd.search.SearchItemManager;
 import org.mineap.nndd.tag.NgTagManager;
 import org.mineap.nndd.tag.TagManager;
@@ -134,7 +135,6 @@ private var playListManager:PlayListManager;
 private var libraryManager:ILibraryManager;
 private var tagManager:TagManager;
 private var ngTagManager:NgTagManager;
-private var playerController:PlayerController;
 private var logManager:LogManager;
 private var loading:LoadingPicture;
 private var downloadManager:DownloadManager;
@@ -167,9 +167,6 @@ public static const HISTORY_LIST_TAB_NUM:int = 5;
 public static const OPTION_TAB_NUM:int = 6;
 
 public var version:String = "";
-
-private var MAILADDRESS:String = "";
-private var PASSWORD:String = "";
 
 private var logString:String = "";
 
@@ -486,7 +483,7 @@ public function initNNDD(nndd:NNDD):void
 	}
 	
 	/* ダウンロードマネージャ */
-	this.downloadManager = new DownloadManager(downloadProvider, downloadedListManager, MAILADDRESS, PASSWORD, canvas_queue, 
+	this.downloadManager = new DownloadManager(downloadProvider, downloadedListManager, UserManager.instance.user, UserManager.instance.password, canvas_queue, 
 		rankingProvider, searchProvider, myListItemProvider, logManager);
 	this.downloadManager.isAlwaysEconomy = this.isAlwaysEconomy;
 	this.downloadManager.isAppendComment = this.isAppendComment;
@@ -1236,7 +1233,7 @@ private function addMyList(myListId:String, video:NNDDVideo):void{
 		_myListAdder = null;
 	});
 	
-	this._myListAdder.addMyList("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl()), myListId, this.MAILADDRESS, this.PASSWORD);	
+	this._myListAdder.addMyList("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl()), myListId, UserManager.instance.user, UserManager.instance.password);	
 }
 
 
@@ -1498,7 +1495,7 @@ private function invokeEventHandler(event:InvokeEvent):void{
 			}else if(arg1.indexOf("http://www.nicovideo.jp/watch/") > -1){
 				// ニコ動
 				
-				if(MAILADDRESS == ""){
+				if(UserManager.instance.user == ""){
 					this.isArgumentBoot = true;
 					this.argumentURL = arg1;
 				}else{
@@ -1515,7 +1512,7 @@ private function invokeEventHandler(event:InvokeEvent):void{
 						if (checker.url != null)
 						{
 							logManager.addLog("短縮URLを展開...:" + checker.url);
-							if(MAILADDRESS == ""){
+							if(UserManager.instance.user == ""){
 								isArgumentBoot = true;
 								argumentURL = checker.url;
 							}else{
@@ -2221,18 +2218,18 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 	
 	PopUpManager.removePopUp(loginDialog);
 	
-	this.MAILADDRESS = loginDialog.textInput_userName.text;
-	this.PASSWORD = loginDialog.textInput_password.text;
+	UserManager.instance.user = loginDialog.textInput_userName.text;
+	UserManager.instance.password = loginDialog.textInput_password.text;
 	
-	MyListRenewScheduler.instance.mailAddress = this.MAILADDRESS;
-	MyListRenewScheduler.instance.password = this.PASSWORD;
+	MyListRenewScheduler.instance.mailAddress = UserManager.instance.user;
+	MyListRenewScheduler.instance.password = UserManager.instance.password;
 	
 	if(this.mylistRenewOnScheduleEnable){
 		MyListRenewScheduler.instance.startNow();
 		MyListRenewScheduler.instance.start((this.myListRenewScheduleTime*60)*1000);
 	}
 	
-	downloadManager.setMailAndPass(this.MAILADDRESS, this.PASSWORD);
+	downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
 	downloadManager.isContactTheUser = isEnableEcoCheck;
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
 	
@@ -2281,17 +2278,17 @@ private function noLogin(event:HTTPStatusEvent):void
 	
 	PopUpManager.removePopUp(loginDialog);
 	
-	this.MAILADDRESS = "";
-	this.PASSWORD = "";
+	UserManager.instance.user = "";
+	UserManager.instance.password = "";
 	
-	MyListRenewScheduler.instance.mailAddress = this.MAILADDRESS;
-	MyListRenewScheduler.instance.password = this.PASSWORD;
+	MyListRenewScheduler.instance.mailAddress = UserManager.instance.user;
+	MyListRenewScheduler.instance.password = UserManager.instance.password;
 	
 	MyListRenewScheduler.instance.stop();
 	
 	logManager.addLog("ログインせず:" + event);
 	
-	downloadManager.setMailAndPass(this.MAILADDRESS, this.PASSWORD);
+	downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
 	
 //	this.nndd.label_status.text = "ログインしていません。";
@@ -2451,11 +2448,11 @@ private function tabChanged():void{
 			
 			var confValue:String = ConfigManager.getInstance().getItem("firstTimeMyListShow");
 			if(confValue == null){
-				if(MAILADDRESS.length > 0 && PASSWORD.length > 0){
+				if(UserManager.instance.user.length > 0 && UserManager.instance.password.length > 0){
 					Alert.show(Message.M_RENEW_MYLIST_GROUP, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{
 						if(event.detail == Alert.YES){
 							MyListManager.instance.addEventListener(MyListManager.MYLIST_RENEW_COMPLETE, myListRenewCompleteHandler);
-							MyListManager.instance.renewMyListIds(MAILADDRESS, PASSWORD);
+							MyListManager.instance.renewMyListIds(UserManager.instance.user, UserManager.instance.password);
 						}
 						ConfigManager.getInstance().setItem("firstTimeMyListShow", false);
 						ConfigManager.getInstance().save();
@@ -2878,19 +2875,10 @@ private function videoStreamingPlayStart(url:String):void{
 				
 			}else{
 				
-				if(playerController == null){
-					playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager);
-					playerController.open();
-				}else{
-					if(!playerController.isOpen()){
-						playerController.destructor();
-						playerController = null;
-						playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager);
-						playerController.open();
-					}
-				}
-				
 				try{
+					
+					var playerController:PlayerController = null;
+					playerController = PlayerManager.instance.getLastPlayerController();
 					
 					playerController.playMovie(mUrl);
 					
@@ -3476,17 +3464,9 @@ public function playMovie(url:String, startIndex:int, playList:PlayList = null):
 				
 			}else{
 				
-				if(playerController == null){
-					playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager)
-					playerController.open();
-				}else{
-					if(!playerController.isOpen()){
-						playerController.destructor();
-						playerController = null;
-						playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager)
-						playerController.open();
-					}
-				}
+				var playerController:PlayerController = null;
+				playerController = PlayerManager.instance.getLastPlayerController();
+				
 				if(startIndex != -1 && playList != null){
 					playerController.playMovie(url, playList, startIndex);
 				}else{
@@ -3675,12 +3655,12 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 						});
 						
 						if(isCommentOnly){
-							renewDownloadManager.renewForCommentOnly(this.MAILADDRESS, 
-								this.PASSWORD, PathMaker.getVideoID(filePath), 
+							renewDownloadManager.renewForCommentOnly(UserManager.instance.user, 
+								UserManager.instance.password, PathMaker.getVideoID(filePath), 
 								PathMaker.getVideoName(filePath), new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
 								this.isAppendComment, null, this.saveCommentMaxCount);
 						}else{
-							renewDownloadManager.renewForOtherVideo(this.MAILADDRESS, this.PASSWORD, 
+							renewDownloadManager.renewForOtherVideo(UserManager.instance.user, UserManager.instance.password, 
 								PathMaker.getVideoID(filePath), PathMaker.getVideoName(filePath), 
 								new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
 								this.isAppendComment, null, this.saveCommentMaxCount);
@@ -4048,12 +4028,12 @@ private function logout(isBootTime:Boolean = true):void
 		logoutButton.label = "ログイン";
 	});
 	
-	this.MAILADDRESS = "";
-	this.PASSWORD = "";
+	UserManager.instance.user = "";
+	UserManager.instance.password = "";
 	
 	if(this.downloadManager != null){
 		this.downloadManager.stop();
-		this.downloadManager.setMailAndPass(this.MAILADDRESS, this.PASSWORD);
+		this.downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
 	}
 	
 	login.logout();
@@ -4324,17 +4304,13 @@ public function exitButtonClicked():void{
 	loadWindow.progressBar_loading.label = "保存中...";
 	PopUpManager.centerPopUp(loadWindow);
 	
-	if(playerController != null && playerController.isOpen() ){
-		playerController.stop();
-	}
+	PlayerManager.instance.stopAll();
 	
 	timer.addEventListener(TimerEvent.TIMER_COMPLETE, function():void{
 		
 		restore();
 		
-		if(playerController != null && playerController.isOpen() ){
-			playerController.playerExit();
-		}
+		PlayerManager.instance.closeAll();
 		
 		saveStore();
 		
@@ -4554,7 +4530,7 @@ private function searchNicoButtonClicked(url:String = null):void{
 					loading.remove();
 					loading = null;
 				});
-				a2nForSearch.request_search(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, this.MAILADDRESS, this.PASSWORD, searchUrl, searchWord , searchProvider, comboBox_sortType.selectedIndex, this.searchPageIndex);
+				a2nForSearch.request_search(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, UserManager.instance.user, UserManager.instance.password, searchUrl, searchWord , searchProvider, comboBox_sortType.selectedIndex, this.searchPageIndex);
 			}catch(error:Error){
 //				setEnableSearchButton(true);
 //				radiogroup_period.enabled = true;
@@ -5224,19 +5200,7 @@ private function windowPositionReset():void{
 	this.width = 850;
 	this.height = 600;
 	
-	if(playerController == null){
-		playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager);
-		playerController.open();
-	}else{
-		if(!playerController.isOpen()){
-			playerController.destructor();
-			playerController = null;
-			playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager);
-			playerController.open();
-		}
-	}
-	
-	playerController.resetWindowPosition();
+	PlayerManager.instance.resetWindowPosition();
 	
 	logManager.addLog(Message.WINDOW_POSITION_RESET);
 	Alert.show(Message.WINDOW_POSITION_RESET, Message.M_MESSAGE);
@@ -5443,7 +5407,7 @@ private function addDLListButtonClicked(event:MouseEvent):void{
 private function addDLList(url:String):void{
 	
 	var auto:Boolean = isAutoDownload;
-	if(MAILADDRESS != "" && PASSWORD != ""){
+	if(UserManager.instance.user != "" && UserManager.instance.password != ""){
 		// ログインしていないなら自動ダウンロードしない
 		auto = false;
 	}		
@@ -5511,17 +5475,7 @@ public function playerOpenButtonClicked(event:Event):void{
 }
 
 public function playerOpen():void{
-	if(playerController != null && playerController.isOpen()){
-		playerController.videoInfoView.activate();
-		playerController.videoPlayer.activate();
-	}else{
-		if(playerController != null){
-			playerController.destructor();
-		}
-		playerController = null;
-		playerController = new PlayerController(MAILADDRESS, PASSWORD, playListManager);
-		playerController.open();
-	}
+	PlayerManager.instance.getLastPlayerController();
 }
 
 private function dlListDroped(event:NativeDragEvent):void{
@@ -6000,7 +5954,7 @@ private function myListRenewButtonClicked(event:Event):void{
 				
 				var myListId:String = MyListUtil.getMyListId(url);
 				if(myListId != null){
-					this._nnddMyListLoader.requestDownloadForPublicMyList(this.MAILADDRESS, this.PASSWORD, myListId);
+					this._nnddMyListLoader.requestDownloadForPublicMyList(UserManager.instance.user, UserManager.instance.password, myListId);
 					return;
 				}
 				
@@ -6702,15 +6656,11 @@ public function connectionStatusViewCreationCompleteHandler(event:FlexEvent):voi
 }
 
 public function play():void{
-	if(this.playerController != null){
-		this.playerController.play();
-	}
+	PlayerManager.instance.getLastPlayerController().play();
 }
 
 public function stop():void{
-	if(this.playerController != null){
-		this.playerController.stop();
-	}
+	PlayerManager.instance.getLastPlayerController().stop();
 }
 
 private function removeHistory():void{
@@ -6868,8 +6818,11 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 }
 
 public function get isMouseHide():Boolean{
-	if(this.playerController != null && this.playerController.isOpen()){ 
-		return (this.playerController.videoPlayer as VideoPlayer).isMouseHide;
+	
+	var playerController:PlayerController = PlayerManager.instance.getLastPlayerController();
+	
+	if(playerController != null && playerController.isOpen()){ 
+		return (playerController.videoPlayer as VideoPlayer).isMouseHide;
 	}else{
 		return false;
 	}
@@ -6878,9 +6831,9 @@ public function get isMouseHide():Boolean{
 
 private function checkBoxAppendCommentChanged(event:Event):void{
 	this.isAppendComment = event.target.selected;
-	if(playerController != null && playerController.videoInfoView != null){
-		playerController.videoInfoView.setAppendComment(this.isAppendComment);
-	}
+	
+	PlayerManager.instance.setAppendComment(this.isAppendComment);
+	
 	this.downloadManager.isAppendComment = this.isAppendComment;
 	
 	numericStepper_saveCommentMaxCount.enabled = this.isAppendComment;
@@ -6950,7 +6903,7 @@ protected function myListRenewNow():void{
 
 protected function getMyListIds(event:Event):void{
 	MyListManager.instance.addEventListener(MyListManager.MYLIST_RENEW_COMPLETE, myListRenewCompleteHandler);
-	MyListManager.instance.renewMyListIds(this.MAILADDRESS, this.PASSWORD);
+	MyListManager.instance.renewMyListIds(UserManager.instance.user, UserManager.instance.password);
 }
 
 protected function myListRenewCompleteHandler(event:Event):void{
@@ -6994,15 +6947,11 @@ protected function fontSizeComboboxChanged(event:ListEvent):void{
 }
 
 public function setPlayerFont(fontName:String):void{
-	if(this.playerController != null){
-		this.playerController.setFont(fontName);
-	}
+	PlayerManager.instance.setFont(fontName);
 }
 
 public function setPlayerFontSize(size:int):void{
-	if(this.playerController != null){
-		this.playerController.setFontSize(size);
-	}
+	PlayerManager.instance.setFontSize(size);
 }
 
 public function openProjectPage(event:Event):void{

@@ -29,7 +29,7 @@ package org.mineap.nndd.user
 		 */
 		public function UserManager()
 		{
-			if(_myListRenewScheduler != null){
+			if(_userManager != null){
 				throw ArgumentError("MyListRenewSchedulerはインスタンス化できません。");
 			}
 		}

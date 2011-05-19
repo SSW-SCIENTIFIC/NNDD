@@ -59,6 +59,7 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.player.comment.CommentManager;
 	import org.mineap.nndd.player.comment.Comments;
 	import org.mineap.nndd.player.model.PlayerTagString;
+	import org.mineap.nndd.user.UserManager;
 	import org.mineap.nndd.util.DateUtil;
 	import org.mineap.nndd.util.IchibaBuilder;
 	import org.mineap.nndd.util.LibraryUtil;
@@ -131,9 +132,6 @@ package org.mineap.nndd.player
 		private var playingIndex:int = 0;
 		
 		private var logManager:LogManager;
-		
-		private var mailAddress:String;
-		private var password:String;
 		
 		private var mc:MovieClip;
 		private var nicowariMC:MovieClip;
@@ -220,28 +218,12 @@ package org.mineap.nndd.player
 		 * FLVやMP4を再生するためのPlayerとSWFを再生するためのPlayerを管理し、<br>
 		 * 必要に応じて切り替えます。<br>
 		 * 
-		 * @param mailAddress
-		 * @param password
-		 * @param playListManager
-		 * @param videoPath
-		 * @param windowType
-		 * @param comments
-		 * @param autoPlay
-		 * 
 		 */
-		public function PlayerController(mailAddress:String, 
-										 password:String, 
-										 playListManager:PlayListManager, 
-										 videoPath:String = null,
-										 windowType:int = -1, 
-										 comments:Comments = null, 
-										 autoPlay:Boolean = false)
+		public function PlayerController()
 		{
 			this.logManager = LogManager.instance;
-			this.mailAddress = mailAddress;
-			this.password = password;
 			this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
-			this.playListManager = playListManager;
+			this.playListManager = PlayListManager.instance;
 			this.videoPlayer = new VideoPlayer();
 			this.videoInfoView = new VideoInfoView();
 			this.videoInfoView.type = NativeWindowType.UTILITY;
@@ -260,10 +242,7 @@ package org.mineap.nndd.player
 			}
 			this.commentTimer.addEventListener(TimerEvent.TIMER, commentTimerHandler);
 			this.commentManager = new CommentManager(videoPlayer, videoInfoView, this);
-			if(videoPath != null && windowType != -1 && comments != null){
-				this.init(videoPath, windowType, comments, PathMaker.createThmbInfoPathByVideoPath(videoPath), autoPlay);
-				this.windowReady = true;
-			}
+
 			this.playerHistoryManager = new PlayerHistoryManager();
 			
 		}
@@ -485,7 +464,7 @@ package org.mineap.nndd.player
 				
 				if(this._videoID != null && PathMaker.getVideoID(videoPath) == LibraryUtil.getVideoKey(videoPath)){
 					
-					if((mailAddress != null && password != null) && (mailAddress != "" && password != null && password != "")){
+					if((UserManager.instance.user != null && UserManager.instance.password != null) && (UserManager.instance.user != "" && UserManager.instance.password != null && UserManager.instance.password != "")){
 						
 						/* ログイン済みの場合は更新を試みる */
 						
@@ -530,8 +509,8 @@ package org.mineap.nndd.player
 				
 				if(this._videoID != null && this._videoID != ""){
 					
-					if(this.mailAddress != null && this.mailAddress != "" &&
-							this.password != null && this.password != ""){
+					if(UserManager.instance.user != null && UserManager.instance.user != "" &&
+							UserManager.instance.password != null && UserManager.instance.password != ""){
 						
 						myListGroupUpdate(PathMaker.getVideoID(this._videoID));
 						
@@ -929,13 +908,13 @@ package org.mineap.nndd.player
 			});
 			
 			if(this.videoInfoView.isRenewOtherCommentWithCommentEachPlay){
-				renewDownloadManager.renewForOtherVideo(this.mailAddress, 
-					this.password, PathMaker.getVideoID(videoId), videoName, 
+				renewDownloadManager.renewForOtherVideo(UserManager.instance.user, 
+					UserManager.instance.password, PathMaker.getVideoID(videoId), videoName, 
 					new File(videoPath.substring(0, videoPath.lastIndexOf("/")+1)), 
 					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount());
 			}else{
-				renewDownloadManager.renewForCommentOnly(this.mailAddress, 
-					this.password, PathMaker.getVideoID(videoId), videoName, 
+				renewDownloadManager.renewForCommentOnly(UserManager.instance.user, 
+					UserManager.instance.password, PathMaker.getVideoID(videoId), videoName, 
 					new File(videoPath.substring(0, videoPath.lastIndexOf("/")+1)), 
 					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount());
 			}
@@ -1014,8 +993,8 @@ package org.mineap.nndd.player
 				}
 				
 				// 過去コメント取得時のコメント更新は一律で追記。
-				renewDownloadManagerForOldComment.renewForCommentOnly(this.mailAddress, 
-					this.password, videoId, videoName, videoPath, true, 
+				renewDownloadManagerForOldComment.renewForCommentOnly(UserManager.instance.user, 
+					UserManager.instance.password, videoId, videoName, videoPath, true, 
 					date, maxCount);
 				
 			}
@@ -2673,7 +2652,7 @@ package org.mineap.nndd.player
 			
 			if(!isStreaming){ //ストリーミング再生では無い場合は、ローカル以外にもニコ動から取得したデータを設定する
 				
-				if(videoID != null && (mailAddress != null && password != null) && (mailAddress != "" && password != "") ){
+				if(videoID != null && (UserManager.instance.user != null && UserManager.instance.password != null) && (UserManager.instance.user != "" && UserManager.instance.password != "") ){
 					
 					//初期化
 					videoInfoView.ichibaNicoProvider.addItem({
@@ -2764,7 +2743,7 @@ package org.mineap.nndd.player
 				}
 			}
 			
-			if(videoID != null && (mailAddress != null && password != null) && (mailAddress != "" && password != "") ){
+			if(videoID != null && (UserManager.instance.user != null && UserManager.instance.password != null) && (UserManager.instance.user != "" && UserManager.instance.password != "") ){
 				retryCount = 0;
 				setNicoVideoPageInfo(PathMaker.getVideoID(videoID), 0, isStreaming);	//ストリーミングのとき説明文のみ取得
 			}
@@ -3057,7 +3036,7 @@ package org.mineap.nndd.player
 					logManager.addLog("動画ページ詳細情報の取得に失敗:" + _videoID + ":" + event.text);
 					trace("動画ページ詳細情報の取得に失敗:" + _videoID + ":" + event.text);
 				});
-				watchVideoPage.watch(mailAddress, password, PathMaker.getVideoID(videoId), onlyOwnerText);
+				watchVideoPage.watch(UserManager.instance.user, UserManager.instance.password, PathMaker.getVideoID(videoId), onlyOwnerText);
 			}
 		}
 		
@@ -3582,7 +3561,7 @@ package org.mineap.nndd.player
 					commentManager.addPostComment(new NNDDComment(Number(post.attribute("vpos")), String(post.text()), String(post.attribute("mail")), String(post.attribute("user_id")), Number(post.attribute("no")), String(post.attribute("thread")), true));
 					logManager.addLog("***コメント投稿失敗***");
 				});
-				a2n.postMessage(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, this.mailAddress, this.password, postMessage, command, videoID, commentTimerVpos/10);
+				a2n.postMessage(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, UserManager.instance.user, UserManager.instance.password, postMessage, command, videoID, commentTimerVpos/10);
 				
 			}else{
 				//動画IDがついてないのでPostできなかった
@@ -3798,7 +3777,7 @@ package org.mineap.nndd.player
 					/* ストリーミング再生(接続先動画サーバがまだわかっていない時) */
 					
 					logManager.addLog("***ストリーミング再生の準備***");
-					if(mailAddress == "" || password == ""){
+					if(UserManager.instance.user == "" || UserManager.instance.password == ""){
 						Alert.show("ニコニコ動画にログインしてください。", Message.M_ERROR);
 						logManager.addLog("ニコニコ動画にログインしてください。");
 						FlexGlobals.topLevelApplication.activate();
@@ -3886,7 +3865,7 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, streamingPlayFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, streamingPlayFailListener);
-						nnddDownloaderForStreaming.requestDownloadForStreaming(this.mailAddress, this.password, PathMaker.getVideoID(url), tempDir, videoInfoView.isAlwaysEconomyForStreaming);
+						nnddDownloaderForStreaming.requestDownloadForStreaming(UserManager.instance.user, UserManager.instance.password, PathMaker.getVideoID(url), tempDir, videoInfoView.isAlwaysEconomyForStreaming);
 						
 					}catch(e:Error){
 						videoPlayer.label_downloadStatus.text = "";
@@ -4244,7 +4223,7 @@ package org.mineap.nndd.player
 			var videoId:String = PathMaker.getVideoID(videoTitle);
 			
 			if(!PlayerMylistAddr.instance.isAdding){
-				PlayerMylistAddr.instance.addMyList(this.mailAddress, this.password, myListId, videoId, videoTitle);
+				PlayerMylistAddr.instance.addMyList(UserManager.instance.user, UserManager.instance.password, myListId, videoId, videoTitle);
 			}else{
 				PlayerMylistAddr.instance.close();
 			}
