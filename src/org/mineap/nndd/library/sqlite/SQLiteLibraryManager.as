@@ -527,7 +527,6 @@ package org.mineap.nndd.library.sqlite
 				}
 				
 				if(_videoCount >= _totalVideoCount){
-					var tempKey:Object = null;
 					
 					_logger.addLog("動画をデータベースに登録中...");
 					
@@ -535,7 +534,6 @@ package org.mineap.nndd.library.sqlite
 					
 					if(_allDirRenew){
 						//全ディレクトリ探索の場合は単純に削除判定が出来る
-						tempKey = null;
 						_logger.addLog("見つからなかった動画をデータベースから除去中...");
 						
 						var vector:Vector.<NNDDVideo> = NNDDVideoDao.instance.selectAllNNDDVideo();
@@ -543,14 +541,16 @@ package org.mineap.nndd.library.sqlite
 						for each(var nnddVideo:NNDDVideo in vector){
 							var tempVideo:NNDDVideo = _tempLibraryMap[nnddVideo.key];
 							if(tempVideo == null){
-								_logger.addLog("見つからなかった動画:" + tempKey);
-								trace("見つからなかった動画:" + tempKey);
+								_logger.addLog("見つからなかった動画:" + nnddVideo.key);
+								trace("見つからなかった動画:" + nnddVideo.key);
 								NNDDVideoDao.instance.deleteNNDDVideoById(nnddVideo.id);
 							}
 						}
 					}else{
 						// 今回探索したフォルダについて、無くなったファイルを取り除く
 						_logger.addLog("見つからなかった動画をデータベースから除去中...");
+						
+						var tempKey:Object = null;
 						
 						// 今回探索したフォルダの一覧を作る
 						var folders:Object = new Object();
@@ -613,12 +613,32 @@ package org.mineap.nndd.library.sqlite
 		}
 		
 		/**
+		 * ・新処理方式
+		 * 20110519215642
+		 * 20110519215857
+		 * 2分15秒(135秒)
+		 * 1動画あたり0.1612秒
 		 * 
+		 * 20110519220811
+		 * 20110519221019
+		 * 2分08秒(128秒)
+		 * 1動画あたり0.1532秒
+		 * 
+		 * ・旧処理方式
+		 * 20110519220021
+		 * 20110519220242
+		 * 2分21秒(141秒)
+		 * 1動画あたり0.1684秒
+		 *
 		 * @param videoMap
-		 * 
 		 */
 		private function addVideos(videoMap:Object):void
 		{
+			trace("DBへの登録開始");
+			var time:Number = new Date().time;
+			
+			var count:Number = 0;
+			
 			NNDDVideoDao.instance.transactionStart();
 			
 			for each(var video:NNDDVideo in videoMap)
@@ -645,9 +665,18 @@ package org.mineap.nndd.library.sqlite
 						trace(video.getDecodeUrl());
 					}
 				}
+				
+				if(count%10 == 0){
+					trace(count + "件完了:" + video.getVideoNameWithVideoID());
+					_logger.addLog(count + "件登録完了:" + video.getVideoNameWithVideoID());
+				}
+				
+				++count;
 			}
 			
 			NNDDVideoDao.instance.transactionEnd();
+			
+			trace("DBへの登録完了:" + int (new Date().time - time) + " ms");		//DBへの登録完了:68978 ms (820動画)
 		}
 		
 		/**
