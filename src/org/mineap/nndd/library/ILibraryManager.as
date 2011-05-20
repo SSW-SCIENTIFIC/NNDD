@@ -85,10 +85,11 @@ package org.mineap.nndd.library
 		 * 指定されたディレクトリ下の動画を元にライブラリを再構築します
 		 * @param libraryDir
 		 * @param renewSubDir
+		 * @param loadThumbXML
 		 * @return 
 		 * 
 		 */
-		function renewLibrary(libraryDir:File, renewSubDir:Boolean):void;
+		function renewLibrary(libraryDir:File, renewSubDir:Boolean, loadThumbXML:Boolean = true):void;
 		
 		/**
 		 * ライブラリから動画情報を削除します

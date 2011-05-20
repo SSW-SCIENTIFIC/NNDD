@@ -92,6 +92,11 @@ package org.mineap.nndd.library.namedarray
 		/**
 		 * 
 		 */
+		private var _loadThumbXML:Boolean = false;
+		
+		/**
+		 * 
+		 */
 		private var _useAppDirLibFile:Boolean = true;
 		
 		/**
@@ -327,10 +332,12 @@ package org.mineap.nndd.library.namedarray
 		 * 
 		 * @param libraryDir 更新先ディレクトリ
 		 * @param renewSubDir サブディレクトリも更新するかどうか。trueの場合は更新する。
+		 * @param loadThumbXML サムネイル情報ファイルを読み込みかどうか
 		 */
-		public function renewLibrary(libraryDir:File, renewSubDir:Boolean):void{
+		public function renewLibrary(libraryDir:File, renewSubDir:Boolean, loadThumbXML:Boolean = false):void{
 			
 			this._allDirRenew = false;
+			this._loadThumbXML = loadThumbXML;
 			this._renewingDir = null;
 			this._totalVideoCount = 0;
 			this._videoCount = 0;
@@ -388,7 +395,7 @@ package org.mineap.nndd.library.namedarray
 				
 				
 				var loader:LocalVideoInfoLoader = new LocalVideoInfoLoader();
-				var nnddVideo:NNDDVideo = loader.loadInfo(file.url);
+				var nnddVideo:NNDDVideo = loader.loadInfo(file.url, !this._loadThumbXML);
 				
 				var key:String = nnddVideo.key;
 				

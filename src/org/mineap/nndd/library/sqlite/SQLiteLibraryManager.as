@@ -50,6 +50,7 @@ package org.mineap.nndd.library.sqlite
 		private var _tempLibraryMap:Object;
 		
 		private var _allDirRenew:Boolean = false;
+		private var _loadThumbXML:Boolean = false;
 		private var _renewingDir:File = null;
 		private var _totalVideoCount:Number = 0;
 		private var _videoCount:Number = 0;
@@ -448,9 +449,10 @@ package org.mineap.nndd.library.sqlite
 		 * @param renewSubDir
 		 * 
 		 */
-		public function renewLibrary(libraryDir:File, renewSubDir:Boolean):void
+		public function renewLibrary(libraryDir:File, renewSubDir:Boolean, loadThumbXML:Boolean = false):void
 		{
 			
+			this._loadThumbXML = loadThumbXML;
 			this._allDirRenew = false;
 			this._renewingDir = null;
 			this._totalVideoCount = 0;
@@ -510,7 +512,7 @@ package org.mineap.nndd.library.sqlite
 				}
 				
 				var loader:LocalVideoInfoLoader = new LocalVideoInfoLoader();
-				var nnddVideo:NNDDVideo = loader.loadInfo(file.url);
+				var nnddVideo:NNDDVideo = loader.loadInfo(file.url, !this._loadThumbXML);
 				
 				if (nnddVideo == null)
 				{
@@ -613,7 +615,7 @@ package org.mineap.nndd.library.sqlite
 		}
 		
 		/**
-		 * ・新処理方式
+		 * ・新処理方式(1)
 		 * 20110519215642
 		 * 20110519215857
 		 * 2分15秒(135秒)
@@ -623,6 +625,12 @@ package org.mineap.nndd.library.sqlite
 		 * 20110519221019
 		 * 2分08秒(128秒)
 		 * 1動画あたり0.1532秒
+		 * 
+		 * ・新処理方式(2)
+		 * 20110520214725
+		 * 20110520214839
+		 * 1分14秒(74秒)
+		 * 1動画あたり0.0887秒
 		 * 
 		 * ・旧処理方式
 		 * 20110519220021
@@ -656,6 +664,19 @@ package org.mineap.nndd.library.sqlite
 					}
 				}else{
 					video.id = tempVideo.id;
+					
+					// サムネイル情報を読み込まない時は元々あるデータを使う
+					if (!this._loadThumbXML)
+					{
+						video.isEconomy = tempVideo.isEconomy;
+						video.tagStrings = tempVideo.tagStrings;
+						
+						video.thumbUrl = tempVideo.thumbUrl;
+						video.playCount = tempVideo.playCount;
+						video.time = tempVideo.time;
+						video.lastPlayDate = tempVideo.lastPlayDate;
+						video.pubDate = tempVideo.pubDate;
+					}
 					
 					result = NNDDVideoDao.instance.updateNNDDVideo(video, false);
 					

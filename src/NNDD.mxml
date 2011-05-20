@@ -1032,6 +1032,14 @@
 			protected function checkbox_nativePlayer_enable_changeHandler(event:Event):void
 			{
 				isEnableNativePlayer = checkbox_nativePlayer_enable.selected;
+				
+				checkbox_openPlayerOnBoot.enabled = !isEnableNativePlayer;
+				
+			}
+			
+			protected function checkbox_openPlayerOnBootChanged(event:Event):void
+			{
+				isOpenPlayerOnBoot = checkbox_openPlayerOnBoot.selected;
 			}
 
 
@@ -1079,7 +1087,11 @@
 
 			protected function nativePlayer_creationCompleteHandler(event:FlexEvent):void
 			{
+				checkbox_openPlayerOnBoot.selected = isOpenPlayerOnBoot;
+				
 				checkbox_nativePlayer_enable.selected = isEnableNativePlayer;
+				checkbox_openPlayerOnBoot.enabled = !isEnableNativePlayer;
+				
 				var file:File = NativeProcessPlayerManager.instance.executeFile;
 				if(file != null){
 					playerPath_textinput.text = file.nativePath;
@@ -1663,40 +1675,46 @@
 					
 					<mx:Button label="ライブラリを更新" left="472" top="65" click="renewLibraryButtonClicked()" toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
 					<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="67"/>
-					<mx:Label text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)" left="49" top="90"/>
+					<mx:CheckBox label="更新時にサムネイル情報ファイルから動画の詳細情報を読み込む" selected="true" id="checkBox_loadThumbXML" change="checkBoxLoadThumbXMLChanged(event)"
+								 left="49" top="88" 
+								 toolTip="ライブラリ更新時に、保存済みの *[ThumbInfo].xml が存在する場合、タグ情報、動画投稿日、動画の長さなどの情報をXMLファイルから読み込みます。このチェックを外すとこれらの情報をライブラリ更新時に読み込みませんが、ライブラリの更新にかかる時間が少なくなります。"/>
+					<mx:Label text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)" left="49" top="110"/>
 					
-					<mx:HRule left="30" right="10" top="117" height="10"/>
+					<mx:HRule left="30" right="10" top="136" height="10"/>
 					
-					<mx:Label text="NNDDのライブラリ情報をインポートする" left="30" top="137"
+					<mx:Label text="NNDDのライブラリ情報をインポートする" left="30" top="156"
 							  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
-					<mx:Button label="読み込み..." left="279" top="135" click="importButtonChecked()" 
+					<mx:Button label="読み込み..." left="279" top="154" click="importButtonChecked()" 
 							   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
 					<mx:CheckBox label="現在のNNDDのライブラリ情報を削除してからインポート" selected="false" id="checkBox_initalize"
-								 left="49" top="164" 
+								 left="49" top="178" 
 								 toolTip="現在のNNDDのライブラリ情報を一度削除したあと、ライブラリ情報を読み込みます。このチェックを外してインポートした場合は、現在のNNDDのライブラリ情報に上書きされます。"/>
 					
-					<mx:HRule left="30" right="10" top="189" height="10"/>
+					<mx:HRule left="30" right="10" top="203" height="10"/>
 					
-					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="30" top="209"/>
-					<mx:Button label="リセット" left="279" top="207" id="button_windowPositionReset" click="windowPositionReset()"/>
+					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="30" top="223"/>
+					<mx:Button label="リセット" left="279" top="221" id="button_windowPositionReset" click="windowPositionReset()"/>
 					
-					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="237"/>
-					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="259" top="236"/>
-					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" id="checkBox_DisEnableAutoExit" click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="265"/>
+					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="251"/>
+					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="259" top="250"/>
+					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" 
+								 toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" 
+								 id="checkBox_DisEnableAutoExit" 
+								 click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="279"/>
 					<mx:HRule left="47" right="10" top="0" height="21"/>
-					<mx:HRule left="31" right="10" top="295" height="10"/>
+					<mx:HRule left="30" right="10" top="304" height="8"/>
 					
 					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					<!--
 					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
 					-->
-					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="316"/>
-					<mx:ComboBox left="260" top="316" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="472" top="315" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
-					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="54" top="339"/>
+					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="322"/>
+					<mx:ComboBox left="260" top="322" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+					<mx:Button label="デフォルト" left="473" top="320" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="54" top="345"/>
 					
-					<mx:Label left="30" top="368" text="フォントのサイズ："/>
-					<mx:ComboBox left="152" top="368" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
+					<mx:Label left="30" top="374" text="フォントのサイズ："/>
+					<mx:ComboBox left="152" top="374" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					
@@ -1747,26 +1765,34 @@
 					<mx:TextArea id="textArea_log" enabled="true" editable="false" left="5" top="25" bottom="30" wordWrap="false" right="5"/>
 					<mx:Button label="更新" right="5" bottom="5" click="logAreaRenewButtonClicked(event)"/>
 				</mx:Canvas>
-				<mx:Canvas width="100%" height="100%" label="外部Player" creationComplete="nativePlayer_creationCompleteHandler(event)">
-					<mx:Label text="外部Player" top="0" left="10" fontWeight="bold"/>
-					<mx:HRule left="90" right="10" top="0" height="21"/>
+				<mx:Canvas width="100%" height="100%" label="Player" creationComplete="nativePlayer_creationCompleteHandler(event)">
+					<mx:Label text="Player" top="0" left="10" fontWeight="bold"/>
+					<mx:HRule left="62" right="10" top="0" height="21"/>
 					
-					<mx:CheckBox left="10" top="29" label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
+					<mx:CheckBox left="30" top="27" label="起動時にPlayerを開く"
+								 toolTip="NNDDの起動時にPlayerを開きます。"
+								 enabled="{!isEnableNativePlayer}"
+								 id="checkbox_openPlayerOnBoot" change="checkbox_openPlayerOnBootChanged(event)"/>
+					<mx:Text left="171" top="28"
+							 text="※外部Playerを利用する場合、この機能は利用できません。"/>
+					<mx:HRule left="30" right="10" top="52" height="10"/>
+					
+					<mx:CheckBox left="30" top="70" label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
 								 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
 								 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
 					
-					<mx:Text left="142" top="30" visible="{!NativeProcess.isSupported}"
+					<mx:Text left="160" top="71" visible="{!NativeProcess.isSupported}"
 							 text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
 					
-					<mx:Label left="29" top="56" text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
-					<mx:TextInput id="playerPath_textinput" left="122" top="54" width="300" enabled="{NativeProcess.isSupported}"
+					<mx:Label left="49" top="97" text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
+					<mx:TextInput id="playerPath_textinput" left="134" top="95" width="321" enabled="{NativeProcess.isSupported}"
 								  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
-					<mx:Button x="430" y="55" label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
+					<mx:Button x="463" y="96" label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
 							   click="button_searchNativeProcess_clickHandler(event)"/>
-					<mx:Text left="29" right="10" top="83" bottom="10"
+					<mx:Text left="49" right="10" top="124" bottom="10"
 							 enabled="{NativeProcess.isSupported}"
 							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
-
+					
 					
 				</mx:Canvas>
 				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
