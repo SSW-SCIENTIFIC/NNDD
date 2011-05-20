@@ -1409,6 +1409,16 @@ package org.mineap.nndd.player
 					}
 					
 				}
+				else
+				{
+					if (PlayerController.WINDOW_TYPE_FLV == this.windowType)
+					{
+						if (videoInfoView != null)
+						{
+							this.setVideoSmoothing(videoInfoView.isSmoothing);
+						}
+					}
+				}
 			
 			}catch(error:Error){	//ウィンドウが閉じられた後に呼ばれるとエラー。停止処理を行う。
 				trace(error.getStackTrace());
