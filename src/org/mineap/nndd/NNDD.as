@@ -48,6 +48,7 @@ import mx.collections.Sort;
 import mx.collections.SortField;
 import mx.containers.Canvas;
 import mx.controls.Alert;
+import mx.controls.Button;
 import mx.controls.CheckBox;
 import mx.controls.ComboBox;
 import mx.controls.DataGrid;
@@ -241,6 +242,10 @@ private var showAll:Boolean = false;
 private var isEnableNativePlayer:Boolean = false;
 
 private var useAppDirLibFile:Boolean = false;
+
+private var isLoadThumbXML:Boolean = true;
+
+private var isOpenPlayerOnBoot:Boolean = false;
 
 private var period:int = 0;
 private var target:int = 0;
@@ -545,6 +550,13 @@ public function initNNDD(nndd:NNDD):void
 	thumbImageView.alpha = 0.9;
 //	this.addChild(thumbImageView);
 	this.addElement(thumbImageView);
+	
+	
+	if(this.isOpenPlayerOnBoot && !this.isEnableNativePlayer)
+	{
+		PlayerManager.instance.getLastPlayerController();
+	}
+	
 }
 
 public function myListStatusRenew(loaded:Number, total:Number, myListId:String):void{
@@ -2165,6 +2177,27 @@ private function readStore(isLogout:Boolean = false):void{
 			useAppDirLibFile = false;
 		}
 		
+		errorName = "isLoadThumbXML";
+		confValue = ConfigManager.getInstance().getItem("isLoadThumbXML");
+		if(confValue != null)
+		{
+			this.isLoadThumbXML = ConfUtil.parseBoolean(confValue);
+		}
+		else
+		{
+			this.isLoadThumbXML = true;
+		}
+		
+		errorName = "isOpenPlayerOnBoot";
+		confValue = ConfigManager.getInstance().getItem("isOpenPlayerOnBoot");
+		if(confValue != null)
+		{
+			this.isOpenPlayerOnBoot = ConfUtil.parseBoolean(confValue);
+		}
+		else
+		{
+			this.isOpenPlayerOnBoot = false;
+		}
 		
 	}catch(error:Error){
 		/* ストアをリセット */
@@ -2704,6 +2737,8 @@ private function allConfigCanvasCreationComplete(event:FlexEvent):void{
 	checkBox_versionCheck.selected = this.isVersionCheckEnable;
 	
 	checkBox_DisEnableAutoExit.selected = this.isDisEnableAutoExit;
+	
+	checkBox_loadThumbXML.selected = this.isLoadThumbXML;
 	
 	fontListRenew();
 	
@@ -4253,7 +4288,13 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("useAppDirLibFile");
 		ConfigManager.getInstance().setItem("useAppDirLibFile", this.useAppDirLibFile);
 		
+		/* ライブラリ更新時にThumbInfoを読み込むかどうか */
+		ConfigManager.getInstance().removeItem("isLoadThumbXML");
+		ConfigManager.getInstance().setItem("isLoadThumbXML", this.isLoadThumbXML);
 		
+		/* 起動時にPlayerを開くかどうか */
+		ConfigManager.getInstance().removeItem("isOpenPlayerOnBoot");
+		ConfigManager.getInstance().setItem("isOpenPlayerOnBoot", this.isOpenPlayerOnBoot);
 		
 		ConfigManager.getInstance().save();
 		
@@ -4613,6 +4654,11 @@ private function disEnableAutoExitCheckBoxChanged(event:Event):void{
 	
 	this.autoExit = !isDisEnableAutoExit;
 	
+}
+
+private function checkBoxLoadThumbXMLChanged(event:Event):void
+{
+	this.isLoadThumbXML = checkBox_loadThumbXML.selected;
 }
 
 /**
