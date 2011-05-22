@@ -4,6 +4,7 @@ package org.mineap.nndd
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
+	import flash.media.Video;
 	
 	import org.mineap.nicovideo4as.Login;
 	import org.mineap.nicovideo4as.ThumbInfoLoader;
@@ -89,7 +90,7 @@ package org.mineap.nndd
 			this._watch.addEventListener(WatchVideoPage.WATCH_SUCCESS, pageWatchSuccessListener);
 			this._watch.addEventListener(WatchVideoPage.WATCH_FAIL, pageWatchFailListener);
 			
-			this._watch.watchVideo(this._videoId)
+			this._watch.watchVideo(this._videoId, false);
 			
 		}
 		
@@ -109,6 +110,12 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function pageWatchSuccessListener(event:Event):void{
+			
+			if((event.currentTarget as WatchVideoPage).checkHarmful())
+			{
+				this._watch.watchVideo(this._videoId, true);
+				return;
+			}
 			
 			if(this._onlyOwnerText){
 				close();

@@ -8,6 +8,7 @@ package org.mineap.nndd
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
 	import flash.net.URLLoader;
+	import flash.net.URLVariables;
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
@@ -439,6 +440,20 @@ package org.mineap.nndd
 				return;
 			}
 			
+			// 動画を見に行く
+			watch(this._videoId, false);
+			
+		}
+		
+		/**
+		 * 
+		 * @param videoId
+		 * @param watchHarmful
+		 * @return 
+		 * 
+		 */
+		private function watch(videoId:String, watchHarmful:Boolean):void
+		{
 			//リスナ追加
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_SUCCESS, watchSuccess);
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_FAIL, function(event:ErrorEvent):void{
@@ -464,9 +479,10 @@ package org.mineap.nndd
 			if(this._isAlwaysEconomy){
 				videoId += "?eco=1";
 			}
-			this._watchVideo.watchVideo(videoId);
 			
+			this._watchVideo.watchVideo(videoId, watchHarmful);
 		}
+		
 		
 		/**
 		 * 動画ページへのアクセスが完了したら呼ばれます。
@@ -480,6 +496,15 @@ package org.mineap.nndd
 			// closeが呼ばれていないか？
 			if (this._getflvAccess == null)
 			{
+				return;
+			}
+			
+			// 有害判定があるかどうか
+			if(this._watchVideo.checkHarmful())
+			{
+				LogManager.instance.addLog("この動画は有害報告されています:" + this._videoId);
+				// 有害判定無視指定で再生しに行く
+				watch(this._videoId, true);
 				return;
 			}
 			

@@ -1808,18 +1808,19 @@ package org.mineap.nndd.player
 					
 					// 100%読み込みしたはずなのに読み込み済みバイト数が異常に少ない。
 					if(this.bytesLoaded <= 64){
-						if(this.streamingRetryCount <= 3 ){
+						if(this.streamingRetryCount <= 1 ){
 							// 再生し直す
 							this.streamingRetryCount++;
+							var timeStr:String = String(int(10000*this.streamingRetryCount / 1000));
 							stop();
 							logManager.addLog("ニコ動へのアクセスの再試行(動画読み込みに失敗:読み込み済みバイト数:" + this.bytesLoaded + ")");
-							videoPlayer.label_downloadStatus.text = "動画の読み込みに失敗したため、再試行します。(" + this.streamingRetryCount  +"回目 )";
+							videoPlayer.label_downloadStatus.text = "動画の読み込みに失敗したため、再試行します。(" + timeStr + "秒後、" + this.streamingRetryCount  +"回目 )";
 							
 							if(nicoVideoAccessRetryTimer != null){
 								nicoVideoAccessRetryTimer.stop();
 								nicoVideoAccessRetryTimer = null;
 							}
-							nicoVideoAccessRetryTimer = new Timer(5000*this.streamingRetryCount, 1);
+							nicoVideoAccessRetryTimer = new Timer(10000*this.streamingRetryCount, 1);
 							nicoVideoAccessRetryTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{
 								(event.currentTarget as Timer).stop();
 								play();
@@ -2907,7 +2908,7 @@ package org.mineap.nndd.player
 		 */
 		private function setNicoVideoPageInfo(videoId:String, delay:int, onlyOwnerText:Boolean = false):void{
 			
-			if(retryCount > 5){
+			if(retryCount > 3){
 				trace("setNicoVideoPageInfoのリトライオーバー");
 				logManager.addLog("動画ページ詳細情報の取得に失敗(リトライオーバー):" + _videoID);
 				return;
