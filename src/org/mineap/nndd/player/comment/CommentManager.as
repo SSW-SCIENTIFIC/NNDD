@@ -343,6 +343,12 @@ package org.mineap.nndd.player.comment
 							commentNomalTextArray[j][i].visible = true;
 							commentNomalTextArray[j][i].setStyle("color", color);
 							
+							if(no<0){
+								commentNomalTextArray[j][i].setStyle("textDecoration", "underline");
+							}else{
+								commentNomalTextArray[j][i].clearStyle("textDecoration");
+							}
+							
 							switch(size){
 								case Command.BIG:
 									size = (commentNomalTextArray[j][i]).parent.height/15;
@@ -448,6 +454,12 @@ package org.mineap.nndd.player.comment
 //						(commentUeTextArray[i][1] as NNDDText).y = (int)(newY + (commentUeTextArray[i][1] as NNDDText).textHeight);
 					}
 					
+					if(no<0){
+						commentUeTextArray[i].setStyle("textDecoration", "underline");
+					}else{
+						commentUeTextArray[i].clearStyle("textDecoration");
+					}
+					
 					var fontSize:int = Command.MEDIUM;
 					(commentUeTextArray[i] as NNDDText).size = size;
 					switch(size){
@@ -513,6 +525,11 @@ package org.mineap.nndd.player.comment
 //						(commentShitaTextArray[i][1] as NNDDText).y = (int)(newY - (commentShitaTextArray[i][1] as NNDDText).textHeight);
 					}
 					
+					if(no<0){
+						commentShitaTextArray[i].setStyle("textDecoration", "underline");
+					}else{
+						commentShitaTextArray[i].clearStyle("textDecoration");
+					}
 					
 					var fontSize:int = Command.MEDIUM;
 					(commentShitaTextArray[i]).size = size;

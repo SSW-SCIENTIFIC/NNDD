@@ -6,6 +6,7 @@ package org.mineap.nndd.player
 	import flash.display.NativeWindowType;
 	import flash.display.StageDisplayState;
 	import flash.display.StageQuality;
+	import flash.errors.IOError;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -34,6 +35,7 @@ package org.mineap.nndd.player
 	import mx.formatters.NumberFormatter;
 	
 	import org.libspark.utils.ForcibleLoader;
+	import org.mineap.nicovideo4as.CommentPost;
 	import org.mineap.nicovideo4as.MyListLoader;
 	import org.mineap.nicovideo4as.WatchVideoPage;
 	import org.mineap.nicovideo4as.analyzer.GetRelationResultAnalyzer;
@@ -3532,11 +3534,11 @@ package org.mineap.nndd.player
 		
 		/**
 		 * 引数で指定された文字列とコマンドを使ってニコニコ動画へコメントをポストします。
-		 * @param postMessage
+		 * @param comment
 		 * @param command
 		 * 
 		 */
-		public function postMessage(postMessage:String, command:String):void{
+		public function postMessage(comment:String, command:String):void{
 			
 			logManager.addLog("***コメント投稿開始***");
 			
@@ -3549,30 +3551,32 @@ package org.mineap.nndd.player
 			}
 			
 			if(videoID != null){
-//				var commentPost:CommentPost = new CommentPost();
-//				commentPost.postComment(videoID, command, postMessage, commentTimerVpos/10);
 				
-				var a2n:Access2Nico = new Access2Nico(null, null, this, logManager, null);
-				a2n.addEventListener(Access2Nico.NICO_POST_COMMENT_COMPLETE, function():void{
-					var post:XML = a2n.getPostComment();
+				var commentPost:CommentPost = new CommentPost();
+				commentPost.addEventListener(CommentPost.COMMENT_POST_FAIL, function(event:IOErrorEvent):void
+				{
+					trace(event);
+					logManager.addLog("\t\t" + CommentPost.COMMENT_POST_FAIL + ":" + event);
+					logManager.addLog("コメント投稿失敗");
+					Alert.show("コメントの投稿に失敗", Message.M_ERROR);
+					commentPost.close();
+				});
+				commentPost.addEventListener(CommentPost.COMMENT_POST_SUCCESS, function():void{
+					var post:XML = commentPost.getPostComment();
 					if(!isStreamingPlay){
 						var path:String = PathMaker.createNomalCommentPathByVideoPath(source);
 						(new FileIO(logManager)).addComment(path, post);
 					}
-					commentManager.addPostComment(new NNDDComment(Number(post.attribute("vpos")), String(post.text()), String(post.attribute("mail")), String(post.attribute("user_id")), Number(post.attribute("no")), String(post.attribute("thread")), true));
+					trace('コメントを投稿:' + videoID);
 					logManager.addLog("***コメント投稿完了***");
-					
+					commentPost.close();
 				});
-				a2n.addEventListener(Access2Nico.NICO_POST_COMMENT_FAIL, function():void{
-					var post:XML = a2n.getPostComment();
-					if(!isStreamingPlay){
-						var path:String = PathMaker.createNomalCommentPathByVideoPath(source);
-						(new FileIO(logManager)).addComment(path, post);
-					}
-					commentManager.addPostComment(new NNDDComment(Number(post.attribute("vpos")), String(post.text()), String(post.attribute("mail")), String(post.attribute("user_id")), Number(post.attribute("no")), String(post.attribute("thread")), true));
-					logManager.addLog("***コメント投稿失敗***");
-				});
-				a2n.postMessage(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, UserManager.instance.user, UserManager.instance.password, postMessage, command, videoID, commentTimerVpos/10);
+				
+				// コメントを投稿
+				commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password, videoID, comment, command, commentTimerVpos/10);
+				
+				// とりあえずコメントを表示。通し番号をマイナスにして正規のコメントと区別する。
+				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, '', -1, '', true));
 				
 			}else{
 				//動画IDがついてないのでPostできなかった
