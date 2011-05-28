@@ -7,8 +7,8 @@
 			import org.mineap.nndd.util.NicoServerStatusCheck;
 		
 			private var loginUrl:String = "https://secure.nicovideo.jp/secure/login_form";
-			private var getFlvUrl:String = "http://www.nicovideo.jp/api/getflv";
-			private var getBgmUrl:String = "http://www.nicovideo.jp/api/getbgm";
+			private var getFlvUrl:String = "http://flapi.nicovideo.jp/api/getflv";
+			private var getBgmUrl:String = "http://flapi.nicovideo.jp/api/getbgm";
 			private var messageServerUrlArray:Array = new Array("http://msg.nicovideo.jp/4/api/", "http://msg.nicovideo.jp/13/api/", "http://msg.nicovideo.jp/18/api/", "http://msg.nicovideo.jp/34/api/", 
 					"http://msg.nicovideo.jp/38/api/", "http://msg.nicovideo.jp/45/api/");
 			private var videoServerUrlArray:Array = new Array("http://smile-pcm42.nicovideo.jp/smile", "http://smile-pso42.nicovideo.jp/smile", "http://smile-pso00.nicovideo.jp/smile",

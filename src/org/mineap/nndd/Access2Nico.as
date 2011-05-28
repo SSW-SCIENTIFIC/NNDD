@@ -1608,7 +1608,7 @@ package org.mineap.nndd
 			
 			//FLVのURLを取得する為にニコニコ動画のAPIにアクセスする
 			var getAPIResult:URLRequest;
-			getAPIResult = new URLRequest("http://www.nicovideo.jp/api/getflv?v=" + videoID);
+			getAPIResult = new URLRequest("http://flapi.nicovideo.jp/api/getflv?v=" + videoID);
 			getAPIResult.method = "GET";
 			
 			if(type == VIDEO_DOWNLOAD){
@@ -2349,7 +2349,7 @@ package org.mineap.nndd
 				var postKey:String = (event.target.data as String).substring(event.target.data.indexOf("=")+1);
 				postComment(postKey, userID, ticket, mail, String(vpos), threadID, isPremium);
 			});
-			var url:String = "http://www.nicovideo.jp/api/getpostkey/?block_no=" + block_no + "&thread=" + threadID + "&yugi=";
+			var url:String = "http://flapi.nicovideo.jp/api/getpostkey/?block_no=" + block_no + "&thread=" + threadID + "&yugi=";
 			trace(url);
 			loader.load(new URLRequest(url));
 			
