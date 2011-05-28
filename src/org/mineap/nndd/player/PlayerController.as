@@ -1810,7 +1810,20 @@ package org.mineap.nndd.player
 					
 					// 100%読み込みしたはずなのに読み込み済みバイト数が異常に少ない。
 					if(this.bytesLoaded <= 64){
-						if(this.streamingRetryCount <= 1 ){
+						
+						var maxCount:int = 1;
+						var confValue:String = ConfigManager.getInstance().getItem("streamingRetryMaxCount");
+						if(confValue == null)
+						{
+							ConfigManager.getInstance().removeItem("streamingRetryMaxCount");
+							ConfigManager.getInstance().setItem("streamingRetryMaxCount", maxCount);
+						}
+						else
+						{
+							maxCount = int(confValue);
+						}
+						
+						if(this.streamingRetryCount <= maxCount ){
 							// 再生し直す
 							this.streamingRetryCount++;
 							var timeStr:String = String(int(10000*this.streamingRetryCount / 1000));
