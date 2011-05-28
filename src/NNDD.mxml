@@ -1718,43 +1718,59 @@
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					
-					
-					
-					
 				</mx:Canvas>
 				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" creationComplete="nicoConfigCanvasCreationComplete(event)">
 					<mx:HRule left="191" top="0" right="10" height="21"/>
 					<mx:Label text="ランキング・検索・マイリスト" top="0" left="10" fontWeight="bold"/>
 					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="17" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" toolTip="起動時に前回の起動の設定でランキングを更新します。これを有効にすると前回終了時に選択されていたタブに移動しません。"/>
-					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="47" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
-					<mx:CheckBox label="ダブルクリックでストリーミング再生する" left="30" top="77" id="checkBox_isDoubleClickOnStreaming" change="checkBoxDoubleClickOnStreamingChanged(event)" toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、ストリーミング再生します。"/>
-					<mx:CheckBox label="検索履歴を保存する" left="30" top="107" id="checkbox_saveSearchHistory" selected="true" toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" change="checkBoxSaveSearchHistoryChanged(event)"/>
-					<mx:Button label="履歴を消去" left="166" top="107" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
-					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="139"/>
-					<mx:Button label="追加" id="button_addDefSearchItem" left="283" top="138" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
-					<mx:CheckBox label="マイリスト更新をスケジュール実行する" id="checkBox_myListRenewOnSchedule" click="checkBoxMylistRenewOnScheduleChanged(event)" selected="true" left="30" top="165" height="22" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
-					<mx:ComboBox left="270" dataProvider="{myListRenewScheduleTimeProvider}" selectedIndex="1" width="100" change="myListRenewScheduleTimeChange(event)" top="165" id="combobox_myListRenewTime" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
-					<mx:Label text="：" left="243" top="167"/>
-					<mx:Label text="分おき" left="378" top="167"/>
-					<mx:Button label="今すぐ更新" left="436" click="myListRenewNow()" top="165"/>
-					<mx:VRule width="7" height="18" left="421" top="167"/>
-					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="194"/>
-					<mx:Label x="30" y="195" text="自分のマイリストをマイリスト一覧に追加"/>
+					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="42" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
+					<mx:CheckBox label="ダブルクリックでストリーミング再生する" left="30" top="67" id="checkBox_isDoubleClickOnStreaming" change="checkBoxDoubleClickOnStreamingChanged(event)" toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、ストリーミング再生します。"/>
+					
+					<mx:CheckBox label="検索履歴を保存する" left="30" top="92" id="checkbox_saveSearchHistory" selected="true" toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" change="checkBoxSaveSearchHistoryChanged(event)"/>
+					<mx:Button label="履歴を消去" left="159" top="91" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
+					
+					<mx:CheckBox label="マイリスト更新をスケジュール実行する：" id="checkBox_myListRenewOnSchedule" click="checkBoxMylistRenewOnScheduleChanged(event)" selected="true" left="30" top="117" height="22" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
+					<mx:ComboBox left="266" dataProvider="{myListRenewScheduleTimeProvider}" selectedIndex="1" width="100" change="myListRenewScheduleTimeChange(event)" top="120" id="combobox_myListRenewTime" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
+					<mx:Label text="分おき" left="374" top="120"/>
+					<mx:VRule width="7" height="22" left="420" top="118"/>
+					<mx:Button label="今すぐ更新" left="435" click="myListRenewNow()" top="118"/>
+					
+					<mx:Label left="49" top="147" text="マイリストごとの更新間隔"/>
+					<s:NumericStepper left="193" top="143" maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
+									  change="numStepperDelayOfMylistChanged(event)"/>
+					<mx:Label left="263" top="147" text="秒"/>
+					
+					<mx:HRule left="30" top="174" right="10" height="10"/>
+					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="193"/>
+					<mx:Button label="追加" id="button_addDefSearchItem" left="271" top="191" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					
+					<mx:Label x="30" y="220" text="自分のマイリストをマイリスト一覧に追加"/>
+					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="219"/>
+					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
+					
 				</mx:Canvas>
 				<mx:Canvas label="DLリスト・ライブラリ" width="100%" height="100%" id="canvas_library_config"  creationComplete="libraryConfigCanvasCreationComplete(event)">
-					<mx:HRule left="132" right="10" top="0" height="21"/>
 					<mx:Label text="ダウンロードリスト" top="0" left="10" fontWeight="bold"/>
+					<mx:HRule left="132" right="10" top="0" height="19"/>
+					
 					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="16" selected="true" id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
 					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="30" top="46" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
 					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode" click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="30" top="76"/>
-					<mx:HRule left="83" right="10" top="103" height="24"/>
-					<mx:Label text="ライブラリ" left="10" top="106" fontWeight="bold"/>
-					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="122" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
-					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="152" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
-					<mx:Label text="保存するコメントの最大数：" left="60" top="178"/>
-					<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100" left="229" top="175" id="numericStepper_saveCommentMaxCount" change="numericStepperSaveCommentMaxCountChanged(event)" toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
-					<mx:Label text="件/動画" left="329" top="178"/>
+					
+					<mx:Label left="30" top="101" text="ダウンロード失敗時の最大リトライ回数"/>
+					<s:NumericStepper left="268" top="98" maximum="5" minimum="0" stepSize="1" value="2" id="numStepper_downloadRetryMaxCount"
+									  change="numStepper_downloadRetryMaxCountChanged(event)"/>
+					<mx:Label left="312" top="102" text="回"/>
+					
+					<mx:Label text="ライブラリ" left="10" top="128" fontWeight="bold"/>
+					<mx:HRule left="83" right="10" top="129" height="18"/>
+					
+					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="148" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
+					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="178" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
+					<mx:Label text="保存するコメントの最大数：" left="60" top="204"/>
+					<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100" left="229" top="201" id="numericStepper_saveCommentMaxCount" change="numericStepperSaveCommentMaxCountChanged(event)" toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
+					<mx:Label text="件/動画" left="329" top="204"/>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					

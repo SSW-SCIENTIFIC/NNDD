@@ -247,6 +247,8 @@ private var isLoadThumbXML:Boolean = true;
 
 private var isOpenPlayerOnBoot:Boolean = false;
 
+private var downloadRetryMaxCount:int = 2;
+
 private var period:int = 0;
 private var target:int = 0;
 
@@ -2199,6 +2201,18 @@ private function readStore(isLogout:Boolean = false):void{
 			this.isOpenPlayerOnBoot = false;
 		}
 		
+		errorName = "downloadRetryMaxCount";
+		confValue = ConfigManager.getInstance().getItem("downloadRetryMaxCount");
+		if(confValue != null)
+		{
+			this.downloadRetryMaxCount = int(confValue);
+		}
+		else
+		{
+			this.downloadRetryMaxCount = 2;
+		}
+		
+		
 	}catch(error:Error){
 		/* ストアをリセット */
 //		EncryptedLocalStore.reset();
@@ -2264,6 +2278,7 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 	
 	downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
 	downloadManager.isContactTheUser = isEnableEcoCheck;
+	downloadManager.retryMaxCount = this.downloadRetryMaxCount;
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
 	
 //	this.nndd.label_status.text = "ログインに成功(" + event.status + ")";
@@ -2816,6 +2831,9 @@ private function nicoConfigCanvasCreationComplete(event:FlexEvent):void{
 		index++;
 	}
 	
+	numStepper_delayOfMylist.value = MyListRenewScheduler.instance.delayOfMylist/1000;
+	
+	
 }
 
 private function libraryConfigCanvasCreationComplete(event:FlexEvent):void{
@@ -2826,6 +2844,7 @@ private function libraryConfigCanvasCreationComplete(event:FlexEvent):void{
 	checkBox_isAppendComment.selected = this.isAppendComment;
 	numericStepper_saveCommentMaxCount.value = this.saveCommentMaxCount;
 	numericStepper_saveCommentMaxCount.enabled = this.isAppendComment;
+	numStepper_downloadRetryMaxCount.value = this.downloadRetryMaxCount;
 }
 
 private function libraryWidthChanged(event:ResizeEvent):void{
@@ -4296,6 +4315,10 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("isOpenPlayerOnBoot");
 		ConfigManager.getInstance().setItem("isOpenPlayerOnBoot", this.isOpenPlayerOnBoot);
 		
+		/* 動画ダウンロード時の最大リトライ回数 */
+		ConfigManager.getInstance().removeItem("downloadRetryMaxCount");
+		ConfigManager.getInstance().setItem("downloadRetryMaxCount", this.downloadRetryMaxCount);
+		
 		ConfigManager.getInstance().save();
 		
 	}catch(error:Error){
@@ -5583,6 +5606,20 @@ private function tagTileListClicked(event:Event):void{
 private function checkBoxOutStreamingPlayerChanged(event:Event):void{
 	this.isOutStreamingPlayerUse = (event.currentTarget as CheckBox).selected;
 }
+
+private function numStepperDelayOfMylistChanged(event:Event):void{
+	var delay:Number = numStepper_delayOfMylist.value;
+	
+	MyListRenewScheduler.instance.delayOfMylist = delay*1000;
+	
+}
+
+private function numStepper_downloadRetryMaxCountChanged(event:Event):void
+{
+	this.downloadRetryMaxCount = numStepper_downloadRetryMaxCount.value;
+	this.downloadManager.retryMaxCount = this.downloadRetryMaxCount;
+}
+
 
 private function checkBoxDoubleClickOnStreamingChanged(event:Event):void{
 	this.isDoubleClickOnStreaming = (event.currentTarget as CheckBox).selected;
@@ -6887,10 +6924,16 @@ private function checkBoxAppendCommentChanged(event:Event):void{
 
 private function numericStepperSaveCommentMaxCountChanged(event:Event):void{
 	this.saveCommentMaxCount = numericStepper_saveCommentMaxCount.value;
+	
 }
 
 public function getSaveCommentMaxCount():Number{
 	return this.saveCommentMaxCount;
+}
+
+public function getDownloadRetryMaxCount():int
+{
+	return this.downloadRetryMaxCount;
 }
 
 public function getAppendComment():Boolean{

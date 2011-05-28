@@ -60,6 +60,7 @@ package org.mineap.nndd.download
 		
 		private var isRetry:Boolean = false;
 		private var retryCount:int = 0;
+		private var _retryMaxCount:int = 2;
 		
 		private var timer:Timer = null;
 		
@@ -217,7 +218,7 @@ package org.mineap.nndd.download
 							if(retryCount > 0){
 								timerCount = timerCount*(retryCount*2);
 							}
-							if(retryCount >= 7){
+							if(retryCount >= retryMaxCount){
 								// リトライオーバー
 								downloadProvider.setItemAt({
 									col_videoName:downloadProvider[i].col_videoName,
@@ -1089,6 +1090,25 @@ package org.mineap.nndd.download
 			return -1;
 		}
 		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */
+		public function set retryMaxCount(value:int):void
+		{
+			this._retryMaxCount = value;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get retryMaxCount():int
+		{
+			return this._retryMaxCount;
+		}
 		
 	}
 }
