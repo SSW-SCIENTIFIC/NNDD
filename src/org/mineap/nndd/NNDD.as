@@ -1409,7 +1409,7 @@ private function playAllMenuItemHandler(event:ContextMenuEvent):void{
 			}
 			
 			if(playList.items.length > 0 && startIndex >= 0 && playList.items.length > startIndex){
-				playMovie(playList[startIndex], startIndex, playList);
+				playMovie(playList.items[startIndex].getDecodeUrl(), startIndex, playList);
 			}
 			
 		}
