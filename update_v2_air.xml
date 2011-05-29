@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>2.0.3</versionNumber>
-	<url>http://osdn.dl.sourceforge.jp/nndd/51983/NNDDv2_0_2.air</url>
+	<versionNumber>2.0.4</versionNumber>
+	<url>http://osdn.dl.sourceforge.jp/nndd/52154/NNDDv2_0_4.air</url>
 	<description><![CDATA[
+v2.0.4
+・ライブラリ更新時に保存済みのサムネイル情報ファイルから情報を取得しないモードを追加
+・NNDDの起動時にPlayerを開くオップションを追加
+・有害報告されている動画を強制的に開くようにした
+・マイリスト更新時の各マイリストごとの更新間隔を指定できるようにした
+・動画ダウンロード時の最大リトライ回数を指定できるようにした
+・【バグフィックス】「Twitterでつぶやく」でブラウザにつぶやき内容が正しくわたらない問題を修正
+・【バグフィックス】ライブラリ更新時の速度改善
+・【バグフィックス】フルスクリーンで次の動画に遷移した際にスムージングが無効になる不具合を修正
+・【バグフィックス】コメントが二重に表示される問題を修正(edvakf氏のソースをマージ)
+・【バグフィックス】ランキング／検索／マイリストから連続再生が出来ない問題を修正
+
 v2.0.3
 ・【バグフィックス】InfoViewが複数表示される不具合を修正
 
