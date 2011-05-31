@@ -58,7 +58,7 @@ package org.mineap.nndd.playList
 				}
 				playCount = video.playCount;
 				if(thumbUrl == ""){
-					thumbUrl = PathMaker.createThumbImgFilePath(video.getDecodeUrl(), true);
+					thumbUrl = PathMaker.createThumbImgFilePath(video.getDecodeUrl(), false);
 					
 					try{
 						if(!(new File(thumbUrl).exists)){

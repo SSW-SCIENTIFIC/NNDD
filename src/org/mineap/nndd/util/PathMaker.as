@@ -29,10 +29,11 @@ package org.mineap.nndd.util
 		 * 注意：返されたパスが存在するとは限りません。
 		 * 
 		 * @param videoPath
+		 * @param search デフォルトのパス生成方法でファイルが見つからない時に、ディレクトリを探索するかどうかを指定します。
 		 * @return 
 		 * 
 		 */
-		public static function createNomalCommentPathByVideoPath(videoPath:String):String{
+		public static function createNomalCommentPathByVideoPath(videoPath:String, search:Boolean = false):String{
 			
 			var defFilePath:String = videoPath.substring(0,videoPath.lastIndexOf(".")) + ".xml";
 			
@@ -40,7 +41,7 @@ package org.mineap.nndd.util
 				
 				try{
 					//従来通りの方法で作ったファイルがあるならそれを返す
-					if((new File(defFilePath)).exists){
+					if(!search || (new File(defFilePath)).exists){
 						return defFilePath;
 					}
 				}catch(error:Error){
@@ -86,10 +87,11 @@ package org.mineap.nndd.util
 		 * 注意：返されたパスが存在するとは限りません。
 		 * 
 		 * @param videoPath
+		 * @param search デフォルトのパス生成方法でファイルが見つからない時に、ディレクトリを探索するかどうかを指定します。
 		 * @return 
 		 * 
 		 */
-		public static function createOwnerCommentPathByVideoPath(videoPath:String):String{
+		public static function createOwnerCommentPathByVideoPath(videoPath:String, search:Boolean = false):String{
 			
 			var defFilePath:String = videoPath.substring(0,videoPath.lastIndexOf(".")) + "[Owner].xml";
 			
@@ -97,7 +99,7 @@ package org.mineap.nndd.util
 				
 				try{
 					//従来通りの方法で作ったファイルがあるならそれを返す
-					if((new File(defFilePath)).exists){
+					if(!search || (new File(defFilePath)).exists){
 						return defFilePath;
 					}
 				}catch(error:Error){
@@ -143,10 +145,11 @@ package org.mineap.nndd.util
 		 * 注意：返されたパスが存在するとは限りません。
 		 * 
 		 * @param videoPath
+		 * @param search デフォルトのパス生成方法でファイルが見つからない時に、ディレクトリを探索するかどうかを指定します。
 		 * @return 
 		 * 
 		 */
-		public static function createThmbInfoPathByVideoPath(videoPath:String):String{
+		public static function createThmbInfoPathByVideoPath(videoPath:String, search:Boolean = false):String{
 			
 			var defFilePath:String = videoPath.substring(0,videoPath.lastIndexOf(".")) + "[ThumbInfo].xml";
 			
@@ -154,7 +157,7 @@ package org.mineap.nndd.util
 				
 				try{
 					//従来通りの方法で作ったファイルがあるならそれを返す
-					if((new File(defFilePath)).exists){
+					if(!search || (new File(defFilePath)).exists){
 						return defFilePath;
 					}
 				}catch(error:Error){
@@ -201,10 +204,11 @@ package org.mineap.nndd.util
 		 * 注意：返されたパスが存在するとは限りません。
 		 * 
 		 * @param videoPath
+		 * @param search デフォルトのパス生成方法でファイルが見つからない時に、ディレクトリを探索するかどうかを指定します。
 		 * @return 
 		 * 
 		 */
-		public static function createNicoIchibaInfoPathByVideoPath(videoPath:String):String{
+		public static function createNicoIchibaInfoPathByVideoPath(videoPath:String, search:Boolean = false):String{
 			
 			var defFilePath:String = videoPath.substring(0,videoPath.lastIndexOf(".")) + "[IchibaInfo].html";
 			
@@ -212,12 +216,12 @@ package org.mineap.nndd.util
 				
 				try{
 					//従来通りの方法で作ったファイルがあるならそれを返す
-					if((new File(defFilePath)).exists){
+					if(!search || (new File(defFilePath)).exists){
 						return defFilePath;
 					}
 				}catch(error:Error){
 					trace(error);
-				}
+				}				
 				
 				var rootDir:File = new File(videoPath.substring(0, videoPath.lastIndexOf("/")));
 				if(!rootDir.exists){
@@ -259,10 +263,11 @@ package org.mineap.nndd.util
 		 * 
 		 * @param videoPath
 		 * @param nicowariVideoID
+		 * @param search デフォルトのパス生成方法でファイルが見つからない時に、ディレクトリを探索するかどうかを指定します。
 		 * @return 
 		 * 
 		 */
-		public static function createNicowariPathByVideoPathAndNicowariVideoID(videoPath:String, nicowariVideoID:String = "nm\\d+"):String{
+		public static function createNicowariPathByVideoPathAndNicowariVideoID(videoPath:String, nicowariVideoID:String = "nm\\d+", search:Boolean = false):String{
 			
 			var defFilePath:String = videoPath.substring(0,videoPath.lastIndexOf(".")) + "[Nicowari][" + nicowariVideoID + "].swf";
 			
@@ -270,13 +275,13 @@ package org.mineap.nndd.util
 				
 				try{
 					//従来通りの方法で作ったファイルがあるならそれを返す
-					if((new File(defFilePath)).exists){
+					if(!search || (new File(defFilePath)).exists){
 						return defFilePath;
 					}
 				}catch(error:Error){
 					trace(error);
 				}
-			
+				
 				var rootDir:File = new File(videoPath.substring(0, videoPath.lastIndexOf("/")));
 				if(!rootDir.exists){
 					//そんなディレクトリ存在しない。とりあえず従来の方法で生成したコメントのパスを返す。
@@ -316,11 +321,11 @@ package org.mineap.nndd.util
 		 * 注意：返されたパスが存在するとは限りません。
 		 * 
 		 * @param videoPath
-		 * @param isGetDefPath 従来通りの方法で生成したファイルパスを返します。これがtrueの場合、ほとんどの場合において高速です。
+		 * @param search デフォルトのパス生成方法でファイルが見つからない時に、ディレクトリを探索するかどうかを指定します。
 		 * @return 
 		 * 
 		 */
-		public static function createThumbImgFilePath(videoPath:String, isGetDefPath:Boolean = false):String{
+		public static function createThumbImgFilePath(videoPath:String, search:Boolean = false):String{
 			
 			var defFilePath:String = videoPath.substring(0,videoPath.lastIndexOf(".")) + "[ThumbImg].jpeg";
 			
@@ -328,7 +333,7 @@ package org.mineap.nndd.util
 				
 				try{
 					//従来通りの方法で作ったファイルがあるならそれを返す
-					if(isGetDefPath || (new File(defFilePath)).exists){
+					if(!search || (new File(defFilePath)).exists){
 						return defFilePath;
 					}
 				}catch(error:Error){

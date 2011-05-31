@@ -299,7 +299,7 @@ package org.mineap.nndd.downloadedList
 					}
 					
 					if(thumbUrl == ""){
-						thumbUrl = PathMaker.createThumbImgFilePath(decodedUrl, true);
+						thumbUrl = PathMaker.createThumbImgFilePath(decodedUrl, false);
 					}
 					if(creationDate == null){
 						creationDate = myFile.creationDate;

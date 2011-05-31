@@ -735,7 +735,7 @@ package org.mineap.nndd.download
 			
 			//タグ情報を読み込んでライブラリに反映
 			var video:NNDDVideo = new LocalVideoInfoLoader().loadInfo(nnddVideo.getDecodeUrl());
-			var localThumbImgPath:String = PathMaker.createThumbImgFilePath(nnddVideo.getDecodeUrl(), true);
+			var localThumbImgPath:String = PathMaker.createThumbImgFilePath(nnddVideo.getDecodeUrl(), false);
 			video.thumbUrl = localThumbImgPath;
 			video.creationDate = nnddVideo.creationDate;
 			video.modificationDate = nnddVideo.modificationDate;

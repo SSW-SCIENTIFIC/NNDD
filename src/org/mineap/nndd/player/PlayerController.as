@@ -3680,7 +3680,7 @@ package org.mineap.nndd.player
 							if(file.exists){
 								//ファイルが存在して、動画も存在するなら動画のURLを更新しておく
 								video.uri = file.url;
-								video.thumbUrl = PathMaker.createThumbImgFilePath(file.url, true);
+								video.thumbUrl = PathMaker.createThumbImgFilePath(file.url, false);
 								
 								//動画の時間が0ならサムネイル情報を見に行って更新する
 								if(video.time == 0){
@@ -3742,14 +3742,14 @@ package org.mineap.nndd.player
 							this.initWithPlayList(url, PlayerController.WINDOW_TYPE_SWF, comments, urlArray, videoNameArray, playListName, playListIndex, true, false, null, videoTitle);
 						}else{
 							this.isPlayListingPlay = false;
-							this.init(url, PlayerController.WINDOW_TYPE_SWF, comments, PathMaker.createThmbInfoPathByVideoPath(url), true, false, null, false, videoTitle);
+							this.init(url, PlayerController.WINDOW_TYPE_SWF, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
 						}
 					}else if(url.indexOf(".mp4") != -1 || url.indexOf(".MP4") != -1 || url.indexOf(".flv") != -1 || url.indexOf(".FLV") != -1){
 						if(playList != null && playListIndex != -1){
 							this.initWithPlayList(url, PlayerController.WINDOW_TYPE_FLV, comments, urlArray, videoNameArray, playListName, playListIndex, true, false, null, videoTitle);
 						}else{
 							this.isPlayListingPlay = false;
-							this.init(url, PlayerController.WINDOW_TYPE_FLV, comments, PathMaker.createThmbInfoPathByVideoPath(url), true, false, null, false, videoTitle);
+							this.init(url, PlayerController.WINDOW_TYPE_FLV, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
 						}
 					}
 				}else if(url.match(new RegExp("http://smile")) != null){

@@ -45,7 +45,7 @@ package org.mineap.nndd.library
 
 			if(!skipLoadThumbInfoXML){
 				var fileIO:FileIO = new FileIO(logManager);
-				thumbInfoXML = fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath), true);
+				thumbInfoXML = fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath), false);
 			}
 			
 			var file:File = null;
@@ -107,7 +107,7 @@ package org.mineap.nndd.library
 			}
 			
 			//thumbUrlが指定されていなければThumbXMLの値を設定
-			var localThumbUrl:String = PathMaker.createThumbImgFilePath(video.getDecodeUrl(), true);
+			var localThumbUrl:String = PathMaker.createThumbImgFilePath(video.getDecodeUrl(), false);
 			if((new File(localThumbUrl)).exists){
 				//ローカルにサムネイルがあればそれを使う
 				video.thumbUrl = localThumbUrl;
