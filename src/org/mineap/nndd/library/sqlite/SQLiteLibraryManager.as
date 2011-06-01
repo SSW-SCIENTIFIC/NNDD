@@ -616,21 +616,17 @@ package org.mineap.nndd.library.sqlite
 		
 		/**
 		 * ・新処理方式(1)
-		 * 20110519215642
-		 * 20110519215857
-		 * 2分15秒(135秒)
-		 * 1動画あたり0.1612秒
 		 * 
-		 * 20110519220811
-		 * 20110519221019
-		 * 2分08秒(128秒)
-		 * 1動画あたり0.1532秒
+		 * 20110531230358
+		 * 20110531230542
+		 * 1分44秒(104秒)
+		 * １動画あたり0.1239秒
 		 * 
 		 * ・新処理方式(2)
-		 * 20110520214725
-		 * 20110520214839
-		 * 1分14秒(74秒)
-		 * 1動画あたり0.0887秒
+		 * 20110531230811
+		 * 20110531231014
+		 * 2分03秒(123秒)
+		 * 1動画あたり0.1466秒
 		 * 
 		 * ・旧処理方式
 		 * 20110519220021
@@ -655,6 +651,7 @@ package org.mineap.nndd.library.sqlite
 				var result:Boolean = false;
 				if(tempVideo == null){
 					
+					// TODO: NNDDVideoのinsert、update系DAOの見直し
 					result = NNDDVideoDao.instance.insertNNDDVideo(video, false);
 					
 					if(!result)

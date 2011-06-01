@@ -13,6 +13,7 @@ package org.mineap.nndd.player.comment
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDComment;
 	import org.mineap.nndd.player.NGListManager;
+	import org.mineap.nndd.util.DateUtil;
 	
 	/**
 	 * Comments.as
@@ -198,7 +199,14 @@ package org.mineap.nndd.player.comment
 				if(loadStartDate != null && date > (loadStartDate.time/1000)){
 					continue;
 				}
-				commentArray.push(new NNDDComment(Number(p.attribute("vpos")), String(p.text()), String(p.attribute("mail")), String(p.attribute("user_id")), Number(p.attribute("no")), String(p.attribute("thread")),  true));
+				commentArray.push(new NNDDComment(Number(p.attribute("vpos")), 
+					String(p.text()), 
+					String(p.attribute("mail")), 
+					String(p.attribute("user_id")), 
+					Number(p.attribute("no")), 
+					String(p.attribute("thread")), 
+					Number(p.attribute("date")),
+					true));
 				
 				if (commentArray.length >= loadCommentCount)
 				{
@@ -367,12 +375,18 @@ package org.mineap.nndd.player.comment
 					}
 				}
 				
+				var dateStr:String = "-";
+				var date:Date = new Date(commentArray[index].date * 1000);
+				dateStr = DateUtil.getDateString(date);
+				
 				array.addItem({
 					vpos_column:nowMin + ":" + nowSec,
 					comment_column:comment,
 					user_id_column:commentArray[index].user_id,
 					time_column:commentArray[index].vpos,
-					no_column:commentArray[index].no
+					no_column:commentArray[index].no,
+					pubDate_column:dateStr,
+					mail_column:commentArray[index].mail
 				});
 			}
 			array.sort = new Sort();

@@ -18,13 +18,14 @@ package org.mineap.nndd.model
 		 * @param user_id
 		 * @param no
 		 * @param thread
+		 * @param date
 		 * @param isShow
 		 * 
 		 */
-		public function NNDDComment(vpos:Number, text:String, mail:String, user_id:String, no:Number, thread:String, isShow:Boolean)
+		public function NNDDComment(vpos:Number, text:String, mail:String, user_id:String, no:Number, thread:String, date:Number, isShow:Boolean)
 		{
 			
-			super(vpos, text, mail, user_id, no, thread);
+			super(vpos, text, mail, user_id, no, thread, date);
 			this._isShow = isShow;
 			
 		}
