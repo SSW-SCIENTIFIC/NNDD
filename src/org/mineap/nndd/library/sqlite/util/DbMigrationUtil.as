@@ -112,26 +112,14 @@ package org.mineap.nndd.library.sqlite.util
 			var xmlHelper:LibraryXMLHelper = new LibraryXMLHelper();
 			var map:Object = xmlHelper.perseXML(libraryXML);
 			
-			var count:int = 0;
-			
-			NNDDVideoDao.instance.transactionStart();
-			
-			// 連想配列内のNNDDVideoオブジェクトをDBに格納
+			var nnddVideos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
 			for each(var nnddVideo:NNDDVideo in map){
-				if(NNDDVideoDao.instance.insertNNDDVideo(nnddVideo, false)){
-					if (count % 10 == 0)
-					{
-						_logger.addLog("動画をDBに保存中(" + count + "番目):" + nnddVideo.getDecodeUrl());
-					}
-					count++;
-				}else{
-					_logger.addLog("動画情報の永続化に失敗:" + nnddVideo.videoName);
-				}
+				nnddVideos.push(nnddVideo);
 			}
 			
-			NNDDVideoDao.instance.transactionEnd();
+			NNDDVideoDao.instance.addNNDDVideos(nnddVideos, null, null);
 			
-			_logger.addLog("ライブラリXMLの解析結果をDBに保存(動画数:" + count + ")");
+			_logger.addLog("ライブラリXMLの解析結果をDBに保存(動画数:" + nnddVideos.length + ")");
 			
 		}
 		

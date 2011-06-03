@@ -47,8 +47,13 @@ package org.mineap.nndd.library.sqlite.dao
 		 * @return 
 		 * 
 		 */
-		public function insertTagString(tag:TagString):Boolean{
+		public function insertTagString(tag:TagString, transactionEnable:Boolean = true):Boolean{
 			try{
+				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.begin();
+				}
 				
 				this._stmt = new SQLStatement();
 				this._stmt.sqlConnection = DbAccessHelper.instance.connection;
@@ -58,9 +63,18 @@ package org.mineap.nndd.library.sqlite.dao
 				
 				this._stmt.execute();
 				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.commit();
+				}
+				
 				return true;
 				
 			}catch(error:Error){
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.rollback();
+				}
 				trace(error.getStackTrace());
 			}
 			

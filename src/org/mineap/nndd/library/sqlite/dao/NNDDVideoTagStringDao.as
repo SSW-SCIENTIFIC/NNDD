@@ -45,11 +45,16 @@ package org.mineap.nndd.library.sqlite.dao
 		 * @return 
 		 * 
 		 */
-		public function insertNNDDVideoTagStringRelation(videoIdArray:Array, tagStringIdArray:Array):Boolean{
+		public function insertNNDDVideoTagStringRelation(videoIdArray:Array, tagStringIdArray:Array, transactionEnable:Boolean = true):Boolean{
 			try{
 				
 				if(videoIdArray.length != tagStringIdArray.length){
 					return false;
+				}
+				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.begin();
 				}
 				
 				for(var i:int=0; i<videoIdArray.length; i++){
@@ -65,9 +70,18 @@ package org.mineap.nndd.library.sqlite.dao
 					
 				}
 				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.commit();
+				}
+				
 				return true;
 				
 			}catch(error:Error){
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.rollback();
+				}
 				trace(error.getStackTrace());
 			}
 			

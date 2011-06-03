@@ -1675,46 +1675,43 @@
 					
 					<mx:Button label="ライブラリを更新" left="472" top="65" click="renewLibraryButtonClicked()" toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
 					<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="67"/>
-					<mx:CheckBox label="更新時にサムネイル情報ファイルから動画の詳細情報を読み込む" selected="true" id="checkBox_loadThumbXML" change="checkBoxLoadThumbXMLChanged(event)"
-								 left="49" top="88" 
-								 toolTip="ライブラリ更新時に、保存済みの *[ThumbInfo].xml が存在する場合、タグ情報、動画投稿日、動画の長さなどの情報をXMLファイルから読み込みます。このチェックを外すとこれらの情報をライブラリ更新時に読み込みませんが、ライブラリの更新にかかる時間が少なくなります。"/>
-					<mx:Label text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)" left="49" top="110"/>
+					<mx:Label text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)" left="48" top="90"/>
 					
-					<mx:HRule left="30" right="10" top="136" height="10"/>
+					<mx:HRule left="29" right="11" top="116" height="10"/>
 					
-					<mx:Label text="NNDDのライブラリ情報をインポートする" left="30" top="156"
+					<mx:Label text="NNDDのライブラリ情報をインポートする" left="29" top="136"
 							  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
-					<mx:Button label="読み込み..." left="279" top="154" click="importButtonChecked()" 
+					<mx:Button label="読み込み..." left="278" top="134" click="importButtonChecked()" 
 							   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
 					<mx:CheckBox label="現在のNNDDのライブラリ情報を削除してからインポート" selected="false" id="checkBox_initalize"
-								 left="49" top="178" 
+								 left="48" top="158" 
 								 toolTip="現在のNNDDのライブラリ情報を一度削除したあと、ライブラリ情報を読み込みます。このチェックを外してインポートした場合は、現在のNNDDのライブラリ情報に上書きされます。"/>
 					
-					<mx:HRule left="30" right="10" top="203" height="10"/>
+					<mx:HRule left="29" right="11" top="183" height="10"/>
 					
-					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="30" top="223"/>
-					<mx:Button label="リセット" left="279" top="221" id="button_windowPositionReset" click="windowPositionReset()"/>
+					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="29" top="203"/>
+					<mx:Button label="リセット" left="278" top="201" id="button_windowPositionReset" click="windowPositionReset()"/>
 					
-					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="30" top="251"/>
-					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="259" top="250"/>
+					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="29" top="231"/>
+					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="258" top="230"/>
 					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" 
 								 toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" 
 								 id="checkBox_DisEnableAutoExit" 
-								 click="disEnableAutoExitCheckBoxChanged(event)" left="30" top="279"/>
+								 click="disEnableAutoExitCheckBoxChanged(event)" left="29" top="259"/>
 					<mx:HRule left="47" right="10" top="0" height="21"/>
-					<mx:HRule left="30" right="10" top="304" height="8"/>
+					<mx:HRule left="29" right="11" top="284" height="8"/>
 					
 					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					<!--
 					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
 					-->
-					<mx:Label text="アプリケーションで使用するフォント：" left="30" top="322"/>
-					<mx:ComboBox left="260" top="322" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="473" top="320" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
-					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="54" top="345"/>
+					<mx:Label text="アプリケーションで使用するフォント：" left="29" top="302"/>
+					<mx:ComboBox left="259" top="302" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+					<mx:Button label="デフォルト" left="472" top="300" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="325"/>
 					
-					<mx:Label left="30" top="374" text="フォントのサイズ："/>
-					<mx:ComboBox left="152" top="374" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
+					<mx:Label left="29" top="354" text="フォントのサイズ："/>
+					<mx:ComboBox left="151" top="354" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					

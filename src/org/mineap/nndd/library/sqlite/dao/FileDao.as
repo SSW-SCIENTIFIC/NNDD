@@ -41,15 +41,20 @@ package org.mineap.nndd.library.sqlite.dao
 		 * @param file
 		 * 
 		 */
-		public function insertFile(file:File):Boolean{
+		public function insertFile(file:File, transactionEnable:Boolean = true):Boolean{
 			try{
 				
 				if(file == null){
 					return false;
-				}
+				}				
 				
 				if(file.exists && !file.isDirectory){
 					file = file.parent;
+				}
+				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.begin();
 				}
 				
 				this._stmt = new SQLStatement();
@@ -59,13 +64,21 @@ package org.mineap.nndd.library.sqlite.dao
 				this._stmt.parameters[":dirpath"] = file.url;
 				
 				this._stmt.execute();
+				
+				if (transactionEnable)
+				{
+					DbAccessHelper.instance.connection.commit();
+				}
+				
 				return true;
 			}catch(error:SQLError){
-				trace(error.getStackTrace());
-				if(file != null)
+				
+				if (transactionEnable)
 				{
-					trace(file.url);
+					DbAccessHelper.instance.connection.rollback();
 				}
+				
+				trace(error.getStackTrace());
 			}
 			
 			return false;
@@ -123,6 +136,7 @@ package org.mineap.nndd.library.sqlite.dao
 			var vector:Vector.<NNDDFile> = new Vector.<NNDDFile>();
 			
 			try{
+				
 				this._stmt = new SQLStatement();
 				this._stmt.sqlConnection = DbAccessHelper.instance.connection;
 				this._stmt.text = Queries.SELECT_FILE_ALL;

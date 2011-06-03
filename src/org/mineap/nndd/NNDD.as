@@ -243,8 +243,6 @@ private var isEnableNativePlayer:Boolean = false;
 
 private var useAppDirLibFile:Boolean = false;
 
-private var isLoadThumbXML:Boolean = true;
-
 private var isOpenPlayerOnBoot:Boolean = false;
 
 private var downloadRetryMaxCount:int = 2;
@@ -2179,17 +2177,6 @@ private function readStore(isLogout:Boolean = false):void{
 			useAppDirLibFile = false;
 		}
 		
-		errorName = "isLoadThumbXML";
-		confValue = ConfigManager.getInstance().getItem("isLoadThumbXML");
-		if(confValue != null)
-		{
-			this.isLoadThumbXML = ConfUtil.parseBoolean(confValue);
-		}
-		else
-		{
-			this.isLoadThumbXML = true;
-		}
-		
 		errorName = "isOpenPlayerOnBoot";
 		confValue = ConfigManager.getInstance().getItem("isOpenPlayerOnBoot");
 		if(confValue != null)
@@ -2752,8 +2739,6 @@ private function allConfigCanvasCreationComplete(event:FlexEvent):void{
 	checkBox_versionCheck.selected = this.isVersionCheckEnable;
 	
 	checkBox_DisEnableAutoExit.selected = this.isDisEnableAutoExit;
-	
-	checkBox_loadThumbXML.selected = this.isLoadThumbXML;
 	
 	fontListRenew();
 	
@@ -4307,10 +4292,6 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("useAppDirLibFile");
 		ConfigManager.getInstance().setItem("useAppDirLibFile", this.useAppDirLibFile);
 		
-		/* ライブラリ更新時にThumbInfoを読み込むかどうか */
-		ConfigManager.getInstance().removeItem("isLoadThumbXML");
-		ConfigManager.getInstance().setItem("isLoadThumbXML", this.isLoadThumbXML);
-		
 		/* 起動時にPlayerを開くかどうか */
 		ConfigManager.getInstance().removeItem("isOpenPlayerOnBoot");
 		ConfigManager.getInstance().setItem("isOpenPlayerOnBoot", this.isOpenPlayerOnBoot);
@@ -4677,11 +4658,6 @@ private function disEnableAutoExitCheckBoxChanged(event:Event):void{
 	
 	this.autoExit = !isDisEnableAutoExit;
 	
-}
-
-private function checkBoxLoadThumbXMLChanged(event:Event):void
-{
-	this.isLoadThumbXML = checkBox_loadThumbXML.selected;
 }
 
 /**

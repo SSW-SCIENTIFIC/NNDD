@@ -50,7 +50,7 @@ package org.mineap.nndd.library.sqlite
 		private var _tempLibraryMap:Object;
 		
 		private var _allDirRenew:Boolean = false;
-		private var _loadThumbXML:Boolean = false;
+		private var _searchThumbXML:Boolean = false;
 		private var _renewingDir:File = null;
 		private var _totalVideoCount:Number = 0;
 		private var _videoCount:Number = 0;
@@ -341,56 +341,7 @@ package org.mineap.nndd.library.sqlite
 				
 				var failVideos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
 				
-				NNDDVideoDao.instance.transactionStart();
-				
-				var count:int = 0;
-				for each(var nnddVideo:NNDDVideo in vector){
-					
-					if (count % 10 == 0)
-					{
-						_logger.addLog("動画をDBに保存中(" + count + "番目):" + nnddVideo.getDecodeUrl());
-					}
-					count++;
-					
-					if (isOverwrite)
-					{
-						tempVideo = null;
-						tempVideo = NNDDVideoDao.instance.selectNNDDVideoByKey(nnddVideo.key, false);
-						
-						if (tempVideo == null)
-						{
-							// 存在しない物は追加
-							if (!NNDDVideoDao.instance.insertNNDDVideo(nnddVideo, false))
-							{
-								failVideos.push(nnddVideo);
-							}
-						}
-						else
-						{
-							
-							// xml版で取得していないデータはSQLite版のデータを上書き
-							nnddVideo.id = tempVideo.id;
-							nnddVideo.time = tempVideo.time;
-							nnddVideo.pubDate = tempVideo.pubDate;
-							
-							// 存在する物は上書き
-							if (!NNDDVideoDao.instance.updateNNDDVideo(nnddVideo, false))
-							{
-								failVideos.push(nnddVideo);
-							}
-						}
-					}
-					else
-					{
-						// 全てinsertになるはず
-						if (!NNDDVideoDao.instance.insertNNDDVideo(nnddVideo, false))
-						{
-							failVideos.push(nnddVideo);
-						}
-					}
-				}
-				
-				NNDDVideoDao.instance.transactionEnd();
+				NNDDVideoDao.instance.addNNDDVideos(vector, null, new Vector.<String>("uri", "pubDate"));
 				
 				var time:Number = (new Date().time - date.time);
 				trace(time + " ms, " + (time/vector.length) + " ms/video.");
@@ -462,10 +413,10 @@ package org.mineap.nndd.library.sqlite
 		 * @param renewSubDir
 		 * 
 		 */
-		public function renewLibrary(libraryDir:File, renewSubDir:Boolean, loadThumbXML:Boolean = false):void
+		public function renewLibrary(libraryDir:File, renewSubDir:Boolean, searchThumbXML:Boolean = false):void
 		{
 			
-			this._loadThumbXML = loadThumbXML;
+			this._searchThumbXML = searchThumbXML;
 			this._allDirRenew = false;
 			this._renewingDir = null;
 			this._totalVideoCount = 0;
@@ -525,7 +476,7 @@ package org.mineap.nndd.library.sqlite
 				}
 				
 				var loader:LocalVideoInfoLoader = new LocalVideoInfoLoader();
-				var nnddVideo:NNDDVideo = loader.loadInfo(file.url, !this._loadThumbXML);
+				var nnddVideo:NNDDVideo = loader.loadInfo(file.url, this._searchThumbXML);
 				
 				if (nnddVideo == null)
 				{
@@ -610,9 +561,7 @@ package org.mineap.nndd.library.sqlite
 				_logger.addLog("ファイルの読み込みに失敗:" + error + ":"+ fileName +":" + error.getStackTrace());
 				
 				if(_videoCount >= _totalVideoCount){
-					for(var value:Object in _tempLibraryMap){
-						add(_tempLibraryMap[value], false, true);
-					}
+					addVideos(_tempLibraryMap);
 					_tempLibraryMap = null;
 					
 					this._tagManager.loadTag();
@@ -629,7 +578,6 @@ package org.mineap.nndd.library.sqlite
 		
 		/**
 		 * ・新処理方式(1)
-		 * 
 		 * 20110531230358
 		 * 20110531230542
 		 * 1分44秒(104秒)
@@ -640,6 +588,12 @@ package org.mineap.nndd.library.sqlite
 		 * 20110531231014
 		 * 2分03秒(123秒)
 		 * 1動画あたり0.1466秒
+		 * 
+		 * ・新処理方式(3)
+		 * 20110603225837
+		 * 20110603225918
+		 * 0分41秒
+		 * 1動画あたり0.048秒
 		 * 
 		 * ・旧処理方式
 		 * 20110519220021
@@ -654,58 +608,13 @@ package org.mineap.nndd.library.sqlite
 			trace("DBへの登録開始");
 			var time:Number = new Date().time;
 			
-			var count:Number = 0;
-			
-			NNDDVideoDao.instance.transactionStart();
-			
-			for each(var video:NNDDVideo in videoMap)
+			var nnddVideos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
+			for each(var nnddVideo:NNDDVideo in videoMap)
 			{
-				var tempVideo:NNDDVideo = NNDDVideoDao.instance.selectNNDDVideoByKey(video.key, false);
-				var result:Boolean = false;
-				if(tempVideo == null){
-					
-					// TODO: NNDDVideoのinsert、update系DAOの見直し
-					result = NNDDVideoDao.instance.insertNNDDVideo(video, false);
-					
-					if(!result)
-					{
-						_logger.addLog("データベースに登録失敗:" + video.getDecodeUrl());
-						trace(video.getDecodeUrl());
-					}
-				}else{
-					video.id = tempVideo.id;
-					
-					// サムネイル情報を読み込まない時は元々あるデータを使う
-					if (!this._loadThumbXML)
-					{
-						video.isEconomy = tempVideo.isEconomy;
-						video.tagStrings = tempVideo.tagStrings;
-						
-						video.thumbUrl = tempVideo.thumbUrl;
-						video.playCount = tempVideo.playCount;
-						video.time = tempVideo.time;
-						video.lastPlayDate = tempVideo.lastPlayDate;
-						video.pubDate = tempVideo.pubDate;
-					}
-					
-					result = NNDDVideoDao.instance.updateNNDDVideo(video, false);
-					
-					if(!result)
-					{
-						_logger.addLog("データベースに登録失敗:" + video.getDecodeUrl());
-						trace(video.getDecodeUrl());
-					}
-				}
-				
-				if(count%10 == 0){
-					trace(count + "件完了:" + video.getVideoNameWithVideoID());
-					_logger.addLog(count + "件登録完了:" + video.getVideoNameWithVideoID());
-				}
-				
-				++count;
+				nnddVideos.push(nnddVideo);
 			}
 			
-			NNDDVideoDao.instance.transactionEnd();
+			NNDDVideoDao.instance.addNNDDVideos(nnddVideos, null, null);
 			
 			trace("DBへの登録完了:" + int (new Date().time - time) + " ms");		//DBへの登録完了:68978 ms (820動画)
 		}
@@ -759,7 +668,7 @@ package org.mineap.nndd.library.sqlite
 					video.id = tempVideo.id;
 				}
 			}
-			return NNDDVideoDao.instance.updateNNDDVideo(video);
+			return NNDDVideoDao.instance.updateNNDDVideoWithFileAndTags(video);
 		}
 		
 		/**
@@ -772,7 +681,7 @@ package org.mineap.nndd.library.sqlite
 		 */
 		public function add(video:NNDDVideo, isSaveLibrary:Boolean, isOverWrite:Boolean=false):Boolean
 		{
-			var result:Boolean = NNDDVideoDao.instance.insertNNDDVideo(video);
+			var result:Boolean = NNDDVideoDao.instance.insertNNDDVideoWithFileAndTags(video);
 			if(!result && isOverWrite){
 				result = update(video, false);
 			}
@@ -853,7 +762,6 @@ package org.mineap.nndd.library.sqlite
 			var date:Date = new Date();
 			
 			try{
-				DbAccessHelper.instance.connection.begin();
 				
 				for each(var video:NNDDVideo in vector){
 					
@@ -867,10 +775,8 @@ package org.mineap.nndd.library.sqlite
 					}
 				}
 				
-				DbAccessHelper.instance.connection.commit();
 			}catch(error:Error){
 				trace(error.getStackTrace());
-				DbAccessHelper.instance.connection.rollback();
 			}
 			
 			trace("動画に関連するタグを抽出:" + (new Date().time - date.time) + " ms");
