@@ -341,16 +341,26 @@ package org.mineap.nndd.library.sqlite
 				
 				var failVideos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
 				
+				NNDDVideoDao.instance.transactionStart();
+				
+				var count:int = 0;
 				for each(var nnddVideo:NNDDVideo in vector){
+					
+					if (count % 10 == 0)
+					{
+						_logger.addLog("動画をDBに保存中(" + count + "番目):" + nnddVideo.getDecodeUrl());
+					}
+					count++;
+					
 					if (isOverwrite)
 					{
 						tempVideo = null;
-						tempVideo = isExist(nnddVideo.key);
+						tempVideo = NNDDVideoDao.instance.selectNNDDVideoByKey(nnddVideo.key, false);
 						
 						if (tempVideo == null)
 						{
 							// 存在しない物は追加
-							if (!add(nnddVideo, false, true))
+							if (!NNDDVideoDao.instance.insertNNDDVideo(nnddVideo, false))
 							{
 								failVideos.push(nnddVideo);
 							}
@@ -359,11 +369,12 @@ package org.mineap.nndd.library.sqlite
 						{
 							
 							// xml版で取得していないデータはSQLite版のデータを上書き
+							nnddVideo.id = tempVideo.id;
 							nnddVideo.time = tempVideo.time;
 							nnddVideo.pubDate = tempVideo.pubDate;
 							
 							// 存在する物は上書き
-							if (!update(nnddVideo, false))
+							if (!NNDDVideoDao.instance.updateNNDDVideo(nnddVideo, false))
 							{
 								failVideos.push(nnddVideo);
 							}
@@ -372,12 +383,14 @@ package org.mineap.nndd.library.sqlite
 					else
 					{
 						// 全てinsertになるはず
-						if (!add(nnddVideo, false, false))
+						if (!NNDDVideoDao.instance.insertNNDDVideo(nnddVideo, false))
 						{
 							failVideos.push(nnddVideo);
 						}
 					}
 				}
+				
+				NNDDVideoDao.instance.transactionEnd();
 				
 				var time:Number = (new Date().time - date.time);
 				trace(time + " ms, " + (time/vector.length) + " ms/video.");
