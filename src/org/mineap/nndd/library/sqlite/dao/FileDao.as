@@ -44,12 +44,12 @@ package org.mineap.nndd.library.sqlite.dao
 		public function insertFile(file:File):Boolean{
 			try{
 				
-				if(!file.isDirectory){
-					file = file.parent;
-				}
-				
 				if(file == null){
 					return false;
+				}
+				
+				if(file.exists && !file.isDirectory){
+					file = file.parent;
 				}
 				
 				this._stmt = new SQLStatement();
@@ -62,6 +62,10 @@ package org.mineap.nndd.library.sqlite.dao
 				return true;
 			}catch(error:SQLError){
 				trace(error.getStackTrace());
+				if(file != null)
+				{
+					trace(file.url);
+				}
 			}
 			
 			return false;
