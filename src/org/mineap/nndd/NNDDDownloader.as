@@ -1,14 +1,20 @@
 package org.mineap.nndd
 {
+	import flash.errors.IOError;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.filesystem.File;
+	import flash.filesystem.FileStream;
+	import flash.media.Video;
 	import flash.net.URLLoader;
+	import flash.net.URLStream;
 	import flash.net.URLVariables;
+	import flash.utils.ByteArray;
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
@@ -27,6 +33,7 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.loader.api.ApiGetWaybackkeyAccess;
 	import org.mineap.nicovideo4as.model.NgUp;
 	import org.mineap.nicovideo4as.model.VideoType;
+	import org.mineap.nicovideo4as.stream.VideoStream;
 	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.player.comment.Command;
@@ -64,6 +71,7 @@ package org.mineap.nndd
 		private var _thumbImgLoader:ThumbImgLoader;
 		private var _ichibaInfoLoader:IchibaInfoLoader;
 		private var _videoLoader:VideoLoader;
+		private var _videoStream:VideoStream;
 		
 		private var _flvResultAnalyzer:GetFlvResultAnalyzer;
 		
@@ -240,6 +248,7 @@ package org.mineap.nndd
 			this._thumbImgLoader = new ThumbImgLoader();
 			this._ichibaInfoLoader = new IchibaInfoLoader();
 			this._videoLoader = new VideoLoader();
+			this._videoStream = new VideoStream();
 			
 			this._nicowariVideoIds = new Array();
 			this._nicowariVideoUrls = new Array();
@@ -1208,6 +1217,68 @@ package org.mineap.nndd
 			trace(ICHIBA_INFO_GET_SUCCESS + ":" + event + "\n" + path);
 			dispatchEvent(new Event(ICHIBA_INFO_GET_SUCCESS));
 			
+			if(!this._isVideoNotDownload){
+				getVideoForDownload();
+			}else{
+				getVideoForStreaming();	
+			}
+			
+		}
+		
+		/**
+		 * 動画のダウンロードを開始します
+		 * 
+		 */
+		private function getVideoForDownload():void
+		{
+			this._videoStream.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+			{
+				(event.target as URLLoader).close();
+				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, event.text));
+				close(true, true, event);
+			});
+			this._videoStream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+				trace(event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+			});
+			this._videoStream.addEventListener(ProgressEvent.PROGRESS, streamProgressHandler);
+			this._videoStream.addEventListener(Event.COMPLETE, videoGetCompleteHandler);
+			
+			var analyzer:GetFlvResultAnalyzer = new GetFlvResultAnalyzer();
+			analyzer.analyze(String(this._getflvAccess.data));
+			
+			var videoType:VideoType = VideoStream.checkVideoType(analyzer.url);
+			var extension:String = "";
+			if(VideoType.VIDEO_TYPE_FLV == videoType){
+				extension = ".flv";
+			}else if(VideoType.VIDEO_TYPE_MP4 == videoType){
+				extension = ".mp4";
+			}else if(VideoType.VIDEO_TYPE_SWF == videoType){
+				extension = ".swf";
+			}
+			
+			//HTML特殊文字置き換え済動画名
+			this._saveVideoName = HtmlUtil.convertSpecialCharacterNotIncludedString(this._saveVideoName) + extension;
+			this._nicoVideoName = this._nicoVideoName + extension;
+			
+			//保存済みのファイルがあるならゴミ箱へ移動
+			var oldFile:File = new File(_saveDir.url).resolvePath(_saveVideoName);
+			if(oldFile.exists){
+				oldFile.moveToTrash();
+			}
+				
+			this._videoStream.getVideoStart(analyzer.url);
+		}
+		
+		/**
+		 * ストリーミング再生の準備をします
+		 * 
+		 */
+		private function getVideoForStreaming():void
+		{
+			
 			this._videoLoader.addVideoLoaderListener(VideoLoader.VIDEO_URL_GET_FAIL, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
@@ -1227,44 +1298,106 @@ package org.mineap.nndd
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			
-			if(!this._isVideoNotDownload){
-				var beforeBytes:Number = 0;
-				this._videoLoader.addVideoLoaderListener(ProgressEvent.PROGRESS, function(event:ProgressEvent):void{
-					//イベントを乱発すると性能が落ちるので間引き
-					if(event.bytesLoaded - beforeBytes > 1000000 || beforeBytes == 0){
-						trace(VIDEO_DOWNLOAD_PROGRESS + ":" + event.bytesLoaded + "/" + event.bytesTotal + " bytes");
-						dispatchEvent(new ProgressEvent(VIDEO_DOWNLOAD_PROGRESS, false, false, event.bytesLoaded, event.bytesTotal));
-						beforeBytes = event.bytesLoaded;
-					}
-				});
-				this._videoLoader.addVideoLoaderListener(Event.COMPLETE, videoGetSuccess);
-			}else{
-				//ストリーミング再生用
-				this._videoLoader.addEventListener(VideoLoader.VIDEO_URL_GET_SUCCESS, function(event:Event):void{
-					
-					trace(VideoLoader.VIDEO_URL_GET_SUCCESS + ":" + event);
-					_streamingUrl = (event.target as VideoLoader).videoUrl;
-					
-					var extension:String = "";
-					if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_FLV){
-						extension = ".flv";
-					}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4){
-						extension = ".mp4";
-					}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_SWF){
-						extension = ".swf";
-					}else{
-						dispatchEvent(new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
-						close(true, true, new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
-						return;
-					}
-					
-					_nicoVideoName = _nicoVideoName + extension;
-					
-					dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
-					close(false, false);
-				});
-			}
+			//ストリーミング再生用
+			this._videoLoader.addEventListener(VideoLoader.VIDEO_URL_GET_SUCCESS, function(event:Event):void{
+				
+				trace(VideoLoader.VIDEO_URL_GET_SUCCESS + ":" + event);
+				_streamingUrl = (event.target as VideoLoader).videoUrl;
+				
+				var extension:String = "";
+				if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_FLV){
+					extension = ".flv";
+				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4){
+					extension = ".mp4";
+				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_SWF){
+					extension = ".swf";
+				}else{
+					dispatchEvent(new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
+					close(true, true, new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
+					return;
+				}
+				
+				_nicoVideoName = _nicoVideoName + extension;
+				
+				dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
+				close(false, false);
+			});
+			
 			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess);
+		}
+		
+		/**
+		 * 
+		 */
+		private var beforeBytes:Number = 0;
+		
+		/**
+		 * 
+		 */
+		private var loadedBytes:ByteArray = new ByteArray();
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function streamProgressHandler(event:ProgressEvent):void
+		{
+			
+			
+			//イベントを乱発すると性能が落ちるので間引き
+			if(event.bytesLoaded - beforeBytes > 1000000 || beforeBytes == 0){
+				trace(VIDEO_DOWNLOAD_PROGRESS + ":" + event.bytesLoaded + "/" + event.bytesTotal + " bytes");
+				dispatchEvent(new ProgressEvent(VIDEO_DOWNLOAD_PROGRESS, false, false, event.bytesLoaded, event.bytesTotal));
+				beforeBytes = event.bytesLoaded;
+			}
+			
+			// 読み取り可能なバイト列があるかどうか
+			var stream:URLStream = (event.currentTarget as URLStream);
+			if(!(stream.bytesAvailable > 0))
+			{
+				return;
+			}
+			
+			beforeBytes = event.bytesLoaded;
+			//ストリームからバイトを読み込み
+			stream.readBytes(loadedBytes, loadedBytes.length);
+			
+			// 1MBを越えたらファイルに書き出し
+			if (loadedBytes.length > 1000000)
+			{
+				outputFile(_saveVideoName, _saveDir.url, loadedBytes);
+				loadedBytes.clear();
+			}
+		}
+		
+		/**
+		 * 指定されたバイト列をファイルに書き出します。ファイルへの書き出しは追記モードで行います。
+		 * 
+		 * @param fileName
+		 * @param saveDirPath
+		 * @param bytes
+		 * 
+		 */
+		private function outputFile(fileName:String, saveDirPath:String, bytes:ByteArray):void
+		{
+			//バイト列をファイルに書き出し
+			try
+			{
+				var fileIO:FileIO = new FileIO();
+				var savedFile:File = fileIO.saveByteArray(_saveVideoName, _saveDir.url, loadedBytes, true);
+				
+				this._savedVideoPath = decodeURIComponent(savedFile.url);
+			}
+			catch(error:Error)
+			{
+				trace(error.getStackTrace());
+				LogManager.instance.addLog("動画の保存に失敗:" + error.toString() + "\n" + _saveVideoName + ":" + _saveDir.url);
+				
+				var myEvent:IOErrorEvent = new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.toString());
+				dispatchEvent(myEvent);
+				close(true, true, myEvent);
+			}
 		}
 		
 		/**
@@ -1274,54 +1407,24 @@ package org.mineap.nndd
 		 * @param event
 		 * 
 		 */
-		private function videoGetSuccess(event:Event):void{
+		private function videoGetCompleteHandler(event:Event):void{
 			
-			var fileIO:FileIO = new FileIO();
-			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				LogManager.instance.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, event.text));
-				close(true, true);
-			});
-			var extension:String = "";
-			if(this._videoLoader.videoType == VideoType.VIDEO_TYPE_FLV){
-				extension = ".flv";
-			}else if(this._videoLoader.videoType == VideoType.VIDEO_TYPE_MP4){
-				extension = ".mp4";
-			}else if(this._videoLoader.videoType == VideoType.VIDEO_TYPE_SWF){
-				extension = ".swf";
-			}else{
-				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, "UnkwownVideoType"));
-				close(true, true);
-				return;
-			}
-			//HTML特殊文字置き換え済動画名
-			this._saveVideoName = HtmlUtil.convertSpecialCharacterNotIncludedString(this._saveVideoName) + extension;
-			this._nicoVideoName = this._nicoVideoName + extension;
+			// 書き出してないバイト列をファイルに書き出し
+			outputFile(_saveVideoName, _saveDir.url, loadedBytes);
+			
+			var file:File = new File(this._savedVideoPath);
 			
 			//ファイルの大きさチェック（小さすぎたらそれは何らかの障害で取得できていない）
-			trace((event.target as URLLoader).bytesTotal + "bytes");
-			if((event.target as URLLoader).bytesTotal < 1000){
-				var myEvent:ErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
+			trace(file.size + " bytes");
+			if(file.size < 1000){
+				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
 				dispatchEvent(myEvent);
 				close(true, true, myEvent);
 				return;
 			}
 			
-			//禁則文字置き換え済動画Path
-			try{
-				var file:File = fileIO.saveVideoByURLLoader((event.target as URLLoader), this._saveVideoName , this._saveDir.url);
-				this._savedVideoPath = decodeURIComponent(file.url);
-			}catch(error:Error){
-				var myEvent:ErrorEvent = new IOErrorEvent(NNDDDownloader.VIDEO_GET_FAIL, false, false, error.toString()); 
-				dispatchEvent(myEvent);
-				close(true, true, myEvent);
-				
-				return;
-			}
 			//動画取得成功
-			(event.target as URLLoader).close();
-			this._videoLoader.close();
+			(event.currentTarget as URLStream).close();
 			LogManager.instance.addLog("\t" + VIDEO_GET_SUCCESS + ":" + file.nativePath);
 			trace(VIDEO_GET_SUCCESS + ":" + event + "\n" + file.nativePath);
 			dispatchEvent(new Event(VIDEO_GET_SUCCESS));
@@ -1512,6 +1615,16 @@ package org.mineap.nndd
 				trace(this._videoLoader + " is closed.");
 			}catch(error:Error){
 //				trace(error.getStackTrace());
+			}
+			
+			try
+			{
+				this._videoStream.close();
+				trace(this._videoStream + " is closed.");
+			}
+			catch(error:Error)
+			{
+				
 			}
 			
 			terminate();
