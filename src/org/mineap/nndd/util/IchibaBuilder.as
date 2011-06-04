@@ -2,6 +2,7 @@ package org.mineap.nndd.util
 {
 	import mx.collections.ArrayCollection;
 	
+	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.LogManager;
 	
 	/**
@@ -70,50 +71,7 @@ package org.mineap.nndd.util
 				//終了
 				<img src="http://res.nicovideo.jp/img/watch/ichiba/go_ichiba.gif" alt="ニコニコ市場" class="go_ichiba">
 			*/
-			/*例
 			
-				<img src="http://ecx.images-amazon.com/images/I/41p9BgbR-oL._AA146_.jpg" title="東方麻雀牌携帯ストラップ 八雲 紫" width="146" height="146">
-            </div>
-            <span id="azB001I8K43Q_mq" style="position:absolute; top:1px; z-index:2; width:146px; font-weight: bold; text-decoration:none;">
-            </span>
-            <a style="cursor:pointer;" href="http://www.amazon.co.jp/dp/B001I8K43Q/ref=asc_df_B001I8K43Q56388/?tag=nicovideojp-22&amp;creative=380333&amp;creativeASIN=B001I8K43Q&amp;linkCode=asn" class="ichiba_item" target="_blank" onmousedown="return ichibaB_az.item_click('azB001I8K43Q')">
-                <div style="opacity:0; -moz-opacity:0; filter: alpha(opacity=0); background-color:black; position:absolute; top:0px; left:0px; width:146px; height:146px; z-index:10;" onmouseover="marquee.enable('azB001I8K43Q', 146, 146, 8);" onmouseout="marquee.disable('azB001I8K43Q');"> 
-                </div>
-            </a>
-        </div>
-    </td>
-    <td style="vertical-align:middle;">
-        <p>
-            <img src="http://res.nicovideo.jp/img/watch/ichiba/from_amazon.gif" alt="amazon.co.jp">
-        </p>
-        <div style="margin:4px 0;">
-            <p style="font-size:14px; line-height:1.25;">
-                <a href="http://www.amazon.co.jp/dp/B001I8K43Q/ref=asc_df_B001I8K43Q56388/?tag=nicovideojp-22&amp;creative=380333&amp;creativeASIN=B001I8K43Q&amp;linkCode=asn" class="ichiba_item" target="_blank" onmousedown="return ichibaB_az.item_click('azB001I8K43Q')">
-                    <h3 style="font-family:verdana,arial,helvetica,sans-serif; display:inline; font-size:14px; line-height:1.25;">東方麻雀牌携帯ストラップ 八雲 紫
-                    </h3>
-                </a>
-                <span class="item_genre">おもちゃ＆ホビー
-                </span>
-            </p>
-            <p class="TXT12">
-                <strong style="font-weight:bold;">中国
-                </strong>
-            </p>
-            <p class="TXT12">
-                <strong style="font-weight:bold;">
-                </strong>
-            </p>
-        </div>
-        <p class="TXT12">
-            <strong style="color:#F30;font-weight:bold;">27人
-            </strong>が購入しました / この動画で
-            <strong style="font-weight:bold;">230人
-            </strong>、全体で1,277人がクリック
-            <p class="TXT12">
-                <a href="http://ichiba.nicovideo.jp/item/azB001I8K43Q" target="_blank" style="color:#F60;">&gt;&gt;ニコニコ市場へ
-                    <img src="http://res.nicovideo.jp/img/watch/ichiba/go_ichiba.gif" alt="ニコニコ市場" class="go_ichiba">
-			
-			*/
 			//(http://[^/]+\\.e\\.akamai\\.net/[^/]+/[^/]+/[^/]+/[^/]+/image\\.shopping\\.yahoo\\.co\\.jp/././[^\"]+)
 			var array:ArrayCollection = new ArrayCollection();
 			var gIndex:Number = 0;
@@ -124,8 +82,10 @@ package org.mineap.nndd.util
 				var endIndex:Number = 0;
 				
 				//画像のURLとタイトルを取得
-				var pattern_imgUrlAndTitle:RegExp = new RegExp("<img src=\"(http://ecx.images-amazon.com/images/./[^\"]*|http://[^/]*.e.akamai.net/[^/]*/[^/]*/[^/]*/[^/]*/image.shopping.yahoo.co.jp/././[^\"]*)\"" + 
-						".*title=\"([^\"]*)\"[^>]*>", "ig");
+				var pattern_imgUrlAndTitle:RegExp = new RegExp(
+						"(http://ecx.images-amazon.com/images/./[^\"]*|" +
+						"http://item.shopping.c.yimg.jp/././[^\"]*|" +
+						"http://[^/]*.e.akamai.net/[^/]*/[^/]*/[^/]*/[^/]*/image.shopping.yahoo.co.jp/././[^\"]*)\".*title=\"([^\"]*)\"[^>]*>", "ig");
 				pattern_imgUrlAndTitle.lastIndex = gIndex;
 				var execIandT:Object = pattern_imgUrlAndTitle.exec(ichibaHTML);
 				if(execIandT == null){
@@ -133,11 +93,11 @@ package org.mineap.nndd.util
 					break;
 				}
 				imageURL = execIandT[1];
-				itemInfo = execIandT[2];
+				itemInfo = HtmlUtil.convertSpecialCharacterNotIncludedString(execIandT[2]);
 				
 				//この商品の終わり抽出
 				var pattern_itemEnd_old:RegExp = new RegExp("ニコニコ市場へ", "ig");	//古い市場情報
-				var pattern_itemEnd:RegExp = new RegExp("</nobr>", "ig");			//新しい市場情報
+				var pattern_itemEnd:RegExp = new RegExp("</div></td>", "ig");			//新しい市場情報
 				pattern_itemEnd_old.lastIndex = execIandT.index;
 				pattern_itemEnd.lastIndex = execIandT.index;
 				var endExec:Object = pattern_itemEnd.exec(ichibaHTML);
@@ -224,7 +184,7 @@ package org.mineap.nndd.util
 					col_link:linkURL
 				});
 				
-				gIndex = endIndex;
+//				gIndex = endIndex;
 				
 				
 			}
