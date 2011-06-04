@@ -321,12 +321,12 @@ package org.mineap.nndd.library.sqlite.dao
 				var dir:NNDDFile = FileDao.instance.selectFileByFile(nnddVideo.dir);
 				if(dir == null){
 					/* 無ければ追加 */
-					FileDao.instance.insertFile(nnddVideo.dir);
+					FileDao.instance.insertFile(nnddVideo.dir, false);
 					dir = FileDao.instance.selectFileByFile(nnddVideo.dir);
 				}
 				
 				/* 動画を永続化 */
-				if(insertNNDDVideo(nnddVideo, dir.id, false))
+				if(!insertNNDDVideo(nnddVideo, dir.id, false))
 				{
 					if (transactionEnable)
 					{
@@ -347,7 +347,7 @@ package org.mineap.nndd.library.sqlite.dao
 					if(tag == null){
 						tag = new TagString(str);
 						/* タグが無ければ追加 */
-						TagStringDao.instance.insertTagString(tag);
+						TagStringDao.instance.insertTagString(tag, false);
 					}
 					
 					var tagString:TagString = TagStringDao.instance.selectTagStringByTag(str);
@@ -358,7 +358,7 @@ package org.mineap.nndd.library.sqlite.dao
 				}
 				
 				/* タグとの関連情報を保存 */
-				NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray);
+				NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray, false);
 				
 				if (transactionEnable)
 				{
@@ -478,11 +478,11 @@ package org.mineap.nndd.library.sqlite.dao
 				var dir:NNDDFile = FileDao.instance.selectFileByFile(nnddVideo.dir);
 				if(dir == null){
 					/* 無ければ追加 */
-					FileDao.instance.insertFile(nnddVideo.dir);
+					FileDao.instance.insertFile(nnddVideo.dir, false);
 					dir = FileDao.instance.selectFileByFile(nnddVideo.dir);
 				}
 				
-				if (updateNNDDVideo(nnddVideo, dir.id, false))
+				if (!updateNNDDVideo(nnddVideo, dir.id, false))
 				{
 					if (transactionEnable)
 					{
@@ -502,7 +502,7 @@ package org.mineap.nndd.library.sqlite.dao
 					
 					if(tagString == null){
 						// タグがDBにないので新規追加
-						TagStringDao.instance.insertTagString(new TagString(str));
+						TagStringDao.instance.insertTagString(new TagString(str), false);
 						tagString = TagStringDao.instance.selectTagStringByTag(str);
 					}
 					
@@ -514,7 +514,7 @@ package org.mineap.nndd.library.sqlite.dao
 				}
 				
 				// 動画とタグの関連を再設定
-				NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray);
+				NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray, false);
 				
 				if (transactionEnable)
 				{
