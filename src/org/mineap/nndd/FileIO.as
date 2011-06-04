@@ -318,6 +318,8 @@ package org.mineap.nndd
 					delete (oldComments.chat as XMLList)[0];
 				}
 				
+				oldComments.ngups = newComments.ngups;
+				
 				this.saveXMLSync(file, oldComments, false);
 				
 			}catch(error:Error){
@@ -450,11 +452,13 @@ package org.mineap.nndd
 		/**
 		 * 指定されたバイト列を指定されたファイルパスに書き出します。
 		 * 
-		 * @param filePath
-		 * @param bytes
-		 * @return 保存したサムネイル画像を表すFileオブジェクトです。
+		 * @param fileName 書き出すファイルの名前
+		 * @param path 書き出すファイルの保存先ディレクトリ
+		 * @param bytes 書き込むバイト列
+		 * @param append ファイルを追記モードで開くかどうか。falseの場合は上書きモード。
+		 * @return 保存したファイルを表現するファイルオブジェクト
 		 */
-		public function saveByteArray(fileName:String, path:String, bytes:ByteArray):File{
+		public function saveByteArray(fileName:String, path:String, bytes:ByteArray, append:Boolean = false):File{
 			
 			fileName = getSafeFileName(fileName);
 			
@@ -463,13 +467,20 @@ package org.mineap.nndd
 			}
 			
 			file = new File(path + fileName);
-			
-			fileStream.open(file, FileMode.WRITE);
+
+			if(append)
+			{
+				fileStream.open(file, FileMode.APPEND);
+			}
+			else
+			{
+				fileStream.open(file, FileMode.WRITE);
+			}
 			fileStream.writeBytes(bytes, 0, bytes.length);
 			fileStream.close();
 			
 			if(logManager != null){
-				logManager.addLog("サムネイル画像の保存完了:" + file.nativePath);
+				logManager.addLog("ファイルの保存完了:" + file.nativePath);
 			}
 			
 			return file;
