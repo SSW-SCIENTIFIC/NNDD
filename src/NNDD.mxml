@@ -7,7 +7,7 @@
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   xmlns:ns1="*"
 					   width="850" height="600" minWidth="800" minHeight="500"
-					   activate="windowedapplication1_activateHandler(event)"
+					   windowActivate="windowedapplication1_activateHandler(event)"
 					   autoExit="false"
 					   backgroundColor="#FFFFFF"
 					   closing="windowClose(event)"

@@ -9,7 +9,7 @@
 		  xmlns:ns1="*"
 		  xmlns:view="org.mineap.nndd.view.*"
 		  width="400" height="580" minWidth="300" minHeight="300"
-		  activate="window1_activateHandler(event)" 
+		  windowActivate="window1_activateHandler(event)" 
 		  backgroundColor="#FFFFFF"
 		  closing="windowClosing(event)" 
 		  title="Info" 
