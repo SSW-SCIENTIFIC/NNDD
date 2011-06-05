@@ -470,9 +470,11 @@
 			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0"
 						backgroundColor="#ffffff">
 				<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config">
-					<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1"
-							   creationComplete="configCanvas1CreationCompleteHandler(event)">
-						<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" change="checkboxResizePlayerEachPlay(event)" left="10" top="10"/>
+					<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1">
+						
+						<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" 
+									 change="checkboxResizePlayerEachPlay(event)" left="10" top="10"
+									 creationComplete="configCanvas1CreationCompleteHandler(event)"/>
 						
 						<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
 						<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" groupName="radioGroup_resizeType" value="1" left="35" top="28" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
@@ -500,10 +502,11 @@
 						<mx:Label right="10" top="208" text="最高"/>
 						
 					</mx:Canvas>
-					<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2"
-							   creationComplete="configCanvas2CreationCompleteHandler(event)">
+					<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">
 						
-						<mx:CheckBox label="コメントを太字にする" top="36" left="10" id="checkBox_commentBold" change="checkBoxCommentBoldChanged(event)"/>
+						<mx:CheckBox label="コメントを太字にする" top="36" left="10" id="checkBox_commentBold" 
+									 change="checkBoxCommentBoldChanged(event)"
+									 creationComplete="configCanvas2CreationCompleteHandler(event)"/>
 						<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
 						<mx:CheckBox left="10" top="62" label="投稿者フィルターを有効にする" toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
 						
@@ -541,15 +544,19 @@
 						<mx:Label text="100%" top="327" right="10"/>
 						
 					</mx:Canvas>
-					<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3"
-							   creationComplete="configCanvas3CreationCompleteHandler(event)">
-						<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" change="checkBoxPlayerAlwaysFrontChanged(event)" minHeight="20" left="10" top="10"/>
+					<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3">
+						
+						<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" 
+									 change="checkBoxPlayerAlwaysFrontChanged(event)" 
+									 minHeight="20" left="10" top="10"
+									 creationComplete="configCanvas3CreationCompleteHandler(event)"/>
 						<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="38"/>
 						<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" change="checkboxPlayerFollowChanged(event)" left="10" top="66"/>
 						<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" change="checkboxFollowInfoViewHeight(event)" left="10" top="93"
 									 toolTip="InfoViewの大きさをPlayerの大きさに合わせて変更します。"/>
 						
-						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="133" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
+						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="133" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" 
+									 toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
 						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="159" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
 						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="185" height="22"
 									 label="Player下のコントローラを表示しない"
@@ -566,7 +573,6 @@
 						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="314" id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
 						<mx:HRule left="10" right="10" top="120" height="5"/>
 						<mx:HRule left="10" right="10" top="212" height="5"/>
-						
 						
 					</mx:Canvas>
 				</mx:TabNavigator>
