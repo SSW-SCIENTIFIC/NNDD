@@ -3589,7 +3589,7 @@ package org.mineap.nndd.player
 				commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password, videoID, comment, command, commentTimerVpos/10);
 				
 				// とりあえずコメントを表示。通し番号をマイナスにして正規のコメントと区別する。
-				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, '', -1, '', -1, true));
+				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, "", -1, "", -1, true));
 				
 			}else{
 				//動画IDがついてないのでPostできなかった
