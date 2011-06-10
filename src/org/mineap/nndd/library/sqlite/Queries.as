@@ -134,6 +134,9 @@ package org.mineap.nndd.library.sqlite
 		
 		public static const SELECT_NNDDVIDEO_BY_FILE_ID:String = "SELECT * FROM nnddvideo WHERE dirpath_id = :dirpath_id;";
 		
+		public static const SELECT_TAGSTRING_RELATED_BY_NNDDVIDEO_BY_DIR_ID:String = 
+			"SELECT * FROM tagstring WHERE id IN (SELECT DISTINCT v_t.tag_id FROM nnddvideo v, nnddvideo_tag v_t WHERE v.dirpath_id = :dirpath_id AND v_t.nnddvideo_id = v.id);";
+		
 		public static const SELECT_TAGSTRING_RELATED_BY_NNDDVIDEO:String = "SELECT tagstring.* FROM nnddvideo_tag, tagstring WHERE nnddvideo_tag.nnddvideo_id = :videoid AND tagstring.id = nnddvideo_tag.tag_id;";
 		
 		public static const SELECT_VERSION_BY_ID:String = "SELECT * FROM version WHERE id = :id";

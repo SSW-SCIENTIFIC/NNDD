@@ -3832,11 +3832,11 @@ private function updateLibrary(index:int):void{
 			tagIndices = tileList_tag.selectedIndices;
 		}
 		textInput_searchInDLList.text = "";
-		if(searchWord.length > 0){
+		if(searchWord.length > 0 && searchWord != "リスト内を検索"){
 			searchDLListTextInputChange();
 		}
 		textInput_searchInTagList.text = "";
-		if(tagSearchWord.length > 0){
+		if(tagSearchWord.length > 0 && tagSearchWord != "タグを検索"){
 			searchTagListTextInputChange();
 		}
 		
@@ -3856,11 +3856,11 @@ private function updateLibrary(index:int):void{
 			tileList_tag.selectedIndices = tagIndices;
 		}
 		textInput_searchInDLList.text = searchWord;
-		if(searchWord.length > 0){
+		if(searchWord.length > 0 && searchWord != "リスト内を検索"){
 			searchDLListTextInputChange();
 		}
 		textInput_searchInTagList.text = tagSearchWord;
-		if(tagSearchWord.length > 0){
+		if(tagSearchWord.length > 0 && tagSearchWord != "タグを検索"){
 			searchTagListTextInputChange();
 		}
 		(this.dataGrid_downloaded.dataProvider as ArrayCollection).sort = new Sort();

@@ -5,6 +5,7 @@ package org.mineap.nndd.downloadedList
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.DataGrid;
+	import mx.controls.List;
 	import mx.controls.TileList;
 	
 	import org.mineap.nndd.LogManager;
@@ -30,6 +31,12 @@ package org.mineap.nndd.downloadedList
 		private var downloadedListArray:ArrayCollection;
 		private var searchArray:ArrayCollection;
 		private var libraryManager:ILibraryManager;
+		
+		/**
+		 * 
+		 */
+		private var _showingVideos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
+		
 		
 		public static const SORCE_ALL:int = 0;
 		public static const SORCE_SINGLE_DOWNLOAD:int = 1;
@@ -119,6 +126,8 @@ package org.mineap.nndd.downloadedList
 				dataGridColumn_time: "",
 				dataGridColumn_condition: ""
 			});
+			
+			var number:Number = new Date().time;
 
 			if(searchDir){
 				
@@ -144,9 +153,13 @@ package org.mineap.nndd.downloadedList
 				this.downloadedListArray.removeAll();
 				nnddVideos.forEach(callback);
 				
+				this._showingVideos = nnddVideos;
+				
 				LogManager.instance.addLog("動画を表示:" + saveDir.nativePath + ":" + nnddVideos.length);
 				
 			}
+			
+			trace("動画の表示にかかった時間:" + (new Date().time - number) + " ms");
 		}
 		
 		/**
@@ -270,6 +283,7 @@ package org.mineap.nndd.downloadedList
 			trace(newDate.getTime() - oldDate.getTime() + " ms");
 			oldDate = newDate;
 			
+			this._showingVideos = new Vector.<NNDDVideo>();
 			this.downloadedListArray.removeAll();
 			
 			for(var i:int = 0; i<targetFileList.length; i++){
@@ -297,6 +311,8 @@ package org.mineap.nndd.downloadedList
 							status = "エコノミー画質";
 						}
 					}
+					
+					this._showingVideos.push(video);
 					
 					if(thumbUrl == ""){
 						thumbUrl = PathMaker.createThumbImgFilePath(decodedUrl, false);
@@ -536,6 +552,16 @@ package org.mineap.nndd.downloadedList
 					return null;
 				}
 			}
+		}
+		
+		/**
+		 * 現在表示中の動画の一覧を返します。
+		 * @return 
+		 * 
+		 */
+		public function get showingVideos():Vector.<NNDDVideo>
+		{
+			return this._showingVideos;
 		}
 		
 		/**

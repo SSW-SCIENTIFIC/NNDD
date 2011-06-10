@@ -4,9 +4,11 @@ package org.mineap.nndd.library.sqlite.dao
 	import flash.data.SQLResult;
 	import flash.data.SQLStatement;
 	import flash.errors.SQLError;
+	import flash.filesystem.File;
 	
 	import org.mineap.nndd.library.sqlite.DbAccessHelper;
 	import org.mineap.nndd.library.sqlite.Queries;
+	import org.mineap.nndd.model.NNDDFile;
 	import org.mineap.nndd.model.TagString;
 
 	/**
@@ -298,6 +300,71 @@ package org.mineap.nndd.library.sqlite.dao
 			
 			return false;
 		}
+		
+		/**
+		 * 
+		 * @param file
+		 * @param withSubFile
+		 * @return 
+		 * 
+		 */
+		public function selectTagStringByNNDDVideoByFile(file:File, 
+														 withSubFile:Boolean = true):Vector.<TagString>
+		{
+			try
+			{
+				
+				var files:Vector.<NNDDFile> = null;
+				if(withSubFile){
+					files = FileDao.instance.selectFileByFileWithSubFile(file);
+				}else{
+					files = new Vector.<NNDDFile>();
+					file = FileDao.instance.selectFileByFile(file);
+					if(file == null){
+						return new Vector.<TagString>;
+					}
+					files.push(file);
+				}
+				
+				var tags:Vector.<TagString> = new Vector.<TagString>;
+				for each(var tempFile:NNDDFile in files)
+				{
+					this._stmt = new SQLStatement();
+					this._stmt.sqlConnection = DbAccessHelper.instance.connection;
+					this._stmt.text = Queries.SELECT_TAGSTRING_RELATED_BY_NNDDVIDEO_BY_DIR_ID;
+					
+					this._stmt.parameters[":dirpath_id"] = tempFile.id;
+					
+					this._stmt.execute();
+					
+					var result:SQLResult = this._stmt.getResult();
+					
+					if(result == null){
+						continue;
+					}
+					
+					if(result.data == null){
+						continue;
+					}
+					
+					if(result.data.length > 0){
+						for each(var object:Object in result.data){
+							var tagString:TagString = new TagString(object.tag);
+							tagString.id = object.id;
+							tags.push(tagString);
+						}
+					}
+				}
+				
+				return tags;
+			}
+			catch(error:SQLError)
+			{
+				trace(error.getStackTrace());
+			}
+			return new Vector.<TagString>;
+		}
+		
 		
 		/**
 		 * 

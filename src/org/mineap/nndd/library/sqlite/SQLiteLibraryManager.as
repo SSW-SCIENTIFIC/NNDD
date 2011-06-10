@@ -755,28 +755,14 @@ package org.mineap.nndd.library.sqlite
 		public function collectTag(dir:File=null):Array
 		{
 			var array:Array = new Array();
-			var map:Object = new Object();
-			
-			var vector:Vector.<NNDDVideo> = getNNDDVideoArray(dir, false);
 			
 			var date:Date = new Date();
 			
-			try{
-				
-				for each(var video:NNDDVideo in vector){
-					
-					var tagStrings:Vector.<TagString> = TagStringDao.instance.selectTagStringRelatedByVideo(video.id);
-					
-					for each(var tag:TagString in tagStrings){
-						if(map[tag.tag] == null){
-							array.push(tag.tag);
-							map[tag.tag] = tag.tag;
-						}
-					}
-				}
-				
-			}catch(error:Error){
-				trace(error.getStackTrace());
+			var tagVector:Vector.<TagString> = TagStringDao.instance.selectTagStringByNNDDVideoByFile(dir, false);
+			
+			for each(var tag:TagString in tagVector)
+			{
+				array.push(tag.tag);
 			}
 			
 			trace("動画に関連するタグを抽出:" + (new Date().time - date.time) + " ms");
