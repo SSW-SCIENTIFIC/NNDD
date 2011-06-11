@@ -813,10 +813,10 @@ public function saveStore():void{
 public function setShowAlwaysNicowariArea(isShowNicowariArea:Boolean):void{
 	isNicowariShow = isShowNicowariArea;
 	isResize = true;
-	if(isNicowariShow == true){
-		(canvas_nicowari as Canvas).percentHeight = 15;
+	if(isNicowariShow == true && !videoInfoView.isNotPlayNicowari){
+		showNicowariArea();
 	}else{
-		(canvas_nicowari as Canvas).percentHeight = 0;
+		hideNicowariArea();
 	}
 }
 
@@ -825,7 +825,7 @@ public function setShowAlwaysNicowariArea(isShowNicowariArea:Boolean):void{
  * 
  */
 public function showNicowariArea():void{
-	if(canvas_nicowari != null){
+	if(canvas_nicowari != null && !videoInfoView.isNotPlayNicowari){
 		(canvas_nicowari as Canvas).percentHeight = 15;
 	}
 }

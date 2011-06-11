@@ -89,6 +89,7 @@ public var isSmoothing:Boolean = true;
 public var isSmoothingOnlyNotPixelIdenticalDimensions:Boolean = true;
 public var playerQuality:int = 2;
 public var isFollowInfoViewHeight:Boolean = false;
+public var isNotPlayNicowari:Boolean = false;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -374,6 +375,21 @@ private function checkBoxAlwaysEconomyChanged(event:Event):void{
 private function checkBoxShowAlwaysNicowariAreaChanged(event:Event):void{
 	isShowAlwaysNicowariArea = this.checkBox_showAlwaysNicowariArea.selected;
 	videoPlayer.setShowAlwaysNicowariArea(isShowAlwaysNicowariArea);
+}
+
+private function checkBoxIsNotPlayNicowariChanged(event:Event):void
+{
+	this.isNotPlayNicowari = this.checkBox_isNotPlayNicowari.selected;
+	
+	if (isNotPlayNicowari)
+	{
+		playerController.stopNicowari();
+		videoPlayer.hideNicowariArea();
+	}
+	else if (isShowAlwaysNicowariArea)
+	{
+		videoPlayer.showNicowariArea();
+	}
 }
 
 public function setShowAlwaysNicowariArea(isShow:Boolean):void{
@@ -793,7 +809,7 @@ private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
 	
 	checkbox_followInfoViewHeight.selected = isFollowInfoViewHeight;
 	
-	
+	checkBox_isNotPlayNicowari.selected = isNotPlayNicowari;
 	checkBox_showAlwaysNicowariArea.selected = isShowAlwaysNicowariArea;
 	checkbox_hideTagArea.selected = isHideTagArea;
 	checkbox_hideUnderController.selected = isHideUnderController;
@@ -801,6 +817,8 @@ private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
 	checkBox_enableJump.selected = isEnableJump;
 	checkBox_askToUserOnJump.selected = isAskToUserOnJump;
 	checkBox_askToUserOnJump.enabled = isEnableJump;
+	
+	
 }
 
 
@@ -1134,6 +1152,12 @@ private function readStore():void{
 			isFollowInfoViewHeight = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("isNotPlayNicowari");
+		if (confValue != null)
+		{
+			isNotPlayNicowari = ConfUtil.parseBoolean(confValue);
+		}
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -1266,6 +1290,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isFollowInfoViewHeight");
 		ConfigManager.getInstance().setItem("isFollowInfoViewHeight", isFollowInfoViewHeight);
+		
+		ConfigManager.getInstance().removeItem("isNotPlayNicowari");
+		ConfigManager.getInstance().setItem("isNotPlayNicowari", isNotPlayNicowari);
 		
 		ConfigManager.getInstance().save();
 		

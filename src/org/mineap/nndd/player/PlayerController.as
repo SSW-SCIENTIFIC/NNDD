@@ -3270,6 +3270,12 @@ package org.mineap.nndd.player
 		 */
 		public function playNicowari(nicowariVideoID:String, isStop:int = 1):void{
 			
+			// ニコ割の再生をしない設定ならスキップ
+			if(videoInfoView.isNotPlayNicowari)
+			{
+				return;
+			}
+			
 			//ニコ割領域を隠す設定になっていれば、再生前に表示。
 			if(!videoInfoView.isShowAlwaysNicowariArea){
 				videoPlayer.showNicowariArea();
@@ -3403,6 +3409,19 @@ package org.mineap.nndd.player
 				trace("ニコ割再生");
 				
 			}else if(this.nicowariSwfLoader != null){
+				stopNicowari();
+			}
+		}
+		
+		/**
+		 * ニコ割を停止します
+		 * @return 
+		 * 
+		 */
+		public function stopNicowari():void
+		{
+			if (this.nicowariSwfLoader != null)
+			{
 				//ニコ割終了
 				if(pausing){
 					//一時停止していれば再生する

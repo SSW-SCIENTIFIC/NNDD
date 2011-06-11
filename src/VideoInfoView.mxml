@@ -113,7 +113,7 @@
 			protected function button_videoOpen_clickHandler(event:MouseEvent):void
 			{
 				if(videoPlayer != null){
-					videoPlayer.fileOpen();
+					(videoPlayer as VideoPlayer).fileOpen();
 				}
 			}
 
@@ -550,29 +550,52 @@
 									 change="checkBoxPlayerAlwaysFrontChanged(event)" 
 									 minHeight="20" left="10" top="10"
 									 creationComplete="configCanvas3CreationCompleteHandler(event)"/>
-						<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="38"/>
-						<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" change="checkboxPlayerFollowChanged(event)" left="10" top="66"/>
-						<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" change="checkboxFollowInfoViewHeight(event)" left="10" top="93"
+						<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" 
+									 change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="38"/>
+						<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" 
+									 change="checkboxPlayerFollowChanged(event)" left="10" top="66"/>
+						<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" 
+									 change="checkboxFollowInfoViewHeight(event)" left="10" top="93"
 									 toolTip="InfoViewの大きさをPlayerの大きさに合わせて変更します。"/>
 						
-						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="133" id="checkBox_showAlwaysNicowariArea" change="checkBoxShowAlwaysNicowariAreaChanged(event)" 
-									 toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。"/>
-						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="159" id="checkbox_hideTagArea" change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
-						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="185" height="22"
+						<mx:HRule left="10" right="10" top="120" height="5"/>
+						
+						<mx:CheckBox label="ユーザーニコ割を再生しない" left="10" top="133" id="checkBox_isNotPlayNicowari" 
+									 change="checkBoxIsNotPlayNicowariChanged(event)" 
+									 toolTip="動画の投稿者が設定したニコ割を再生しないようにします。"/>
+						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="160" id="checkBox_showAlwaysNicowariArea" 
+									 change="checkBoxShowAlwaysNicowariAreaChanged(event)" 
+									 toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。" 
+									 enabled="{!checkBox_isNotPlayNicowari.selected}"/>
+						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="186" id="checkbox_hideTagArea" 
+									 change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
+						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="212" height="22"
 									 label="Player下のコントローラを表示しない"
 									 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
 									 rollOut="videoPlayer.videoController.rollOut(event)"
 									 rollOver="videoPlayer.videoController.rollOver(event)"
 									 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
 						
-						<mx:CheckBox label="コメントを再生のたびに更新する" left="11" top="225" id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
-						<mx:CheckBox label="動画以外をすべて更新する" left="36" top="247" id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
-						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" left="36" top="267" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
+						<mx:HRule left="10" right="10" top="239" height="5"/>
 						
-						<mx:CheckBox label="ジャンプ命令を有効にする" left="11" top="293" id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
-						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="314" id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
-						<mx:HRule left="10" right="10" top="120" height="5"/>
-						<mx:HRule left="10" right="10" top="212" height="5"/>
+						<mx:CheckBox label="コメントを再生のたびに更新する" left="11" top="252" 
+									 id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" 
+									 toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
+						<mx:CheckBox label="動画以外をすべて更新する" left="36" top="274"
+									 id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" 
+									 toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
+						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" 
+									 left="36" top="294" id="checkBox_isAppendComment" 
+									 change="checkBoxAppendCommentChanged(event)" 
+									 toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
+						
+						<mx:CheckBox label="ジャンプ命令を有効にする" left="11" top="320" 
+									 id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" 
+									 toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
+						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="341" 
+									 id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" 
+									 toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
+						
 						
 					</mx:Canvas>
 				</mx:TabNavigator>
