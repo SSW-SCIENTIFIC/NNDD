@@ -126,6 +126,10 @@ package org.mineap.nndd.util
 					}
 				}
 				
+				if(linkURL == null || linkURL.length == 0)
+				{
+					break;
+				}
 				
 				//価格抽出
 				var pattern_value:RegExp = new RegExp("([¥|￥][^(</)]+)", "ig");
