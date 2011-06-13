@@ -1359,7 +1359,6 @@ package org.mineap.nndd
 				return;
 			}
 			
-			beforeBytes = event.bytesLoaded;
 			//ストリームからバイトを読み込み
 			stream.readBytes(loadedBytes, loadedBytes.length);
 			
