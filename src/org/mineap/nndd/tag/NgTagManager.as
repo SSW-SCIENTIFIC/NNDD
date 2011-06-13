@@ -153,6 +153,9 @@ package org.mineap.nndd.tag
 			
 			try{
 				
+				this._ngTagMap = new Object();
+				this._ngTagProvider.splice(0, this._ngTagProvider.length);
+				
 				var file:File = this.ngTagsFile;
 				
 				if(!file.exists){
@@ -168,9 +171,11 @@ package org.mineap.nndd.tag
 					
 					var tag:String = decodeURIComponent(tagXML.text().toString());
 					
-					this._ngTagMap[tag] = tag;
-					this._ngTagProvider.push(tag);
-					
+					if(this._ngTagMap[tag] == null)
+					{
+						this._ngTagMap[tag] = tag;
+						this._ngTagProvider.push(tag);
+					}
 				}
 				
 				this._ngTagProvider.sort();

@@ -116,7 +116,7 @@ package org.mineap.nndd.library.sqlite.dao
 				}
 				for each(var newFile:File in newFile_map)
 				{
-					if(FileDao.instance.insertFile(newFile, false))
+					if(!FileDao.instance.insertFile(newFile, false))
 					{
 						trace("DBへの登録に失敗(フォルダ):" + newFile.nativePath);
 					}
@@ -261,19 +261,25 @@ package org.mineap.nndd.library.sqlite.dao
 					
 					var id:Number = tempNNDDVideo.id;
 					
+					// 既に動画に関連づいているタグがあるか
+					var tagIds:Vector.<Number> = new Vector.<Number>();
 					var array:Array = NNDDVideoTagStringDao.instance.selectNNDDVideoTagStringRelationByVideoId(id);
+					for each(var object:Object in array)
+					{
+						tagIds.push(Number(object.tag_id));
+					}
 					
 					var tagIdArray:Array = new Array();
 					var videoIdArray:Array = new Array();
 					
-					for (tag in nnddVideo.tagStrings)
+					for each(tag in nnddVideo.tagStrings)
 					{
 						dbTagString = dbTagString_map[tag];
 						if (null == dbTagString)
 						{
 							continue;
 						}
-						if (!(array.indexOf(dbTagString.id) > -1))
+						if (tagIds.indexOf(dbTagString.id) > -1)
 						{
 							continue;
 						}

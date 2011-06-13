@@ -444,6 +444,8 @@ package org.mineap.nndd.library.sqlite
 				dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
 			}
 			
+			trace("complete");
+			
 		}
 		
 		/**
@@ -757,6 +759,11 @@ package org.mineap.nndd.library.sqlite
 			var array:Array = new Array();
 			
 			var date:Date = new Date();
+			
+			if (dir == null)
+			{
+				dir = libraryDir;
+			}
 			
 			var tagVector:Vector.<TagString> = TagStringDao.instance.selectTagStringByNNDDVideoByFile(dir, false);
 			

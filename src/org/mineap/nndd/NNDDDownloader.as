@@ -1366,6 +1366,7 @@ package org.mineap.nndd
 			// 1MBを越えたらファイルに書き出し
 			if (loadedBytes.length > 1000000)
 			{
+				trace("append:" + loadedBytes.length + " bytes");
 				outputFile(_saveVideoName, _saveDir.url, loadedBytes);
 				loadedBytes.clear();
 			}
