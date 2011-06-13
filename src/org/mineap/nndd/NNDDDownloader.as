@@ -18,6 +18,7 @@ package org.mineap.nndd
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
+	import mx.utils.StringUtil;
 	
 	import org.mineap.nicovideo4as.CommentLoader;
 	import org.mineap.nicovideo4as.Login;
@@ -671,7 +672,7 @@ package org.mineap.nndd
 			
 			var array:Array = pattern.exec(html);
 			
-			var videoName:String = "";
+			var videoName:String = "不明";
 			
 			if(array != null && array.length > 1){
 				videoName = array[1];
@@ -679,6 +680,7 @@ package org.mineap.nndd
 				if(index != -1){
 					videoName = videoName.substr(0, index);
 				}
+				videoName = StringUtil.trim(videoName);
 			}
 			
 			var videoId:String = PathMaker.getVideoID(this._videoId);
@@ -686,7 +688,7 @@ package org.mineap.nndd
 			videoName = HtmlUtil.convertSpecialCharacterNotIncludedString(videoName) + " - [" + videoId + "]";
 			videoName = FileIO.getSafeFileName(videoName);
 			
-			return videoName 
+			return videoName;
 			
 		}
 		
