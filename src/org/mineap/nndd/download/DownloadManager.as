@@ -1040,16 +1040,20 @@ package org.mineap.nndd.download
 						
 						if(status.indexOf("動画保存済") != -1){
 							statusType = DownloadStatusType.COMPLETE;
+							status = "動画保存済\n右クリックから再生できます。";
 						}
 						if("true" == xmlList[i].isDownloaded){
 							statusType = DownloadStatusType.COMPLETE;
+							status = "動画保存済\n右クリックから再生できます。";
 						}
 						if("0" == xmlList[i].statusType){
 							statusType = DownloadStatusType.COMPLETE;
+							status = "動画保存済\n右クリックから再生できます。";
 						}else if("1" == xmlList[i].statusType 
 								|| "2" == xmlList[i].statusType 
 								|| "3" == xmlList[i].statusType){
 							statusType = DownloadStatusType.NOT_START;
+							status = "待機中";
 						}
 							
 						downloadProvider.addItem({
@@ -1076,6 +1080,7 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * 指定されたQueue IDに対応するキューがDLリストの何番目に存在するか返します。
 		 * 
 		 * @param queueId
 		 * @return 
@@ -1091,6 +1096,7 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * リトライの最大値を設定します
 		 * 
 		 * @param value
 		 * 
@@ -1101,6 +1107,7 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * リトライの最大値を返します
 		 * 
 		 * @return 
 		 * 

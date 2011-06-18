@@ -56,6 +56,7 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.model.NNDDComment;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.model.PlayList;
+	import org.mineap.nndd.myList.MyListManager;
 	import org.mineap.nndd.playList.PlayListManager;
 	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.player.comment.CommentManager;
@@ -3585,12 +3586,16 @@ package org.mineap.nndd.player
 			if(videoID != null){
 				
 				var commentPost:CommentPost = new CommentPost();
+				commentPost.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
+				{
+					logManager.addLog("\t\t" + event);
+				});
 				commentPost.addEventListener(CommentPost.COMMENT_POST_FAIL, function(event:IOErrorEvent):void
 				{
 					trace(event);
 					logManager.addLog("\t\t" + CommentPost.COMMENT_POST_FAIL + ":" + event);
 					logManager.addLog("コメント投稿失敗");
-					Alert.show("コメントの投稿に失敗", Message.M_ERROR);
+					Alert.show("コメントの投稿に失敗\n\n" + event.text, Message.M_ERROR);
 					commentPost.close();
 				});
 				commentPost.addEventListener(CommentPost.COMMENT_POST_SUCCESS, function():void{
@@ -3599,7 +3604,8 @@ package org.mineap.nndd.player
 						var path:String = PathMaker.createNomalCommentPathByVideoPath(source);
 						(new FileIO(logManager)).addComment(path, post);
 					}
-					trace('コメントを投稿:' + videoID);
+					trace("コメントを投稿:" + videoID);
+					logManager.addLog("\t\tコメントを投稿:" + videoID);
 					logManager.addLog("***コメント投稿完了***");
 					commentPost.close();
 				});
@@ -3674,6 +3680,8 @@ package org.mineap.nndd.player
 				this._isEconomyMode = isEconomy;
 				
 				url = decodeURIComponent(url);
+				
+				setPlayed(PathMaker.getVideoID(url));
 				
 				if(url.indexOf("http://") == -1){
 					/* ---- ローカルの動画を再生 ---- */
@@ -4343,6 +4351,30 @@ package org.mineap.nndd.player
 						playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, 
 							playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 					}
+				}
+			}
+		}
+		
+		/**
+		 * 指定された動画がローカルのマイリストに存在する場合、マイリストの動画を既読に設定します。
+		 * @param videoId
+		 * 
+		 */
+		public function setPlayed(videoId:String):void
+		{
+			// マイリストの既読設定
+			if(videoId == null){
+				return;
+			}
+			
+			var myListIds:Vector.<String> = MyListManager.instance.searchMyList(videoId);
+			if(myListIds != null && myListIds.length > 0)
+			{
+				for each(var myListId:String in myListIds)
+				{
+					var videoIds:Vector.<String> = new Vector.<String>();
+					videoIds.push(videoId);
+					MyListManager.instance.setPlayedAndSave(myListId, videoIds);
 				}
 			}
 		}

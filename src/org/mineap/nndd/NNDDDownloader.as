@@ -628,7 +628,7 @@ package org.mineap.nndd
 				LogManager.instance.addLog(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + _videoId + ":" + event + ":" + event.target);
 				trace(GETWAYBACKKEY_API_ACCESS_FAIL + ":" + event + ":" + event.target);
 				dispatchEvent(new IOErrorEvent(GETWAYBACKKEY_API_ACCESS_FAIL, false, false));
-				close(true, true);
+				close(true, true, new IOErrorEvent(GETWAYBACKKEY_API_ACCESS_FAIL, false, false));
 			}
 		}
 		
@@ -1209,7 +1209,7 @@ package org.mineap.nndd
 				trace(ICHIBA_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				LogManager.instance.addLog(ICHIBA_INFO_GET_FAIL + ":" + _saveVideoName + "[IchibaInfo].html" + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(ICHIBA_INFO_GET_FAIL, false, false, event.text));
-				close(true, true);
+				close(true, true, event);
 			});
 			var path:String = fileIO.saveHtml(((event.target as IchibaInfoLoader).data as String), this._saveVideoName + "[IchibaInfo].html", this._saveDir.url).nativePath;
 			

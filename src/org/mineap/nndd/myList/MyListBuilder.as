@@ -3,13 +3,13 @@ package org.mineap.nndd.myList
 	import mx.collections.ArrayCollection;
 	import mx.controls.DataGrid;
 	
+	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.NicoPattern;
 	import org.mineap.nndd.util.PathMaker;
-	import org.mineap.nicovideo4as.util.HtmlUtil;
 	
 
 
@@ -40,6 +40,7 @@ package org.mineap.nndd.myList
 		/**
 		 * 渡されたマイリストのRSS(XML)から、表示用のArrayCollectionを生成します。
 		 * @param xml
+		 * @param onlyUnPlay
 		 * @return 
 		 * 
 		 */

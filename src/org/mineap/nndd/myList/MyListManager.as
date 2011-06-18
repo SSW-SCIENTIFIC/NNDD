@@ -24,10 +24,8 @@ package org.mineap.nndd.myList
 	/**
 	 * MyListManager.as<br>
 	 * MyListManagerクラスは、マイリストを管理するクラスです。<br>
-	 * <br>
-	 * Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved.
 	 * 
-	 * @author shiraminekeisuke
+	 * @author shiraminekeisuke(MineAP)
 	 * 
 	 */
 	public class MyListManager extends EventDispatcher
@@ -36,9 +34,19 @@ package org.mineap.nndd.myList
 		public static const MYLIST_RENEW_COMPLETE:String = "MylistRenewComplete";
 		
 		/**
-		 * マイリストのMapです
+		 * マイリスト名とマイリストオブジェクトのMapです
 		 */
-		private var _myListMap:Object = new Object();
+		private var _myListName_MyList_Map:Object = new Object();
+		
+		/**
+		 * 動画IDとマイリストIDのMapです
+		 */
+		private var _videoId_myListId_map:Object = new Object();
+		
+		/**
+		 * マイリストIDとマイリスト名のMapです
+		 */
+		private var _myListId_myListName_map:Object = new Object();
 		
 		/**
 		 * 
@@ -125,7 +133,7 @@ package org.mineap.nndd.myList
 			var myList:MyList = new MyList(myListUrl, myListName, isDir);
 			var object:Object = searchByName(oldName, this._tree_MyList);
 			
-			delete this._myListMap[oldName];
+			delete this._myListName_MyList_Map[oldName];
 			
 			var builder:TreeDataBuilder = new TreeDataBuilder();
 			var folder:Object = builder.getFolderObject(myListName);
@@ -135,11 +143,15 @@ package org.mineap.nndd.myList
 				object.children = children;
 			}
 			
-			this._myListMap[myListName] = myList;
+			this._myListName_MyList_Map[myListName] = myList;
+			this._myListId_myListName_map[myList.myListId] = myList.myListName;
 			
 			if(isSave){
 				this.saveMyListSummary(this._libraryManager.systemFileDir);
 			}
+			
+			// マイリストの登録済み動画IDを更新
+			updateMylist(myList);
 			
 			return object;
 		}
@@ -206,7 +218,7 @@ package org.mineap.nndd.myList
 			var myList:MyList = new MyList(myListUrl, myListName, isDir);
 			var addedTreeObject:Object = null;
 			
-			if(this._myListMap[myListName] != null){
+			if(this._myListName_MyList_Map[myListName] != null){
 				exsits = true;
 			}
 			
@@ -216,6 +228,7 @@ package org.mineap.nndd.myList
 				
 				if(isDir){
 					
+					/* フォルダのとき */
 					var folder:Object = builder.getFolderObject(myListName);
 					if(children != null){
 						folder.children = children;
@@ -223,25 +236,25 @@ package org.mineap.nndd.myList
 					
 					if(index == -1){
 						this._tree_MyList.push(folder);
-						this._myListMap[myListName] = myList;
 					}else{
 						this._tree_MyList.splice(index, 0, folder);
-						this._myListMap[myListName] = myList;
 					}
+					this._myListName_MyList_Map[myListName] = myList;
 					
 					addedTreeObject = folder;
 					
 				}else{
 					
+					/* マイリストのとき */
 					var file:Object = builder.getFileObject(myListName);
 					
 					if(index == -1){
 						this._tree_MyList.push(file);
-						this._myListMap[myListName] = myList;
 					}else{
 						this._tree_MyList.splice(index, 0, file);
-						this._myListMap[myListName] = myList;
 					}
+					this._myListName_MyList_Map[myListName] = myList;
+					this._myListId_myListName_map[myList.myListId] = myList.myListName;
 					
 					addedTreeObject = file;
 					
@@ -267,7 +280,7 @@ package org.mineap.nndd.myList
 		 */
 		public function isExsits(myListName:String):Boolean{
 			
-			var object:Object = this._myListMap[myListName];
+			var object:Object = this._myListName_MyList_Map[myListName];
 			if(object != null){
 				return true;
 			}
@@ -287,7 +300,7 @@ package org.mineap.nndd.myList
 				if(isSave){
 					this.saveMyListSummary(this._libraryManager.systemFileDir);
 				}
-				delete this._myListMap[myListName];
+				delete this._myListName_MyList_Map[myListName];
 				return deletedObject;
 			}
 			return null;
@@ -336,7 +349,7 @@ package org.mineap.nndd.myList
 		 * 
 		 */
 		public function getUrl(myListName:String):String{
-			var myList:MyList = MyList(this._myListMap[myListName]);
+			var myList:MyList = MyList(this._myListName_MyList_Map[myListName]);
 			if(myList == null || myList.isDir){
 				return "";
 			}
@@ -366,7 +379,7 @@ package org.mineap.nndd.myList
 		 * 
 		 */
 		public function getMyListIdDir(myListName:String):Boolean{
-			var myList:MyList = this._myListMap[myListName];
+			var myList:MyList = this._myListName_MyList_Map[myListName];
 			if(myList == null){
 				return false;
 			}
@@ -375,13 +388,14 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
+		 * 指定された名前のマイリストについて、未再生動画数を返します。
 		 * 
 		 * @param myListName
 		 * @return 
 		 * 
 		 */
 		public function getMyListUnPlayVideoCount(myListName:String):int{
-			var myList:MyList = this._myListMap[myListName];
+			var myList:MyList = this._myListName_MyList_Map[myListName];
 			if(myList == null){
 				return 0;
 			}
@@ -390,6 +404,7 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
+		 * マイリストに動画を追加します。(マイリスト一覧情報XMLから読み込む用)
 		 * 
 		 * @param xml
 		 * @param myListArray
@@ -429,12 +444,64 @@ package org.mineap.nndd.myList
 					myList = new MyList(url, name);
 					myListArray.push(file);
 					myListMap[name] = myList;
+					
+					updateMylist(myList);
 				}
 			}
 					
 		}
 		
 		/**
+		 * 指定されたMyListオブジェクトに対応する動画IDを登録して返します
+		 * 
+		 * @param myListId
+		 * 
+		 */
+		private function updateMylist(myList:MyList):MyList
+		{
+			if (myList == null)
+			{
+				return null;
+			}
+			
+			myList.clearNNDDVideoId();
+			
+			/* 動画IDをマイリストに登録 */
+			var myVideos:Vector.<NNDDVideo> = readLocalMyListByNNDDVideo(myList.myListId);
+			for each(var tempVideo:NNDDVideo in myVideos)
+			{
+				myList.addNNDDVideoId(tempVideo.key);
+				
+				/* 動画IDとマイリストIDのマップも作る */
+				setVideoId_MyListId_Map(tempVideo.key, myList.myListId);
+				
+			}
+			trace("マイリスト(" + myList.myListId + ")に登録されている動画:" + myVideos.length);
+			LogManager.instance.addLog("マイリスト(" + myList.myListId + ")に登録されている動画のチェック完了:" + myVideos.length);
+			
+			return myList;
+		}
+		
+		/**
+		 * 指定されたVideoIdをキーに、myListIdを videoId_myListId マップに登録します。
+		 * @param videoId
+		 * @param myListId
+		 * 
+		 */
+		private function setVideoId_MyListId_Map(videoId:String, myListId:String):void
+		{
+			var myListIds:Vector.<String> = _videoId_myListId_map[videoId];
+			if(myListIds == null)
+			{
+				myListIds = new Vector.<String>();
+			}
+			myListIds.push(myListId);
+			
+			_videoId_myListId_map[videoId] = myListIds;
+		}
+		
+		/**
+		 * 指定されたディレクトリのマイリストの一覧を読み込みます。
 		 * 
 		 * @param dir
 		 * 
@@ -453,9 +520,9 @@ package org.mineap.nndd.myList
 				var xml:XML = fileIO.loadXMLSync(saveFile.url, true);
 				
 				_tree_MyList.splice(0, _tree_MyList.length);
-				_myListMap = new Object();
+				_myListName_MyList_Map = new Object();
 				
-				addMyListItemFromXML(xml, _tree_MyList, _myListMap);
+				addMyListItemFromXML(xml, _tree_MyList, _myListName_MyList_Map);
 				
 				_logManager.addLog("マイリスト一覧の読み込み完了:" + saveFile.nativePath);
 				
@@ -499,6 +566,7 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
+		 * XMLから指定された名前のマイリスト(XML)を探します
 		 * 
 		 * @return 
 		 * 
@@ -524,6 +592,7 @@ package org.mineap.nndd.myList
 		
 		
 		/**
+		 * 指定された名前のマイリストから、当該マイリストのソート種別を取得します。
 		 * 
 		 * @param myListName
 		 * @return 
@@ -594,14 +663,14 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
-		 * 
+		 * マイリスト自動更新用のスケジューラを初期化します
 		 * 
 		 */
 		public function initScheduler():void{
 			
 			MyListRenewScheduler.instance.myListReset();
 			
-			for each(var myList:MyList in this._myListMap){
+			for each(var myList:MyList in this._myListName_MyList_Map){
 				var id:String = MyListUtil.getMyListId(myList.myListUrl);
 				
 				MyListRenewScheduler.instance.addMyListId(id);
@@ -670,6 +739,7 @@ package org.mineap.nndd.myList
 		
 		
 		/**
+		 * マイリストの一覧情報を保持するXMLを指定されたディレクトリに保存します
 		 * 
 		 * @param dir
 		 * 
@@ -677,7 +747,7 @@ package org.mineap.nndd.myList
 		public function saveMyListSummary(dir:File):void{
 			
 			var xml:XML = <myLists/>;
-			xml = addMyListItemToXML(xml, this._tree_MyList, this._myListMap);
+			xml = addMyListItemToXML(xml, this._tree_MyList, this._myListName_MyList_Map);
 			
 			var saveFile:File = new File(dir.url + "/myLists.xml");
 			
@@ -706,20 +776,23 @@ package org.mineap.nndd.myList
 		public function saveMyList(myListId:String, xml:XML):void{
 			
 			try{
-			
+				
+				_logManager.addLog("マイリスト(" + myListId + ")を保存中...");
+				
 				var file:File = this._libraryManager.systemFileDir;
 				
 				var vector:Vector.<String> = null;
 				
 				file = new File(file.url + "/myList/" + myListId + ".xml");
 				
-				if(file.exists){
+				if (file.exists)
+				{
 					//既存のXMLがあるときは再生済み項目を抽出
 					var tempXML:XML = readLocalMyList(myListId);
 					vector = searchPlayedItem(tempXML);
 					
 					//再生済み項目を新規XMLに反映
-					xml = setPlayed(vector, xml);
+					setPlayed(vector, xml);
 					
 				}
 				
@@ -733,6 +806,11 @@ package org.mineap.nndd.myList
 					trace(event + ":" + file.nativePath);
 				});
 				fileIO.saveXMLSync(file, xml);
+				
+				/* 動画IDをマイリストに登録 */
+				var myListName:String = this._myListId_myListName_map[myListId];
+				var myList:MyList = this._myListName_MyList_Map[myListName];
+				updateMylist(myList);
 				
 			}catch(error:Error){
 				_logManager.addLog("マイリストの保存に失敗:" + error + ":" + error.getStackTrace());
@@ -762,7 +840,7 @@ package org.mineap.nndd.myList
 					trace(event);
 				});
 				fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-					_logManager.addLog("マイリストの保存に失敗:" + file.nativePath + ":" + event);
+					_logManager.addLog("マイリストの読み込みに失敗:" + file.nativePath + ":" + event);
 					trace(event + ":" + file.nativePath);
 				});
 				var xml:XML = fileIO.loadXMLSync(file.url, true);
@@ -770,7 +848,7 @@ package org.mineap.nndd.myList
 				return xml;
 				
 			}catch(error:Error){
-				_logManager.addLog("マイリストの保存に失敗:" + error + ":" + error.getStackTrace());
+				_logManager.addLog("マイリストの読み込みに失敗:" + error + ":" + error.getStackTrace());
 				trace(error.getStackTrace());
 			}
 			
@@ -806,7 +884,7 @@ package org.mineap.nndd.myList
 			
 			}else{
 				//これはファイル
-				var myList:MyList = this._myListMap[leaf.label];
+				var myList:MyList = this._myListName_MyList_Map[leaf.label];
 				
 				var xml:XML = this.readLocalMyList(myList.myListId);
 				
@@ -829,13 +907,18 @@ package org.mineap.nndd.myList
 			
 			if(xml != null){
 				
-				xml = setPlayed(videoIds, xml);
-				saveMyList(myListId, xml);
-				
 				var str:String = "";
 				for each(var videoId:String in videoIds){
 					str += (videoId + ", ");
 				}
+				
+				if (!setPlayed(videoIds, xml))
+				{
+					// 既読に設定する必要が無かった
+					_logManager.addLog(videoId + "は既読に設定済(mylist/" + myListId + ")" );
+					return;
+				}
+				saveMyList(myListId, xml);
 				
 				_logManager.addLog(videoId + "を既読に設定(mylist/" + myListId + ")" );
 				
@@ -892,14 +975,14 @@ package org.mineap.nndd.myList
 		
 		
 		/**
-		 * XML無いから指定されたvideoIdの項目を探し、既読に設定します。
+		 * XML内から、指定されたvideoIdの項目を探し、既読に設定します。
 		 * 
 		 * @param videoId
 		 * @param xml
 		 * @return 
 		 * 
 		 */
-		private function setPlayed(videoIds:Vector.<String>, xml:XML):XML{
+		private function setPlayed(videoIds:Vector.<String>, xml:XML):Boolean{
 			
 			if(xml != null){
 				
@@ -908,34 +991,41 @@ package org.mineap.nndd.myList
 					videoIdMap[videoId] = videoId;
 				}
 				
+				var setCount:int = 0;
+				var isChange:Boolean = false;
+				
 				var xmlList:XMLList = xml.child("channel");
 				
 				xmlList = xmlList.child("item");
 				
+				// マイリストから動画のURLの一覧を取得
 				for each(var tempXML:XML in xmlList){
 					var link:String = tempXML.link;
 					if(link != null){
 						var tempVideoId:String = PathMaker.getVideoID(link);
+						
+						// 動画が既読設定対象か？
 						if(videoIdMap[tempVideoId] != null){
 							delete videoIdMap[tempVideoId];
+							setCount++;
 							var list:XMLList = tempXML.played;
 							if(list != null && list.length() > 0){
 								// 既読に設定済
 							}else{
 								tempXML.appendChild(new XML("<played>true</played>"));
+								isChange = true;
 							}
-							
-//							trace("発見:" + videoId);
-							
 						}
 					}
+					if (setCount >= videoIds.length)
+					{
+						if(isChange){trace("変更あり");}
+						return isChange;
+					}
 				}
-				
-//				trace("見つからなかった");
-				
 			}
 			
-			return xml;
+			return false;
 		}
 		
 		/**
@@ -1018,7 +1108,7 @@ package org.mineap.nndd.myList
 			
 			var count:int = 0;
 			
-			for each(var myList:MyList in this._myListMap){
+			for each(var myList:MyList in this._myListName_MyList_Map){
 				var myListId:String = MyListUtil.getMyListId(myList.myListUrl);
 				if(myListId != null){
 					var myCount:int = countUnPlayVideos(myListId);
@@ -1051,6 +1141,7 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
+		 * ユーザのマイリスト一覧を取得し、MyListManagerに追加します。
 		 * 
 		 * @param mailAddress
 		 * @param password
@@ -1091,13 +1182,40 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
+		 * マイリストIDからマイリストオブジェクトを探して返します
 		 * 
 		 * @param myListId
 		 * @return 
 		 * 
 		 */
 		public function getMyList(myListId:String):MyList{
-			return this._myListMap[myListId];
+			
+			for each(var myList:MyList in this._myListName_MyList_Map)
+			{
+				if (myList.myListId == myListId)
+				{
+					return myList;
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * 指定された動画IDの動画を保持するマイリストのマイリストIDの一覧を返します。
+		 * 
+		 * @param videoId
+		 * @return 
+		 * 
+		 */
+		public function searchMyList(videoId:String):Vector.<String>
+		{
+			var myListIds:Vector.<String> = this._videoId_myListId_map[videoId];
+			
+			if (myListIds == null)
+			{
+				return new Vector.<String>();
+			}
+			return myListIds;
 		}
 		
 	}
