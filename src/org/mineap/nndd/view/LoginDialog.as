@@ -7,6 +7,7 @@
  */
  
 import flash.data.EncryptedLocalStore;
+import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
 import flash.events.KeyboardEvent;
@@ -17,10 +18,10 @@ import mx.controls.Alert;
 import mx.controls.Button;
 import mx.events.FlexEvent;
 
+import org.mineap.nicovideo4as.Login;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.view.LoadingPicture;
-import org.mineap.nicovideo4as.Login;
 import org.mineap.util.config.ConfigManager;
 
 public static const ON_LOGIN_SUCCESS:String = "onFirestTimeLoginSuccess";
