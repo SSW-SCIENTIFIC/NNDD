@@ -4300,6 +4300,38 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("downloadRetryMaxCount");
 		ConfigManager.getInstance().setItem("downloadRetryMaxCount", this.downloadRetryMaxCount);
 		
+		/* DataGridの列幅保存 */
+		if (dataGrid_downloaded != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_downloaded);
+		}
+		
+		if (dataGrid_downloadList != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_downloadList);
+		}
+		
+		if (dataGrid_history != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_history);
+		}
+		
+//		if (dataGrid_myList != null)
+//		{
+//			DataGridColumnWidthUtil.save(dataGrid_myList);
+//		}
+//		
+//		if (dataGrid_ranking != null)
+//		{
+//			DataGridColumnWidthUtil.save(dataGrid_ranking);
+//		}
+//		
+//		if (dataGrid_search != null)
+//		{
+//			DataGridColumnWidthUtil.save(dataGrid_search);
+//		}
+		
+		
 		ConfigManager.getInstance().save();
 		
 	}catch(error:Error){

@@ -39,8 +39,16 @@ package org.mineap.util.config
 			return _configUtil;
 		}
 		
+		/**
+		 * 
+		 * 
+		 */
 		public function ConfigIO()
 		{
+			if (_configUtil != null)
+			{
+				throw new ArgumentError("ConfigIOはインスタンス化できません。");
+			}
 		}
 		
 		/**
