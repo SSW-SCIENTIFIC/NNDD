@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.0.5</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/52303/NNDDv2_0_5.dmg</url>
+	<version>2.0.7</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/52323/NNDDv2_0_7.dmg</url>
 	<description><![CDATA[
+v2.0.7
+・マイリスト以外から再生した場合でも、マイリストの既読が更新されるようにした
+・DLリスト、ライブラリ、履歴のカラム幅を記憶するようにした
+・【バグフィックス】一般会員アカウントでコメントが投稿できない問題を修正
+・【バグフィックス】ログイン判定が正しく出来ていない問題を修正
+
+v2.0.6
+・【バグフィックス】ライブラリ更新が完了しない問題を修正
+・【バグフィックス】ライブラリ更新時にタグが正しく登録されない問題を修正
+・【バグフィックス】ダウンロードとストリーミングの進捗が表示されない事がある問題を修正
+
 v2.0.5
 ・ライブラリ更新時の性能を改善
 ・データベース再構築の性能を改善
@@ -126,9 +137,20 @@ v2.0.0 Alpha -> Beta
 </dmg>
 
 <exe>
-	<version>2.0.5</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/52303/NNDDv2_0_5.exe</url>
+	<version>2.0.7</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/52323/NNDDv2_0_7.exe</url>
 	<description><![CDATA[
+v2.0.7
+・マイリスト以外から再生した場合でも、マイリストの既読が更新されるようにした
+・DLリスト、ライブラリ、履歴のカラム幅を記憶するようにした
+・【バグフィックス】一般会員アカウントでコメントが投稿できない問題を修正
+・【バグフィックス】ログイン判定が正しく出来ていない問題を修正
+
+v2.0.6
+・【バグフィックス】ライブラリ更新が完了しない問題を修正
+・【バグフィックス】ライブラリ更新時にタグが正しく登録されない問題を修正
+・【バグフィックス】ダウンロードとストリーミングの進捗が表示されない事がある問題を修正
+
 v2.0.5
 ・ライブラリ更新時の性能を改善
 ・データベース再構築の性能を改善
