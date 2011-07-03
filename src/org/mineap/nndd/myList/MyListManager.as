@@ -258,6 +258,9 @@ package org.mineap.nndd.myList
 					
 					addedTreeObject = file;
 					
+					// マイリストの登録済み動画IDを更新
+					updateMylist(myList);
+					
 				}
 				
 				if(isSave){
