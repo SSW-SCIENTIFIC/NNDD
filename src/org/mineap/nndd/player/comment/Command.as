@@ -2,8 +2,12 @@ package org.mineap.nndd.player.comment
 {
 	import org.mineap.nInterpreter.IAnalyzeResult;
 	import org.mineap.nInterpreter.ResultType;
+	import org.mineap.nInterpreter.ScriptLine;
+	import org.mineap.nInterpreter.instance.JumpMarkerManager;
 	import org.mineap.nInterpreter.nico2niwa.operation.jump.JumpComverter;
+	import org.mineap.nInterpreter.nico2niwa.operation.jumpmarker.JumpMarkerConverter;
 	import org.mineap.nInterpreter.operation.IOperationAnalyzer;
+	import org.mineap.nInterpreter.operation.addMarker.AddMarkerOperationAnalyzer;
 	import org.mineap.nInterpreter.operation.jump.JumpOperationAnalyzer;
 	import org.mineap.nInterpreter.operation.seek.SeekOperationAnalyzer;
 
@@ -271,24 +275,48 @@ package org.mineap.nndd.player.comment
 		 * 	ジャンプメッセージ:ジャンプ時に画面に表示されるメッセージ。存在しない場合は空の文字列。
 		 * 
 		 */
-		public function getAnalyzeResultByNicoScript(command:String):IAnalyzeResult{
+		public function getAnalyzeResultByNicoScript(command:String, vpos:Number):IAnalyzeResult{
 			
-			var op:String = command.substring(0, 5);
+			var op:String = null;
+			var pre_op:String = command.substr(0, 1);
 			var result:IAnalyzeResult = null;
 			
 			if(command.length > 0){
-				if(op == "＠ジャンプ" || op == "@ジャンプ" ||
-						op == "@ジャンプ" || op == "＠ジャンプ"){
+				
+				var source:ScriptLine = null;
+				
+				// ニコスクリプトをニワン語に変換
+				if (pre_op == "＠" || pre_op == "@")
+				{
 					
-					//ニワン語に変換
-					var jumpComv:JumpComverter = new JumpComverter();
-					command = "/" + jumpComv.converte(command);
-					
+					// @ジャンプ
 					op = command.substring(1, 5);
+					if (op == "ジャンプ")
+					{
+						
+						//ニワン語に変換
+						source = new ScriptLine(command, vpos);
+						var jumpComv:JumpComverter = new JumpComverter();
+						source.line = "/" + jumpComv.convert2(source, JumpMarkerManager.instance.markers).line;
+						
+//						op = command.substring(1, 5);
+						
+					}
+					
+					// @ジャンプマーカー
+					op = command.substring(1,9);
+					if (op == "ジャンプマーカー")
+					{
+						source = new ScriptLine(command, vpos);
+						var jumpMarkerComv:JumpMarkerConverter = new JumpMarkerConverter();
+						source.line = "/" + jumpMarkerComv.convert(source).line;
+						
+//						op = command.substring(1,9);
+					}
 					
 				}
 				
-				result = getAnalyzeResult(command);
+				result = getAnalyzeResult(source);
 				
 			}
 			return result;
@@ -302,17 +330,27 @@ package org.mineap.nndd.player.comment
 		 * @return 
 		 * 
 		 */
-		public function getAnalyzeResult(command:String):IAnalyzeResult{
-			
+		public function getAnalyzeResult(command:ScriptLine):IAnalyzeResult{
+			var line:String = command.line;
 			var iAnalyzeResult:IAnalyzeResult = null;
 			var analyzer:IOperationAnalyzer = null;
-			if(command.indexOf("jump") != -1){
-				command = command.substring(command.indexOf("jump"));
+			
+			if (line.indexOf("jump") != -1)
+			{
+				command.line = line.substring(line.indexOf("jump"));
 				analyzer = new JumpOperationAnalyzer();
 				iAnalyzeResult = analyzer.analyze(command);
-			}else if(command.indexOf("seek") != -1){
-				command = command.substring(command.indexOf("seek"));
+			}
+			else if (line.indexOf("seek") != -1)
+			{
+				command.line = line.substring(line.indexOf("seek"));
 				analyzer = new SeekOperationAnalyzer();
+				iAnalyzeResult = analyzer.analyze(command);
+			}
+			else if (line.indexOf("addMarker") != -1)
+			{
+				command.line = line.substring(line.indexOf("addMarker"));
+				analyzer = new AddMarkerOperationAnalyzer();
 				iAnalyzeResult = analyzer.analyze(command);
 			}
 			

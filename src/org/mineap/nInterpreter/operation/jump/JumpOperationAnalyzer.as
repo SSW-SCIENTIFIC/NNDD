@@ -1,6 +1,7 @@
 package org.mineap.nInterpreter.operation.jump
 {
 	import org.mineap.nInterpreter.IAnalyzeResult;
+	import org.mineap.nInterpreter.ScriptLine;
 	import org.mineap.nInterpreter.operation.IOperationAnalyzer;
 
 	public class JumpOperationAnalyzer implements IOperationAnalyzer
@@ -41,7 +42,6 @@ package org.mineap.nInterpreter.operation.jump
 		 */
 		public static const JUMP_OPERATION_PATTERN_7:RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*,returnmsg['\"]([^'\"]*)['\"][\\s]*,newwindow:['\"]([^'\"]*)['\"][\\s]*\\)");
 		
-		
 		/**
 		 * 
 		 * 
@@ -57,27 +57,28 @@ package org.mineap.nInterpreter.operation.jump
 		 * @return 解析結果
 		 * 
 		 */
-		public function analyze(source:String):IAnalyzeResult{
+		public function analyze(source:ScriptLine):IAnalyzeResult{
 			
 			//jump(id:動画ID,msg:ジャンプメッセージ,from:開始位置,length:再生時間,return:戻り,returnmsg:戻りメッセージ,newwindow:対象窓)
 			
 			var result:JumpResult = null;
 			var resultArray:Array = null;
-			source = getJumpOperation(source);
-			var paraCount:int = getParameterCount(source);
+			var line:String = source.line;
+			line = getJumpOperation(line);
+			var paraCount:int = getParameterCount(line);
 			
 			if(paraCount >= 1){
 				//引数が一つ
 				switch(paraCount){
 					case 1:
-						resultArray = JUMP_OPERATION_PATTERN_1.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_1.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
 						}
 						break;
 					case 2:
-						resultArray = JUMP_OPERATION_PATTERN_2.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_2.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
@@ -85,7 +86,7 @@ package org.mineap.nInterpreter.operation.jump
 						}
 						break;
 					case 3:
-						resultArray = JUMP_OPERATION_PATTERN_3.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_3.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
@@ -94,7 +95,7 @@ package org.mineap.nInterpreter.operation.jump
 						}
 						break;
 					case 4:
-						resultArray = JUMP_OPERATION_PATTERN_4.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_4.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
@@ -104,7 +105,7 @@ package org.mineap.nInterpreter.operation.jump
 						}
 						break;
 					case 5:
-						resultArray = JUMP_OPERATION_PATTERN_5.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_5.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
@@ -115,7 +116,7 @@ package org.mineap.nInterpreter.operation.jump
 						}
 						break;
 					case 6:
-						resultArray = JUMP_OPERATION_PATTERN_6.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_6.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
@@ -127,7 +128,7 @@ package org.mineap.nInterpreter.operation.jump
 						}
 						break;
 					case 7:
-						resultArray = JUMP_OPERATION_PATTERN_7.exec(source);
+						resultArray = JUMP_OPERATION_PATTERN_7.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new JumpResult();
 							result.id = String(resultArray[1]);
@@ -230,8 +231,6 @@ package org.mineap.nInterpreter.operation.jump
 					
 					
 				}
-				
-				
 				
 				//jump命令の中にjump命令が入る事は無い
 //				var subSource:String = getJumpOperation(source, index+1);

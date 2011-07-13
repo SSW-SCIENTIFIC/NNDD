@@ -64,7 +64,8 @@ package org.mineap.nInterpreter.operation.jump
 		 * @return 
 		 * 
 		 */
-		public function get resultType():ResultType{
+		public function get resultType():ResultType
+		{
 			return ResultType.JUMP;
 		}
 		

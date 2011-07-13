@@ -1,11 +1,12 @@
 package org.mineap.nInterpreter.operation
 {
 	import org.mineap.nInterpreter.IAnalyzeResult;
+	import org.mineap.nInterpreter.ScriptLine;
 
 	public interface IOperationAnalyzer
 	{
 		
-		function analyze(source:String):IAnalyzeResult;
+		function analyze(source:ScriptLine):IAnalyzeResult;
 		
 	}
 }

@@ -1,6 +1,7 @@
 package org.mineap.nInterpreter.operation.seek
 {
 	import org.mineap.nInterpreter.IAnalyzeResult;
+	import org.mineap.nInterpreter.ScriptLine;
 	import org.mineap.nInterpreter.operation.IOperationAnalyzer;
 
 	/**
@@ -36,27 +37,28 @@ package org.mineap.nInterpreter.operation.seek
 		 * @return SeekResultオブジェクト
 		 * 
 		 */
-		public function analyze(source:String):IAnalyzeResult
+		public function analyze(source:ScriptLine):IAnalyzeResult
 		{
 			//seek(vpos:時間,msg:文字列)
 			
 			var result:SeekResult = null;
 			var resultArray:Array = null;
-			var paraCount:int = getParameterCount(source);
+			var line:String = source.line;
+			var paraCount:int = getParameterCount(line);
 			
 			if(paraCount >= 1){
 				
 				switch(paraCount){
 					case 1:
 						//引数が一つ
-						resultArray = SEEK_OPERATION_PATTERN_1.exec(source);
+						resultArray = SEEK_OPERATION_PATTERN_1.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new SeekResult();
 							result.vpos = String(resultArray[1]);
 						}
 						break;
 					case 2:
-						resultArray = SEEK_OPERATION_PATTERN_2.exec(source);
+						resultArray = SEEK_OPERATION_PATTERN_2.exec(line);
 						if(resultArray != null && resultArray.length > 0){
 							result = new SeekResult();
 							result.vpos = String(resultArray[1]);

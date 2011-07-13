@@ -1,6 +1,8 @@
 package org.mineap.nInterpreter.nico2niwa.operation.jump
 {
+	import org.mineap.nInterpreter.ScriptLine;
 	import org.mineap.nInterpreter.nico2niwa.operation.Nico2NiwaConverter;
+	import org.mineap.nInterpreter.nico2niwa.operation.jumpmarker.JumpMarker;
 
 	/**
 	 * ニコスクリプトの@ジャンプ命令をニワン語に変換します。
@@ -53,7 +55,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 		 */
 		public static const JUMP_TO_TIME_PATTERN:RegExp = new RegExp("#(\\d+):(\\d+)");
 		
-		public static const JUMP_TO_LABEL_PATTERN:RegExp = new RegExp("#([^\\s+])");
+		public static const JUMP_TO_LABEL_PATTERN:RegExp = new RegExp("#([^\\s]+)");
 		
 		/**
 		 * 動画IDを表す正規表現です。
@@ -94,13 +96,37 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 		 * @return ニワン語に変換された@ジャンプ命令。
 		 * 
 		 */
-		public function converte(source:String):String{
+		public function convert(source:ScriptLine):ScriptLine
+		{
+			return convert2(source);
+		}
+		
+		/**
+		 * 渡された@ジャンプ命令を、ニワン語に変換して返します。
+		 * このメソッドは、ジャンプ先にジャンプマーカが指定されている場合を考慮します。
+		 * 
+		 * @param source @ジャンプ命令
+		 * @param jumpMarkers ジャンプ先マーカの候補一覧
+		 * @return ニワン語に変換された@ジャンプ命令。
+		 */
+		public function convert2(source:ScriptLine, jumpMarkers:Vector.<JumpMarker> = null):ScriptLine{
 			
 			//パターン１ ＠ジャンプ ジャンプ先 [ジャンプメッセージ] [ジャンプ先再生開始位置] [戻り秒数] [戻りメッセージ]
 			//パターン２ ＠ジャンプ　#再生秒数/#ジャンプマーカーラベル名　ジャンプメッセージ
 			
-			source = source.replace(new RegExp("　", "g"), " ");
-			var paramCount:int = getParameterCount(source);
+			var jumpMarkerString_JumpMarker_Map:Object = new Object();
+			if (jumpMarkers != null)
+			{
+				for each(var jumpMarker:JumpMarker in jumpMarkers)
+				{
+					jumpMarkerString_JumpMarker_Map[jumpMarker.marker] = jumpMarker;
+				}
+			}
+			
+			var line:String = source.line;
+			
+			line = line.replace(new RegExp("　", "g"), " ");
+			var paramCount:int = getParameterCount(line);
 			var operation:String = "";
 			
 			if(paramCount >= 2){
@@ -110,11 +136,12 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 				var min:int = 0;
 				var sec:int = 0;
 				var vpos:String = "0";
+				var marker:String = null;
 				
 				switch(paramCount){
 					case 2:
 						//ジャンプ先のみ指定
-						array = JUMP_OPERATION_PATTERN1.exec(source);
+						array = JUMP_OPERATION_PATTERN1.exec(line);
 						if(array != null && array.length > 0){
 							jumpTo = VIDEO_ID_PATTERN.exec(array[1]);
 							if(jumpTo != null && jumpTo.length > 0){
@@ -136,23 +163,30 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 												SEEK_LAST;
 										
 									}
-								}else{
+								}
+								else
+								{
 									jumpTo = JUMP_TO_LABEL_PATTERN.exec(array[1]);
 									if(jumpTo.length == 2){
-										//TODO ラベル指定の＠ジャンプは未実装
-//										operation = JUMP_PRE + JUMP_P_ID + 
-//											JUMP_DOUBLE_QUOTE + jumpTo[1] + JUMP_DOUBLE_QUOTE + 
-//												JUMP_LAST;
 										
-										trace("ラベル指定の＠ジャンプは未実装");
+										// "#ジャンプマーカ" → "ジャンプマーカ"
+										marker = (jumpTo[1] as String);
+										vpos = convertJumpMarkerToVpos(marker, jumpMarkerString_JumpMarker_Map);
 										
-									} 
+										if (vpos != null)
+										{
+											//ジャンプマーカへのジャンプはseek命令
+											operation = SEEK_PRE + SEEK_P_VPOS + 
+												SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE + 
+												SEEK_LAST;
+										}
+									}
 								}
 							}
 						}
 						break;
 					case 3:
-						array = JUMP_OPERATION_PATTERN2.exec(source);
+						array = JUMP_OPERATION_PATTERN2.exec(line);
 						if(array != null && array.length > 0){
 							jumpTo = VIDEO_ID_PATTERN.exec(array[1]);
 							if(jumpTo != null && jumpTo.length > 0){
@@ -179,13 +213,17 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 								}else{
 									jumpTo = JUMP_TO_LABEL_PATTERN.exec(array[1]);
 									if(jumpTo.length == 2){
-										//TODO ラベル指定の＠ジャンプは未実装
-//										operation = JUMP_PRE + JUMP_P_ID + 
-//											JUMP_DOUBLE_QUOTE + jumpTo[1] + JUMP_DOUBLE_QUOTE + 
-//												JUMP_LAST;
+										// "#ジャンプマーカ" → "ジャンプマーカ"
+										marker = (jumpTo[1] as String).substr(1);
+										vpos = convertJumpMarkerToVpos(marker, jumpMarkerString_JumpMarker_Map);
 										
-										trace("ラベル指定の＠ジャンプは未実装");
-										
+										if (vpos != null)
+										{
+											//ジャンプマーカへのジャンプはseek命令
+											operation = SEEK_PRE + SEEK_P_VPOS + 
+												SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE + 
+												SEEK_LAST;
+										}
 									} 
 								}
 							}
@@ -193,7 +231,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 						break;
 					case 4:
 						// TODO 第3引数以降は無視
-						array = JUMP_OPERATION_PATTERN3.exec(source);
+						array = JUMP_OPERATION_PATTERN3.exec(line);
 						if(array != null && array.length > 0){
 							operation = JUMP_PRE + 
 								JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + 
@@ -204,7 +242,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 						break;
 					case 5:
 						// TODO 第3引数以降は無視
-						array = JUMP_OPERATION_PATTERN4.exec(source);
+						array = JUMP_OPERATION_PATTERN4.exec(line);
 						if(array != null && array.length > 0){
 							operation = JUMP_PRE + 
 								JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + 
@@ -215,7 +253,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 						break;
 					case 6:
 						// TODO 第3引数以降は無視
-						array = JUMP_OPERATION_PATTERN5.exec(source);
+						array = JUMP_OPERATION_PATTERN5.exec(line);
 						if(array != null && array.length > 0){
 							operation = JUMP_PRE + 
 								JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + 
@@ -230,9 +268,32 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 				
 			}
 			
-			return operation;
+			return new ScriptLine(operation, source.vpos);
 			
 		}
+		
+		/**
+		 * ジャンプマーカを時間に変換します。
+		 * 
+		 * @param markerString ジャンプマーカ
+		 * @param jumpMarkerMap マーカ情報の一覧
+		 * @return ジャンプ先時刻(vpos)を返す。変換できなかった場合はnullを返す。
+		 * 
+		 */
+		private function convertJumpMarkerToVpos(markerString:String, jumpMarkerMap:Object):String
+		{
+			
+			var jumpMarker:JumpMarker = jumpMarkerMap[markerString];
+			
+			if (jumpMarker == null)
+			{
+				return null;
+			}
+			
+			return String(jumpMarker.vpos);
+			
+		}
+		
 		
 		/**
 		 * パラメータの個数を返します。

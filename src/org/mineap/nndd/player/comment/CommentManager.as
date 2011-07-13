@@ -9,6 +9,9 @@ package org.mineap.nndd.player.comment
 	
 	import org.mineap.nInterpreter.IAnalyzeResult;
 	import org.mineap.nInterpreter.ResultType;
+	import org.mineap.nInterpreter.ScriptLine;
+	import org.mineap.nInterpreter.instance.JumpMarkerManager;
+	import org.mineap.nInterpreter.operation.addMarker.AddMarkerResult;
 	import org.mineap.nInterpreter.operation.jump.JumpResult;
 	import org.mineap.nInterpreter.operation.seek.SeekResult;
 	import org.mineap.nndd.model.NNDDComment;
@@ -58,6 +61,7 @@ package org.mineap.nndd.player.comment
 			this.videoPlayer = videoPlayer;
 			this.videoInfoView = videoInfoView;
 			this.playerController = playerController;
+			JumpMarkerManager.instance.initalize();
 		}
 		
 		/**
@@ -70,6 +74,7 @@ package org.mineap.nndd.player.comment
 				this.comments.destructor();
 			}
 			this.comments = null;
+			JumpMarkerManager.instance.initalize();
 		}
 		
 		/**
@@ -176,16 +181,25 @@ package org.mineap.nndd.player.comment
 						// TODO ニワン語かどうかの判定とか、コメントから命令を解析する機能とか、そういうのも必要。
 						
 						//解析
-						iAnalyzeResult = command.getAnalyzeResult(comment.text);
+						var source:ScriptLine = new ScriptLine(comment.text, vpos);
+						iAnalyzeResult = command.getAnalyzeResult(source);
 						
 						if(iAnalyzeResult != null){
 							
-							if(iAnalyzeResult.resultType == ResultType.JUMP){
+							if (iAnalyzeResult.resultType == ResultType.JUMP)
+							{
 								var jumpResult:JumpResult = JumpResult(iAnalyzeResult);
 								playerController.jump(jumpResult.id, jumpResult.msg);
-							}else if(iAnalyzeResult.resultType == ResultType.SEEK){
+							}
+							else if (iAnalyzeResult.resultType == ResultType.SEEK)
+							{
 								var seekResul:SeekResult = SeekResult(iAnalyzeResult);
 								playerController.seekOperation(Number(seekResul.vpos));
+							}
+							else if (iAnalyzeResult.resultType == ResultType.ADD_MARKER)
+							{
+								var addMarkerResult:AddMarkerResult = AddMarkerResult(iAnalyzeResult);
+								JumpMarkerManager.instance.addMarker(addMarkerResult.name, addMarkerResult.vpos);
 							}
 							
 						}
@@ -207,16 +221,24 @@ package org.mineap.nndd.player.comment
 					}else if(secondChar == "ジ"){
 						
 						//TODO　ココがうまくいってない
-						iAnalyzeResult = command.getAnalyzeResultByNicoScript(comment.text);
+						iAnalyzeResult = command.getAnalyzeResultByNicoScript(comment.text, vpos);
 						
 						if(iAnalyzeResult != null){
 							
-							if(iAnalyzeResult.resultType == ResultType.JUMP){
+							if (iAnalyzeResult.resultType == ResultType.JUMP)
+							{
 								var jumpResult:JumpResult = JumpResult(iAnalyzeResult);
 								playerController.jump(jumpResult.id, jumpResult.msg);
-							}else if(iAnalyzeResult.resultType == ResultType.SEEK){
+							}
+							else if (iAnalyzeResult.resultType == ResultType.SEEK)
+							{
 								var seekResul:SeekResult = SeekResult(iAnalyzeResult);
 								playerController.seekOperation(Number(seekResul.vpos));
+							}
+							else if (iAnalyzeResult.resultType == ResultType.ADD_MARKER)
+							{
+								var addMarkerResult:AddMarkerResult = AddMarkerResult(iAnalyzeResult);
+								JumpMarkerManager.instance.addMarker(addMarkerResult.name, addMarkerResult.vpos);
 							}
 							
 						}
