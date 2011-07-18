@@ -16,7 +16,7 @@ package org.mineap.nndd.util
 		 * @param dataGrid
 		 * 
 		 */
-		public static function loadAndSet(dataGrid:DataGrid):void
+		public static function loadAndSet(dataGrid:DataGrid, ignoreColumnNameList:Vector.<String>):void
 		{
 			var id:String = dataGrid.id;
 			if (id == null)
@@ -32,6 +32,12 @@ package org.mineap.nndd.util
 					if (fieldName == null)
 					{
 						fieldName = "";
+					}
+					
+					if (ignoreColumnNameList.indexOf(fieldName) > -1)
+					{
+						// 対象外なら次へ
+						continue;
 					}
 					
 					var width:int = dataGridColumn.width;
@@ -54,7 +60,7 @@ package org.mineap.nndd.util
 		 * @param dataGrid
 		 * 
 		 */
-		public static function save(dataGrid:DataGrid):void
+		public static function save(dataGrid:DataGrid, ignoreColumnNameList:Vector.<String>):void
 		{
 			
 			var id:String = dataGrid.id;
@@ -71,6 +77,12 @@ package org.mineap.nndd.util
 					if (fieldName == null)
 					{
 						fieldName = "";
+					}
+					
+					if (ignoreColumnNameList.indexOf(fieldName) > -1)
+					{
+						// 対象外なら次へ
+						continue;
 					}
 					
 					var width:int = dataGridColumn.width;

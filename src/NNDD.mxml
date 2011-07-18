@@ -170,7 +170,7 @@
 			protected function dataGrid_history_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_history);
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_history, new Vector.<String>("dataGridColumn_url"));
 				
 				historyMenu = new ContextMenu();
 				historyPlay = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
@@ -203,7 +203,7 @@
 			protected function dataGrid_downloadList_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloadList);
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloadList, new Vector.<String>("col_status"));
 				
 				downloadMenu = new ContextMenu();
 				downloadMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY_BY_QUEUE);
@@ -235,7 +235,7 @@
 			protected function dataGrid_myList_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-//				DataGridColumnWidthUtil.loadAndSet(dataGrid_myList);
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_myList, new Vector.<String>("dataGridColumn_condition"));
 				
 				myListMenu = new ContextMenu();
 				myListMenuItem1 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
@@ -273,7 +273,7 @@
 			protected function dataGrid_search_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-//				DataGridColumnWidthUtil.loadAndSet(dataGrid_search);
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_search, new Vector.<String>("dataGridColumn_condition"));
 				
 				searchMenu = new ContextMenu();
 				searchMenuitem = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
@@ -310,7 +310,7 @@
 			protected function dataGrid_ranking_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-//				DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking);
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_condition"));
 				
 				rankingMenu = new ContextMenu();
 				rankingMenuitem = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
@@ -385,7 +385,7 @@
 			protected function dataGrid_downloaded_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloaded);
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloaded, new Vector.<String>("dataGridColumn_condition"));
 				
 				downloadedMenu = new ContextMenu();
 				downloadedMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);

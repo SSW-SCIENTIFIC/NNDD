@@ -4303,33 +4303,33 @@ private function saveStore():void{
 		/* DataGridの列幅保存 */
 		if (dataGrid_downloaded != null)
 		{
-			DataGridColumnWidthUtil.save(dataGrid_downloaded);
+			DataGridColumnWidthUtil.save(dataGrid_downloaded, new Vector.<String>("dataGridColumn_condition"));
 		}
 		
 		if (dataGrid_downloadList != null)
 		{
-			DataGridColumnWidthUtil.save(dataGrid_downloadList);
+			DataGridColumnWidthUtil.save(dataGrid_downloadList, new Vector.<String>("col_status"));
 		}
 		
 		if (dataGrid_history != null)
 		{
-			DataGridColumnWidthUtil.save(dataGrid_history);
+			DataGridColumnWidthUtil.save(dataGrid_history, new Vector.<String>("dataGridColumn_url"));
 		}
 		
-//		if (dataGrid_myList != null)
-//		{
-//			DataGridColumnWidthUtil.save(dataGrid_myList);
-//		}
-//		
-//		if (dataGrid_ranking != null)
-//		{
-//			DataGridColumnWidthUtil.save(dataGrid_ranking);
-//		}
-//		
-//		if (dataGrid_search != null)
-//		{
-//			DataGridColumnWidthUtil.save(dataGrid_search);
-//		}
+		if (dataGrid_myList != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_myList, new Vector.<String>("dataGridColumn_condition"));
+		}
+		
+		if (dataGrid_ranking != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_ranking, new Vector.<String>("dataGridColumn_condition"));
+		}
+		
+		if (dataGrid_search != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_search, new Vector.<String>("dataGridColumn_condition"));
+		}
 		
 		
 		ConfigManager.getInstance().save();

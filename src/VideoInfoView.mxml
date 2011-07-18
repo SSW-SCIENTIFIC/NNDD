@@ -26,6 +26,7 @@
 			import mx.events.IndexChangedEvent;
 			
 			import org.mineap.nndd.player.comment.Comments;
+			import org.mineap.nndd.util.DataGridColumnWidthUtil;
 			
 			private var thumbImgMenu:ContextMenu;
 			private var thumbImgMenuItem1:ContextMenuItem;
@@ -151,6 +152,7 @@
 			protected function dataGrid_oldComment_creationCompleteHandler(event:FlexEvent):void
 			{
 				resetOldCommentDate();
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_oldComment, new Vector.<String>("mail_column"));
 			}
 
 			protected function tabNavigator_comment_changeHandler(event:IndexChangedEvent):void
@@ -233,6 +235,11 @@
 			}
 
 			
+			protected function dataGrid_comment_creationCompleteHandler(event:FlexEvent):void
+			{
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_comment, new Vector.<String>("mail_column"));
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -266,7 +273,7 @@
 							<mx:DataGrid left="0" right="0" top="0" bottom="0" dataProvider="{commentListProvider}" resizableColumns="true"
 									id="dataGrid_comment" headerRelease="headerReleaseHandler(event)" doubleClickEnabled="true" 
 									itemDoubleClick="commentListDoubleClicked(event)" editable="false" rowHeight="22"
-									horizontalScrollPolicy="on">
+									horizontalScrollPolicy="on" creationComplete="dataGrid_comment_creationCompleteHandler(event)">
 								<mx:columns>
 									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
 									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300"/>

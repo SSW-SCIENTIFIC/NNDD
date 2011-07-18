@@ -7,6 +7,7 @@
  * 
  */	
 
+import flash.display.StageDisplayState;
 import flash.display.StageQuality;
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -21,6 +22,7 @@ import mx.collections.Sort;
 import mx.collections.SortField;
 import mx.controls.Alert;
 import mx.controls.CheckBox;
+import mx.controls.ComboBox;
 import mx.controls.DataGrid;
 import mx.controls.HSlider;
 import mx.controls.RadioButton;
@@ -46,6 +48,7 @@ import org.mineap.nndd.model.SearchItem;
 import org.mineap.nndd.model.SearchSortString;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
+import org.mineap.nndd.util.DataGridColumnWidthUtil;
 import org.mineap.nndd.util.PathMaker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
@@ -1293,6 +1296,19 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isNotPlayNicowari");
 		ConfigManager.getInstance().setItem("isNotPlayNicowari", isNotPlayNicowari);
+		
+		
+		/* DataGridの列幅保存 */
+		if (dataGrid_comment != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_comment, new Vector.<String>("mail_column"));
+		}
+		
+		if (dataGrid_oldComment != null)
+		{
+			DataGridColumnWidthUtil.save(dataGrid_oldComment, new Vector.<String>("mail_column"));
+		}
+		
 		
 		ConfigManager.getInstance().save();
 		
