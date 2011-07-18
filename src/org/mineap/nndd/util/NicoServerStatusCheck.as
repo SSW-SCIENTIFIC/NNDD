@@ -95,6 +95,10 @@ package org.mineap.nndd.util
 					label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms, ステータス: "+ event.status +"]";
 					_logManager.addLog("サーバーがエラーを報告しています [status: " + event.status + ", url: " + event.responseURL + "]");
 				}else{
+					if (diff > 1000)
+					{
+						_logManager.addLog("\t応答に１秒以上かかったサーバー [応答時間: " + diff + " ms, url:" + event.responseURL + "]");
+					}
 					_successCount++;
 				}
 				
