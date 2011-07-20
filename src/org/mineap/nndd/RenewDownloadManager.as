@@ -18,6 +18,7 @@ package org.mineap.nndd
 		public static const PROCCESS_COMPLETE:String = "ProcessComplate";
 		public static const PROCCESS_FAIL:String = "ProcessFail";
 		public static const PROCCESS_CANCEL:String = "ProcessCancel";
+		public static const PROCCESS_STATUS_UPDATE:String = "ProcessStatusUpdate";
 		
 		private var _dataProvider:ArrayCollection;
 		private var _nnddDownloader:NNDDDownloader;
@@ -182,7 +183,7 @@ package org.mineap.nndd
 			this._logManager.addLog(status + ":" + event.type + ":" + event.text);
 			setStatus(status, this._videoName);
 			
-			dispatchEvent(event);
+			dispatchEvent(new IOErrorEvent(PROCCESS_STATUS_UPDATE, false, false, status));
 		}
 		
 		/**
@@ -220,7 +221,7 @@ package org.mineap.nndd
 			this._logManager.addLog(status + ":" + event.type);
 			setStatus(status, this._videoName);
 			
-			dispatchEvent(event);
+			dispatchEvent(new Event(PROCCESS_STATUS_UPDATE, false, false));
 		}
 		
 		/**
@@ -240,20 +241,16 @@ package org.mineap.nndd
 				}
 			}
 			
+			if (index == -1)
+			{
+				return;
+			}
+			
 			//videoNameが一致するものを探す
 			if(this._dataProvider != null){
 				if(this._dataProvider.length > index && this._dataProvider[index] != undefined && this._dataProvider[index].dataGridColumn_videoName.indexOf(videoName) != -1){
-					this._dataProvider.setItemAt({
-						dataGridColumn_ranking: this._dataProvider[index].dataGridColumn_ranking,
-						dataGridColumn_preview: this._dataProvider[index].dataGridColumn_preview,
-						dataGridColumn_videoName: this._dataProvider[index].dataGridColumn_videoName,
-						dataGridColumn_Info: this._dataProvider[index].dataGridColumn_Info,
-						dataGridColumn_videoInfo: this._dataProvider[index].dataGridColumn_videoInfo,
-						dataGridColumn_condition: status,
-						dataGridColumn_count: this._dataProvider[index].dataGridColumn_count,
-						dataGridColumn_videoPath: this._dataProvider[index].dataGridColumn_videoPath,
-						dataGridColumn_date: this._dataProvider[index].dataGridColumn_date
-					},index);
+					var object:Object = this._dataProvider[index];
+					object.dataGridColumn_condition = status;
 				}
 			}
 		}

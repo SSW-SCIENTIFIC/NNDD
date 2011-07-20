@@ -3648,6 +3648,9 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							newCommentDownloadButton.enabled = true;
 							
 							renewDownloadManager = null;
+							
+							dataGrid_downloaded.invalidateList();
+							dataGrid_downloaded.validateNow();
 						});
 						renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_CANCEL, function(event:Event):void{
 							newCommentOnlyDownloadButton.label = "コメント";
@@ -3657,6 +3660,13 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							newCommentDownloadButton.enabled = true;
 							
 							renewDownloadManager = null;
+							
+							dataGrid_downloaded.invalidateList();
+							dataGrid_downloaded.validateNow();
+						});
+						renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_STATUS_UPDATE, function(event:Event):void{
+							dataGrid_downloaded.invalidateList();
+							dataGrid_downloaded.validateNow();
 						});
 						renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_COMPLETE, function(event:Event):void{
 							
@@ -3711,6 +3721,9 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							newCommentDownloadButton.enabled = true;
 								
 							renewDownloadManager = null;
+							
+							dataGrid_downloaded.invalidateList();
+							dataGrid_downloaded.validateNow();
 						});
 						
 						if(isCommentOnly){
