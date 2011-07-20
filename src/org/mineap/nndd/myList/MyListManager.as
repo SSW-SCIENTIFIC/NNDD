@@ -811,9 +811,20 @@ package org.mineap.nndd.myList
 				fileIO.saveXMLSync(file, xml);
 				
 				/* 動画IDをマイリストに登録 */
-				var myListName:String = this._myListId_myListName_map[myListId];
-				var myList:MyList = this._myListName_MyList_Map[myListName];
-				updateMylist(myList);
+				for each(var myList:MyList in this._myListName_MyList_Map)
+				{
+					if (myList.isDir == true)
+					{
+						continue;
+					}
+					
+					if (myList.myListId == myListId)
+					{
+						updateMylist(myList);
+						break;
+					}
+				}
+//				updateMylist(myList);
 				
 			}catch(error:Error){
 				_logManager.addLog("マイリストの保存に失敗:" + error + ":" + error.getStackTrace());

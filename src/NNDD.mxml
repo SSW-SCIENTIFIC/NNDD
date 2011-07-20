@@ -1751,9 +1751,20 @@
 					<mx:CheckBox label="検索履歴を保存する" left="30" top="93" id="checkbox_saveSearchHistory" selected="true" toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" change="checkBoxSaveSearchHistoryChanged(event)"/>
 					<mx:Button label="履歴を消去" left="159" top="92" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
 					
-					<mx:CheckBox label="マイリスト更新をスケジュール実行する：" id="checkBox_myListRenewOnSchedule" click="checkBoxMylistRenewOnScheduleChanged(event)" selected="true" left="30" top="118" height="22" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
-					<mx:ComboBox left="266" dataProvider="{myListRenewScheduleTimeProvider}" selectedIndex="1" width="100" change="myListRenewScheduleTimeChange(event)" top="121" id="combobox_myListRenewTime" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
-					<mx:Label text="分おき" left="374" top="121"/>
+					<mx:CheckBox label="マイリスト更新をスケジュール実行する：" 
+								 id="checkBox_myListRenewOnSchedule" 
+								 click="checkBoxMylistRenewOnScheduleChanged(event)" 
+								 selected="true" left="30" top="118" height="22" 
+								 toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"
+								 enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
+					<mx:ComboBox left="266" dataProvider="{myListRenewScheduleTimeProvider}" 
+								 selectedIndex="1" width="100" 
+								 change="myListRenewScheduleTimeChange(event)" 
+								 top="121" id="combobox_myListRenewTime" 
+								 toolTip="マイリスト情報取得の間隔を分で指定します。"
+								 enabled="{!checkBox_myListRenewOnBootTime.selected}"></mx:ComboBox>
+					<mx:Label text="分おき" left="374" top="121"
+							  enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
 					<mx:VRule width="7" height="22" left="420" top="119"/>
 					<mx:Button label="今すぐ更新" left="435" click="myListRenewNow()" top="119"/>
 					
@@ -1763,12 +1774,18 @@
 									  toolTip="マイリストが複数ある場合の、マイリストの更新が完了してから次のマイリストの更新を開始するまでの間隔を指定できます。"/>
 					<mx:Label left="263" top="148" text="秒"/>
 					
-					<mx:HRule left="30" top="175" right="10" height="10"/>
-					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="194"/>
-					<mx:Button label="追加" id="button_addDefSearchItem" left="271" top="192" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					<mx:CheckBox label="マイリストを起動時のみ更新する" 
+								 id="checkBox_myListRenewOnBootTime" 
+								 click="checkBoxMyListRenewOnBootTimeChanged(event)"
+								 selected="false" left="30" top="175" height="22" 
+								 toolTip="ニコニコ動画から最新のマイリストの情報をNNDDの起動時のみ取得します。"/>
 					
-					<mx:Label x="30" y="221" text="自分のマイリストをマイリスト一覧に追加"/>
-					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="220"/>
+					<mx:HRule left="30" top="201" right="10" height="10"/>
+					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="220"/>
+					<mx:Button label="追加" id="button_addDefSearchItem" left="271" top="218" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					
+					<mx:Label x="30" y="247" text="自分のマイリストをマイリスト一覧に追加"/>
+					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="246"/>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					

@@ -229,6 +229,8 @@ private var isAppendComment:Boolean = false;
 
 private var mylistRenewOnScheduleEnable:Boolean = true;
 
+private var myListRenewOnBootTime:Boolean = false;
+
 private var selectedMyListFolder:Boolean = false;
 
 private var isSaveSearchHistory:Boolean = true;
@@ -2199,6 +2201,17 @@ private function readStore(isLogout:Boolean = false):void{
 			this.downloadRetryMaxCount = 2;
 		}
 		
+		errorName = "myListRenewOnBootTime";
+		confValue = ConfigManager.getInstance().getItem("myListRenewOnBootTime");
+		if (confValue != null)
+		{
+			this.myListRenewOnBootTime = ConfUtil.parseBoolean(confValue);
+		}
+		else
+		{
+			this.myListRenewOnBootTime = false;
+		}
+		
 		
 	}catch(error:Error){
 		/* ストアをリセット */
@@ -2258,9 +2271,16 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 	MyListRenewScheduler.instance.mailAddress = UserManager.instance.user;
 	MyListRenewScheduler.instance.password = UserManager.instance.password;
 	
-	if(this.mylistRenewOnScheduleEnable){
+	if ( this.myListRenewOnBootTime )
+	{
 		MyListRenewScheduler.instance.startNow();
-		MyListRenewScheduler.instance.start((this.myListRenewScheduleTime*60)*1000);
+	}
+	else
+	{
+		if(this.mylistRenewOnScheduleEnable){
+			MyListRenewScheduler.instance.startNow();
+			MyListRenewScheduler.instance.start((this.myListRenewScheduleTime*60)*1000);
+		}
 	}
 	
 	downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
@@ -2818,7 +2838,7 @@ private function nicoConfigCanvasCreationComplete(event:FlexEvent):void{
 	
 	numStepper_delayOfMylist.value = MyListRenewScheduler.instance.delayOfMylist/1000;
 	
-	
+	checkBox_myListRenewOnBootTime.selected = this.myListRenewOnBootTime;
 }
 
 private function libraryConfigCanvasCreationComplete(event:FlexEvent):void{
@@ -4331,6 +4351,9 @@ private function saveStore():void{
 			DataGridColumnWidthUtil.save(dataGrid_search, new Vector.<String>("dataGridColumn_condition"));
 		}
 		
+		/* マイリストの起動時更新 */
+		ConfigManager.getInstance().removeItem("myListRenewOnBootTime");
+		ConfigManager.getInstance().setItem("myListRenewOnBootTime", this.myListRenewOnBootTime);
 		
 		ConfigManager.getInstance().save();
 		
@@ -6983,6 +7006,11 @@ protected function checkBoxMylistRenewOnScheduleChanged(event:Event):void{
 	if(this.mylistRenewOnScheduleEnable){
 		MyListRenewScheduler.instance.start((this.myListRenewScheduleTime*60)*1000);
 	}
+}
+
+protected function checkBoxMyListRenewOnBootTimeChanged(event:Event):void
+{
+	this.myListRenewOnBootTime = checkBox_myListRenewOnBootTime.selected;
 }
 
 protected function treeMyListInitializer():void{
