@@ -38,6 +38,7 @@
 			private var downloadedDataGridComplete:Boolean = false;
 			private var playListComplete:Boolean = false;
 			private var tileListComplete:Boolean = false;
+			private var rankingDataGridComplete:Boolean = false;
 			
 			private var rankingMenu:ContextMenu;
 			private var rankingMenuitem:ContextMenuItem;
@@ -310,7 +311,7 @@
 			protected function dataGrid_ranking_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_condition"));
+//				DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
 				
 				rankingMenu = new ContextMenu();
 				rankingMenuitem = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
@@ -338,6 +339,8 @@
 					dataGridColumn_thumbImage.width = 70*slider_thumbImageSize.value;
 					this.validateNow();
 				}
+				
+				this.dataGrid_ranking.visible = true;
 				
 			}
 
@@ -385,7 +388,7 @@
 			protected function dataGrid_downloaded_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloaded, new Vector.<String>("dataGridColumn_condition"));
+				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloaded, new Vector.<String>());
 				
 				downloadedMenu = new ContextMenu();
 				downloadedMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
@@ -1153,7 +1156,7 @@
 					return 0;
 				}
 			}
-
+			
 		]]>
 	</fx:Script>
 	
@@ -1208,14 +1211,17 @@
 					<mx:Button id="button_next" left="116" top="0" width="35" label="&gt;"
 							   click="nextButtonClicked()"/>
 					
+					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このランキングをブラウザで表示します" click="showRankingOnNico(event)"/>
+					<mx:Button label="更新" width="80" click="rankingRenewButtonClicked()" id="rankingRenewButton" enabled="true" top="0" right="94"/>
+					
 					<mx:DataGrid editable="false" rowHeight="55" sortableColumns="true" id="dataGrid_ranking" dataProvider="{rankingProvider}" 
 						top="25" left="0" right="0" bottom="0" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
 						itemDoubleClick="rankingDataGridDoubleClicked(event)" allowMultipleSelection="true" dragEnabled="true" 
-						verticalScrollPolicy="on"
+						verticalScrollPolicy="on" visible="false"
 						creationComplete="dataGrid_ranking_creationCompleteHandler(event)">
 						<!-- horizontalScrollPolicy="on"> -->
 						<mx:columns>
-							<mx:DataGridColumn headerText="順位" width="30" dataField="dataGridColumn_ranking" id="dataGridColumn_rank"/>
+							<mx:DataGridColumn headerText="#" width="30" dataField="dataGridColumn_ranking" id="dataGridColumn_rank"/>
 							<mx:DataGridColumn headerText="サムネイル" width="70" dataField="dataGridColumn_preview" id="dataGridColumn_thumbImage">
 								<mx:itemRenderer>
 									<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true" horizontalCenter="0" verticalCenter="0"/></fx:Component>
@@ -1226,8 +1232,6 @@
 							<mx:DataGridColumn headerText="状況" dataField="dataGridColumn_condition" width="100" id="dataGridColumn_status"/>
 						</mx:columns>
 					</mx:DataGrid>
-					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このランキングをブラウザで表示します" click="showRankingOnNico(event)"/>
-					<mx:Button label="更新" width="80" click="rankingRenewButtonClicked()" id="rankingRenewButton" enabled="true" top="0" right="94"/>
 					
 				</mx:Canvas>
 			</mx:HDividedBox>
@@ -1522,7 +1526,7 @@
 									<mx:DataGridColumn headerText="" dataField="dataGridColumn_thumbImage" width="25" id="dataGridColumn_LibraryThumbImage">
 										<mx:itemRenderer>
 											<fx:Component>
-												<mx:Image width="100%" 
+												<mx:Image width="100%"
 														  height="100%" 
 														  mouseOver="image1_mouseOverHandler(event)" 
 														  mouseMove="image1_mouseMoveHandler(event)" 
@@ -1774,7 +1778,7 @@
 									  toolTip="マイリストが複数ある場合の、マイリストの更新が完了してから次のマイリストの更新を開始するまでの間隔を指定できます。"/>
 					<mx:Label left="263" top="148" text="秒"/>
 					
-					<mx:CheckBox label="マイリストを起動時のみ更新する" 
+					<mx:CheckBox label="マイリスト更新を起動時のみ実行する" 
 								 id="checkBox_myListRenewOnBootTime" 
 								 click="checkBoxMyListRenewOnBootTimeChanged(event)"
 								 selected="false" left="30" top="175" height="22" 

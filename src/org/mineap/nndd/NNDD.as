@@ -2240,6 +2240,7 @@ private function createLoginDialog(isStore:Boolean, isAutoLogin:Boolean, name:St
 	loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
 	loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
 	loginDialog.addEventListener(LoginDialog.NO_LOGIN, noLogin);
+	
 	// ダイアログを中央に表示
 	PopUpManager.centerPopUp(loginDialog);
 }
@@ -2260,6 +2261,12 @@ private function loginFailEventHandler(event:Event):void{
  */
 private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 {
+	if (!rankingDataGridComplete)
+	{
+		DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
+		rankingDataGridComplete = true;
+	}
+	
 	logoutButton.label = "ログアウト";
 	logoutButton.enabled = true;
 	
@@ -2288,22 +2295,9 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 	downloadManager.retryMaxCount = this.downloadRetryMaxCount;
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
 	
-//	this.nndd.label_status.text = "ログインに成功(" + event.status + ")";
 	trace("ログインに成功"+event);
 	logManager.addLog("ログイン:" + event);
 	
-//	nndd.rankingRenewButton.enabled = true;
-//	nndd.downloadStartButton.enabled = true;
-//	nndd.button_SearchNico.enabled = true;
-//	nndd.dataGrid_ranking.enabled = true;
-//	nndd.list_categoryList.enabled = true;
-//	nndd.playStartButton.enabled = true;
-//	
-//	setEnableRadioButtons(true);
-	
-//	if(nndd.newCommentDownloadButton != null){
-//		nndd.newCommentDownloadButton.enabled = true;
-//	}
 	
 	//引数指定起動でニコ動のURLが指定されていたときはログイン後に再生開始
 	if(isArgumentBoot){
@@ -2328,6 +2322,12 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
  */
 private function noLogin(event:HTTPStatusEvent):void
 {
+	if (!rankingDataGridComplete)
+	{
+		DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
+		rankingDataGridComplete = true;
+	}
+	
 	logoutButton.label = "ログイン";
 	logoutButton.enabled = true;
 	
@@ -2345,21 +2345,6 @@ private function noLogin(event:HTTPStatusEvent):void
 	
 	downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
-	
-//	this.nndd.label_status.text = "ログインしていません。";
-	
-//	nndd.rankingRenewButton.enabled = false;
-//	nndd.downloadStartButton.enabled = false;
-//	nndd.button_SearchNico.enabled = false;
-//	nndd.dataGrid_ranking.enabled = false;
-//	nndd.list_categoryList.enabled = false;
-//	nndd.playStartButton.enabled = false;
-//	
-//	setEnableRadioButtons(false);
-//	
-//	if(nndd.newCommentDownloadButton != null){
-//		nndd.newCommentDownloadButton.enabled = false;
-//	}
 	
 	this.isArgumentBoot = false;
 	this.argumentURL = "";
@@ -4336,7 +4321,7 @@ private function saveStore():void{
 		/* DataGridの列幅保存 */
 		if (dataGrid_downloaded != null)
 		{
-			DataGridColumnWidthUtil.save(dataGrid_downloaded, new Vector.<String>("dataGridColumn_condition"));
+			DataGridColumnWidthUtil.save(dataGrid_downloaded, new Vector.<String>());
 		}
 		
 		if (dataGrid_downloadList != null)
@@ -4356,7 +4341,7 @@ private function saveStore():void{
 		
 		if (dataGrid_ranking != null)
 		{
-			DataGridColumnWidthUtil.save(dataGrid_ranking, new Vector.<String>("dataGridColumn_condition"));
+			DataGridColumnWidthUtil.save(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
 		}
 		
 		if (dataGrid_search != null)

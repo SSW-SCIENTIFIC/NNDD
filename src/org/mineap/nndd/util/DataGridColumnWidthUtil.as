@@ -40,8 +40,6 @@ package org.mineap.nndd.util
 						continue;
 					}
 					
-					var width:int = dataGridColumn.width;
-					
 					var confValueName:String = id + "_" + fieldName + "_width";
 					
 					var value:String = ConfigManager.getInstance().getItem(confValueName);
