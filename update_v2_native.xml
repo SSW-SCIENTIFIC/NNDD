@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.0.7</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/52323/NNDDv2_0_7.dmg</url>
+	<version>2.0.8</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/52717/NNDDv2_0_8.dmg</url>
 	<description><![CDATA[
+v2.0.8
+・＠ジャンプマーカー命令に対応
+・接続診断で応答に１秒以上かかったサーバーのURLをログに出力するようにした
+・Info画面のコメント一覧、ランキング、検索、マイリストのカラム幅を保存するようにした
+・マイリストの起動時のみの更新を出来るようにした
+・【バグフィックス】ライブラリからコメント、動画以外の更新をするとライブラリの一覧から当該動画が消える問題を修正
+
 v2.0.7
 ・マイリスト以外から再生した場合でも、マイリストの既読が更新されるようにした
 ・DLリスト、ライブラリ、履歴のカラム幅を記憶するようにした
@@ -137,9 +144,16 @@ v2.0.0 Alpha -> Beta
 </dmg>
 
 <exe>
-	<version>2.0.7</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/52323/NNDDv2_0_7.exe</url>
+	<version>2.0.8</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/52717/NNDDv2_0_8.exe</url>
 	<description><![CDATA[
+v2.0.8
+・＠ジャンプマーカー命令に対応
+・接続診断で応答に１秒以上かかったサーバーのURLをログに出力するようにした
+・Info画面のコメント一覧、ランキング、検索、マイリストのカラム幅を保存するようにした
+・マイリストの起動時のみの更新を出来るようにした
+・【バグフィックス】ライブラリからコメント、動画以外の更新をするとライブラリの一覧から当該動画が消える問題を修正
+
 v2.0.7
 ・マイリスト以外から再生した場合でも、マイリストの既読が更新されるようにした
 ・DLリスト、ライブラリ、履歴のカラム幅を記憶するようにした
