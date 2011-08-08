@@ -588,6 +588,12 @@ public function myListStatusRenew(loaded:Number, total:Number, myListId:String):
 public function renewMyListUnPlayCount(tree_myListRenew:Boolean = true):void{
 	var count:int = MyListManager.instance.countUnPlayVideosFromAll();
 	
+	if (tree_myList != null)
+	{
+		tree_myList.invalidateList();
+		tree_myList.validateNow();
+	}
+	
 	if(count == 0){
 		canvas_myList.label = "マイリスト";
 	}else{
