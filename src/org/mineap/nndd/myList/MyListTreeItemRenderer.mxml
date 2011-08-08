@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <treeClasses:TreeItemRenderer xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:treeClasses="mx.controls.treeClasses.*"
 							  dataChange="treeitemrenderer1_dataChangeHandler(event)"
+							  show="treeitemrenderer1_showHandler(event)"
 							  rollOverEffect="test"
 							  >
 	<mx:Script>
@@ -65,6 +66,12 @@
 			}
 			
 
+			protected function treeitemrenderer1_showHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				changeBold();
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:Resize id="test">

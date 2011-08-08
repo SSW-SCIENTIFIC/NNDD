@@ -151,7 +151,7 @@ package org.mineap.nndd.myList
 			}
 			
 			// マイリストの登録済み動画IDを更新
-			updateMylist(myList);
+			updateMyListVideoId(myList);
 			
 			return object;
 		}
@@ -259,7 +259,7 @@ package org.mineap.nndd.myList
 					addedTreeObject = file;
 					
 					// マイリストの登録済み動画IDを更新
-					updateMylist(myList);
+					updateMyListVideoId(myList);
 					
 				}
 				
@@ -448,7 +448,7 @@ package org.mineap.nndd.myList
 					myListArray.push(file);
 					myListMap[name] = myList;
 					
-					updateMylist(myList);
+					updateMyListVideoId(myList);
 				}
 			}
 					
@@ -460,7 +460,7 @@ package org.mineap.nndd.myList
 		 * @param myListId
 		 * 
 		 */
-		private function updateMylist(myList:MyList):MyList
+		private function updateMyListVideoId(myList:MyList):MyList
 		{
 			if (myList == null)
 			{
@@ -820,11 +820,13 @@ package org.mineap.nndd.myList
 					
 					if (myList.myListId == myListId)
 					{
-						updateMylist(myList);
+						updateMyListVideoId(myList);
+						
+						// 未再生の動画数を登録
+						myList.unPlayVideoCount = countUnPlayVideos(myList.myListId);
 						break;
 					}
 				}
-//				updateMylist(myList);
 				
 			}catch(error:Error){
 				_logManager.addLog("マイリストの保存に失敗:" + error + ":" + error.getStackTrace());
