@@ -4374,7 +4374,7 @@ package org.mineap.nndd.player
 				{
 					var videoIds:Vector.<String> = new Vector.<String>();
 					videoIds.push(videoId);
-					MyListManager.instance.setPlayedAndSave(myListId, videoIds);
+					MyListManager.instance.updatePlayedAndSave(myListId, videoIds, true);
 				}
 			}
 		}

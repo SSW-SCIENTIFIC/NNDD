@@ -63,6 +63,7 @@
 			private var myListMenuItem2:ContextMenuItem;
 			private var myListMenuItem3:ContextMenuItem;
 			private var myListMenuItem4:ContextMenuItem;
+			private var myListMenuItem5:ContextMenuItem;
 			private var fileSystemTreeMenu:ContextMenu;
 			private var fileSystemTreeMenuItem1:ContextMenuItem;
 			private var fileSystemTreeMenuItem2:ContextMenuItem;
@@ -247,6 +248,8 @@
 				myListMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
 				myListMenuItem4 = new ContextMenuItem(Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED, true);
 				myListMenuItem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
+				myListMenuItem5 = new ContextMenuItem(Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY);
+				myListMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
 				
 				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
 				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
@@ -255,7 +258,7 @@
 				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
 				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
 				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
-				myListMenu.customItems.push(myListMenuItem1, myListMenuItem2, playAllMenuItem, myListMenuItem4, myListMenuItem3, 
+				myListMenu.customItems.push(myListMenuItem1, myListMenuItem2, playAllMenuItem, myListMenuItem4, myListMenuItem5, myListMenuItem3, 
 					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				myListMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_myList.contextMenu = myListMenu;

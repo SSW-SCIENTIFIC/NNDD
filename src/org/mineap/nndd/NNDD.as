@@ -858,7 +858,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					if(myListId != null){
 						var vector:Vector.<String> = new Vector.<String>();
 						vector.splice(0, 0, PathMaker.getVideoID(videoLocalPath));
-						_myListManager.setPlayedAndSave(myListId, vector);
+						_myListManager.updatePlayedAndSave(myListId, vector, true);
 					}
 					
 					if(!selectedMyListFolder){
@@ -882,7 +882,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					if(myListId != null){
 						var vector:Vector.<String> = new Vector.<String>();
 						vector.splice(0, 0, PathMaker.getVideoID(videoUrl));
-						_myListManager.setPlayedAndSave(myListId, vector);
+						_myListManager.updatePlayedAndSave(myListId, vector, true);
 					}
 					
 					if(!selectedMyListFolder){
@@ -908,19 +908,33 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					addDownloadListForMyList(video, itemIndices[index]);
 					
 				}
-			}else if((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED){
+			}else if((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED
+					|| (event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY){
+				
+				// 動画を既読/未読に設定
+				
+				var isPlayed:Boolean = false;
+				if((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED)
+				{
+					isPlayed = true;
+				}
+				else if((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY)
+				{
+					isPlayed = false;
+				}
 				
 				var items:Array = dataGrid.selectedItems;
 				var vector:Vector.<String> = new Vector.<String>();
 				myListId = dataGrid.selectedItem.dataGridColumn_myListId;
 				
+				// 別なマイリストの項目が混じっている事があるのでその対応
 				for each(var item:Object in items){
 					var videoId:String = item.dataGridColumn_videoId;
 					var tempListId:String = item.dataGridColumn_myListId;
 					
 					if(tempListId != myListId){
 						try{
-							MyListManager.instance.setPlayedAndSave(myListId, vector);
+							MyListManager.instance.updatePlayedAndSave(myListId, vector, isPlayed);
 						}catch(error:Error){
 							trace(error.getStackTrace());
 						}
@@ -934,8 +948,9 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					
 				}
 				
+				// 本来のマイリスト既読更新処理
 				try{
-					MyListManager.instance.setPlayedAndSave(myListId, vector);
+					MyListManager.instance.updatePlayedAndSave(myListId, vector, isPlayed);
 				}catch(error:Error){
 					trace(error.getStackTrace());
 				}
@@ -5731,7 +5746,7 @@ private function videoStreamingPlayButtonClickedForMyList():void{
 			if(myListId != null){
 				var vector:Vector.<String> = new Vector.<String>();
 				vector.splice(0, 0, PathMaker.getVideoID(videoUrl));
-				_myListManager.setPlayedAndSave(myListId, vector);
+				_myListManager.updatePlayedAndSave(myListId, vector, true);
 				
 				if(!selectedMyListFolder){
 					var xml:XML = MyListManager.instance.readLocalMyList(myListId);
@@ -5789,7 +5804,7 @@ private function myListItemDataGridDoubleClicked():void{
 				if(myListId != null){
 					var vector:Vector.<String> = new Vector.<String>();
 					vector.splice(0, 0, PathMaker.getVideoID(videoUrl));
-					_myListManager.setPlayedAndSave(myListId, vector);
+					_myListManager.updatePlayedAndSave(myListId, vector, true);
 					
 					if(!selectedMyListFolder){
 						var xml:XML = MyListManager.instance.readLocalMyList(myListId);

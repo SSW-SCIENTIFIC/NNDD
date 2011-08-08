@@ -46,6 +46,7 @@ package org.mineap.nndd
 		public static var L_COPY_URL:String = "URLをコピー";
 		public static var L_ADD_PLAYER_PLAYLIST_AND_PLAY:String = "一覧を連続再生";
 		public static var L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED:String = "動画を視聴済に設定";
+		public static var L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY:String = "動画を未視聴に設定";
 		
 		public static var L_PLAYLIST_ADD_SELECTED_ITEM:String = "プレイリストに追加";
 		

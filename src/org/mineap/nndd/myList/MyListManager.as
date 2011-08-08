@@ -794,9 +794,17 @@ package org.mineap.nndd.myList
 					var tempXML:XML = readLocalMyList(myListId);
 					vector = searchPlayedItem(tempXML);
 					
-					//再生済み項目を新規XMLに反映
-					setPlayed(vector, xml);
+					// 未読と明示的に指定されているものの動画も抽出
+					var tempVector:Vector.<String> = searchUnPlaydItem(xml, true);
 					
+					//再生済み項目を新規XMLに反映
+					updatePlayed(vector, xml, true);
+					
+					//未視聴に上書き
+					if (tempVector != null && tempVector.length > 0)
+					{
+						updatePlayed(tempVector, xml, false);
+					}
 				}
 				
 				var fileIO:FileIO = new FileIO(_logManager);
@@ -912,12 +920,13 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
-		 * 指定されたマイリストの、指定された動画の項目を既読に設定します
+		 * 指定されたマイリストの、指定された動画の項目を既読/未読に設定します
 		 * @param myListId
 		 * @param videoIds
+		 * @param isPlayed
 		 * 
 		 */
-		public function setPlayedAndSave(myListId:String, videoIds:Vector.<String>):void{
+		public function updatePlayedAndSave(myListId:String, videoIds:Vector.<String>, isPlayed:Boolean):void{
 			
 			var xml:XML = readLocalMyList(myListId);
 			
@@ -928,15 +937,14 @@ package org.mineap.nndd.myList
 					str += (videoId + ", ");
 				}
 				
-				if (!setPlayed(videoIds, xml))
+				if (!updatePlayed(videoIds, xml, isPlayed))
 				{
-					// 既読に設定する必要が無かった
-					_logManager.addLog(videoId + "は既読に設定済(mylist/" + myListId + ")" );
+					_logManager.addLog(videoId + "は isPlayed = " + isPlayed + " に設定済(mylist/" + myListId + ")" );
 					return;
 				}
 				saveMyList(myListId, xml);
 				
-				_logManager.addLog(videoId + "を既読に設定(mylist/" + myListId + ")" );
+				_logManager.addLog(videoId + "を isPlayed = " + isPlayed + " に設定(mylist/" + myListId + ")" );
 				
 			}
 			
@@ -991,14 +999,15 @@ package org.mineap.nndd.myList
 		
 		
 		/**
-		 * XML内から、指定されたvideoIdの項目を探し、既読に設定します。
+		 * XML内から、指定されたvideoIdの項目を探し、既読/未読を設定します。
 		 * 
 		 * @param videoId
 		 * @param xml
+		 * @param isPlayed
 		 * @return 
 		 * 
 		 */
-		private function setPlayed(videoIds:Vector.<String>, xml:XML):Boolean{
+		private function updatePlayed(videoIds:Vector.<String>, xml:XML, isPlayed:Boolean):Boolean{
 			
 			if(xml != null){
 				
@@ -1026,11 +1035,11 @@ package org.mineap.nndd.myList
 							setCount++;
 							var list:XMLList = tempXML.played;
 							if(list != null && list.length() > 0){
-								// 既読に設定済
+								list[0] = new XML("<played>" + String(isPlayed) + "</played>");
 							}else{
-								tempXML.appendChild(new XML("<played>true</played>"));
-								isChange = true;
+								tempXML.appendChild(new XML("<played>" + String(isPlayed) + "</played>"));
 							}
+							isChange = true;
 						}
 					}
 					if (setCount >= videoIds.length)
@@ -1082,10 +1091,11 @@ package org.mineap.nndd.myList
 		 * 指定されたXMLから未視聴の動画を探し、未視聴の動画IDの一覧をVector.<String>に格納して返します。
 		 * 
 		 * @param xml
+		 * @param onlyIsPlayFalse isPlayedがfalseと明示的に設定されているもののみをカウントするかどうか。trueの時はfalseに設定されているもののみ取得
 		 * @return 
 		 * 
 		 */
-		private function searchUnPlaydItem(xml:XML):Vector.<String>{
+		private function searchUnPlaydItem(xml:XML, onlyIsPlayFalse:Boolean = false):Vector.<String>{
 			var videoIds:Vector.<String> = new Vector.<String>();
 			
 			if(xml != null){
@@ -1097,12 +1107,18 @@ package org.mineap.nndd.myList
 				for each(var tempXML:XML in xmlList){
 					var items:XMLList = tempXML.played;
 					try{
-						if(items == null || (items != null && items.length() == 0) ){
-							
-							var videoId:String = PathMaker.getVideoID(tempXML.link);
-							if(this._libraryManager.isExistByVideoId(videoId) == null){
-								videoIds.push(videoId);
+						var videoId:String = null;
+						if(!onlyIsPlayFalse && (items == null || (items != null && items.length() == 0))){
+							videoId = PathMaker.getVideoID(tempXML.link);
+						}
+						else if (items != null && items.length() > 0)
+						{
+							if((items[0] as XML).text().toString() == "false"){
+								videoId = PathMaker.getVideoID(tempXML.link);
 							}
+						}
+						if(videoId != null && this._libraryManager.isExistByVideoId(videoId) == null){
+							videoIds.push(videoId);
 						}
 					}catch(error:Error){
 						trace(error.getStackTrace());
