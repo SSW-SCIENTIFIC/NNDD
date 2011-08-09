@@ -48,6 +48,9 @@ package org.mineap.nndd
 		public static var L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED:String = "動画を視聴済に設定";
 		public static var L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY:String = "動画を未視聴に設定";
 		
+		public static var L_PLAYER_OPEN:String = "Playerを開く";
+		public static var L_NEW_PLAYER_OPEN:String = "新しいPlayerを開く";
+		
 		public static var L_PLAYLIST_ADD_SELECTED_ITEM:String = "プレイリストに追加";
 		
 		public static var L_BACK:String = "一つ前の動画に戻る";

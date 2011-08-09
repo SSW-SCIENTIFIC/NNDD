@@ -3493,9 +3493,9 @@ private function downLoadedItemPlay():void{
  * @param url 動画のURLを指定します。
  * @param startIndex 動画のindexを指定します。これはプレイリストを使った再生の際に指定します。プレイリストを使わない場合は-1を指定してください。
  * @param playList プレイリストを使って再生する場合、プレイリストを指定します。Playerに渡されるプレイリストはこの配列のコピーです。
- * 
+ * @param isNewPlayer 新しいPlayerを使って再生を開始するかどうかです
  */
-public function playMovie(url:String, startIndex:int, playList:PlayList = null):void{
+public function playMovie(url:String, startIndex:int, playList:PlayList = null, isNewPlayer:Boolean = false):void{
 	
 	try{
 		if(url.length > 0){
@@ -3530,7 +3530,14 @@ public function playMovie(url:String, startIndex:int, playList:PlayList = null):
 			}else{
 				
 				var playerController:PlayerController = null;
-				playerController = PlayerManager.instance.getLastPlayerController();
+				if (isNewPlayer)
+				{
+					playerController = PlayerManager.instance.getNewPlayer();
+				}
+				else
+				{
+					playerController = PlayerManager.instance.getLastPlayerController();
+				}
 				
 				if(startIndex != -1 && playList != null){
 					playerController.playMovie(url, playList, startIndex);
@@ -5589,12 +5596,37 @@ private function queueMenuHandler(event:Event):void{
 	}
 }
 
-public function playerOpenButtonClicked(event:Event):void{
+public function playerOpenButtonClicked(event:MouseEvent):void{
 	playerOpen();
 }
 
+protected function playerButtonItemHandler(event:ContextMenuEvent):void
+{
+	if ((event.currentTarget as ContextMenuItem).label == Message.L_PLAYER_OPEN)
+	{
+		playerOpen();
+	}
+	else if ((event.currentTarget as ContextMenuItem).label == Message.L_NEW_PLAYER_OPEN)
+	{
+		newPlayerOpen();
+	}
+}
+
+public function newPlayerOpen():void
+{
+	var playerController:PlayerController = PlayerManager.instance.getNewPlayer();
+	if (playerController != null)
+	{
+		playerController.videoPlayer.activate();
+	}
+}
+
 public function playerOpen():void{
-	PlayerManager.instance.getLastPlayerController();
+	var playerController:PlayerController = PlayerManager.instance.getLastPlayerController();
+	if (playerController != null)
+	{
+		playerController.videoPlayer.activate();
+	}
 }
 
 private function dlListDroped(event:NativeDragEvent):void{
@@ -6812,6 +6844,8 @@ private function historyItemHandler(event:ContextMenuEvent):void{
 		if(event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null){
 			var videoPath:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_url;
 			if((event.target as ContextMenuItem).label == Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY){
+				playMovie(videoPath, -1);
+			}else if((event.target as ContextMenuItem).label == Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY){
 				playMovie(videoPath, -1);
 			}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST){
 				

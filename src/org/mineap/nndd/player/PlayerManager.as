@@ -104,7 +104,8 @@ package org.mineap.nndd.player
 		}
 		
 		/**
-		 * 
+		 * 新しいPlayerを生成して返します。
+		 * なお、同時に開く事ができるPlayerの数は10個までです。
 		 * @return 
 		 * 
 		 */
@@ -112,11 +113,18 @@ package org.mineap.nndd.player
 		{
 			gc();
 			
-			var player:PlayerController = new PlayerController();
-			player.open();
-			
-			players.push(player);
-			
+			var player:PlayerController = null;
+			if (this.players.length > 9)
+			{
+				player = getLastPlayerController();
+			}
+			else
+			{
+				player = new PlayerController();
+				player.open();
+				
+				players.push(player);
+			}
 			return player;
 		}
 		

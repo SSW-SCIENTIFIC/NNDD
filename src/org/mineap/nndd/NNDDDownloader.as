@@ -1456,6 +1456,7 @@ package org.mineap.nndd
 			//ファイルの大きさチェック（小さすぎたらそれは何らかの障害で取得できていない）
 			trace(file.size + " bytes");
 			if(file.size < 1000 || contentLength != file.size){
+				LogManager.instance.addLog("ダウンロードした動画のサイズが正しくない:実際のサイズ=" + file.size + ", 想定されたサイズ=" + contentLength);
 				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
 				dispatchEvent(myEvent);
 				close(true, true, myEvent);

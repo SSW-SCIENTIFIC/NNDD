@@ -78,8 +78,13 @@
 			private var tagFilterTileListMenuItem3:ContextMenuItem;
 			private var historyMenu:ContextMenu;
 			private var historyPlay:ContextMenuItem;
+			private var historyPlayNewPlayer;
 			private var historyDownload:ContextMenuItem;
 			private var historyDelete:ContextMenuItem;
+			
+			private var playerButtonMenu:ContextMenu;
+			private var playerButtonMenuItem1:ContextMenuItem;
+			private var playerButtonMenuItem2:ContextMenuItem;
 			
 			private var copyUrlMenuItem:ContextMenuItem;
 			private var playAllMenuItem:ContextMenuItem;
@@ -177,7 +182,7 @@
 				historyMenu = new ContextMenu();
 				historyPlay = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
 				historyPlay.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, historyItemHandler);
-				historyDownload = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST);
+				historyDownload = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST, true);
 				historyDownload.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, historyItemHandler);
 				historyDelete = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE_BY_QUEUE)
 				historyDelete.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, historyItemHandler);
@@ -1160,6 +1165,18 @@
 				}
 			}
 			
+			protected function player_button_creationCompleteHandler(event:FlexEvent):void
+			{
+				playerButtonMenu = new ContextMenu();
+				playerButtonMenuItem1 = new ContextMenuItem(Message.L_PLAYER_OPEN);
+				playerButtonMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playerButtonItemHandler);
+				playerButtonMenuItem2 = new ContextMenuItem(Message.L_NEW_PLAYER_OPEN);
+				playerButtonMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playerButtonItemHandler);
+				playerButtonMenu.customItems = new Array(playerButtonMenuItem1, playerButtonMenuItem2);
+				(event.currentTarget as Button).contextMenu = playerButtonMenu;
+				
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -1169,7 +1186,7 @@
 		<mx:ToggleButtonBar dataProvider="viewstack1" id="viewStack">
 		</mx:ToggleButtonBar>
 		<mx:VRule width="20" height="20"/>
-		<mx:Button label="Player" click="playerOpenButtonClicked(event)" toolTip="Playerウィンドウを開きます"/>
+		<mx:Button label="Player" click="playerOpenButtonClicked(event)" toolTip="Playerウィンドウを開きます" id="player_button" creationComplete="player_button_creationCompleteHandler(event)"/>
 		<mx:VRule width="20" height="20"/>
 		<mx:Button label="ログアウト" id="logoutButton" click="logoutButtonClicked()" toolTip="ニコニコ動画へログイン・ニコニコ動画からログアウトします"/>
 		<mx:Button label="終了" id="exitButton" click="exitButtonClicked()" toolTip="NNDDを終了します"/>
