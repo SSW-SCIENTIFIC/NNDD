@@ -498,7 +498,20 @@ package org.mineap.nndd.myList
 			{
 				myListIds = new Vector.<String>();
 			}
-			myListIds.push(myListId);
+			
+			var exist:Boolean = false;
+			for each(var tempMyListId:String in myListIds)
+			{
+				if (myListId == tempMyListId)
+				{
+					exist = true;
+					break;
+				}
+			}
+			if (!exist)
+			{
+				myListIds.push(myListId);
+			}
 			
 			_videoId_myListId_map[videoId] = myListIds;
 		}
@@ -795,7 +808,7 @@ package org.mineap.nndd.myList
 					vector = searchPlayedItem(tempXML);
 					
 					// 未読と明示的に指定されているものの動画も抽出
-					var tempVector:Vector.<String> = searchUnPlaydItem(xml, true);
+					var tempVector:Vector.<String> = searchUnPlaydItem(tempXML, true);
 					
 					//再生済み項目を新規XMLに反映
 					updatePlayed(vector, xml, true);
@@ -1243,11 +1256,21 @@ package org.mineap.nndd.myList
 		{
 			var myListIds:Vector.<String> = this._videoId_myListId_map[videoId];
 			
+			var vector:Vector.<String> = new Vector.<String>();
+			
 			if (myListIds == null)
 			{
 				return new Vector.<String>();
 			}
-			return myListIds;
+			else
+			{
+				for each(var id:String in myListIds)
+				{
+					vector.push(id);
+				}
+			}
+			
+			return vector;
 		}
 		
 	}
