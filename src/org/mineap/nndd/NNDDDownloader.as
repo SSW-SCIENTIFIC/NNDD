@@ -12,6 +12,7 @@ package org.mineap.nndd
 	import flash.filesystem.FileStream;
 	import flash.media.Video;
 	import flash.net.URLLoader;
+	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
@@ -1219,13 +1220,30 @@ package org.mineap.nndd
 			trace(ICHIBA_INFO_GET_SUCCESS + ":" + event + "\n" + path);
 			dispatchEvent(new Event(ICHIBA_INFO_GET_SUCCESS));
 			
-			if(!this._isVideoNotDownload){
-				getVideoForDownload();
-			}else{
-				getVideoForStreaming();	
+			try{
+				
+				if(!this._isVideoNotDownload){
+					getVideoForDownload();
+				}else{
+					getVideoForStreaming();	
+				}
+				
+			}
+			catch(error:Error)
+			{
+				trace(error.getStackTrace());
+				LogManager.instance.addLog("動画のダウンロードでエラーが発生:" + error);
+				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
+				dispatchEvent(myEvent);
+				close(true, true, myEvent);
 			}
 			
 		}
+		
+		/**
+		 * DLする動画のサイズ(bytes)
+		 */
+		private var contentLength:Number = 0;
 		
 		/**
 		 * 動画のダウンロードを開始します
@@ -1233,6 +1251,7 @@ package org.mineap.nndd
 		 */
 		private function getVideoForDownload():void
 		{
+			
 			this._videoStream.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
 			{
 				(event.target as URLLoader).close();
@@ -1243,7 +1262,16 @@ package org.mineap.nndd
 			});
 			this._videoStream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
+				for each(var header:URLRequestHeader in event.responseHeaders)
+				{
+					if (header.name == "Content-Length")
+					{
+						contentLength = Number(header.value);
+						break;
+					}
+				}
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				LogManager.instance.addLog("\t\t" + "Content-Length:" + contentLength);
 			});
 			this._videoStream.addEventListener(ProgressEvent.PROGRESS, streamProgressHandler);
 			this._videoStream.addEventListener(Event.COMPLETE, videoGetCompleteHandler);
@@ -1260,17 +1288,23 @@ package org.mineap.nndd
 			}else if(VideoType.VIDEO_TYPE_SWF == videoType){
 				extension = ".swf";
 			}
+			LogManager.instance.addLog("拡張子を判定:videoType=" + videoType + ", 拡張子=" + extension);
 			
 			//HTML特殊文字置き換え済動画名
 			this._saveVideoName = HtmlUtil.convertSpecialCharacterNotIncludedString(this._saveVideoName) + extension;
 			this._nicoVideoName = this._nicoVideoName + extension;
+			
+			LogManager.instance.addLog("保存ファイル名:" + this._saveVideoName);
+			LogManager.instance.addLog("ニコ動の動画タイトル:" + this._nicoVideoName);
 			
 			//保存済みのファイルがあるならゴミ箱へ移動
 			var oldFile:File = new File(_saveDir.url).resolvePath(_saveVideoName);
 			if(oldFile.exists){
 				oldFile.moveToTrash();
 			}
-				
+			
+			LogManager.instance.addLog("動画のDLを開始:DL先=" + analyzer.url);
+			
 			this._videoStream.getVideoStart(analyzer.url);
 		}
 		
@@ -1306,6 +1340,8 @@ package org.mineap.nndd
 				trace(VideoLoader.VIDEO_URL_GET_SUCCESS + ":" + event);
 				_streamingUrl = (event.target as VideoLoader).videoUrl;
 				
+				LogManager.instance.addLog("ストリーム再生用のURL:" + _streamingUrl);
+				
 				var extension:String = "";
 				if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_FLV){
 					extension = ".flv";
@@ -1324,6 +1360,8 @@ package org.mineap.nndd
 				dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
 				close(false, false);
 			});
+			
+			LogManager.instance.addLog("ストリーム再生用のURLを取得:" + this._nicoVideoName);
 			
 			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess);
 		}
@@ -1345,7 +1383,6 @@ package org.mineap.nndd
 		 */
 		private function streamProgressHandler(event:ProgressEvent):void
 		{
-			
 			
 			//イベントを乱発すると性能が落ちるので間引き
 			if(event.bytesLoaded - beforeBytes > 1000000 || beforeBytes == 0){
@@ -1418,7 +1455,7 @@ package org.mineap.nndd
 			
 			//ファイルの大きさチェック（小さすぎたらそれは何らかの障害で取得できていない）
 			trace(file.size + " bytes");
-			if(file.size < 1000){
+			if(file.size < 1000 || contentLength != file.size){
 				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
 				dispatchEvent(myEvent);
 				close(true, true, myEvent);
