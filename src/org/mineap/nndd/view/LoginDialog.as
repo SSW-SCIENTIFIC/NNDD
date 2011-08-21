@@ -208,6 +208,9 @@ private function removeNameAndPass():void{
 		Alert.show(message, Message.M_ERROR);
 	}
 	
+	EncryptedLocalStore.reset();
+	
+	
 }
 
 private function setNameAndPass(name:String, pass:String):void{

@@ -1,5 +1,6 @@
 package org.mineap.nndd
 {
+	import flash.data.EncryptedLocalStore;
 	import flash.desktop.NativeProcess;
 	import flash.filesystem.File;
 	import flash.system.Capabilities;
@@ -47,6 +48,7 @@ package org.mineap.nndd
 				"\n\tプレイヤータイプ:" + Capabilities.playerType + 
 				"\n\tオペレーティングシステム:" + Capabilities.os + 
 				"\n\tネイティブプロセスAPIサポート:" + NativeProcess.isSupported +
+				"\n\t暗号化された保存領域のサポート:" + EncryptedLocalStore.isSupported + 
 				"\n" +
 				"\n\tNNDDは以下のライブラリを使用しています。" +
 				"\n\t・NativeApplicationUpdater - Apache License V2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
