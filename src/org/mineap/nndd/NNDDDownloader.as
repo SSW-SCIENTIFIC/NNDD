@@ -13,6 +13,7 @@ package org.mineap.nndd
 	import flash.filesystem.FileStream;
 	import flash.media.Video;
 	import flash.net.URLLoader;
+	import flash.net.URLRequestDefaults;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
@@ -1314,10 +1315,17 @@ package org.mineap.nndd
 			downloadProgressWatcher.addEventListener(TimerEvent.TIMER, watchDownloadProgress);
 			downloadProgressWatcher.start();
 			
+			trace("URLRequestDefaults.idleTimeout = " + URLRequestDefaults.idleTimeout + "ms");
+			
 			var timeOutStr:String = ConfigManager.getInstance().getItem("downloadTimeout");
 			if (timeOutStr != null)
 			{
 				downloadTimeout = Number(timeOutStr);
+			}
+			else
+			{
+				ConfigManager.getInstance().setItem("downloadTimeout", downloadTimeout);
+				ConfigManager.getInstance().save();
 			}
 			LogManager.instance.addLog("動画のDLで設定されたタイムアウト時間:" + downloadTimeout + " ms");
 			
