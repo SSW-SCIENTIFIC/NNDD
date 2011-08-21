@@ -1726,6 +1726,8 @@ private function readStore(isLogout:Boolean = false):void{
 	var isStore:Boolean = false;
 	var name:String = "" , pass:String = "";
 	
+	var isLocalStoreErrorOccured:Boolean = false;
+	
 	this._libraryDir = libraryManager.defaultLibraryDir;
 
 	logManager.addLog("設定情報の読み込み:" + ConfigManager.getInstance().confFileNativePath);
@@ -1767,6 +1769,7 @@ private function readStore(isLogout:Boolean = false):void{
 		}
 	}catch(error:Error){
 		
+		// ローカルストアをリセット
 		EncryptedLocalStore.reset();
 		
 		ConfigManager.getInstance().removeItem("isAutoLogin");
@@ -1776,7 +1779,8 @@ private function readStore(isLogout:Boolean = false):void{
 		pass = "";
 		
 		/* エラーログ出力 */
-		Alert.show(Message.M_LOCAL_STORE_IS_BROKEN, Message.M_ERROR);
+//		Alert.show(Message.M_LOCAL_STORE_IS_BROKEN, Message.M_ERROR);
+		isLocalStoreErrorOccured = true;
 		logManager.addLog(Message.M_LOCAL_STORE_IS_BROKEN + ":" + Message.FAIL_LOAD_LOCAL_STORE_FOR_NNDD_MAIN_WINDOW + "[" + errorName + "]:" + error + ":" + error.getStackTrace());
 		trace(error.getStackTrace());
 	}
@@ -2249,11 +2253,11 @@ private function readStore(isLogout:Boolean = false):void{
 	}
 	
 	/* ログイン処理 */
-	createLoginDialog(isStore, isAutoLogin, name, pass, isLogout);
+	createLoginDialog(isStore, isAutoLogin, name, pass, isLogout, isLocalStoreErrorOccured);
 	
 }
 
-private function createLoginDialog(isStore:Boolean, isAutoLogin:Boolean, name:String, pass:String, isLogout:Boolean):void{
+private function createLoginDialog(isStore:Boolean, isAutoLogin:Boolean, name:String, pass:String, isLogout:Boolean, isLocalStoreError:Boolean):void{
 	// ログインダイアログの作成
 	loginDialog = PopUpManager.createPopUp(this, LoginDialog, true) as LoginDialog;
 	loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, isStore, isAutoLogin, LogManager.instance, name, pass, isLogout);
@@ -2261,6 +2265,13 @@ private function createLoginDialog(isStore:Boolean, isAutoLogin:Boolean, name:St
 	loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
 	loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
 	loginDialog.addEventListener(LoginDialog.NO_LOGIN, noLogin);
+	loginDialog.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:Event):void{
+		if (isLocalStoreError)
+		{
+			EncryptedLocalStore.reset();
+			Alert.show(Message.M_LOCAL_STORE_IS_BROKEN, Message.M_ERROR);
+		}
+	});
 	
 	// ダイアログを中央に表示
 	PopUpManager.centerPopUp(loginDialog);
@@ -3436,7 +3447,9 @@ private function rankingRenewButtonClicked(url:String = null):void{
 		}else{
 			Alert.show(Message.M_ALREADY_UPDATE_PROCESS_EXIST, Message.M_MESSAGE);
 		}
-	} else if(rankingRenewButton.label == Message.L_CANCEL){
+	}
+	else if(rankingRenewButton.label == Message.L_CANCEL)
+	{
 		a2nForRanking.rankingRenewCancel();
 		a2nForRanking = null;
 		rankingRenewButton.label = Message.L_RENEW;
@@ -4087,7 +4100,7 @@ private function logoutButtonClicked():void{
 			}
 		}
 		
-		createLoginDialog(isStore, false, name, pass, false);
+		createLoginDialog(isStore, false, name, pass, false, false);
 		
 	}else{
 		this.logoutButton.enabled = false;

@@ -8,6 +8,7 @@ package org.mineap.nndd
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileStream;
 	import flash.media.Video;
@@ -15,7 +16,9 @@ package org.mineap.nndd
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
+	import flash.sampler.NewObjectSample;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
@@ -41,6 +44,7 @@ package org.mineap.nndd
 	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;
+	import org.mineap.util.config.ConfigManager;
 
 	/**
 	 * ニコニコ動画にアクセスし、ダウンロードを行います。処理は以下の順に進行します。<br>
@@ -1305,6 +1309,18 @@ package org.mineap.nndd
 			
 			LogManager.instance.addLog("動画のDLを開始:DL先=" + analyzer.url);
 			
+			//動画ダウンロードの監視タイマーを起動
+			downloadProgressWatcher = new Timer(1000, 0);
+			downloadProgressWatcher.addEventListener(TimerEvent.TIMER, watchDownloadProgress);
+			downloadProgressWatcher.start();
+			
+			var timeOutStr:String = ConfigManager.getInstance().getItem("downloadTimeout");
+			if (timeOutStr != null)
+			{
+				downloadTimeout = Number(timeOutStr);
+			}
+			LogManager.instance.addLog("動画のDLで設定されたタイムアウト時間:" + downloadTimeout + " ms");
+			
 			this._videoStream.getVideoStart(analyzer.url);
 		}
 		
@@ -1367,6 +1383,11 @@ package org.mineap.nndd
 		}
 		
 		/**
+		 * ダウンロードを監視するタイマー
+		 */
+		private var downloadProgressWatcher:Timer = null;
+		
+		/**
 		 * 
 		 */
 		private var beforeBytes:Number = 0;
@@ -1375,6 +1396,36 @@ package org.mineap.nndd
 		 * 
 		 */
 		private var loadedBytes:ByteArray = new ByteArray();
+		
+		/**
+		 * 動画ダウンロードのタイムアウト(デフォルト3分)
+		 */
+		private var downloadTimeout:Number = 180000;
+		
+		/**
+		 * 前回のストリームからバイトを読み込んだ時刻
+		 */
+		private var beforeReadBytesTime:Number = 0;
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function watchDownloadProgress(event:TimerEvent):void
+		{
+			var nowTime:Number = new Date().time;
+			
+			// 前回のバイト列読み込みからタイムアウト以上に間隔が開いていたらストリームをクローズ
+			if (nowTime - beforeReadBytesTime > downloadTimeout)
+			{
+				LogManager.instance.addLog("動画のDLがタイムアウト(タイムアウト時間=" + downloadTimeout + " ms)");
+				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
+				dispatchEvent(myEvent);
+				close(true, true, myEvent);
+				return;
+			}
+		}
 		
 		/**
 		 * 
@@ -1400,6 +1451,9 @@ package org.mineap.nndd
 			
 			//ストリームからバイトを読み込み
 			stream.readBytes(loadedBytes, loadedBytes.length);
+			
+			// 前回バイト列読み込み時刻を更新
+			beforeReadBytesTime = new Date().time;
 			
 			// 1MBを越えたらファイルに書き出し
 			if (loadedBytes.length > 1000000)
@@ -1448,6 +1502,13 @@ package org.mineap.nndd
 		 */
 		private function videoGetCompleteHandler(event:Event):void{
 			
+			// ダウンロード監視タイマーを停止
+			if (downloadProgressWatcher != null)
+			{
+				downloadProgressWatcher.stop();
+				downloadProgressWatcher = null;
+			}
+
 			// 書き出してないバイト列をファイルに書き出し
 			outputFile(_saveVideoName, _saveDir.url, loadedBytes);
 			
