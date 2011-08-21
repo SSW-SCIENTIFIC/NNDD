@@ -5990,7 +5990,7 @@ private function myListRenewButtonClicked(event:Event):void{
 		
 					try{
 						// マイリストをローカルに保存
-						_myListManager.saveMyList(MyListUtil.getMyListId(url), _nnddMyListLoader.xml);
+						_myListManager.saveMyList(MyListUtil.getMyListId(url), _nnddMyListLoader.xml, true);
 					}catch(error:Error){
 						trace(error.getStackTrace());
 					}

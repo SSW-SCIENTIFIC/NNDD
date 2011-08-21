@@ -284,7 +284,7 @@ package org.mineap.nndd.myList
 					
 					var xml:XML = nnddMyListLoader.xml;
 					if(xml != null){
-						MyListManager.instance.saveMyList(myListId, xml);
+						MyListManager.instance.saveMyList(myListId, xml, true);
 						LogManager.instance.addLog("マイリストのスケジュール更新完了(" + myListId + ")");
 						_myListRenewResultMap[myListId] = MyListRenewResultType.SUCCESS;
 					}else{

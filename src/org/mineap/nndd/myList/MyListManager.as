@@ -786,10 +786,11 @@ package org.mineap.nndd.myList
 		 * 指定されたxmlをマイリストとして保存します。
 		 * 
 		 * @param myListId
-		 * @param xml
+		 * @param xml 
+		 * @param savedXMLprecedence 保存済みのXMLの既読/未読を優先するかどうか。trueの場合優先する。falseの場合は引数で渡した既読/未読を優先する。
 		 * 
 		 */
-		public function saveMyList(myListId:String, xml:XML):void{
+		public function saveMyList(myListId:String, xml:XML, savedXMLprecedence:Boolean):void{
 			
 			try{
 				
@@ -803,20 +804,28 @@ package org.mineap.nndd.myList
 				
 				if (file.exists)
 				{
-					//既存のXMLがあるときは再生済み項目を抽出
-					var tempXML:XML = readLocalMyList(myListId);
-					vector = searchPlayedItem(tempXML);
 					
-					// 未読と明示的に指定されているものの動画も抽出
-					var tempVector:Vector.<String> = searchUnPlaydItem(tempXML, true);
-					
-					//再生済み項目を新規XMLに反映
-					updatePlayed(vector, xml, true);
-					
-					//未視聴に上書き
-					if (tempVector != null && tempVector.length > 0)
+					if (savedXMLprecedence)
 					{
-						updatePlayed(tempVector, xml, false);
+						// 保存済みXMLの既読/未読を優先
+						
+						var tempXML:XML = readLocalMyList(myListId);
+						vector = searchPlayedItem(tempXML);
+						
+						//再生済み項目を新規XMLに反映
+						updatePlayed(vector, xml, true);
+						
+						var tempVector:Vector.<String> = searchUnPlaydItem(tempXML, true);
+						
+						//未視聴に上書き
+						if (tempVector != null && tempVector.length > 0)
+						{
+							updatePlayed(tempVector, xml, false);
+						}
+					}
+					else
+					{
+						// 新しく渡したXMLの既読/未読を使う
 					}
 				}
 				
@@ -955,7 +964,7 @@ package org.mineap.nndd.myList
 					_logManager.addLog(videoId + "は isPlayed = " + isPlayed + " に設定済(mylist/" + myListId + ")" );
 					return;
 				}
-				saveMyList(myListId, xml);
+				saveMyList(myListId, xml, false);
 				
 				_logManager.addLog(videoId + "を isPlayed = " + isPlayed + " に設定(mylist/" + myListId + ")" );
 				
