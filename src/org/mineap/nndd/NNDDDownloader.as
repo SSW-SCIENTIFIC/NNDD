@@ -1259,7 +1259,7 @@ package org.mineap.nndd
 			
 			this._videoStream.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
 			{
-				(event.target as URLLoader).close();
+				(event.target as URLStream).close();
 				trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				LogManager.instance.addLog(VIDEO_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(VIDEO_GET_FAIL, false, false, event.text));
@@ -1311,23 +1311,25 @@ package org.mineap.nndd
 			LogManager.instance.addLog("動画のDLを開始:DL先=" + analyzer.url);
 			
 			//動画ダウンロードの監視タイマーを起動
-			downloadProgressWatcher = new Timer(1000, 0);
-			downloadProgressWatcher.addEventListener(TimerEvent.TIMER, watchDownloadProgress);
-			downloadProgressWatcher.start();
+//			beforeReadBytesTime = new Date().time;
+//			
+//			downloadProgressWatcher = new Timer(1000, 0);
+//			downloadProgressWatcher.addEventListener(TimerEvent.TIMER, watchDownloadProgress);
+//			downloadProgressWatcher.start();
 			
-			trace("URLRequestDefaults.idleTimeout = " + URLRequestDefaults.idleTimeout + "ms");
+//			trace("URLRequestDefaults.idleTimeout = " + URLRequestDefaults.idleTimeout + "ms");
 			
-			var timeOutStr:String = ConfigManager.getInstance().getItem("downloadTimeout");
-			if (timeOutStr != null)
-			{
-				downloadTimeout = Number(timeOutStr);
-			}
-			else
-			{
-				ConfigManager.getInstance().setItem("downloadTimeout", downloadTimeout);
-				ConfigManager.getInstance().save();
-			}
-			LogManager.instance.addLog("動画のDLで設定されたタイムアウト時間:" + downloadTimeout + " ms");
+//			var timeOutStr:String = ConfigManager.getInstance().getItem("downloadTimeout");
+//			if (timeOutStr != null)
+//			{
+//				downloadTimeout = Number(timeOutStr);
+//			}
+//			else
+//			{
+//				ConfigManager.getInstance().setItem("downloadTimeout", downloadTimeout);
+//				ConfigManager.getInstance().save();
+//			}
+//			LogManager.instance.addLog("動画のDLで設定されたタイムアウト時間:" + downloadTimeout + " ms");
 			
 			this._videoStream.getVideoStart(analyzer.url);
 		}
@@ -1390,10 +1392,10 @@ package org.mineap.nndd
 			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess);
 		}
 		
-		/**
-		 * ダウンロードを監視するタイマー
-		 */
-		private var downloadProgressWatcher:Timer = null;
+//		/**
+//		 * ダウンロードを監視するタイマー
+//		 */
+//		private var downloadProgressWatcher:Timer = null;
 		
 		/**
 		 * 
@@ -1405,36 +1407,36 @@ package org.mineap.nndd
 		 */
 		private var loadedBytes:ByteArray = new ByteArray();
 		
-		/**
-		 * 動画ダウンロードのタイムアウト(デフォルト3分)
-		 */
-		private var downloadTimeout:Number = 180000;
-		
-		/**
-		 * 前回のストリームからバイトを読み込んだ時刻
-		 */
-		private var beforeReadBytesTime:Number = 0;
-		
-		/**
-		 * 
-		 * @param event
-		 * 
-		 */
-		private function watchDownloadProgress(event:TimerEvent):void
-		{
-			var nowTime:Number = new Date().time;
-			
-			// 前回のバイト列読み込みからタイムアウト以上に間隔が開いていたらストリームをクローズ
-			if (nowTime - beforeReadBytesTime > downloadTimeout)
-			{
-				
-				LogManager.instance.addLog("動画のDLがタイムアウト(タイムアウト時間=" + downloadTimeout + " ms)");
-				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
-				dispatchEvent(myEvent);
-				close(true, true, myEvent);
-				return;
-			}
-		}
+//		/**
+//		 * 動画ダウンロードのタイムアウト(デフォルト3分)
+//		 */
+//		private var downloadTimeout:Number = 180000;
+//		
+//		/**
+//		 * 前回のストリームからバイトを読み込んだ時刻
+//		 */
+//		private var beforeReadBytesTime:Number = 0;
+//		
+//		/**
+//		 * 
+//		 * @param event
+//		 * 
+//		 */
+//		private function watchDownloadProgress(event:TimerEvent):void
+//		{
+//			var nowTime:Number = new Date().time;
+//			
+//			// 前回のバイト列読み込みからタイムアウト以上に間隔が開いていたらストリームをクローズ
+//			if (nowTime - beforeReadBytesTime > downloadTimeout)
+//			{
+//				
+//				LogManager.instance.addLog("動画のDLがタイムアウト(タイムアウト時間=" + downloadTimeout + " ms)");
+//				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
+//				dispatchEvent(myEvent);
+//				close(true, true, myEvent);
+//				return;
+//			}
+//		}
 		
 		/**
 		 * 
@@ -1461,8 +1463,8 @@ package org.mineap.nndd
 			//ストリームからバイトを読み込み
 			stream.readBytes(loadedBytes, loadedBytes.length);
 			
-			// 前回バイト列読み込み時刻を更新
-			beforeReadBytesTime = new Date().time;
+//			// 前回バイト列読み込み時刻を更新
+//			beforeReadBytesTime = new Date().time;
 			
 			// 1MBを越えたらファイルに書き出し
 			if (loadedBytes.length > 1000000)
@@ -1511,12 +1513,12 @@ package org.mineap.nndd
 		 */
 		private function videoGetCompleteHandler(event:Event):void{
 			
-			// ダウンロード監視タイマーを停止
-			if (downloadProgressWatcher != null)
-			{
-				downloadProgressWatcher.stop();
-				downloadProgressWatcher = null;
-			}
+//			// ダウンロード監視タイマーを停止
+//			if (downloadProgressWatcher != null)
+//			{
+//				downloadProgressWatcher.stop();
+//				downloadProgressWatcher = null;
+//			}
 
 			// 書き出してないバイト列をファイルに書き出し
 			outputFile(_saveVideoName, _saveDir.url, loadedBytes);
@@ -1737,18 +1739,18 @@ package org.mineap.nndd
 				
 			}
 			
-			try
-			{
-				if (downloadProgressWatcher != null)
-				{
-					downloadProgressWatcher.stop();
-					downloadProgressWatcher = null;
-				}
-			}
-			catch(error:Error)
-			{
-				trace(error.getStackTrace());
-			}
+//			try
+//			{
+//				if (downloadProgressWatcher != null)
+//				{
+//					downloadProgressWatcher.stop();
+//					downloadProgressWatcher = null;
+//				}
+//			}
+//			catch(error:Error)
+//			{
+//				trace(error.getStackTrace());
+//			}
 			
 			terminate();
 			
