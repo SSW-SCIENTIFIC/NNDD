@@ -1427,6 +1427,7 @@ package org.mineap.nndd
 			// 前回のバイト列読み込みからタイムアウト以上に間隔が開いていたらストリームをクローズ
 			if (nowTime - beforeReadBytesTime > downloadTimeout)
 			{
+				
 				LogManager.instance.addLog("動画のDLがタイムアウト(タイムアウト時間=" + downloadTimeout + " ms)");
 				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
 				dispatchEvent(myEvent);
@@ -1734,6 +1735,19 @@ package org.mineap.nndd
 			catch(error:Error)
 			{
 				
+			}
+			
+			try
+			{
+				if (downloadProgressWatcher != null)
+				{
+					downloadProgressWatcher.stop();
+					downloadProgressWatcher = null;
+				}
+			}
+			catch(error:Error)
+			{
+				trace(error.getStackTrace());
 			}
 			
 			terminate();
