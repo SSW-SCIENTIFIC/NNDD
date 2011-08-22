@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.0.8</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/52717/NNDDv2_0_8.dmg</url>
+	<version>2.0.9</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/53007/NNDDv2_0_9.dmg</url>
 	<description><![CDATA[
+v2.0.9
+・マイリストの動画を「未視聴」に設定できるようにした
+・DL時のファイルサイズチェック処理を見直し
+・暗号化保存領域の読み込みに失敗した時の動作を見直し
+・【バグフィックス】マイリストの自動更新の際に未視聴カウントが更新されない問題を修正
+・【バグフィックス】動画DLの失敗(通信エラー)を正しく検出できない問題を修正
+・(おまけ)メイン画面の「Player」ボタンの右クリックから新しいPlayerを開けるようにした
+
 v2.0.8
 ・＠ジャンプマーカー命令に対応
 ・接続診断で応答に１秒以上かかったサーバーのURLをログに出力するようにした
@@ -144,9 +152,17 @@ v2.0.0 Alpha -> Beta
 </dmg>
 
 <exe>
-	<version>2.0.8</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/52717/NNDDv2_0_8.exe</url>
+	<version>2.0.9</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/53007/NNDDv2_0_9.exe</url>
 	<description><![CDATA[
+v2.0.9
+・マイリストの動画を「未視聴」に設定できるようにした
+・DL時のファイルサイズチェック処理を見直し
+・暗号化保存領域の読み込みに失敗した時の動作を見直し
+・【バグフィックス】マイリストの自動更新の際に未視聴カウントが更新されない問題を修正
+・【バグフィックス】動画DLの失敗(通信エラー)を正しく検出できない問題を修正
+・(おまけ)メイン画面の「Player」ボタンの右クリックから新しいPlayerを開けるようにした
+
 v2.0.8
 ・＠ジャンプマーカー命令に対応
 ・接続診断で応答に１秒以上かかったサーバーのURLをログに出力するようにした
