@@ -207,7 +207,9 @@ private var isShowOnlyNowLibraryTag:Boolean = true;
 
 private var isOutStreamingPlayerUse:Boolean = false;
 
-private var isDoubleClickOnStreaming:Boolean = true;
+private var isPrecedenceDownloadedVideo:Boolean = true;
+
+private var isDoubleClickOnVideoPlay:Boolean = true;
 
 private var libraryDataGridSortFieldName:String = "";
 
@@ -2010,12 +2012,20 @@ private function readStore(isLogout:Boolean = false):void{
 			this.isOutStreamingPlayerUse = ConfUtil.parseBoolean(confValue);
 		}
 		
-		errorName = "isDoubleClickOnStreaming";
-		confValue = ConfigManager.getInstance().getItem("isDoubleClickOnStreaming");
+		errorName = "isPrecedenceDownloadedVideo";
+		confValue = ConfigManager.getInstance().getItem("isPrecedenceDownloadedVideo");
 		if (confValue == null) {
 			//何もしない
 		}else{
-			this.isDoubleClickOnStreaming = ConfUtil.parseBoolean(confValue);
+			this.isPrecedenceDownloadedVideo = ConfUtil.parseBoolean(confValue);
+		}
+		
+		errorName = "isDoubleClickOnVideoPlay";
+		confValue = ConfigManager.getInstance().getItem("isDoubleClickOnVideoPlay");
+		if (confValue == null) {
+			//何もしない
+		}else{
+			this.isDoubleClickOnVideoPlay = ConfUtil.parseBoolean(confValue);
 		}
 		
 		errorName = "lastCategoryListWidth";
@@ -2838,7 +2848,8 @@ private function nicoConfigCanvasCreationComplete(event:FlexEvent):void{
 	
 	checkbox_isRankingRenewAtStart.selected = isRankingRenewAtStart;
 	checkBox_isUseOutStreamPlayer.selected = this.isOutStreamingPlayerUse;
-	checkBox_isDoubleClickOnStreaming.selected = this.isDoubleClickOnStreaming;
+	checkBox_isDoubleClickOnVideoPlay.selected = this.isDoubleClickOnVideoPlay;
+	checkBox_isPrecedenceDownloadedVideo.selected = this.isPrecedenceDownloadedVideo;
 	
 	checkBox_myListRenewOnSchedule.selected = this.mylistRenewOnScheduleEnable;
 	
@@ -2985,8 +2996,21 @@ private function rankingDataGridDoubleClicked(event:ListEvent):void{
 	
 	if(myDataGrid.enabled == true){
 		
-		if(isDoubleClickOnStreaming){
-			this.videoStreamingPlayStart(mUrl);
+		if(isDoubleClickOnVideoPlay){
+			var nnddVideo:NNDDVideo = null;
+			if (isPrecedenceDownloadedVideo)
+			{
+				var videoId:String = PathMaker.getVideoID(mUrl);
+				nnddVideo = libraryManager.isExistByVideoId(videoId);
+			}
+			if (nnddVideo == null)
+			{
+				this.videoStreamingPlayStart(mUrl);
+			}
+			else
+			{
+				this.playMovie(nnddVideo.getDecodeUrl(), -1);
+			}
 		}else{
 			var videoName:String = myDataGrid.dataProvider[myDataGrid.selectedIndex].dataGridColumn_videoName;
 			var index:int = myDataGrid.selectedIndex;
@@ -3027,8 +3051,21 @@ private function searchDataGridDoubleClicked(event:ListEvent):void{
 	
 	if(myDataGrid.enabled == true){
 		
-		if(isDoubleClickOnStreaming){
-			this.videoStreamingPlayStart(mUrl);
+		if(isDoubleClickOnVideoPlay){
+			var nnddVideo:NNDDVideo = null;
+			if (isPrecedenceDownloadedVideo)
+			{
+				var videoId:String = PathMaker.getVideoID(mUrl);
+				nnddVideo = libraryManager.isExistByVideoId(videoId);
+			}
+			if (nnddVideo == null)
+			{
+				this.videoStreamingPlayStart(mUrl);
+			}
+			else
+			{
+				this.playMovie(nnddVideo.getDecodeUrl(), -1);
+			}
 		}else{
 			var videoName:String = myDataGrid.dataProvider[myDataGrid.selectedIndex].dataGridColumn_videoName;
 			var index:int = myDataGrid.selectedIndex;
@@ -4241,9 +4278,13 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("isAlwaysEconomy");
 		ConfigManager.getInstance().setItem("isAlwaysEconomy", isAlwaysEconomy);
 		
-		/* ランキングダブルクリックでストリーミング再生するかどうか */
-		ConfigManager.getInstance().removeItem("isDoubleClickOnStreaming");
-		ConfigManager.getInstance().setItem("isDoubleClickOnStreaming", isDoubleClickOnStreaming);
+		/* ランキングダブルクリックで動画を再生するかどうか */
+		ConfigManager.getInstance().removeItem("isDoubleClickOnVideoPlay");
+		ConfigManager.getInstance().setItem("isDoubleClickOnVideoPlay", isDoubleClickOnVideoPlay);
+		
+		/* ランキングダブルクリック再生のときにDL済みを優先するかどうか */
+		ConfigManager.getInstance().removeItem("isPrecedenceDownloadedVideo");
+		ConfigManager.getInstance().setItem("isPrecedenceDownloadedVideo", isPrecedenceDownloadedVideo);
 		
 		/* 外部ストリーミングプレーヤ設定 */
 		ConfigManager.getInstance().removeItem("isOutStreamingPlayerUse");
@@ -5716,8 +5757,13 @@ private function numStepper_downloadRetryMaxCountChanged(event:Event):void
 }
 
 
-private function checkBoxDoubleClickOnStreamingChanged(event:Event):void{
-	this.isDoubleClickOnStreaming = (event.currentTarget as CheckBox).selected;
+private function checkBoxDoubleClickOnVideoPlayChanged(event:Event):void{
+	this.isDoubleClickOnVideoPlay = (event.currentTarget as CheckBox).selected;
+}
+
+private function checkBoxPrecedenceDownloadedVideoChanged(event:Event):void
+{
+	this.isPrecedenceDownloadedVideo = (event.currentTarget as CheckBox).selected;
 }
 
 private function checkBoxSaveSearchHistoryChanged(event:Event):void{
@@ -5843,7 +5889,7 @@ private function myListItemDataGridDoubleClicked():void{
 		
 		if(videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1){
 			//ダウンロード or ストリーミング
-			if(isDoubleClickOnStreaming){
+			if(isDoubleClickOnVideoPlay){
 				//ストリーミング
 				var myListId:String = dataGrid_myList.dataProvider[index].dataGridColumn_myListId;
 				if(myListId != null){
@@ -5863,7 +5909,22 @@ private function myListItemDataGridDoubleClicked():void{
 						}
 					}
 				}
-				videoStreamingPlayStart(videoUrl);
+				
+				var nnddVideo:NNDDVideo = null;
+				if (isPrecedenceDownloadedVideo)
+				{
+					var videoId:String = PathMaker.getVideoID(videoUrl);
+					nnddVideo = libraryManager.isExistByVideoId(videoId);
+				}
+				if (nnddVideo == null)
+				{
+					this.videoStreamingPlayStart(videoUrl);
+				}
+				else
+				{
+					this.playMovie(nnddVideo.getDecodeUrl(), -1);
+				}
+				
 				if(index >= 0){
 					dataGrid_myList.selectedIndex = index;
 				}
@@ -6969,8 +7030,22 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 	var mUrl:String = myDataGrid.dataProvider[myDataGrid.selectedIndex].dataGridColumn_url;
 	
 	if(mUrl != null){
-		if(isDoubleClickOnStreaming){
-			playMovie(mUrl, -1);
+		
+		if(isDoubleClickOnVideoPlay){
+			var nnddVideo:NNDDVideo = null;
+			if (isPrecedenceDownloadedVideo)
+			{
+				var videoId:String = PathMaker.getVideoID(mUrl);
+				nnddVideo = libraryManager.isExistByVideoId(videoId);
+			}
+			if (nnddVideo == null)
+			{
+				this.videoStreamingPlayStart(mUrl);
+			}
+			else
+			{
+				this.playMovie(nnddVideo.getDecodeUrl(), -1);
+			}
 		}else{
 			var video:NNDDVideo = new NNDDVideo(mUrl);
 			
