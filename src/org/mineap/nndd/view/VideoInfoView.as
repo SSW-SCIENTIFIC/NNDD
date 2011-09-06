@@ -177,7 +177,6 @@ public function init(playerController:PlayerController, videoPlayer:VideoPlayer,
 		stage.addEventListener(AIREvent.WINDOW_DEACTIVATE, function(event:AIREvent):void{
 			isActive = false;
 		});
-		
 	});
 	
 	readStore();
@@ -730,8 +729,13 @@ private function windowCompleteHandler():void{
 	this.setStyle("fontSize", Number(ConfigManager.getInstance().getItem("fontSize")));
 }
 
-private function relationCanvasCreationCompleteHandler(event:FlexEvent):void{
+private function comboboxRelationOrderCreationCompleteHandler(event:FlexEvent):void
+{
 	combobox_relationOrder.selectedIndex = relationOrderIndex;
+}
+
+private function comboboxRelationSortCreationCompleteHandler(event:FlexEvent):void
+{
 	combobox_relationSort.selectedIndex = relationSortIndex;
 }
 
@@ -1652,13 +1656,13 @@ public function playListSaveButtonClicked(event:MouseEvent):void{
 		// 存在しないので追加
 		playerController.addNewPlayList(urlArray, nameArray);
 	}else{
-		Application.application.activate();
+		FlexGlobals.topLevelApplication.activate();
 		Alert.show("既存のプレイリスト(" + playListName + ")を上書きしますか？\n（「いいえ」を選択すると新しいプレイリストを作成します。）", Message.M_MESSAGE, Alert.YES | Alert.NO | Alert.CANCEL, null, function(event:CloseEvent):void{
 			if(event.detail == Alert.YES){
 				// 上書き
 				playerController.updatePlayList(playListName, urlArray, nameArray);
 			}else if(event.detail == Alert.NO){
-				// 別名で追加tuika
+				// 別名で追加
 				var title:String = playerController.addNewPlayList(urlArray, nameArray);
 				label_playListTitle_dataProvider = title;
 			}else{

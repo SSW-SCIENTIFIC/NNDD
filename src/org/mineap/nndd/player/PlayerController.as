@@ -192,8 +192,6 @@ package org.mineap.nndd.player
 		
 		private var nicowariCloseTimer:Timer = null;
 		
-		private var configManager:ConfigManager;
-		
 		private var configIO:ConfigIO;
 		
 		private var streamingRetryCount:int = 0;

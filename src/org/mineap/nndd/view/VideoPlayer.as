@@ -192,7 +192,8 @@ public function showVideoPlayerAndVideoInfoView():void{
 		
 		if (this.nativeWindow != null 
 				&& !this.closed 
-				&& videoInfoView.nativeWindow != null)
+				&& videoInfoView.nativeWindow != null
+				&& videoInfoView.visible == true)
 		{
 			videoInfoView.visible = true;
 			videoInfoView.nativeWindow.orderToFront();
@@ -200,17 +201,19 @@ public function showVideoPlayerAndVideoInfoView():void{
 			if(videoInfoView.isPlayerFollow){
 				followInfoView(lastRect);
 			}
+			if(videoInfoView.isFollowInfoViewHeight)
+			{
+				resizeInfoView();
+			}
 			
 		}
 		
-		if (this.nativeWindow != null
-				&& !this.closed)
-		{
-			this.nativeWindow.orderToFront();
-		}
-		
-		
-		
+	}
+	
+	if (this.nativeWindow != null
+		&& !this.closed)
+	{
+		this.nativeWindow.orderToFront();
 	}
 }
 
@@ -410,6 +413,11 @@ private function windowClosing(event:Event):void{
 }
 
 private function windowClosed():void{
+	
+	if (videoInfoView != null){
+		ConfigManager.getInstance().removeItem("videoInfoViewVisible");
+		ConfigManager.getInstance().setItem("videoInfoViewVisible", this.videoInfoView.visible);
+	}
 	
 	this.videoInfoView.saveStore();
 	

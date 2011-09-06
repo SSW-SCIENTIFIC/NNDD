@@ -177,27 +177,13 @@
 
 			protected function canvas1_creationCompleteHandler(event:FlexEvent):void
 			{
-				if(videoTypeText.text.length == 0){
-					videoTypeText.text = "-";
-				}
-				if(videoServerUrlText.text.length == 0) {
-					videoServerUrlText.text = "-";
-				}
-				if(connectionTypeText.text.length == 0){
-					connectionTypeText.text = "-";
-				}
-				if(messageServerUrlText.text.length == 0){
-					messageServerUrlText.text = "-";
-				}
-				if(economyModeText.text.length == 0) {
-					economyModeText.text = "-";
-				}
-				if(nickNameText.text.length == 0){
-					nickNameText.text = "-";
-				}
-				if(premiumText.text.length == 0){
-					premiumText.text = "-";
-				}
+				videoType = "-";
+				videoServerUrl = "-";
+				connectionType = "-";
+				messageServerUrl = "-";
+				economyMode = "-";
+				nickName = "-";
+				isPremium = "-";
 				
 			}
 
@@ -333,7 +319,7 @@
 					<mx:CheckBox label="コメントを再生と同期" left="5" bottom="2" id="checkbox_SyncComment" click="checkboxSyncCommentChanged()" toolTip="コメントリストを再生に同期させてスクロールします。動作が重い場合はチェックを外すと改善することがあります"/>
 					<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" click="checkBoxIsSOPCChanged(event)" left="160" bottom="2" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
 				</mx:Canvas>
-				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" creationComplete="checkBox_repeatAllCompleteHandler(event)" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true" 
 						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
 						itemDoubleClick="playListDoubleClicked()" showHeaders="false">
@@ -343,7 +329,7 @@
 						</mx:columns>
 					</mx:DataGrid>
 					<mx:CheckBox id="checkBox_repeatAll" right="5" bottom="5" label="すべてリピート"
-								 change="checkboxRepeatAllChanged()"
+								 change="checkboxRepeatAllChanged()" creationComplete="checkBox_repeatAllCompleteHandler(event)" 
 								 toolTip="プレイリストの項目が最後まで再生されたら最初から再生し直します"/>
 					<mx:Button left="10" bottom="28" width="50" label="-"
 							   click="playListItemDeleteButtonClicked(event)"
@@ -434,9 +420,19 @@
 						</mx:DataGrid>
 					</mx:VDividedBox>
 				</mx:Canvas>
-				<mx:Canvas label="オススメ" width="100%" height="100%" creationComplete="relationCanvasCreationCompleteHandler(event)">
-					<mx:ComboBox left="0" top="0" width="120" dataProvider="{relationSortComboboxDataProvider}" id="combobox_relationSort" change="relationSortComboboxChange(event)"></mx:ComboBox>
-					<mx:ComboBox left="128" top="0" width="120" dataProvider="{relationOrderComboboxDataProvider}" id="combobox_relationOrder" change="relationOrderComboboxChange(event)"></mx:ComboBox>
+				<mx:Canvas label="オススメ" width="100%" height="100%" >
+					<mx:ComboBox left="0" top="0" width="120" 
+								 dataProvider="{relationSortComboboxDataProvider}" 
+								 id="combobox_relationSort" 
+								 change="relationSortComboboxChange(event)"
+								 creationComplete="comboboxRelationSortCreationCompleteHandler(event)">
+					</mx:ComboBox>
+					<mx:ComboBox left="128" top="0" width="120" 
+								 dataProvider="{relationOrderComboboxDataProvider}" 
+								 id="combobox_relationOrder" 
+								 change="relationOrderComboboxChange(event)"
+								 creationComplete="comboboxRelationOrderCreationCompleteHandler(event)">
+					</mx:ComboBox>
 					<mx:DataGrid left="0" top="30" bottom="0" right="0" dataProvider="{relationDataProvider}" doubleClickEnabled="true"
 								 id="datagrid_relation" showHeaders="false" itemDoubleClick="relationItemDoubleClickHandler(event)" rowHeight="70">
 						<mx:columns>
