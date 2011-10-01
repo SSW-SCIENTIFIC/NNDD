@@ -1,6 +1,7 @@
 package org.mineap.nndd.history
 {
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -30,7 +31,10 @@ package org.mineap.nndd.history
 		
 		private var libraryManager:ILibraryManager;
 		
+		private var isWindows:Boolean = false;
+		
 		public static const HISTORY_MAX_COUNT:int = 100;
+		
 		
 		/**
 		 * 
@@ -58,6 +62,11 @@ package org.mineap.nndd.history
 		{
 			this.historyProvider = historyProvider;
 			this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
+			
+			if (Capabilities.os.toLowerCase().indexOf("windows") != -1)
+			{
+				this.isWindows = true;
+			}
 		}
 		
 		/**
@@ -105,7 +114,7 @@ package org.mineap.nndd.history
 			if(isDownloaded){
 				
 				var thumbUrl:String = nnddVideo.thumbUrl;
-				if (thumbUrl.length > 8 && thumbUrl.substr(0, 7).toLowerCase() == "file://")
+				if (isWindows && thumbUrl.length > 8 && thumbUrl.substr(0, 7).toLowerCase() == "file://")
 				{
 					try
 					{
@@ -256,7 +265,7 @@ package org.mineap.nndd.history
 					}
 					
 					historyProvider.addItem({
-						dataGridColumn_thumbImage:historyItem.@thumbUrl,
+						dataGridColumn_thumbImage:decodeURIComponent(historyItem.@thumbUrl),
 						dataGridColumn_videoName:decodeURIComponent(historyItem.@videoName),
 						dataGridColumn_playdate:DateUtil.getDateString(playDate),
 						dataGridColumn_count:playCount,

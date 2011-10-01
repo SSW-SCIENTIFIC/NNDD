@@ -2,6 +2,7 @@ package org.mineap.nndd.downloadedList
 {
 	import flash.events.FileListEvent;
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.DataGrid;
@@ -32,6 +33,8 @@ package org.mineap.nndd.downloadedList
 		private var searchArray:ArrayCollection;
 		private var libraryManager:ILibraryManager;
 		
+		private var isWindows:Boolean = false;
+		
 		/**
 		 * 
 		 */
@@ -61,6 +64,12 @@ package org.mineap.nndd.downloadedList
 				throw new ArgumentError("DownloadedListManagerはインスタンス化できません");
 			}
 			this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
+			
+			
+			if (Capabilities.os.toLowerCase().indexOf("windows") != -1)
+			{
+				this.isWindows = true;
+			}
 		}
 		
 		/**
@@ -178,7 +187,7 @@ package org.mineap.nndd.downloadedList
 			var time:Number = 0;
 			
 			thumbUrl = video.thumbUrl;
-			if (thumbUrl.length > 8 && thumbUrl.substr(0, 7).toLowerCase() == "file://")
+			if (isWindows && thumbUrl.length > 8 && thumbUrl.substr(0, 7).toLowerCase() == "file://")
 			{
 				try
 				{
