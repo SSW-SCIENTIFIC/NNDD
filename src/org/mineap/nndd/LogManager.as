@@ -1,6 +1,7 @@
 package org.mineap.nndd
 {
 	import flash.data.EncryptedLocalStore;
+	import flash.desktop.NativeApplication;
 	import flash.desktop.NativeProcess;
 	import flash.filesystem.File;
 	import flash.system.Capabilities;
@@ -43,6 +44,7 @@ package org.mineap.nndd
 			var tempStr:String = this.logString;
 			
 			this.logString = dateString + ":" + Message.BOOT_TIME_LOG +
+				"\n\tAIRランタイムバージョン:" + NativeApplication.nativeApplication.runtimeVersion + 
 				"\n\tFlashPlayerバージョン:" + Capabilities.version +
 				"\n\tデバッガバージョン:" + Capabilities.isDebugger +
 				"\n\tプレイヤータイプ:" + Capabilities.playerType + 
