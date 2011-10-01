@@ -254,11 +254,14 @@ package org.mineap.nndd
 				return;
 			}
 			try{
+				// 保存済みコメントの集合
 				var oldComments:XML = this.loadXMLSync(file.nativePath, true);
+				// ローカルに保存済みのコメントで一番新しいやつ
 				var newCommentOfOldComments:XML = null;
 				if((oldComments.chat as XMLList).length() > 0){
 					newCommentOfOldComments = oldComments.chat[(oldComments.chat as XMLList).length()-1];
 				}
+				// ローカルに保存済みのコメントで一番古いやつ
 				var oldCommentOfOldComments:XML = null;
 				if((oldComments.chat as XMLList).length() > 0){
 					oldCommentOfOldComments = oldComments.chat[0];
@@ -271,13 +274,17 @@ package org.mineap.nndd
 					
 					if((newComments.chat as XMLList).length() > 0){
 						
+						// ローカルに保存済みのコメントで一番古いやつの番号
 						var oldOfOldNo:int = int(oldCommentOfOldComments.@no);
+						// ローカルに保存済みのコメントで一番新しいやつの番号
 						var newOfOldNo:int = int(newCommentOfOldComments.@no);
 						
 						var insertCount:int = 0;
 						
+						// 追加対象のコメント群
 						for each(var xml:XML in newComments.chat){
 							
+							// 追加対象コメントの番号
 							var newNo:int = int(xml.@no);
 							
 							if(newNo < oldOfOldNo){
@@ -301,6 +308,30 @@ package org.mineap.nndd
 									oldComments.insertChildAfter(oldComments.chat[lastChatIndex], xml);
 								}else{
 									oldComments.appendChild(xml);
+								}
+							}else{
+								// 新しく取得したコメントが既存のコメントの間に入る
+								
+								for each(var oldCommentXML:XML in oldComments.chat)
+								{
+									var oldNo:int = int(oldCommentXML.@no);
+									
+									if (newNo == oldNo)
+									{
+										// 既に追加済みなので何もしない
+										break;
+									}
+									else if (newNo < oldNo)
+									{
+										// oldNoよりnewNoの方が古い
+										// oldCommentXMLの前にxmlを追加
+										oldComments.insertChildBefore(oldCommentXML, xml);
+										break;
+									}
+									else
+									{
+										// まだ newNo の方が新しいので次へ
+									}
 								}
 							}
 						}

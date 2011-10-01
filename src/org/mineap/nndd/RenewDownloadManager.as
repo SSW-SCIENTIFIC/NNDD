@@ -50,6 +50,7 @@ package org.mineap.nndd
 		 * @param isAppendComment
 		 * @param when
 		 * @param commentMaxCount
+		 * @param useOldType
 		 */
 		public function renewForCommentOnly(user:String, 
 											password:String, 
@@ -58,7 +59,8 @@ package org.mineap.nndd
 											saveDir:File, 
 											isAppendComment:Boolean, 
 											when:Date, 
-											commentMaxCount:Number):void{
+											commentMaxCount:Number, 
+											useOldType:Boolean):void{
 			//失敗系ハンドラ登録
 			this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener, false, 0, true);
@@ -91,7 +93,7 @@ package org.mineap.nndd
 			this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
 			
 			this._videoName = videoName;
-			this._nnddDownloader.requestDownloadForCommentOnly(user, password, videoId, videoName, saveDir, false, isAppendComment, when, commentMaxCount);
+			this._nnddDownloader.requestDownloadForCommentOnly(user, password, videoId, videoName, saveDir, false, isAppendComment, when, commentMaxCount, useOldType);
 		}
 		
 		/**
@@ -113,7 +115,8 @@ package org.mineap.nndd
 										   saveDir:File, 
 										   isAppendComment:Boolean, 
 										   when:Date, 
-										   commentMaxCount:Number):void{
+										   commentMaxCount:Number,
+										   useOldType:Boolean):void{
 			//失敗系ハンドラ登録
 			this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener, false, 0, true);
@@ -146,7 +149,7 @@ package org.mineap.nndd
 			this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
 			
 			this._videoName = videoName;
-			this._nnddDownloader.requestDownloadForOtherVideo(user, password, videoId, videoName, saveDir, false, isAppendComment, when, commentMaxCount);
+			this._nnddDownloader.requestDownloadForOtherVideo(user, password, videoId, videoName, saveDir, false, isAppendComment, when, commentMaxCount, useOldType);
 		}
 		
 		/**

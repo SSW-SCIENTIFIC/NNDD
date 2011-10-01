@@ -106,6 +106,7 @@ package org.mineap.nndd
 		private var _watchVideoOnly:Boolean = false;
 		private var _isAlwaysEconomy:Boolean = false;
 		private var _isAppendComment:Boolean = false;
+		private var _useOldType:Boolean = false;
 		
 		/**
 		 * ログインに失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
@@ -274,6 +275,7 @@ package org.mineap.nndd
 		 * @param isAlwaysEconomy 常にエコノミーモードでダウンロードするかどうか
 		 * @param isAppendComment 古いコメントファイルに今回ダウンロードしたコメントを追記するかどうか
 		 * @param maxCommentCount 古いコメントファイルにコメントを追加する際、保存するコメントの最大数
+		 * @param useOldType 旧形式でコメントを取得するかどうかです。これは通常コメントの取得でのみ有効で、過去コメント、投稿者コメントでは無視されます。
 		 */
 		public function requestDownload(user:String, 
 										password:String, 
@@ -284,7 +286,8 @@ package org.mineap.nndd
 										isAskToDownloadAtEco:Boolean, 
 										isAlwaysEconomy:Boolean, 
 										isAppendComment:Boolean, 
-										maxCommentCount:Number):void{
+										maxCommentCount:Number, 
+										useOldType:Boolean):void{
 			
 			trace("start - requestDownload(" + user + ", ****, " + videoId + ", " + saveDir.nativePath + ")");
 			
@@ -295,6 +298,7 @@ package org.mineap.nndd
 			this._isAlwaysEconomy = isAlwaysEconomy;
 			this._isAppendComment = isAppendComment;
 			this._maxCommentCount = maxCommentCount;
+			this._useOldType = useOldType;
 			
 			//ストリーミング再生の時のファイル名は「nndd」。それ以外のときは「ファイル名+[動画ID]」
 			if(saveVideoName != null && saveVideoName != "" && saveVideoName != "nndd"){
@@ -340,12 +344,13 @@ package org.mineap.nndd
 													password:String, 
 													videoId:String, 
 													saveDir:File, 
-													isAlwaysEconomy:Boolean):void{
+													isAlwaysEconomy:Boolean, 
+													useOldType:Boolean):void{
 			
 			this._isCommentOnlyDownload = false;
 			this._isVideoNotDownload = true;
 			
-			this.requestDownload(user, password, videoId, "nndd", saveDir, true, false, isAlwaysEconomy, false, 2000);
+			this.requestDownload(user, password, videoId, "nndd", saveDir, true, false, isAlwaysEconomy, false, 2000, useOldType);
 			
 		}
 		
@@ -369,12 +374,13 @@ package org.mineap.nndd
 													 isAlwaysEconomy:Boolean, 
 													 isAppendComment:Boolean, 
 													 when:Date,
-													 maxCommentCount:Number):void{
+													 maxCommentCount:Number,
+													 useOldType:Boolean):void{
 			this._isCommentOnlyDownload = false;
 			this._isVideoNotDownload = true;
 			this._when = when;
 			
-			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount);
+			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount, useOldType);
 		}
 		
 		/**
@@ -396,13 +402,14 @@ package org.mineap.nndd
 													  isAlwaysEconomy:Boolean, 
 													  isAppendComment:Boolean, 
 													  when:Date, 
-													  maxCommentCount:Number):void{
+													  maxCommentCount:Number,
+													  useOldType:Boolean):void{
 			
 			this._isCommentOnlyDownload = true;
 			this._isVideoNotDownload = true;
 			this._when = when;
 			
-			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount);
+			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount, useOldType);
 			
 		}
 		
@@ -415,13 +422,13 @@ package org.mineap.nndd
 		 * @param videoName
 		 * 
 		 */
-		public function requestForWatchOnly(user:String, password:String, videoId:String, videoName:String):void{
+		public function requestForWatchOnly(user:String, password:String, videoId:String, videoName:String, useOldType:Boolean):void{
 			
 			this._isCommentOnlyDownload = true;
 			this._isVideoNotDownload = true;
 			this._watchVideoOnly = true;
 			
-			this.requestDownload(user, password, videoId, videoName, File.documentsDirectory, true, false, false, false, 2000);
+			this.requestDownload(user, password, videoId, videoName, File.documentsDirectory, true, false, false, false, 2000, useOldType);
 			
 		}
 		
@@ -664,7 +671,7 @@ package org.mineap.nndd
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			//通常コメントを1000件取りにいく
-			this._commentLoader.getComment(this._videoId, 1000, false, this._getflvAccess, this._when, this._waybackkey);
+			this._commentLoader.getComment(this._videoId, 1000, false, this._getflvAccess, this._when, this._waybackkey, this._useOldType);
 		}
 		
 		

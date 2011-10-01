@@ -251,6 +251,8 @@ private var isOpenPlayerOnBoot:Boolean = false;
 
 private var downloadRetryMaxCount:int = 2;
 
+private var useOldTypeCommentGet:Boolean = true;
+
 private var period:int = 0;
 private var target:int = 0;
 
@@ -2247,6 +2249,17 @@ private function readStore(isLogout:Boolean = false):void{
 			this.myListRenewOnBootTime = false;
 		}
 		
+		errorName ="useOldTypeCommentGet";
+		confValue = ConfigManager.getInstance().getItem("useOldTypeCommentGet");
+		if (confValue != null)
+		{
+			this.useOldTypeCommentGet = ConfUtil.parseBoolean(confValue);
+		}
+		else
+		{
+			this.useOldTypeCommentGet = true;
+		}
+		
 		
 	}catch(error:Error){
 		/* ストアをリセット */
@@ -2878,6 +2891,7 @@ private function libraryConfigCanvasCreationComplete(event:FlexEvent):void{
 	numericStepper_saveCommentMaxCount.value = this.saveCommentMaxCount;
 	numericStepper_saveCommentMaxCount.enabled = this.isAppendComment;
 	numStepper_downloadRetryMaxCount.value = this.downloadRetryMaxCount;
+	checkBox_useNewCommentGet.selected = !this.useOldTypeCommentGet;
 }
 
 private function libraryWidthChanged(event:ResizeEvent):void{
@@ -3793,12 +3807,12 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							renewDownloadManager.renewForCommentOnly(UserManager.instance.user, 
 								UserManager.instance.password, PathMaker.getVideoID(filePath), 
 								PathMaker.getVideoName(filePath), new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
-								this.isAppendComment, null, this.saveCommentMaxCount);
+								this.isAppendComment, null, this.saveCommentMaxCount, this.useOldTypeCommentGet);
 						}else{
 							renewDownloadManager.renewForOtherVideo(UserManager.instance.user, UserManager.instance.password, 
 								PathMaker.getVideoID(filePath), PathMaker.getVideoName(filePath), 
 								new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
-								this.isAppendComment, null, this.saveCommentMaxCount);
+								this.isAppendComment, null, this.saveCommentMaxCount, this.useOldTypeCommentGet);
 						}
 						
 					}else{
@@ -4399,6 +4413,10 @@ private function saveStore():void{
 		/* 動画ダウンロード時の最大リトライ回数 */
 		ConfigManager.getInstance().removeItem("downloadRetryMaxCount");
 		ConfigManager.getInstance().setItem("downloadRetryMaxCount", this.downloadRetryMaxCount);
+		
+		/* コメント取得方式 */
+		ConfigManager.getInstance().removeItem("useOldTypeCommentGet");
+		ConfigManager.getInstance().setItem("useOldTypeCommentGet", this.useOldTypeCommentGet);
 		
 		/* DataGridの列幅保存 */
 		if (dataGrid_downloaded != null)
@@ -6761,6 +6779,10 @@ private function checkBoxAlwaysEcoChanged(event:MouseEvent):void{
 	downloadManager.isAlwaysEconomy = isAlwaysEconomy;
 }
 
+private function checkBoxUseNewCommentGet(event:MouseEvent):void{
+	useOldTypeCommentGet = !checkBox_useNewCommentGet.selected;
+}
+
 /**
  * デフォルトの検索項目を追加します
  * 
@@ -7222,6 +7244,11 @@ public function setPlayerFontSize(size:int):void{
 
 public function openProjectPage(event:Event):void{
 	navigateToURL(new URLRequest("http://sourceforge.jp/projects/nndd/simple/"));
+}
+
+public function getUseOldTypeCommentGet():Boolean
+{
+	return this.useOldTypeCommentGet;
 }
 
 protected function playListContextMenuItemDisplayingEventHandler(event:Event):void{

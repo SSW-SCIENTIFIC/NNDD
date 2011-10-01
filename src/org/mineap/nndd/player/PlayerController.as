@@ -912,12 +912,14 @@ package org.mineap.nndd.player
 				renewDownloadManager.renewForOtherVideo(UserManager.instance.user, 
 					UserManager.instance.password, PathMaker.getVideoID(videoId), videoName, 
 					new File(videoPath.substring(0, videoPath.lastIndexOf("/")+1)), 
-					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount());
+					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount(),
+					FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
 			}else{
 				renewDownloadManager.renewForCommentOnly(UserManager.instance.user, 
 					UserManager.instance.password, PathMaker.getVideoID(videoId), videoName, 
 					new File(videoPath.substring(0, videoPath.lastIndexOf("/")+1)), 
-					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount());
+					videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount(),
+					FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
 			}
 		}
 		
@@ -996,7 +998,7 @@ package org.mineap.nndd.player
 				// 過去コメント取得時のコメント更新は一律で追記。
 				renewDownloadManagerForOldComment.renewForCommentOnly(UserManager.instance.user, 
 					UserManager.instance.password, videoId, videoName, videoPath, true, 
-					date, maxCount);
+					date, maxCount, FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
 				
 			}
 			
@@ -3918,7 +3920,12 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, streamingPlayFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, streamingPlayFailListener);
-						nnddDownloaderForStreaming.requestDownloadForStreaming(UserManager.instance.user, UserManager.instance.password, PathMaker.getVideoID(url), tempDir, videoInfoView.isAlwaysEconomyForStreaming);
+						nnddDownloaderForStreaming.requestDownloadForStreaming(UserManager.instance.user, 
+							UserManager.instance.password, 
+							PathMaker.getVideoID(url), 
+							tempDir, 
+							videoInfoView.isAlwaysEconomyForStreaming,
+							FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
 						
 					}catch(e:Error){
 						videoPlayer.label_downloadStatus.text = "";

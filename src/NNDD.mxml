@@ -1834,6 +1834,10 @@
 					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="16" selected="true" id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
 					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="30" top="41" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
 					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode" click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="30" top="66"/>
+					<mx:CheckBox id="checkBox_useNewCommentGet" left="29" top="114"
+								 label="新しいコメントのダウンロード方式を使う" click="checkBoxUseNewCommentGet(event)"
+								 selected="true"
+								 toolTip="2011/2/3から有効な、新しいコメントのダウンロード方式を使います。再生時間が10分より長い動画で、1000件以上のコメントが取得できるようになります。"/>
 					
 					<mx:Label left="30" top="91" text="ダウンロード失敗時の最大リトライ回数"/>
 					<s:NumericStepper left="241" top="87" maximum="5" minimum="0" stepSize="1" value="2" id="numStepper_downloadRetryMaxCount"
@@ -1841,17 +1845,17 @@
 									  toolTip="ダウンロードに失敗した場合の最大リトライ回数を指定します。あまり大きい数字にすると、ニコニコ動画からアクセス制限を受ける場合があります。"/>
 					<mx:Label left="289" top="91" text="回"/>
 					
-					<mx:Label text="ライブラリ" left="10" top="115" fontWeight="bold"/>
-					<mx:HRule left="83" right="10" top="116" height="18"/>
+					<mx:Label text="ライブラリ" left="10" top="139" fontWeight="bold"/>
+					<mx:HRule left="83" right="10" top="140" height="18"/>
 					
-					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="142" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
-					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="167" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
-					<mx:Label text="保存するコメントの最大数：" left="49" top="192"/>
-					<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100" left="205" top="188" 
+					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="166" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
+					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="191" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
+					<mx:Label text="保存するコメントの最大数：" left="49" top="216"/>
+					<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100" left="205" top="212" 
 									   id="numericStepper_saveCommentMaxCount" enabled="{checkBox_isAppendComment.selected}"
 									   change="numericStepperSaveCommentMaxCountChanged(event)" 
 									   toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
-					<mx:Label text="件/動画" left="305" top="192"/>
+					<mx:Label text="件/動画" left="305" top="216"/>
 					
 					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					

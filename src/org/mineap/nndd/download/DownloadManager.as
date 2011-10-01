@@ -540,9 +540,16 @@ package org.mineap.nndd.download
 				myLibrary = defLibrary;
 			}
 			nnddDownloader.requestDownload(this.mailaddress, 
-				this.password, PathMaker.getVideoID(video.getDecodeUrl()), 
-				null, myLibrary, false, isContactTheUser, this.isAlwaysEconomy, 
-				this.isAppendComment, FlexGlobals.topLevelApplication.getSaveCommentMaxCount());
+				this.password, 
+				PathMaker.getVideoID(video.getDecodeUrl()), 
+				null, 
+				myLibrary, 
+				false, 
+				isContactTheUser, 
+				this.isAlwaysEconomy, 
+				this.isAppendComment, 
+				FlexGlobals.topLevelApplication.getSaveCommentMaxCount(), 
+				FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
 			
 			return nnddDownloader;
 		}
