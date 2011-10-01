@@ -183,7 +183,7 @@ package org.mineap.nndd.downloadedList
 				try
 				{
 					var file:File = new File(thumbUrl);
-					thumbUrl = file.url;
+					thumbUrl = file.nativePath;
 				}
 				catch(error:Error)
 				{
