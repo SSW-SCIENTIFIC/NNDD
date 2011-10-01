@@ -178,6 +178,18 @@ package org.mineap.nndd.downloadedList
 			var time:Number = 0;
 			
 			thumbUrl = video.thumbUrl;
+			if (thumbUrl.length > 8 && thumbUrl.substr(0, 7).toLowerCase() == "file://")
+			{
+				try
+				{
+					var file:File = new File(thumbUrl);
+					thumbUrl = file.url;
+				}
+				catch(error:Error)
+				{
+					trace(error);
+				}
+			}
 			playCount = video.playCount;
 			creationDate = video.creationDate;
 			pubDate = video.pubDate;
@@ -302,7 +314,7 @@ package org.mineap.nndd.downloadedList
 					var time:Number = 0;
 					
 					if(video != null){
-						thumbUrl = video.thumbUrl;
+						thumbUrl = encodeURIComponent(video.thumbUrl);
 						playCount = video.playCount;
 						creationDate = video.creationDate;
 						pubDate = video.pubDate;
@@ -315,7 +327,7 @@ package org.mineap.nndd.downloadedList
 					this._showingVideos.push(video);
 					
 					if(thumbUrl == ""){
-						thumbUrl = PathMaker.createThumbImgFilePath(decodedUrl, false);
+						thumbUrl = encodeURIComponent(PathMaker.createThumbImgFilePath(decodedUrl, false));
 					}
 					if(creationDate == null){
 						creationDate = myFile.creationDate;

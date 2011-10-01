@@ -104,8 +104,22 @@ package org.mineap.nndd.history
 			
 			if(isDownloaded){
 				
+				var thumbUrl:String = nnddVideo.thumbUrl;
+				if (thumbUrl.length > 8 && thumbUrl.substr(0, 7).toLowerCase() == "file://")
+				{
+					try
+					{
+						var file:File = new File(thumbUrl);
+						thumbUrl = file.url;
+					}
+					catch(error:Error)
+					{
+						trace(error);
+					}
+				}
+				
 				historyProvider.addItemAt({
-					dataGridColumn_thumbImage:nnddVideo.thumbUrl,
+					dataGridColumn_thumbImage:thumbUrl,
 					dataGridColumn_videoName:nnddVideo.getVideoNameWithVideoID(),
 					dataGridColumn_playdate:DateUtil.getDateString(date),
 					dataGridColumn_condition:"ダウンロード済み",
@@ -242,7 +256,7 @@ package org.mineap.nndd.history
 					}
 					
 					historyProvider.addItem({
-						dataGridColumn_thumbImage:decodeURIComponent(historyItem.@thumbUrl),
+						dataGridColumn_thumbImage:historyItem.@thumbUrl,
 						dataGridColumn_videoName:decodeURIComponent(historyItem.@videoName),
 						dataGridColumn_playdate:DateUtil.getDateString(playDate),
 						dataGridColumn_count:playCount,
