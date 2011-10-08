@@ -210,14 +210,52 @@ package org.mineap.nndd.player.comment
 				
 				if (commentArray.length >= loadCommentCount)
 				{
-					commentArray = commentArray.reverse();
+//					commentArray = commentArray.reverse();
 					break;
 				}
 				
 			}
 			
+			// vpos順に並び替え
+			commentArray.sort(sortCompareFunction);
+			
 			return commentArray;
 		}
+		
+		/**
+		 * 二つのNNDDCommentを比較します。
+		 * vposが小さい順、vposが同じ場合はnoが小さい順にソートされます。
+		 * @param a NNDDCommentオブジェクトA
+		 * @param b NNDDCommentオブジェクトB
+		 * @return 
+		 * 
+		 */
+		private function sortCompareFunction(a:NNDDComment, b:NNDDComment):int
+		{
+			if (a.vpos < b.vpos)
+			{
+				return -1;	// Aが先
+			}
+			if (a.vpos > b.vpos)
+			{
+				return 1;	// Bが先
+			}
+			if (a.vpos == b.vpos)
+			{
+				if (a.no < b.no)
+				{
+					return -1;	// Aが先
+				}
+				if (a.no > b.no)
+				{
+					return 1;	// Bが先
+				}
+			}
+			
+			return 0;
+		}
+		
+		
 		
 		/**
 		 * xmlから抽出したフィルター条件を返します。
@@ -390,7 +428,7 @@ package org.mineap.nndd.player.comment
 				});
 			}
 			array.sort = new Sort();
-			array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false)];
+			array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField("no_column", false, false)];
 			array.refresh();
 			
 			commentMap = new Object();
@@ -494,7 +532,7 @@ package org.mineap.nndd.player.comment
 			if(array.length >= 1){
 				
 				array.sort = new Sort();
-				array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false)];
+				array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField("no_column", false, false)];
 				array.refresh();
 				
 			}
@@ -502,7 +540,7 @@ package org.mineap.nndd.player.comment
 			if(ownerArray != null){
 				if(ownerArray.length >= 1){
 					ownerArray.sort = new Sort();
-					ownerArray.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false)];
+					ownerArray.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField("no_column", false, false)];
 					ownerArray.refresh();
 				}
 			}
