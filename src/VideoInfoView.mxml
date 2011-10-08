@@ -262,11 +262,11 @@
 									horizontalScrollPolicy="on" creationComplete="dataGrid_comment_creationCompleteHandler(event)">
 								<mx:columns>
 									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
-									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300"/>
+									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
 									<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
 									<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
 									<mx:DataGridColumn headerText="番号" dataField="no_column" width="50"/>
-									<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50"/>
+									<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50" showDataTips="true"/>
 								</mx:columns>
 							</mx:DataGrid>
 						</mx:Canvas>
@@ -285,11 +285,11 @@
 									itemDoubleClick="commentListDoubleClicked(event)">
 								<mx:columns>
 									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
-									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300"/>
+									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
 									<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
 									<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
 									<mx:DataGridColumn headerText="番号" dataField="no_column" width="50"/>
-									<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50"/>
+									<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50" showDataTips="true"/>
 								</mx:columns>
 							</mx:DataGrid>
 						</mx:Canvas>
