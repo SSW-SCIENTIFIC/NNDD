@@ -46,7 +46,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jumpmarker
 				
 			}
 			
-			return new ScriptLine(operation, source.vpos);
+			return new ScriptLine(operation, source.mail, source.vpos);
 		}
 		
 	}

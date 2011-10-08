@@ -10,6 +10,7 @@ package org.mineap.nndd.player.comment
 	import org.mineap.nInterpreter.IAnalyzeResult;
 	import org.mineap.nInterpreter.ResultType;
 	import org.mineap.nInterpreter.ScriptLine;
+	import org.mineap.nInterpreter.instance.CommentDefaultOptionManager;
 	import org.mineap.nInterpreter.instance.JumpMarkerManager;
 	import org.mineap.nInterpreter.operation.addMarker.AddMarkerResult;
 	import org.mineap.nInterpreter.operation.jump.JumpResult;
@@ -61,7 +62,9 @@ package org.mineap.nndd.player.comment
 			this.videoPlayer = videoPlayer;
 			this.videoInfoView = videoInfoView;
 			this.playerController = playerController;
+			
 			JumpMarkerManager.instance.initalize();
+			CommentDefaultOptionManager.instance.initalize();
 		}
 		
 		/**
@@ -74,7 +77,9 @@ package org.mineap.nndd.player.comment
 				this.comments.destructor();
 			}
 			this.comments = null;
+			
 			JumpMarkerManager.instance.initalize();
+			CommentDefaultOptionManager.instance.initalize();
 		}
 		
 		/**
@@ -181,7 +186,7 @@ package org.mineap.nndd.player.comment
 						// TODO ニワン語かどうかの判定とか、コメントから命令を解析する機能とか、そういうのも必要。
 						
 						//解析
-						var source:ScriptLine = new ScriptLine(comment.text, vpos);
+						var source:ScriptLine = new ScriptLine(comment.text, comment.mail, vpos);
 						iAnalyzeResult = command.getAnalyzeResult(source);
 						
 						if(iAnalyzeResult != null){
@@ -221,7 +226,7 @@ package org.mineap.nndd.player.comment
 					}else if(secondChar == "ジ"){
 						
 						//TODO　ココがうまくいってない
-						iAnalyzeResult = command.getAnalyzeResultByNicoScript(comment.text, vpos);
+						iAnalyzeResult = command.getAnalyzeResultByNicoScript(comment.text, comment.mail, vpos);
 						
 						if(iAnalyzeResult != null){
 							
@@ -242,6 +247,10 @@ package org.mineap.nndd.player.comment
 							}
 							
 						}
+					}else if (secondChar == "デ")
+					{
+						// デフォルトのコメント色を変更
+						command.getAnalyzeResultByNicoScript(comment.text, comment.mail, vpos);
 					}
 					
 				}else{
@@ -250,16 +259,24 @@ package org.mineap.nndd.player.comment
 					if(comment.text != ""){
 						returnCommentArray.push(comment);
 						if(isShow){
+							
+							// デフォルトカラーを設定
+							var color:int = command.getColorByCommand(comment.mail);
+							if (color == -1)
+							{
+								color = CommentDefaultOptionManager.instance.commentColor;
+							}
+							
 							switch(commandPosition){
 								case Command.UE:
-									this.addUeComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail);
+									this.addUeComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail);
 									break;
 								case Command.SHITA:
-									this.addShitaComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail);
+									this.addShitaComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail);
 									break;
 								case Command.NAKA:
 								default:
-									this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail);
+									this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail);
 									break;
 							}
 						}

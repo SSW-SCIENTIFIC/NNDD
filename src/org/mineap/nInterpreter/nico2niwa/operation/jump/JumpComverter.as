@@ -268,7 +268,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 				
 			}
 			
-			return new ScriptLine(operation, source.vpos);
+			return new ScriptLine(operation, null, source.vpos);
 			
 		}
 		

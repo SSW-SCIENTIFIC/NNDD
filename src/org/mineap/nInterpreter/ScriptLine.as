@@ -11,20 +11,34 @@ package org.mineap.nInterpreter
 		
 		private var _line:String;
 		
+		private var _mail:String;
+		
 		private var _vpos:int;
 		
 		/**
 		 * 
 		 * @param line
+		 * @param mail
 		 * @param vpos
 		 * 
 		 */
-		public function ScriptLine(line:String, vpos:int)
+		public function ScriptLine(line:String, mail:String, vpos:int)
 		{
 			this._line = line;
+			this._mail = mail;
 			this._vpos = vpos;
 		}
 		
+		public function get mail():String
+		{
+			return _mail;
+		}
+
+		public function set mail(value:String):void
+		{
+			_mail = value;
+		}
+
 		/**
 		 * 実際のスクリプト文字列
 		 */

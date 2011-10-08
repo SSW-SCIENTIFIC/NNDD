@@ -6,8 +6,10 @@ package org.mineap.nndd.player.comment
 	import org.mineap.nInterpreter.instance.JumpMarkerManager;
 	import org.mineap.nInterpreter.nico2niwa.operation.jump.JumpComverter;
 	import org.mineap.nInterpreter.nico2niwa.operation.jumpmarker.JumpMarkerConverter;
+	import org.mineap.nInterpreter.nico2niwa.operation.setdefault.DefaultComverter;
 	import org.mineap.nInterpreter.operation.IOperationAnalyzer;
 	import org.mineap.nInterpreter.operation.addMarker.AddMarkerOperationAnalyzer;
+	import org.mineap.nInterpreter.operation.comment.color.CommentColorOperationAnalyzer;
 	import org.mineap.nInterpreter.operation.jump.JumpOperationAnalyzer;
 	import org.mineap.nInterpreter.operation.seek.SeekOperationAnalyzer;
 
@@ -183,7 +185,7 @@ package org.mineap.nndd.player.comment
 				}
 			}
 			
-			return int("0xFFFFFF");
+			return -1;
 		}
 		
 		/**
@@ -270,12 +272,14 @@ package org.mineap.nndd.player.comment
 		 * ex. ＠ジャンプ ジャンプ先 [ジャンプメッセージ] [ジャンプ先再生開始位置] [戻り秒数] [戻りメッセージ]
 		 * 
 		 * @param command
+		 * @param mail
+		 * @param vpos
 		 * @return Array("動画ID", "ジャンプメッセージ")<br>
 		 * 	動画ID:ジャンプ先の動画ID<br>
 		 * 	ジャンプメッセージ:ジャンプ時に画面に表示されるメッセージ。存在しない場合は空の文字列。
 		 * 
 		 */
-		public function getAnalyzeResultByNicoScript(command:String, vpos:Number):IAnalyzeResult{
+		public function getAnalyzeResultByNicoScript(command:String, mail:String, vpos:Number):IAnalyzeResult{
 			
 			var op:String = null;
 			var pre_op:String = command.substr(0, 1);
@@ -295,7 +299,7 @@ package org.mineap.nndd.player.comment
 					{
 						
 						//ニワン語に変換
-						source = new ScriptLine(command, vpos);
+						source = new ScriptLine(command, mail, vpos);
 						var jumpComv:JumpComverter = new JumpComverter();
 						source.line = "/" + jumpComv.convert2(source, JumpMarkerManager.instance.markers).line;
 						
@@ -307,11 +311,20 @@ package org.mineap.nndd.player.comment
 					op = command.substring(1,9);
 					if (op == "ジャンプマーカー")
 					{
-						source = new ScriptLine(command, vpos);
+						source = new ScriptLine(command, mail, vpos);
 						var jumpMarkerComv:JumpMarkerConverter = new JumpMarkerConverter();
 						source.line = "/" + jumpMarkerComv.convert(source).line;
 						
 //						op = command.substring(1,9);
+					}
+					
+					// ＠デフォルト
+					op = command.substring(1, 6);
+					if (op == "デフォルト")
+					{
+						source = new ScriptLine(command, mail, vpos);
+						var defaultComv:DefaultComverter = new DefaultComverter();
+						source.line = "/" + defaultComv.convert(source).line;
 					}
 					
 				}
@@ -325,7 +338,12 @@ package org.mineap.nndd.player.comment
 		
 		/**
 		 * ニワン語を解析して結果を返します。
-		 * 現状はjump命令とseek命令のみを抽出して実行します。
+		 * サポートする命令
+		 * ・jump
+		 * ・seek
+		 * ・addMarker
+		 * ・commentColor
+		 * 
 		 * @param command
 		 * @return 
 		 * 
@@ -352,6 +370,13 @@ package org.mineap.nndd.player.comment
 				command.line = line.substring(line.indexOf("addMarker"));
 				analyzer = new AddMarkerOperationAnalyzer();
 				iAnalyzeResult = analyzer.analyze(command);
+			}
+			else if (line.indexOf("commentColor") != -1)
+			{
+				command.line = line.substring(line.indexOf("commentColor"));
+				analyzer = new CommentColorOperationAnalyzer();
+				analyzer.analyze(command);	//CommentColorOperationAnalyzer#analyze() は null を返す
+				iAnalyzeResult = null;
 			}
 			
 			return iAnalyzeResult;
