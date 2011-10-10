@@ -78,7 +78,7 @@
 			private var tagFilterTileListMenuItem3:ContextMenuItem;
 			private var historyMenu:ContextMenu;
 			private var historyPlay:ContextMenuItem;
-			private var historyPlayNewPlayer;
+			private var historyPlayNewPlayer:ContextMenuItem;
 			private var historyDownload:ContextMenuItem;
 			private var historyDelete:ContextMenuItem;
 			
