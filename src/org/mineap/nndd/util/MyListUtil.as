@@ -40,5 +40,33 @@ package org.mineap.nndd.util
 			return myListId;
 		}
 		
+		/**
+		 * 
+		 * @param string
+		 * @return 
+		 * 
+		 */
+		public static function getChannelId(string:String):String{
+			
+			var channelId:String = null;
+			
+			//http://ch.nicovideo.jp/channel/ben-to
+			
+			var pattern:RegExp = new RegExp("http://ch.nicovideo.jp/channel/(.+)");
+			var array:Array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				channelId = array[1];
+				return channelId;
+			}
+			pattern = new RegExp("[channel/]*(.+)");
+			array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				channelId = array[array.length-1];
+				return channelId;
+			}
+			
+			return channelId;
+		}
+		
 	}
 }

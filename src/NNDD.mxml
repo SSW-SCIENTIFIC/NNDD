@@ -23,6 +23,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.listClasses.IListItemRenderer;
+			import mx.core.FlexGlobals;
 			import mx.core.UITextField;
 			import mx.events.ToolTipEvent;
 			import mx.messaging.SubscriptionInfo;
@@ -1347,8 +1348,8 @@
 					
 				</mx:Canvas>
 				<mx:Canvas height="100%" width="100%" minWidth="350">
-					<mx:TextInput left="0" top="0" right="182" text="ここにマイリストのURLか、マイリストのIDを入力します。" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
-						focusIn="textInputForcusEventHandler(event)" toolTip="公開マイリスト及び自分のマイリストをのURL(もしくはID)を入力して「更新」ボタンを押すとマイリストが表示されます"/>
+					<mx:TextInput left="0" top="0" right="182" text="マイリストURLかID、もしくはチャンネルのURLを入力" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
+						focusIn="textInputForcusEventHandler(event)" toolTip="マイリストのURL、IDか、チャンネルのURLを入力して「更新」ボタンを押すと、一覧に表示されます"/>
 					<mx:Button label="更新" click="myListRenewButtonClicked(event)" right="94" top="0" width="80" id="button_myListRenew"/>
 					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
 					
@@ -1384,8 +1385,7 @@
 					<mx:Button label="ストリーミング" width="103" id="playStartButton0" left="111" bottom="5" enabled="true" click="videoStreamingPlayButtonClickedForMyList()" toolTip="選択中の項目をストリーミング再生します"/>
 					<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="0" bottom="5" liveDragging="true" change="thumbSizeChangedForMyList(event)" id="slider_thumbImageSizeForMyList"
 						toolTip="サムネイル画像の大きさを変更します"/>
-					<mx:Label left="222" bottom="7" id="label_myListStatus" right="118" text="{myListStatusProvider}"/>
-					
+					<mx:Label left="222" bottom="7" id="label_myListStatus" right="118" text="{myListStatusProvider}" toolTip="{myListStatsToolTip}"/>
 					
 				</mx:Canvas>
 			</mx:HDividedBox>

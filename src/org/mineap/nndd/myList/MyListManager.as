@@ -133,6 +133,11 @@ package org.mineap.nndd.myList
 			var myList:MyList = new MyList(myListUrl, myListName, isDir);
 			var object:Object = searchByName(oldName, this._tree_MyList);
 			
+			if (myListUrl != null && myListUrl.indexOf("channel") != -1)
+			{
+				myList.isChannel = true;
+			}
+			
 			delete this._myListName_MyList_Map[oldName];
 			
 			var builder:TreeDataBuilder = new TreeDataBuilder();
@@ -144,7 +149,7 @@ package org.mineap.nndd.myList
 			}
 			
 			this._myListName_MyList_Map[myListName] = myList;
-			this._myListId_myListName_map[myList.myListId] = myList.myListName;
+			this._myListId_myListName_map[myList.id] = myList.myListName;
 			
 			if(isSave){
 				this.saveMyListSummary(this._libraryManager.systemFileDir);
@@ -216,6 +221,12 @@ package org.mineap.nndd.myList
 		public function addMyList(myListUrl:String, myListName:String, isDir:Boolean, isSave:Boolean, index:int = -1, children:Array = null):Object{
 			var exsits:Boolean = false;
 			var myList:MyList = new MyList(myListUrl, myListName, isDir);
+			
+			if (myListUrl != null && myListUrl.indexOf("channel") != -1)
+			{
+				myList.isChannel = true;
+			}
+			
 			var addedTreeObject:Object = null;
 			
 			if(this._myListName_MyList_Map[myListName] != null){
@@ -254,7 +265,7 @@ package org.mineap.nndd.myList
 						this._tree_MyList.splice(index, 0, file);
 					}
 					this._myListName_MyList_Map[myListName] = myList;
-					this._myListId_myListName_map[myList.myListId] = myList.myListName;
+					this._myListId_myListName_map[myList.id] = myList.myListName;
 					
 					addedTreeObject = file;
 					
@@ -445,6 +456,10 @@ package org.mineap.nndd.myList
 					file.unPlayVideoCount = MyListManager.instance.getMyListUnPlayVideoCount(name);
 					
 					myList = new MyList(url, name);
+					if ((temp.@isChannel != null && temp.@isChannel == "true" )||(url != null && url.indexOf("channel") != -1))
+					{
+						myList.isChannel = true;
+					}
 					myListArray.push(file);
 					myListMap[name] = myList;
 					
@@ -470,17 +485,17 @@ package org.mineap.nndd.myList
 			myList.clearNNDDVideoId();
 			
 			/* 動画IDをマイリストに登録 */
-			var myVideos:Vector.<NNDDVideo> = readLocalMyListByNNDDVideo(myList.myListId);
+			var myVideos:Vector.<NNDDVideo> = readLocalMyListByNNDDVideo(myList.id);
 			for each(var tempVideo:NNDDVideo in myVideos)
 			{
 				myList.addNNDDVideoId(tempVideo.key);
 				
 				/* 動画IDとマイリストIDのマップも作る */
-				setVideoId_MyListId_Map(tempVideo.key, myList.myListId);
+				setVideoId_MyListId_Map(tempVideo.key, myList.id);
 				
 			}
-			trace("マイリスト(" + myList.myListId + ")に登録されている動画:" + myVideos.length);
-			LogManager.instance.addLog("マイリスト(" + myList.myListId + ")に登録されている動画のチェック完了:" + myVideos.length);
+			trace("マイリスト(" + myList.id + ")に登録されている動画:" + myVideos.length);
+			LogManager.instance.addLog("マイリスト(" + myList.id + ")に登録されている動画のチェック完了:" + myVideos.length);
 			
 			return myList;
 		}
@@ -687,9 +702,7 @@ package org.mineap.nndd.myList
 			MyListRenewScheduler.instance.myListReset();
 			
 			for each(var myList:MyList in this._myListName_MyList_Map){
-				var id:String = MyListUtil.getMyListId(myList.myListUrl);
-				
-				MyListRenewScheduler.instance.addMyListId(id);
+				MyListRenewScheduler.instance.addMyList(myList);
 			}
 		}
 		
@@ -737,6 +750,7 @@ package org.mineap.nndd.myList
 						
 						myListItem.@url = encodeURIComponent(myList.myListUrl);
 						myListItem.@name = encodeURIComponent(myList.myListName);
+						myListItem.@isChannel = myList.isChannel;
 						myListItem.@isDir = false;
 						
 						if(myListSortType.sortFiledName != null){
@@ -848,12 +862,12 @@ package org.mineap.nndd.myList
 						continue;
 					}
 					
-					if (myList.myListId == myListId)
+					if (myList.id == myListId)
 					{
 						updateMyListVideoId(myList);
 						
 						// 未再生の動画数を登録
-						myList.unPlayVideoCount = countUnPlayVideos(myList.myListId);
+						myList.unPlayVideoCount = countUnPlayVideos(myList.id);
 						break;
 					}
 				}
@@ -903,14 +917,15 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
-		 * 指定されたディレクトリ下のマイリスト(XML)の一覧を取得します。
 		 * 
-		 * @param file
+		 * @param name
+		 * @return 
 		 * 
 		 */
-		public function readFromSubDirMyList(name:String):Vector.<XML>{
-			var vector:Vector.<XML> = new Vector.<XML>();
- 			
+		public function getSubDirMyList(name:String):Vector.<MyList>
+		{
+			var vector:Vector.<MyList> = new Vector.<MyList>();
+			
 			var leaf:Object = searchByName(name, this._tree_MyList);
 			if(leaf == null){
 				return vector;
@@ -921,21 +936,39 @@ package org.mineap.nndd.myList
 				var children:Array = leaf.children;
 				for each(var tempObject:Object in children){
 					
-					var tempVector:Vector.<XML> = readFromSubDirMyList(tempObject.label);
-					for each(var tempXML:XML in tempVector){
+					var tempVector:Vector.<MyList> = getSubDirMyList(tempObject.label);
+					for each(var tempXML:MyList in tempVector){
 						vector.splice(0,0, tempXML);
 					}
 					
 				}
-			
+				
 			}else{
 				//これはファイル
 				var myList:MyList = this._myListName_MyList_Map[leaf.label];
-				
-				var xml:XML = this.readLocalMyList(myList.myListId);
-				
-				vector.splice(0,0,xml);
-				
+				vector.splice(0,0,myList);
+			}
+			return vector;
+		}
+		
+		
+		/**
+		 * 指定されたディレクトリ下のマイリスト(XML)の一覧を取得します。
+		 * 
+		 * @param file
+		 * 
+		 */
+		public function readFromSubDirMyList(name:String):Vector.<XML>{
+			var vector:Vector.<XML> = new Vector.<XML>();
+ 			
+			var myLists:Vector.<MyList> = getSubDirMyList(name);
+			for each(var myList:MyList in myLists)
+			{
+				if (!myList.isDir)
+				{
+					var xml:XML = this.readLocalMyList(myList.id);
+					vector.splice(0,0,xml);
+				}
 			}
 			
 			return vector;
@@ -1011,6 +1044,7 @@ package org.mineap.nndd.myList
 						videoArray.splice(0,0,nnddVideo);
 						
 					}
+					
 				}
 				
 			}
@@ -1246,7 +1280,7 @@ package org.mineap.nndd.myList
 			
 			for each(var myList:MyList in this._myListName_MyList_Map)
 			{
-				if (myList.myListId == myListId)
+				if (myList.id == myListId)
 				{
 					return myList;
 				}

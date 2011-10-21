@@ -108,6 +108,7 @@ import org.mineap.nndd.model.*;
 import org.mineap.nndd.model.tree.ITreeItem;
 import org.mineap.nndd.model.tree.TreeFileItem;
 import org.mineap.nndd.model.tree.TreeFolderItem;
+import org.mineap.nndd.myList.MyList;
 import org.mineap.nndd.myList.MyListBuilder;
 import org.mineap.nndd.myList.MyListManager;
 import org.mineap.nndd.myList.MyListRenewScheduler;
@@ -310,6 +311,8 @@ private var myListRenewScheduleTimeProvider:Array = MyListRenewScheduler.MyListR
 [Bindable]
 private var myListStatusProvider:String = new String();
 [Bindable]
+private var myListStatsToolTip:String = new String();
+[Bindable]
 private var fontDataProvider:Array = new Array();
 [Bindable]
 private var searchHistoryProvider:Array = new Array();
@@ -355,7 +358,11 @@ public function initNNDD(nndd:NNDD):void
 	
 	this.title =  "NNDD - v" + VersionUtil.instance.versionLabel;
 	
-	URLRequestDefaults.userAgent = URLRequestDefaults.userAgent + " NNDD/" + this.version;
+	var userAgent:String = URLRequestDefaults.userAgent + " NNDD/" + this.version;
+	
+	// 外部ライブラリを呼び出した後でuserAgentを設定しないとUserAgentが正しく設定されない?
+	UserAgentManager.instance.userAgent = userAgent;
+//	URLRequestDefaults.userAgent = userAgent;
 	
 	NativeApplication.nativeApplication.addEventListener(Event.EXITING, exitingEventHandler);
 	
@@ -480,6 +487,7 @@ public function initNNDD(nndd:NNDD):void
 		renewMyListUnPlayCount();
 		var date:Date = new Date();
 		myListStatusProvider = "更新完了(" +  DateUtil.getDateString(date) + ")";
+		myListStatsToolTip = null;
 	});
 	MyListRenewScheduler.instance.addEventListener(MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS, function(event:MyListRenewProgressEvent):void{
 		myListStatusRenew(event.bytesLoaded, event.bytesTotal, event.renewingMyListId);
@@ -586,7 +594,15 @@ public function myListStatusRenew(loaded:Number, total:Number, myListId:String):
 		tree_myList.validateNow();
 		
 	}
-	myListStatusProvider = "mylist/" + myListId + " を更新中(" + loaded + "/" + total + ")";
+	
+	var str:String = "";
+	if (myListId.indexOf(" ") != -1)
+	{
+		str = myListId.substring(0, myListId.indexOf(" "));
+	}
+	
+	myListStatusProvider = "更新中" + "(" + loaded + "/" + total + "):" + str;
+	myListStatsToolTip = "更新中" + "(" + loaded + "/" + total + "):" + myListId;
 }
 
 public function renewMyListUnPlayCount(tree_myListRenew:Boolean = true):void{
@@ -868,7 +884,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					if(!selectedMyListFolder){
 						var xml:XML = MyListManager.instance.readLocalMyList(myListId);
 						if(xml != null){
-							myListRenew(xml);
+							myListRenew(myListId, xml);
 						}
 					}else{
 						if(tree_myList.selectedItem != null){
@@ -892,7 +908,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					if(!selectedMyListFolder){
 						var xml:XML = MyListManager.instance.readLocalMyList(myListId);
 						if(xml != null){
-							myListRenew(xml);
+							myListRenew(myListId, xml);
 						}
 					}else{
 						if(tree_myList.selectedItem != null){
@@ -964,7 +980,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 				if(!selectedMyListFolder){
 					var xml:XML = MyListManager.instance.readLocalMyList(myListId);
 					if(xml != null){
-						myListItemProvider = myListBuilder.getMyListArrayCollection(xml);
+						myListItemProvider = myListBuilder.getMyListArrayCollection(myListId, xml);
 						var name:String = tree_myList.selectedItem.label;;
 						myListRenewForName(name);
 					}
@@ -5860,7 +5876,7 @@ private function videoStreamingPlayButtonClickedForMyList():void{
 				if(!selectedMyListFolder){
 					var xml:XML = MyListManager.instance.readLocalMyList(myListId);
 					if(xml != null){
-						myListRenew(xml);
+						myListRenew(myListId, xml);
 					}
 				}else{
 					if(tree_library.selectedItem != null){
@@ -5918,7 +5934,7 @@ private function myListItemDataGridDoubleClicked():void{
 					if(!selectedMyListFolder){
 						var xml:XML = MyListManager.instance.readLocalMyList(myListId);
 						if(xml != null){
-							myListRenew(xml);
+							myListRenew(myListId, xml);
 						}
 					}else{
 						if(tree_myList.selectedItem != null){
@@ -6067,16 +6083,26 @@ private function myListRenewButtonClicked(event:Event):void{
 				this._nnddMyListLoader = new NNDDMyListLoader();
 				this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, function(myevent:Event):void{
 		
+					var isChannel:Boolean = false;
+					var myListId:String = MyListUtil.getMyListId(url);
+					if (url.indexOf("channel") != -1)
+					{
+						isChannel = true;
+						myListId = MyListUtil.getChannelId(url)
+					}
+					
 					try{
+						
 						// マイリストをローカルに保存
-						_myListManager.saveMyList(MyListUtil.getMyListId(url), _nnddMyListLoader.xml, true);
+						_myListManager.saveMyList(myListId, _nnddMyListLoader.xml, true);
+						
 					}catch(error:Error){
 						trace(error.getStackTrace());
 					}
 					
 					var myListBuilder:MyListBuilder = new MyListBuilder();
 					myListItemProvider.removeAll();
-					myListItemProvider.addAll(myListBuilder.getMyListArrayCollection(_nnddMyListLoader.xml));
+					myListItemProvider.addAll(myListBuilder.getMyListArrayCollection(myListId, _nnddMyListLoader.xml));
 					
 					var text:String = myListBuilder.title + " [" + myListBuilder.creator + "]\n" + myListBuilder.description;
 					var title:String = myListBuilder.title + " [" + myListBuilder.creator + "]";
@@ -6194,7 +6220,7 @@ private function myListRenewButtonClicked(event:Event):void{
 					dataGrid_myList.enabled = true;
 					textinput_mylist.enabled = true;
 				});
-				this._nnddMyListLoader.addEventListener(NNDDMyListLoader.PUBLIC_MY_LIST_GET_FAIL, function(myevent:Event):void{
+				this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, function(myevent:Event):void{
 					logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
 					Alert.show("マイリストの更新に失敗しました。\nマイリストが削除されている可能性があります。\n" + myevent, Message.M_ERROR);
 					button_myListRenew.label == "更新";
@@ -6209,10 +6235,21 @@ private function myListRenewButtonClicked(event:Event):void{
 					textinput_mylist.enabled = true;
 				});
 				
-				var myListId:String = MyListUtil.getMyListId(url);
-				if(myListId != null){
-					this._nnddMyListLoader.requestDownloadForPublicMyList(UserManager.instance.user, UserManager.instance.password, myListId);
-					return;
+				if (url.indexOf("channel") != -1)
+				{
+					var channelId:String = MyListUtil.getChannelId(url);
+					if(channelId != null){
+						this._nnddMyListLoader.requestDownloadForChannel(UserManager.instance.user, UserManager.instance.password, channelId);
+						return;
+					}
+				}
+				else
+				{
+					var myListId:String = MyListUtil.getMyListId(url);
+					if(myListId != null){
+						this._nnddMyListLoader.requestDownloadForMyList(UserManager.instance.user, UserManager.instance.password, myListId);
+						return;
+					}
 				}
 				
 				button_myListRenew.label == "更新";
@@ -6278,13 +6315,13 @@ private function addPublicMyList(event:Event):void{
 	}
 	myListEditDialog.textInput_name.text = name;
 	myListEditDialog.textInput_url.text = textinput_mylist.text;
-	myListEditDialog.title = "マイリストを新規作成";
+	myListEditDialog.title = "マイリスト/チャンネルを新規作成";
 	myListEditDialog.button_edit.label = "作成";
 	myListEditDialog.setDir(false);
 	myListEditDialog.addEventListener(Event.COMPLETE, function(event:Event):void{
 		var isSuccess:Boolean = _myListManager.addMyList(myListEditDialog.myListUrl, myListEditDialog.myListName, myListEditDialog.getIsDir(), true);
 		if(!isSuccess){
-			Alert.show("同名のマイリストかフォルダがすでに存在します。別な名前を設定してください。", Message.M_MESSAGE);
+			Alert.show("同名のマイリスト/チャンネルかフォルダがすでに存在します。別な名前を設定してください。", Message.M_MESSAGE);
 			return;
 		}
 		var openItems:Object = tree_myList.openItems;
@@ -6407,16 +6444,27 @@ private function myListRenewForName(name:String):void{
 	var url:String = this._myListManager.getUrl(name);
 	textinput_mylist.text = url;
 	textArea_myList.text = "";
-	var xml:XML = MyListManager.instance.readLocalMyList(MyListUtil.getMyListId(url));
+	var xml:XML;
+	var myListId:String;
+	if(url.indexOf("channel") != -1)
+	{
+		myListId = MyListUtil.getChannelId(url);
+		xml = MyListManager.instance.readLocalMyList(myListId);
+	}
+	else
+	{
+		myListId = MyListUtil.getMyListId(url);
+		xml = MyListManager.instance.readLocalMyList(myListId);
+	}
 	try{
 		if(xml != null){
-			myListRenew(xml, false);
+			myListRenew(myListId, xml, false);
 		}else if(url != null && url != ""){
 			myListItemProvider.removeAll();
 			myListItemProvider.addItem({
 				dataGridColumn_index:1,
 				dataGridColumn_preview:"",
-				dataGridColumn_videoName:"ローカルにマイリストが保存されていません。\n一度\"更新\"してください。",
+				dataGridColumn_videoName:"ローカルにマイリスト/チャンネルが保存されていません。\n一度\"更新\"してください。",
 				dataGridColumn_videoInfo:"",
 				dataGridColumn_condition:"",
 				dataGridColumn_videoUrl:"",
@@ -6424,21 +6472,20 @@ private function myListRenewForName(name:String):void{
 				dataGridColumn_played:false,
 				dataGridColumn_videoId:""
 			});
-			logManager.addLog("ローカルにマイリストが保存されていません。一度\"更新\"してください。");
+			logManager.addLog("ローカルにマイリスト/チャンネルが保存されていません。一度\"更新\"してください。");
 		}else if(url == ""){
 			// urlが空のときはフォルダ
 			selectedMyListFolder = true;
 			textinput_mylist.text = name;
 			
-			var vector:Vector.<XML> = MyListManager.instance.readFromSubDirMyList(name);
-			
+			var myLists:Vector.<MyList> = MyListManager.instance.getSubDirMyList(name);
 			var myListBuilder:MyListBuilder = new MyListBuilder();
-			
 			var index:int = dataGrid_myList.selectedIndex;
 			
 			myListItemProvider.removeAll();
-			for each(var temp:XML in vector){
-				var array:ArrayCollection = myListBuilder.getMyListArrayCollection(temp, true);
+			for each(var myList:MyList in myLists){
+				var xml:XML = MyListManager.instance.readLocalMyList(myList.id);
+				var array:ArrayCollection = myListBuilder.getMyListArrayCollection(myList.id, xml, true);
 				myListItemProvider.addAll(array);
 			}
 			
@@ -6459,7 +6506,7 @@ private function myListRenewForName(name:String):void{
 	}
 }
 
-private function myListRenew(xml:XML, renewUnPlayCount:Boolean = true):void{
+private function myListRenew(myListId:String, xml:XML, renewUnPlayCount:Boolean = true):void{
 	
 	var index:int = dataGrid_myList.selectedIndex;
 	
@@ -6468,7 +6515,7 @@ private function myListRenew(xml:XML, renewUnPlayCount:Boolean = true):void{
 	myListItemProvider.removeAll();
 	
 	var myListBuilder:MyListBuilder = new MyListBuilder();
-	myListItemProvider = myListBuilder.getMyListArrayCollection(xml);
+	myListItemProvider = myListBuilder.getMyListArrayCollection(myListId, xml);
 	textArea_myList.text = myListBuilder.description;
 	
 	if(index >= 0){
@@ -6853,10 +6900,23 @@ public function tagTileListItemDoubleClickEventHandler(event:ListEvent):void{
  */
 public function showMyListOnNico(event:Event):void{
 	var id:String = textinput_mylist.text;
-	id = MyListUtil.getMyListId(id);
-	if(id != null){
-		navigateToURL(new URLRequest("http://www.nicovideo.jp/mylist/" + id));
-		logManager.addLog("マイリストをブラウザで表示:" + "http://www.nicovideo.jp/mylist/" + id);
+	
+	if (id.indexOf("channel"))
+	{
+		id = MyListUtil.getChannelId(id);
+		if (id != null)
+		{
+			navigateToURL(new URLRequest("http://ch.nicovideo.jp/channel/" + id));
+			logManager.addLog("マイリストをブラウザで表示:" + "http://ch.nicovideo.jp/channel/" + id);
+		}
+	}
+	else
+	{
+		id = MyListUtil.getMyListId(id);
+		if(id != null){
+			navigateToURL(new URLRequest("http://www.nicovideo.jp/mylist/" + id));
+			logManager.addLog("マイリストをブラウザで表示:" + "http://www.nicovideo.jp/mylist/" + id);
+		}
 	}
 }
 

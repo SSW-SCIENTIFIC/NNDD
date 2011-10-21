@@ -44,7 +44,7 @@ package org.mineap.nndd.myList
 		 * @return 
 		 * 
 		 */
-		public function getMyListArrayCollection(xml:XML, onlyUnPlay:Boolean = false):ArrayCollection{
+		public function getMyListArrayCollection(myListId:String, xml:XML, onlyUnPlay:Boolean = false):ArrayCollection{
 			
 			/*
 				<channel>
@@ -69,16 +69,6 @@ package org.mineap.nndd.myList
 			var index:int = 1;
 			
 			var links:XMLList = xml.channel.link;
-			var myListId:String = null;
-			for each(var link:XML in links){
-				myListId = link.text();
-				if(myListId != null){
-					var lastIndex:int = myListId.lastIndexOf("/");
-					if(lastIndex != -1){
-						myListId = myListId.substr(lastIndex);
-					}
-				}
-			}
 			
 			var videoArray:Vector.<NNDDVideo> = null;
 			var videoMap:Object = new Object();

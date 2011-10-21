@@ -25,9 +25,9 @@ package org.mineap.nndd.myList
 	{
 		
 		/**
-		 * スケジューリング対象のマイリストIDの一覧を保持します
+		 * スケジューリング対象のマイリストの一覧を保持します
 		 */
-		private var _myListIds:Vector.<String> = new Vector.<String>();
+		private var _myLists:Vector.<MyList> = new Vector.<MyList>();
 		
 		/**
 		 * マイリストIDをキーにマイリスト取得結果を格納するMapです
@@ -122,13 +122,24 @@ package org.mineap.nndd.myList
 		 * @param myListId
 		 * 
 		 */
-		public function addMyListId(myListId:String):void{
+		public function addMyList(myList:MyList):void{
 			
-			myListId = MyListUtil.getMyListId(myListId);
+			var myListId:String = myList.id;
 			
 			if(myListId != null){
-				if(this._myListIds.indexOf(myListId) == -1){
-					this._myListIds.splice(0,0, myListId);
+				
+				var exist:Boolean = false;
+				for each(var temp:MyList in this._myLists)
+				{
+					if (temp.id == myListId)
+					{
+						exist = true;
+						break;
+					}
+				}
+				if (!exist)
+				{
+					this._myLists.splice(0,0, myList);
 				}
 			}
 		}
@@ -138,7 +149,7 @@ package org.mineap.nndd.myList
 		 * 
 		 */
 		public function myListReset():void{
-			this._myListIds.splice(0, this._myListIds.length);
+			this._myLists.splice(0, this._myLists.length);
 		}
 		
 		/**
@@ -224,17 +235,17 @@ package org.mineap.nndd.myList
 				this._index = startIndex;
 			}
 			
-			if(this._index >= this._myListIds.length){
+			if(this._index >= this._myLists.length){
 				dispatchEvent(new Event(Event.COMPLETE));
 				LogManager.instance.addLog("マイリスト更新のスケジュール実行完了");
 				this._renewing = false;
 				return;
 			}
 			
-			var id:String = this._myListIds[this._index];
+			var myList:MyList = this._myLists[this._index];
 			
-			if(id != null){
-				myListRenew(id);
+			if(myList != null){
+				myListRenew(myList);
 			}else{
 				next();
 			}
@@ -258,25 +269,44 @@ package org.mineap.nndd.myList
 		 * @return 
 		 * 
 		 */
-		private function myListRenew(myListId:String, enableNext:Boolean = true):void{
+		private function myListRenew(myList:MyList, enableNext:Boolean = true):void{
 			
 			if(this._mailAddress != null && this._mailAddress != "" && this._password != null && this._password != ""){
 				
 				var nnddMyListLoader:NNDDMyListLoader = new NNDDMyListLoader();
 				
-				LogManager.instance.addLog("マイリストのスケジュール更新開始(" + (this._index + 1) + "/" + this._myListIds.length + "):" + myListId);
+				var myListId:String = myList.id;
 				
-				dispatchEvent(new MyListRenewProgressEvent(MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS, false, false, this._index+1, this._myListIds.length, myListId));
+				var myListStr:String;
+				if (myList.isChannel)
+				{
+					myListStr = "channel/" + myList.id + " " + myList.myListName;
+				}
+				else
+				{
+					myListStr = "mylist/" + myList.id + " " + myList.myListName;
+				}
+				
+				LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新開始(" + (this._index + 1) + "/" + this._myLists.length + "):" + myListStr);
+				
+				dispatchEvent(new MyListRenewProgressEvent(MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS, false, false, this._index+1, this._myLists.length, myListStr));
 				
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, myListGetComplete);
-				nnddMyListLoader.addEventListener(NNDDMyListLoader.PUBLIC_MY_LIST_GET_FAIL, myListGetFail);
+				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
-				nnddMyListLoader.requestDownloadForPublicMyList(_mailAddress, _password, myListId);
+				if (myList.isChannel)
+				{
+					nnddMyListLoader.requestDownloadForChannel(_mailAddress, _password, myListId);
+				}
+				else
+				{
+					nnddMyListLoader.requestDownloadForMyList(_mailAddress, _password, myListId);
+				}
 				
 				function myListGetComplete(event:Event):void{
 					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, myListGetComplete);
-					nnddMyListLoader.removeEventListener(NNDDMyListLoader.PUBLIC_MY_LIST_GET_FAIL, myListGetFail);
+					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
 					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
 					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
 					
@@ -285,23 +315,28 @@ package org.mineap.nndd.myList
 					var xml:XML = nnddMyListLoader.xml;
 					if(xml != null){
 						MyListManager.instance.saveMyList(myListId, xml, true);
-						LogManager.instance.addLog("マイリストのスケジュール更新完了(" + myListId + ")");
+						LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新完了(" + myListStr + ")");
 						_myListRenewResultMap[myListId] = MyListRenewResultType.SUCCESS;
 					}else{
-						LogManager.instance.addLog("マイリストのスケジュール更新失敗(" + myListId + ")");
+						LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新失敗(" + myListStr + ")");
 						_myListRenewResultMap[myListId] = MyListRenewResultType.FAIL;
 					}
 				}
 				
 				function myListGetFail(event:Event):void{
-					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, myListGetComplete);
-					nnddMyListLoader.removeEventListener(NNDDMyListLoader.PUBLIC_MY_LIST_GET_FAIL, myListGetFail);
-					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
-					nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
+					
+					if (event.type == NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD 
+						|| event.type == NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR)
+					{
+						nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, myListGetComplete);
+						nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
+						nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
+						nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
+					}
 					
 					nnddMyListLoader.close(false, false);
 					
-					LogManager.instance.addLog("マイリストのスケジュール更新失敗(" + myListId + ")");
+					LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新失敗(" + myListStr + ")");
 					_myListRenewResultMap[myListId] = MyListRenewResultType.FAIL;
 					
 				}
@@ -315,7 +350,7 @@ package org.mineap.nndd.myList
 				}
 				
 			}else{
-				LogManager.instance.addLog("マイリストのスケジュール更新失敗(メールアドレスとパスワードが未設定)");
+				LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新失敗(メールアドレスとパスワードが未設定)");
 			}
 			
 		}

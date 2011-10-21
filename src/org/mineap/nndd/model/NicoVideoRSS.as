@@ -1,28 +1,29 @@
-package org.mineap.nndd.myList
+package org.mineap.nndd.model
 {
-	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.MyListUtil;
 	
 
 	/**
-	 * マイリストを表現するクラスです。
+	 * マイリストやチャネルなどの、RSSのアドレスを表現するクラスです。
 	 * 
-	 * @author shiraminekeisuke
+	 * (v2.1では未使用)
+	 * 
+	 * @author shiraminekeisuke (MineAP)
 	 * 
 	 */
-	public class MyList
+	public class NicoVideoRSS
 	{
 		
 		/**
-		 * マイリストのURLです<br>
+		 * RSSのURLです<br>
 		 * ただし、URLとは限りません。URL以外にも、mylist/*****や、*****の形式である事があります。
 		 */
-		public var myListUrl:String = "";
+		public var url:String = "";
 		
 		/**
-		 * NNDD上で管理するためのマイリストの名前です
+		 * NNDD上で管理するためのRSSの名前です
 		 */
-		public var myListName:String = "";
+		public var name:String = "";
 		
 		/**
 		 * このマイリストオブジェクトがディレクトリを表すかどうかです。
@@ -35,30 +36,25 @@ package org.mineap.nndd.myList
 		public var unPlayVideoCount:int = 0;
 		
 		/**
-		 * マイリストに登録されている動画IDの一覧
+		 * RSSに登録されている動画IDの一覧
 		 */
-		private var myListVideoIds:Object = new Object();
-		
-		/**
-		 * チャンネルかどうか
-		 */
-		public var isChannel:Boolean = false;
+		private var videoIds:Object = new Object();
 		
 		/**
 		 * コンストラクタ。
 		 * 
-		 * @param myListUrl
-		 * @param myListName
+		 * @param url
+		 * @param name
 		 * @param isDir
 		 * @param videoIds
 		 */
-		public function MyList(myListUrl:String, myListName:String, isDir:Boolean = false, videoIds:Vector.<String> = null)
+		public function NicoVideoRSS(url:String, name:String, isDir:Boolean = false, videoIds:Vector.<String> = null)
 		{
-			if(myListUrl != null){
-				this.myListUrl = myListUrl;
+			if(url != null){
+				this.url = url;
 			}
-			if(myListName != null){
-				this.myListName = myListName;
+			if(name != null){
+				this.name = name;
 			}
 			
 			this.isDir = isDir;
@@ -67,25 +63,18 @@ package org.mineap.nndd.myList
 			{
 				for each(var id:String in videoIds)
 				{
-					myListVideoIds[id] = id;
+					videoIds[id] = id;
 				}
 			}
 		}
 		
 		/**
-		 * idを返します。
-		 * idは、mylist/****** や channel/****** の******の部分です。
+		 * このRSSのマイリストIDを返します
 		 * @return 
 		 * 
 		 */
 		public function get id():String{
-			if (isChannel)
-			{
-				return MyListUtil.getChannelId(myListUrl);
-			}else
-			{
-				return MyListUtil.getMyListId(myListUrl);
-			}
+			return MyListUtil.getMyListId(this.url);
 		}
 		
 		/**
@@ -98,7 +87,7 @@ package org.mineap.nndd.myList
 		{
 			if(videoId == null)
 			{
-				myListVideoIds[videoId] = videoId;
+				videoIds[videoId] = videoId;
 			}
 		}
 		
@@ -112,7 +101,7 @@ package org.mineap.nndd.myList
 		{
 			if(videoId == null)
 			{
-				delete myListVideoIds[videoId];
+				delete videoIds[videoId];
 			}
 		}
 		
@@ -122,7 +111,7 @@ package org.mineap.nndd.myList
 		 */
 		public function clearNNDDVideoId():void
 		{
-			myListVideoIds = new Object();
+			videoIds = new Object();
 		}
 		
 		/**
@@ -134,7 +123,7 @@ package org.mineap.nndd.myList
 		 */
 		public function contains(videoId:String):Boolean
 		{
-			if (myListVideoIds[videoId] != null)
+			if (videoIds[videoId] != null)
 			{
 				return true;
 			}

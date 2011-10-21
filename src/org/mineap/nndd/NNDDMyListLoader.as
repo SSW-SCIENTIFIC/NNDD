@@ -5,17 +5,19 @@ package org.mineap.nndd
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	
+	import org.mineap.nicovideo4as.Login;
+	import org.mineap.nicovideo4as.loader.ChannelLoader;
+	import org.mineap.nicovideo4as.loader.PublicMyListLoader;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
-	import org.mineap.nicovideo4as.Login;
-	import org.mineap.nicovideo4as.PublicMyListLoader;
 
 	[Event(name="loginSuccess", type="NNDDMyListLoader")]
 	[Event(name="loginFail", type="NNDDMyListLoader")]
-	[Event(name="publicMyListGetSuccess", type="NNDDMyListLoader")]
-	[Event(name="publicMyListGetFail", type="NNDDMyListLoader")]
+	[Event(name="downloadSuccess", type="NNDDMyListLoader")]
+	[Event(name="downloadGetFail", type="NNDDMyListLoader")]
 
 	[Event(name="downloadProcessComplete", type="NNDDMyListLoader")]
 	[Event(name="donwloadProcessCancel", type="NNDDMyListLoader")]
@@ -30,11 +32,14 @@ package org.mineap.nndd
 	{
 		
 		private var _login:Login;
+		
+		private var _channelLoader:ChannelLoader;
 		private var _publicMyListLoader:PublicMyListLoader;
 		
 		private var _libraryManager:ILibraryManager;
 		
-		private var _publicMyListId:String;
+		private var _myListId:String;
+		private var _channelId:String;
 		
 		private var _xml:XML;
 		
@@ -51,12 +56,12 @@ package org.mineap.nndd
 		/**
 		 * 
 		 */
-		public static const PUBLIC_MY_LIST_GET_SUCCESS:String = "PublicMyListGetSuccess";
+		public static const DOWNLOAD_SUCCESS:String = "DownloadSuccess";
 		
 		/**
 		 * 
 		 */
-		public static const PUBLIC_MY_LIST_GET_FAIL:String = "PublicMyListGetFail";
+		public static const DOWNLOAD_FAIL:String = "DownloadFail";
 		
 		/**
 		 * ダウンロード処理が通常に終了したとき、typeプロパティがこの定数に設定されたEventが発行されます。
@@ -82,28 +87,56 @@ package org.mineap.nndd
 		{
 			this._libraryManager = LibraryManagerBuilder.instance.libraryManager;
 			this._login = new Login();
-			this._publicMyListLoader = new PublicMyListLoader();
 		}
 		
 		/**
 		 * 
 		 * @param user
 		 * @param password
-		 * @param myListId
+		 * @param id
 		 * 
 		 */
-		public function requestDownloadForPublicMyList(user:String, password:String, myListId:String):void{
+		public function requestDownloadForMyList(user:String, password:String, id:String):void
+		{
+			trace("start - requestDownload(" + user + ", ****, mylist/" + id + ")");
 			
-			trace("start - requestDownload(" + user + ", ****, " + myListId + ")");
+			this._myListId = id;
 			
-			this._publicMyListId = myListId;
+			login(user, password);
+		}
+		
+		/**
+		 * 
+		 * @param user
+		 * @param password
+		 * @param id
+		 * 
+		 */
+		public function requestDownloadForChannel(user:String, password:String, id:String):void
+		{
+			
+			trace("start - requestDownload(" + user + ", ****, channel/" + id + ")");
+			
+			this._channelId = id;
+			
+			login(user, password);
+			
+		}
+		
+		/**
+		 * 
+		 * @param user
+		 * @param password
+		 * 
+		 */
+		private function login(user:String, password:String):void{
 			
 			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
 			this._login.addEventListener(Login.LOGIN_FAIL, function(event:ErrorEvent):void{
 				(event.target as Login).close();
-				LogManager.instance.addLog(PUBLIC_MY_LIST_GET_FAIL + event.target + ":" + event.text);
+				LogManager.instance.addLog(DOWNLOAD_FAIL + event.target + ":" + event.text);
 				trace(event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new ErrorEvent(PUBLIC_MY_LIST_GET_FAIL, false, false, event.text));
+				dispatchEvent(new ErrorEvent(DOWNLOAD_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
 			this._login.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
@@ -125,16 +158,25 @@ package org.mineap.nndd
 			trace(LOGIN_SUCCESS + ":" + event);
 			dispatchEvent(new Event(LOGIN_SUCCESS));
 			
-			this._publicMyListLoader.addEventListener(Event.COMPLETE, getPublicMyListSuccess);
-			this._publicMyListLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-				(event.target as URLLoader).close();
-				LogManager.instance.addLog(PUBLIC_MY_LIST_GET_FAIL + ":" +  _publicMyListId + ":" + event + ":" + event.target +  ":" + event.text);
-				trace(PUBLIC_MY_LIST_GET_FAIL + ":" +  _publicMyListId  + ":" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(PUBLIC_MY_LIST_GET_FAIL, false, false, event.text));
-				close(false, false);
-			});
 			
-			this._publicMyListLoader.getPublicMyList(this._publicMyListId);
+			if (_myListId != null)
+			{
+				this._publicMyListLoader = new PublicMyListLoader();
+				this._publicMyListLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
+				this._publicMyListLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
+				this._publicMyListLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
+				
+				this._publicMyListLoader.getMyList(this._myListId);
+			}
+			else
+			{
+				this._channelLoader = new ChannelLoader();
+				this._channelLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
+				this._channelLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
+				this._channelLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
+				
+				this._channelLoader.getChannel(this._channelId);
+			}
 		}
 		
 		/**
@@ -142,13 +184,46 @@ package org.mineap.nndd
 		 * @param event
 		 * 
 		 */
-		private function getPublicMyListSuccess(event:Event):void{
+		private function xmlLoadIOErrorHandler(event:ErrorEvent):void
+		{
+			(event.target as URLLoader).close();
+			
+			var targetId:String = "";
+			if (this._myListId != null)
+			{
+				targetId = "mylist/" + this._myListId;
+			}
+			else
+			{
+				targetId = "channel/" + this._channelId;
+			}
+			
+			LogManager.instance.addLog(DOWNLOAD_FAIL + ":" +  targetId + ":" + event + ":" + event.target +  ":" + event.text);
+			trace(DOWNLOAD_FAIL + ":" +  targetId  + ":" + event + ":" + event.target +  ":" + event.text);
+			
+			dispatchEvent(new IOErrorEvent(DOWNLOAD_FAIL, false, false, event.text));
+			close(false, false);
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function getXMLSuccess(event:Event):void{
 //			trace((event.target as URLLoader).data);
 			
 			this._xml = new XML((event.target as URLLoader).data);
 			
 //			trace(DOWNLOAD_PROCESS_COMPLETE + ":" + event + ":" + xml);
-			LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ":" + this._publicMyListId);
+			if (this._myListId != null)
+			{
+				LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": mylist/" + this._myListId);
+			}
+			else
+			{
+				LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": channel/" + this._channelId);
+			}
 			dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
 		}
 		
@@ -165,8 +240,11 @@ package org.mineap.nndd
 		 * 
 		 */
 		private function terminate():void{
+			this._channelId = null;
+			this._myListId = null;
 			this._login = null;
 			this._publicMyListLoader = null;
+			this._channelLoader = null;
 		}
 		
 		/**
@@ -180,14 +258,18 @@ package org.mineap.nndd
 				this._login.close();
 				trace(this._login + " is closed.");
 			}catch(error:Error){
-//				trace(error.getStackTrace());
 			}
 			try{
 				this._publicMyListLoader.close();
 				trace(this._publicMyListLoader + " is closed.");
 			}catch(error:Error){
-//				trace(error.getStackTrace());
 			}
+			try{
+				this._channelLoader.close();
+				trace(this._channelLoader + " is closed.");
+			}catch(error:Error){
+			}
+			
 			terminate();
 			
 			var eventText:String = "";
