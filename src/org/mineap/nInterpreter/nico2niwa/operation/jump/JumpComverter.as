@@ -156,7 +156,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 										//ジャンプ先は指定された時間
 										min = jumpTo[1];
 										sec = jumpTo[2];
-										vpos = String(int(((min*60) + sec)*100));
+										vpos = String(int(((min*60) + sec)*1000));
 										
 										operation = SEEK_PRE + SEEK_P_VPOS + 
 											SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE + 
@@ -203,7 +203,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 										//ジャンプ先は指定された時間
 										min = jumpTo[1];
 										sec = jumpTo[2];
-										vpos = String(int(((min*60) + sec)*100));
+										vpos = String(int(((min*60) + sec)*1000));
 										
 										operation = SEEK_PRE + SEEK_P_VPOS + 
 											SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE + 
