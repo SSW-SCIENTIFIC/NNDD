@@ -28,9 +28,9 @@ package org.mineap.nndd.util
 			var myList_pattern:RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/mylist/\\d+\"[^>]*>(mylist/\\d+)</a>|(mylist/\\d+)", "ig");
 			var user_pattern:RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/user/\\d+\"[^>]*>(user/\\d+)</a>|(user/\\d+)", "ig");
 			var videoId_pattern:RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/watch/[^\"]+\"[^>]*>([^<]+)</a>|" + VideoTypeUtil.VIDEO_ID_WITHOUT_NUMONLY_SEARCH_PATTERN_STRING, "ig");
+			var channel_pattern:RegExp = new RegExp("<a href=\"http://ch.nicovideo.jp/(channel/ch[^\"]+)\">[^<]+</a>|(channel/\\w+)", "ig");
 			
 			var returnString:String = text.replace(myList_pattern, replFN_mylist);
-			
 			function replFN_mylist():String{
 				var str:String = arguments[0];
 				if(arguments.length>1 && arguments[1] != "" ){
@@ -40,8 +40,18 @@ package org.mineap.nndd.util
 				return "<a href=\"event:" + str + "\"><u><font color=\"#0000ff\">" + str + "</font></u></a>";
 			}
 			
-			returnString = returnString.replace(user_pattern, replFN_user);
+			returnString = returnString.replace(channel_pattern, replFN_channel);
+			function replFN_channel():String{
+				var str:String = arguments[0];
+				if (arguments.length>1 && arguments[1] != "")
+				{
+					str = arguments[1];
+				}
+				myLists.push(str);
+				return "<a href=\"event:" + str + "\"><u><font color=\"#0000ff\">" + str + "</font></u></a>";
+			}
 			
+			returnString = returnString.replace(user_pattern, replFN_user);
 			function replFN_user():String{
 				var str:String = arguments[0];
 				if(arguments.length>1 && arguments[1] != "" ){
@@ -52,7 +62,6 @@ package org.mineap.nndd.util
 			}
 			
 			returnString = returnString.replace(videoId_pattern, replFN);
-			
 			function replFN():String {
 				
 				var htmltag:String = arguments[0];

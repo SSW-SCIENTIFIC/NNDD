@@ -65,6 +65,7 @@ import mx.controls.sliderClasses.Slider;
 import mx.controls.treeClasses.TreeItemRenderer;
 import mx.core.Application;
 import mx.core.ClassFactory;
+import mx.core.FlexGlobals;
 import mx.core.IUIComponent;
 import mx.core.UITextField;
 import mx.events.AIREvent;
@@ -6050,7 +6051,7 @@ public function renewMyList(myListId:String):void{
 		
 		myListRenewButtonClicked(new MouseEvent(MouseEvent.CLICK));
 		
-		Application.application.activate();
+		FlexGlobals.topLevelApplication.activate();
 		
 		canvas_myList.removeEventListener(FlexEvent.SHOW, renewMyListInner);
 	}

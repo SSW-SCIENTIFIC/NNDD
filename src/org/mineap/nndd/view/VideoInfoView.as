@@ -1820,14 +1820,20 @@ public function setMyLists(myListNames:Array, myListNums:Array):void{
 }
 
 private function ownerTextLinkClicked(event:TextEvent):void{
-	if(event.text.indexOf("mylist/") != -1){
+	if (event.text.indexOf("mylist/") != -1)
+	{
 //		trace(event.text);
-		Application.application.renewMyList(event.text);
-	}else if(event.text.indexOf("watch/") != -1){
+		FlexGlobals.topLevelApplication.renewMyList(event.text);
+	}else if (event.text.indexOf("channel/") != -1)
+	{
+		FlexGlobals.topLevelApplication.renewMyList(event.text);
+	}else if (event.text.indexOf("watch/") != -1)
+	{
 		var videoId:String = PathMaker.getVideoID(event.text);
 //		trace(videoId);
 		playerController.playMovie("http://www.nicovideo.jp/watch/" + videoId);
-	}else{
+	}else
+	{
 		trace(event);
 	}
 }

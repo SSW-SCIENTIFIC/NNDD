@@ -58,7 +58,7 @@ package org.mineap.nndd.util
 				channelId = array[1];
 				return channelId;
 			}
-			pattern = new RegExp("[channel/]*(.+)");
+			pattern = new RegExp("channel/(.+)");
 			array = pattern.exec(string);
 			if(array != null && array.length >= 1 && array[1].length >= 1){
 				channelId = array[array.length-1];
