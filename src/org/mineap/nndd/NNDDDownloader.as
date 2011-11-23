@@ -1383,7 +1383,7 @@ package org.mineap.nndd
 				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_SWF){
 					extension = ".swf";
 				}else{
-					dispatchEvent(new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
+//					dispatchEvent(new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
 					close(true, true, new IOErrorEvent(DOWNLOAD_PROCESS_ERROR, false, false, _streamingUrl));
 					return;
 				}
