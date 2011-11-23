@@ -43,6 +43,7 @@ package org.mineap.nndd.player.comment
 		private var _isShowOnlyPermissionIdComment:Boolean;
 		private var _hideSekaShinComment:Boolean;
 		private var _ngListManager:NGListManager;
+		private var _commentnum_count_map:Object = new Object();
 		
 		private var _commentPath:String = null;
 		private var _ownerCommentPath:String = null;
@@ -101,6 +102,9 @@ package org.mineap.nndd.player.comment
 				if(commentListProvider != null){
 					addCommentToArrayCollection(commentListProvider, ngListManager, showOnlyPermissionIDComment, hideSekaShinComment, isNgUpEnable);
 				}
+				this._commentnum_count_map = loadNumClickByXML(comments);
+				LogManager.instance.addLog("コメント内ボタンのクリック回数をロード");
+				
 				this.comments = null;	// XMLを解放
 			}
 			// TODO 先に読み込んだ方が効率よくない？
@@ -221,6 +225,30 @@ package org.mineap.nndd.player.comment
 			
 			return commentArray;
 		}
+		
+		/**
+		 * 指定されたXMLからnumclick要素を読み込み、コメントのnoをキーとして対応するクリック回数を格納したMapを返します。
+		 * @param xml
+		 * @return 
+		 * 
+		 */
+		private function loadNumClickByXML(xml:XML):Object
+		{
+			var map:Object = new Object();
+			
+			var xmlList:XMLList = xml.num_click;
+			for each(var num_click:XML in xmlList)
+			{
+				var no:int = int(num_click.@no);
+				var count:int = int(num_click.@count);
+				
+				map[no] = count;
+				
+			}
+			
+			return map;
+		}
+		
 		
 		/**
 		 * 二つのNNDDCommentを比較します。
@@ -609,6 +637,28 @@ package org.mineap.nndd.player.comment
 				}
 			}
 			return word;
+		}
+		
+		/**
+		 * 指定された番号のコメントがクリックされた回数を返します。
+		 * @param no
+		 * @return コメントがクリックされた回数。コメントにクリック回数が指定されていない場合は-1を返す。
+		 * 
+		 */
+		public function getCommentCount(no:int):int
+		{
+			if (this._commentnum_count_map == null)
+			{
+				return -1;
+			}
+			
+			if (this._commentnum_count_map[no] == null || this._commentnum_count_map[no] == undefined)
+			{
+				return -1;
+			}
+			
+			return int(this._commentnum_count_map[no]);
+			
 		}
 		
 	}

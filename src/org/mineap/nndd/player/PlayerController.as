@@ -1328,6 +1328,8 @@ package org.mineap.nndd.player
 								
 								trace(videoDisplay.width + "," + videoDisplay.height);
 								
+								logManager.addLog("オリジナルの動画サイズ:" + this.videoDisplay.videoObject.videoWidth + " x " + this.videoDisplay.videoObject.videoHeight);
+								
 								if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
 									//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
 									videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
@@ -1381,6 +1383,11 @@ package org.mineap.nndd.player
 						
 						this.videoPlayer.nativeWindow.height += int(videoWindowHeight - this.videoPlayer.canvas_video_back.height);
 						this.videoPlayer.nativeWindow.width += int(videoWindowWidth - this.videoPlayer.canvas_video_back.width);
+						
+						if (this.videoDisplay != null)
+						{
+							logManager.addLog("表示中の動画サイズ:" + this.videoDisplay.width + " x " + this.videoDisplay.height);
+						}
 						
 //						(this.videoPlayer as Window).validateDisplayList();
 //						(this.videoPlayer as Window).validateNow();
