@@ -7,9 +7,11 @@
  * 
  */	
  
-import org.mineap.nndd.player.PlayerController;
+import flash.events.Event;
 
 import mx.containers.Canvas;
+
+import org.mineap.nndd.player.PlayerController;
 
 private var playerController:PlayerController;
 private var videoPlayer:VideoPlayer;
