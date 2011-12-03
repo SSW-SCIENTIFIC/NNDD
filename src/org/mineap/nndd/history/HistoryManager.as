@@ -67,7 +67,7 @@ package org.mineap.nndd.history
 			
 			// ヒストリーの保持件数をプロパティから持ってくる。(最大10000、最小100)
 			var maxCountStr:String = ConfigManager.getInstance().getItem("historyMaxCount");
-			if (maxCountStr == null)
+			if (maxCountStr != null)
 			{
 				var temp:int = int(maxCountStr);
 				if (temp >= 100 && temp <= 10000)

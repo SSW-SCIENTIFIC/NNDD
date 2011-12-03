@@ -119,7 +119,7 @@ package org.mineap.nndd.download
 			this.rankingProvider = rankingProvider;
 			this.logManager = logManager;
 			
-			var maxDlListCountStr:String = ConfigManager.getInstance().getItem("maxDlListCount");
+			var maxDlListCountStr:String = ConfigManager.getInstance().getItem("dlListMaxCount");
 			if (maxDlListCountStr != null)
 			{
 				var temp:int = int(maxDlListCountStr);
@@ -130,7 +130,7 @@ package org.mineap.nndd.download
 			}
 			else
 			{
-				ConfigManager.getInstance().setItem("maxDlListCount", DEFAULT_MAX_DLLIST_COUNT);
+				ConfigManager.getInstance().setItem("dlListMaxCount", DEFAULT_MAX_DLLIST_COUNT);
 				ConfigManager.getInstance().save();
 			}
 			
