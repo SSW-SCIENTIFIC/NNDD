@@ -446,10 +446,17 @@
 				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
 				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
 				
+				
+				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
+				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				
+				selectAllMenuItem = new ContextMenuItem(Message.L_SELECT_ALL, true);
+				selectAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectAll);
+				
 				downloadedMenu.customItems.push(downloadedMenuitem1, downloadedMenuitem3, 
 					downloadedMenuitem2, downloadedMenuitem6, playListContextMenuItem, 
 					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem, downloadedMenuitem4, 
-					downloadedMenuitem5);
+					downloadedMenuitem5, copyUrlMenuItem, selectAllMenuItem);
 				downloadedMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				downloadedMenu.addEventListener(Event.DISPLAYING, function(event:Event):void{
 					if(playListManager.isSelectedPlayList){
