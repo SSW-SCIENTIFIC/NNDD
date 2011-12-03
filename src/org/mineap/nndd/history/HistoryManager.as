@@ -14,6 +14,7 @@ package org.mineap.nndd.history
 	import org.mineap.nndd.util.LibraryUtil;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.util.config.ConfUtil;
+	import org.mineap.util.config.ConfigManager;
 
 	/**
 	 * 
@@ -33,8 +34,9 @@ package org.mineap.nndd.history
 		
 		private var isWindows:Boolean = false;
 		
-		public static const HISTORY_MAX_COUNT:int = 100;
+		public static const DEFAULT_HISTORY_MAX_COUNT:int = 100;
 		
+		private var historyMaxCount:int = DEFAULT_HISTORY_MAX_COUNT;
 		
 		/**
 		 * 
@@ -62,6 +64,22 @@ package org.mineap.nndd.history
 		{
 			this.historyProvider = historyProvider;
 			this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
+			
+			// ヒストリーの保持件数をプロパティから持ってくる。(最大10000、最小100)
+			var maxCountStr:String = ConfigManager.getInstance().getItem("historyMaxCount");
+			if (maxCountStr == null)
+			{
+				var temp:int = int(maxCountStr);
+				if (temp >= 100 && temp <= 10000)
+				{
+					historyMaxCount = temp;
+				}
+			}
+			else
+			{
+				ConfigManager.getInstance().setItem("historyMaxCount", DEFAULT_HISTORY_MAX_COUNT);
+				ConfigManager.getInstance().save();
+			}
 			
 			if (Capabilities.os.toLowerCase().indexOf("windows") != -1)
 			{
@@ -152,7 +170,7 @@ package org.mineap.nndd.history
 			}
 				
 			
-			while(historyProvider.length > 100){
+			while(historyProvider.length > historyMaxCount){
 				historyProvider.removeItemAt(historyProvider.length-1);
 			}
 		}

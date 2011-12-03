@@ -1,6 +1,7 @@
 package org.mineap.nndd.myList
 {
 	import org.mineap.nndd.model.NNDDVideo;
+	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.util.MyListUtil;
 	
 
@@ -40,9 +41,9 @@ package org.mineap.nndd.myList
 		private var myListVideoIds:Object = new Object();
 		
 		/**
-		 * チャンネルかどうか
+		 * マイリスト/チャンネル/ユーザ投稿動画の種別を示します
 		 */
-		public var isChannel:Boolean = false;
+		public var type:RssType = RssType.MY_LIST;
 		
 		/**
 		 * コンストラクタ。
@@ -56,6 +57,7 @@ package org.mineap.nndd.myList
 		{
 			if(myListUrl != null){
 				this.myListUrl = myListUrl;
+				this.type = MyListManager.checkType(myListUrl);
 			}
 			if(myListName != null){
 				this.myListName = myListName;
@@ -74,17 +76,41 @@ package org.mineap.nndd.myList
 		
 		/**
 		 * idを返します。
-		 * idは、mylist/****** や channel/****** の******の部分です。
+		 * idは、mylist/xxxxxx や channel/xxxxxx の xxxxxx の部分です。
 		 * @return 
 		 * 
 		 */
 		public function get id():String{
-			if (isChannel)
+			if (type == RssType.CHANNEL)
 			{
 				return MyListUtil.getChannelId(myListUrl);
-			}else
+			} 
+			else if (type == RssType.USER_UPLOAD_VIDEO)
+			{
+				return MyListUtil.getUserUploadVideoListId(myListUrl);
+			}
+			else
 			{
 				return MyListUtil.getMyListId(myListUrl);
+			}
+		}
+		
+		/**
+		 * 
+		 */
+		public function get idWithPrefix():String
+		{
+			if (type == RssType.CHANNEL)
+			{
+				return "channel/" + MyListUtil.getChannelId(myListUrl);
+			} 
+			else if (type == RssType.USER_UPLOAD_VIDEO)
+			{
+				return "user/" + MyListUtil.getUserUploadVideoListId(myListUrl);
+			}
+			else
+			{
+				return "myList/" + MyListUtil.getMyListId(myListUrl);
 			}
 		}
 		

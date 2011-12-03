@@ -46,6 +46,52 @@ package org.mineap.nndd.util
 		 * @return 
 		 * 
 		 */
+		public static function getUserUploadVideoListId(string:String):String
+		{
+			var userId:String = null;
+			
+			// http://www.nicovideo.jp/user/13520681/video
+			
+			var pattern:RegExp = new RegExp("http://www.nicovideo.jp/user/(.+)/video");
+			var array:Array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				userId = array[1];
+				return userId;
+			}
+			
+			pattern = new RegExp("http://www.nicovideo.jp/user/(.+)");
+			array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				userId = array[array.length-1];
+				return userId;
+			}
+			
+			pattern = new RegExp("user/(.+)/video");
+			array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				userId = array[array.length-1];
+				return userId;
+			}
+			
+			pattern = new RegExp("user/(.+)");
+			array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				userId = array[array.length-1];
+				return userId;
+			}
+			
+			return userId;
+			
+			
+		}
+		
+		
+		/**
+		 * 
+		 * @param string
+		 * @return 
+		 * 
+		 */
 		public static function getChannelId(string:String):String{
 			
 			var channelId:String = null;
@@ -56,6 +102,12 @@ package org.mineap.nndd.util
 			var array:Array = pattern.exec(string);
 			if(array != null && array.length >= 1 && array[1].length >= 1){
 				channelId = array[1];
+				return channelId;
+			}
+			pattern = new RegExp("http://ch.nicovideo.jp/video/(.+)");
+			array = pattern.exec(string);
+			if(array != null && array.length >= 1 && array[1].length >= 1){
+				channelId = array[array.length-1];
 				return channelId;
 			}
 			pattern = new RegExp("channel/(.+)");

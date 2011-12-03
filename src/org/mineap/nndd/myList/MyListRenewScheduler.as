@@ -10,6 +10,7 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.NNDDMyListLoader;
 	import org.mineap.nndd.event.MyListRenewProgressEvent;
 	import org.mineap.nndd.model.MyListRenewResultType;
+	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.util.MyListUtil;
 
 	[Event(name="complete", type="Event")]
@@ -278,9 +279,13 @@ package org.mineap.nndd.myList
 				var myListId:String = myList.id;
 				
 				var myListStr:String;
-				if (myList.isChannel)
+				if (myList.type == RssType.CHANNEL)
 				{
 					myListStr = "channel/" + myList.id + " " + myList.myListName;
+				}
+				else if(myList.type == RssType.USER_UPLOAD_VIDEO)
+				{
+					myListStr = "user/" + myList.id + " " + myList.myListName;
 				}
 				else
 				{
@@ -295,9 +300,13 @@ package org.mineap.nndd.myList
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
-				if (myList.isChannel)
+				if (myList.type == RssType.CHANNEL)
 				{
 					nnddMyListLoader.requestDownloadForChannel(_mailAddress, _password, myListId);
+				}
+				else if(myList.type == RssType.USER_UPLOAD_VIDEO)
+				{
+					nnddMyListLoader.requestDownloadForUserVideoList(_mailAddress, _password, myListId);
 				}
 				else
 				{
@@ -314,7 +323,7 @@ package org.mineap.nndd.myList
 					
 					var xml:XML = nnddMyListLoader.xml;
 					if(xml != null){
-						MyListManager.instance.saveMyList(myListId, xml, true);
+						MyListManager.instance.saveMyList(myListId, myList.type, xml, true);
 						LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新完了(" + myListStr + ")");
 						_myListRenewResultMap[myListId] = MyListRenewResultType.SUCCESS;
 					}else{

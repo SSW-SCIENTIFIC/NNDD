@@ -11,6 +11,7 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.Login;
 	import org.mineap.nicovideo4as.loader.ChannelLoader;
 	import org.mineap.nicovideo4as.loader.PublicMyListLoader;
+	import org.mineap.nicovideo4as.loader.UserVideoListLoader;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 
@@ -35,11 +36,13 @@ package org.mineap.nndd
 		
 		private var _channelLoader:ChannelLoader;
 		private var _publicMyListLoader:PublicMyListLoader;
+		private var _userVideoListLoader:UserVideoListLoader;
 		
 		private var _libraryManager:ILibraryManager;
 		
 		private var _myListId:String;
 		private var _channelId:String;
+		private var _uploadUserId:String;
 		
 		private var _xml:XML;
 		
@@ -127,6 +130,22 @@ package org.mineap.nndd
 		 * 
 		 * @param user
 		 * @param password
+		 * @param uploadUserId
+		 * 
+		 */
+		public function requestDownloadForUserVideoList(user:String, password:String, uploadUserId:String):void
+		{
+			trace("start - requestDownload(" + user + ", ****, user/" + uploadUserId);
+			
+			this._uploadUserId = uploadUserId;
+		
+			login(user, password);
+		}
+		
+		/**
+		 * 
+		 * @param user
+		 * @param password
 		 * 
 		 */
 		private function login(user:String, password:String):void{
@@ -168,7 +187,7 @@ package org.mineap.nndd
 				
 				this._publicMyListLoader.getMyList(this._myListId);
 			}
-			else
+			else if (_channelId != null)
 			{
 				this._channelLoader = new ChannelLoader();
 				this._channelLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
@@ -176,6 +195,15 @@ package org.mineap.nndd
 				this._channelLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
 				
 				this._channelLoader.getChannel(this._channelId);
+			}
+			else if (_uploadUserId != null)
+			{
+				this._userVideoListLoader = new UserVideoListLoader();
+				this._userVideoListLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
+				this._userVideoListLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
+				this._userVideoListLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
+				
+				this._userVideoListLoader.getVideoList(this._uploadUserId);
 			}
 		}
 		
@@ -193,9 +221,13 @@ package org.mineap.nndd
 			{
 				targetId = "mylist/" + this._myListId;
 			}
-			else
+			else if (this._channelId != null)
 			{
 				targetId = "channel/" + this._channelId;
+			}
+			else
+			{
+				targetId = "user/" + this._uploadUserId + "/video";
 			}
 			
 			LogManager.instance.addLog(DOWNLOAD_FAIL + ":" +  targetId + ":" + event + ":" + event.target +  ":" + event.text);
@@ -220,10 +252,15 @@ package org.mineap.nndd
 			{
 				LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": mylist/" + this._myListId);
 			}
-			else
+			else if (this._channelId != null)
 			{
 				LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": channel/" + this._channelId);
 			}
+			else
+			{
+				LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": user/" + this._channelId);
+			}
+			
 			dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
 		}
 		
@@ -242,9 +279,11 @@ package org.mineap.nndd
 		private function terminate():void{
 			this._channelId = null;
 			this._myListId = null;
+			this._uploadUserId = null;
 			this._login = null;
 			this._publicMyListLoader = null;
 			this._channelLoader = null;
+			this._userVideoListLoader = null;
 		}
 		
 		/**
@@ -267,6 +306,11 @@ package org.mineap.nndd
 			try{
 				this._channelLoader.close();
 				trace(this._channelLoader + " is closed.");
+			}catch(error:Error){
+			}
+			try{
+				this._userVideoListLoader.close();
+				trace(this._userVideoListLoader + " is closed.");
 			}catch(error:Error){
 			}
 			

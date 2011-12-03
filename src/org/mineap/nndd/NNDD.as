@@ -892,6 +892,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 		if(event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null){
 			var videoName:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoName;
 			var myListId:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_myListId;
+			var type:RssType =  (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_type;
 			
 			if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_PLAY){
 				var videoLocalPath:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoLocalPath;
@@ -900,11 +901,11 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					if(myListId != null){
 						var vector:Vector.<String> = new Vector.<String>();
 						vector.splice(0, 0, PathMaker.getVideoID(videoLocalPath));
-						_myListManager.updatePlayedAndSave(myListId, vector, true);
+						_myListManager.updatePlayedAndSave(myListId, type, vector, true);
 					}
 					
 					if(!selectedMyListFolder){
-						var xml:XML = MyListManager.instance.readLocalMyList(myListId);
+						var xml:XML = MyListManager.instance.readLocalMyList(myListId, type);
 						if(xml != null){
 							myListRenew(myListId, xml);
 						}
@@ -924,11 +925,11 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					if(myListId != null){
 						var vector:Vector.<String> = new Vector.<String>();
 						vector.splice(0, 0, PathMaker.getVideoID(videoUrl));
-						_myListManager.updatePlayedAndSave(myListId, vector, true);
+						_myListManager.updatePlayedAndSave(myListId, type, vector, true);
 					}
 					
 					if(!selectedMyListFolder){
-						var xml:XML = MyListManager.instance.readLocalMyList(myListId);
+						var xml:XML = MyListManager.instance.readLocalMyList(myListId, type);
 						if(xml != null){
 							myListRenew(myListId, xml);
 						}
@@ -976,7 +977,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					
 					if(tempListId != myListId){
 						try{
-							MyListManager.instance.updatePlayedAndSave(myListId, vector, isPlayed);
+							MyListManager.instance.updatePlayedAndSave(myListId, type, vector, isPlayed);
 						}catch(error:Error){
 							trace(error.getStackTrace());
 						}
@@ -992,7 +993,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 				
 				// 本来のマイリスト既読更新処理
 				try{
-					MyListManager.instance.updatePlayedAndSave(myListId, vector, isPlayed);
+					MyListManager.instance.updatePlayedAndSave(myListId, type, vector, isPlayed);
 				}catch(error:Error){
 					trace(error.getStackTrace());
 				}
@@ -1000,7 +1001,7 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 				var myListBuilder:MyListBuilder = new MyListBuilder();
 				var scrollIndex:int = dataGrid.verticalScrollPosition;
 				if(!selectedMyListFolder){
-					var xml:XML = MyListManager.instance.readLocalMyList(myListId);
+					var xml:XML = MyListManager.instance.readLocalMyList(myListId, type);
 					if(xml != null){
 						myListItemProvider = myListBuilder.getMyListArrayCollection(myListId, xml);
 						var name:String = tree_myList.selectedItem.label;;
@@ -5892,16 +5893,17 @@ private function videoStreamingPlayButtonClickedForMyList():void{
 		
 		var videoUrl:String = dataGrid_myList.dataProvider[index].dataGridColumn_videoUrl;
 		var videoName:String = dataGrid_myList.dataProvider[index].dataGridColumn_videoName;
+		var type:RssType = dataGrid_myList.dataProvider[index].dataGridColumn_type;
 		
 		if(videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1){
 			var myListId:String = dataGrid_myList.dataProvider[index].dataGridColumn_myListId;
 			if(myListId != null){
 				var vector:Vector.<String> = new Vector.<String>();
 				vector.splice(0, 0, PathMaker.getVideoID(videoUrl));
-				_myListManager.updatePlayedAndSave(myListId, vector, true);
+				_myListManager.updatePlayedAndSave(myListId, type, vector, true);
 				
 				if(!selectedMyListFolder){
-					var xml:XML = MyListManager.instance.readLocalMyList(myListId);
+					var xml:XML = MyListManager.instance.readLocalMyList(myListId, type);
 					if(xml != null){
 						myListRenew(myListId, xml);
 					}
@@ -5947,6 +5949,7 @@ private function myListItemDataGridDoubleClicked():void{
 		
 		var videoUrl:String = dataGrid_myList.dataProvider[index].dataGridColumn_videoUrl;
 		var videoName:String = dataGrid_myList.dataProvider[index].dataGridColumn_videoName;
+		var type:RssType = dataGrid_myList.dataProvider[index].dataGridColumn_type;
 		
 		if(videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1){
 			//ダウンロード or ストリーミング
@@ -5956,10 +5959,10 @@ private function myListItemDataGridDoubleClicked():void{
 				if(myListId != null){
 					var vector:Vector.<String> = new Vector.<String>();
 					vector.splice(0, 0, PathMaker.getVideoID(videoUrl));
-					_myListManager.updatePlayedAndSave(myListId, vector, true);
+					_myListManager.updatePlayedAndSave(myListId, type, vector, true);
 					
 					if(!selectedMyListFolder){
-						var xml:XML = MyListManager.instance.readLocalMyList(myListId);
+						var xml:XML = MyListManager.instance.readLocalMyList(myListId, type);
 						if(xml != null){
 							myListRenew(myListId, xml);
 						}
@@ -6110,18 +6113,27 @@ private function myListRenewButtonClicked(event:Event):void{
 				this._nnddMyListLoader = new NNDDMyListLoader();
 				this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, function(myevent:Event):void{
 		
-					var isChannel:Boolean = false;
-					var myListId:String = MyListUtil.getMyListId(url);
-					if (url.indexOf("channel") != -1)
+					var type:RssType = RssType.MY_LIST;
+					type = MyListManager.checkType(url);
+					
+					var myListId:String = null;
+					if (type == RssType.MY_LIST)
 					{
-						isChannel = true;
+						myListId = MyListUtil.getMyListId(url);
+					}
+					else if (type == RssType.CHANNEL)
+					{
 						myListId = MyListUtil.getChannelId(url)
+					}
+					else if (type == RssType.USER_UPLOAD_VIDEO)
+					{
+						myListId = MyListUtil.getUserUploadVideoListId(url);
 					}
 					
 					try{
 						
 						// マイリストをローカルに保存
-						_myListManager.saveMyList(myListId, _nnddMyListLoader.xml, true);
+						_myListManager.saveMyList(myListId, type, _nnddMyListLoader.xml, true);
 						
 					}catch(error:Error){
 						trace(error.getStackTrace());
@@ -6262,7 +6274,19 @@ private function myListRenewButtonClicked(event:Event):void{
 					textinput_mylist.enabled = true;
 				});
 				
-				if (url.indexOf("channel") != -1)
+				var type:RssType = RssType.MY_LIST;
+				type = MyListManager.checkType(url);
+				
+				var myListId:String = null;
+				if (type == RssType.MY_LIST)
+				{
+					var myListId:String = MyListUtil.getMyListId(url);
+					if(myListId != null){
+						this._nnddMyListLoader.requestDownloadForMyList(UserManager.instance.user, UserManager.instance.password, myListId);
+						return;
+					}
+				}
+				else if (type == RssType.CHANNEL)
 				{
 					var channelId:String = MyListUtil.getChannelId(url);
 					if(channelId != null){
@@ -6270,11 +6294,11 @@ private function myListRenewButtonClicked(event:Event):void{
 						return;
 					}
 				}
-				else
+				else if (type == RssType.USER_UPLOAD_VIDEO)
 				{
-					var myListId:String = MyListUtil.getMyListId(url);
-					if(myListId != null){
-						this._nnddMyListLoader.requestDownloadForMyList(UserManager.instance.user, UserManager.instance.password, myListId);
+					var userId:String = MyListUtil.getUserUploadVideoListId(url);
+					if(userId != null){
+						this._nnddMyListLoader.requestDownloadForUserVideoList(UserManager.instance.user, UserManager.instance.password, userId);
 						return;
 					}
 				}
@@ -6476,12 +6500,12 @@ private function myListRenewForName(name:String):void{
 	if(url.indexOf("channel") != -1)
 	{
 		myListId = MyListUtil.getChannelId(url);
-		xml = MyListManager.instance.readLocalMyList(myListId);
+		xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
 	}
 	else
 	{
 		myListId = MyListUtil.getMyListId(url);
-		xml = MyListManager.instance.readLocalMyList(myListId);
+		xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
 	}
 	try{
 		if(xml != null){
@@ -6511,7 +6535,7 @@ private function myListRenewForName(name:String):void{
 			
 			myListItemProvider.removeAll();
 			for each(var myList:MyList in myLists){
-				var xml:XML = MyListManager.instance.readLocalMyList(myList.id);
+				var xml:XML = MyListManager.instance.readLocalMyList(myList.id, MyListManager.checkType(myList.myListUrl));
 				var array:ArrayCollection = myListBuilder.getMyListArrayCollection(myList.id, xml, true);
 				myListItemProvider.addAll(array);
 			}

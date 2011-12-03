@@ -8,6 +8,8 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
+	import org.mineap.nndd.model.RssType;
+	import org.mineap.nndd.util.MyListUtil;
 	import org.mineap.nndd.util.NicoPattern;
 	import org.mineap.nndd.util.PathMaker;
 	
@@ -68,12 +70,30 @@ package org.mineap.nndd.myList
 			var arrayCollection:ArrayCollection = new ArrayCollection();
 			var index:int = 1;
 			
+			
+			var type:RssType = RssType.MY_LIST;;
 			var links:XMLList = xml.channel.link;
+			if (links.length() > 0)
+			{
+				var url:String = (links[0] as XML).toString();
+				if (MyListUtil.getChannelId(url) != null)
+				{
+					type = RssType.CHANNEL;
+				}
+				else if (MyListUtil.getUserUploadVideoListId(url) != null)
+				{
+					type = RssType.USER_UPLOAD_VIDEO;
+				}
+				else if (MyListUtil.getMyListId(url) != null)
+				{
+					type = RssType.MY_LIST;
+				}
+			}
 			
 			var videoArray:Vector.<NNDDVideo> = null;
 			var videoMap:Object = new Object();
 			if(myListId != null){
-				videoArray = MyListManager.instance.readLocalMyListByNNDDVideo(myListId);
+				videoArray = MyListManager.instance.readLocalMyListByNNDDVideo(myListId, type);
 				for each(var nnddVideo:NNDDVideo in videoArray){
 					var id:String = PathMaker.getVideoID(nnddVideo.getVideoNameWithVideoID());
 					videoMap[id] = nnddVideo;
@@ -176,7 +196,8 @@ package org.mineap.nndd.myList
 						dataGridColumn_videoLocalPath:videoLocalPath,
 						dataGridColumn_played:played,
 						dataGridColumn_videoId:videoId,
-						dataGridColumn_myListId:myListId
+						dataGridColumn_myListId:myListId,
+						dataGridColumn_type:type
 					});
 					
 				}

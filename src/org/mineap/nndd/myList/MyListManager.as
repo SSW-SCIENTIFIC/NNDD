@@ -16,6 +16,7 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.MyListSortType;
 	import org.mineap.nndd.model.NNDDVideo;
+	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.util.MyListUtil;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.TreeDataBuilder;
@@ -41,7 +42,7 @@ package org.mineap.nndd.myList
 		/**
 		 * 動画IDとマイリストIDのMapです
 		 */
-		private var _videoId_myListId_map:Object = new Object();
+		private var _videoId_myListIds_map:Object = new Object();
 		
 		/**
 		 * マイリストIDとマイリスト名のMapです
@@ -133,10 +134,7 @@ package org.mineap.nndd.myList
 			var myList:MyList = new MyList(myListUrl, myListName, isDir);
 			var object:Object = searchByName(oldName, this._tree_MyList);
 			
-			if (myListUrl != null && myListUrl.indexOf("channel") != -1)
-			{
-				myList.isChannel = true;
-			}
+			myList.type = checkType(myListUrl);
 			
 			delete this._myListName_MyList_Map[oldName];
 			
@@ -222,10 +220,7 @@ package org.mineap.nndd.myList
 			var exsits:Boolean = false;
 			var myList:MyList = new MyList(myListUrl, myListName, isDir);
 			
-			if (myListUrl != null && myListUrl.indexOf("channel") != -1)
-			{
-				myList.isChannel = true;
-			}
+			myList.type = checkType(myListUrl);
 			
 			var addedTreeObject:Object = null;
 			
@@ -456,10 +451,21 @@ package org.mineap.nndd.myList
 					file.unPlayVideoCount = MyListManager.instance.getMyListUnPlayVideoCount(name);
 					
 					myList = new MyList(url, name);
-					if ((temp.@isChannel != null && temp.@isChannel == "true" )||(url != null && url.indexOf("channel") != -1))
+					if ((temp.@isChannel != null && temp.@isChannel == "true" )||(url != null && url.indexOf("channel/") != -1))
 					{
-						myList.isChannel = true;
+						myList.type = RssType.CHANNEL;
 					}
+					if ((temp.@type != null && temp.@type == RssType.CHANNEL.toString())
+						||(url != null && url.indexOf("channel/") != -1))
+					{
+						myList.type = RssType.CHANNEL;
+					}
+					if ((temp.@type != null && temp.@type == RssType.USER_UPLOAD_VIDEO.toString())
+						||(url != null && url.indexOf("user/") != -1))
+					{
+						myList.type = RssType.USER_UPLOAD_VIDEO;
+					}	
+					
 					myListArray.push(file);
 					myListMap[name] = myList;
 					
@@ -484,14 +490,16 @@ package org.mineap.nndd.myList
 			
 			myList.clearNNDDVideoId();
 			
+			var type:RssType = checkType(myList.myListUrl);
+			
 			/* 動画IDをマイリストに登録 */
-			var myVideos:Vector.<NNDDVideo> = readLocalMyListByNNDDVideo(myList.id);
+			var myVideos:Vector.<NNDDVideo> = readLocalMyListByNNDDVideo(myList.id, type);
 			for each(var tempVideo:NNDDVideo in myVideos)
 			{
 				myList.addNNDDVideoId(tempVideo.key);
 				
 				/* 動画IDとマイリストIDのマップも作る */
-				setVideoId_MyListId_Map(tempVideo.key, myList.id);
+				setVideoId_MyListId_Map(tempVideo.key, myList.id, type);
 				
 			}
 			trace("マイリスト(" + myList.id + ")に登録されている動画:" + myVideos.length);
@@ -506,9 +514,23 @@ package org.mineap.nndd.myList
 		 * @param myListId
 		 * 
 		 */
-		private function setVideoId_MyListId_Map(videoId:String, myListId:String):void
+		private function setVideoId_MyListId_Map(videoId:String, myListId:String, type:RssType):void
 		{
-			var myListIds:Vector.<String> = _videoId_myListId_map[videoId];
+			
+			if (type == RssType.CHANNEL)
+			{
+				myListId = "channel/" + myListId;
+			}
+			else if (type == RssType.MY_LIST)
+			{
+				myListId = "myList/" + myListId;
+			}
+			else if (type == RssType.USER_UPLOAD_VIDEO)
+			{
+				myListId = "user/" + myListId;
+			}
+			
+			var myListIds:Vector.<String> = _videoId_myListIds_map[videoId];
 			if(myListIds == null)
 			{
 				myListIds = new Vector.<String>();
@@ -528,7 +550,7 @@ package org.mineap.nndd.myList
 				myListIds.push(myListId);
 			}
 			
-			_videoId_myListId_map[videoId] = myListIds;
+			_videoId_myListIds_map[videoId] = myListIds;
 		}
 		
 		/**
@@ -750,7 +772,7 @@ package org.mineap.nndd.myList
 						
 						myListItem.@url = encodeURIComponent(myList.myListUrl);
 						myListItem.@name = encodeURIComponent(myList.myListName);
-						myListItem.@isChannel = myList.isChannel;
+						myListItem.@type = myList.type.toString();
 						myListItem.@isDir = false;
 						
 						if(myListSortType.sortFiledName != null){
@@ -804,17 +826,29 @@ package org.mineap.nndd.myList
 		 * @param savedXMLprecedence 保存済みのXMLの既読/未読を優先するかどうか。trueの場合優先する。falseの場合は引数で渡した既読/未読を優先する。
 		 * 
 		 */
-		public function saveMyList(myListId:String, xml:XML, savedXMLprecedence:Boolean):void{
+		public function saveMyList(myListId:String, type:RssType, xml:XML, savedXMLprecedence:Boolean):void{
 			
 			try{
 				
-				_logManager.addLog("マイリスト(" + myListId + ")を保存中...");
-				
 				var file:File = this._libraryManager.systemFileDir;
 				
-				var vector:Vector.<String> = null;
+				if (type == RssType.CHANNEL)
+				{
+					_logManager.addLog("チャンネル(" + myListId + ")を保存中...");
+					file = new File(file.url + "/channel/" + myListId + ".xml");
+				}
+				else if (type == RssType.USER_UPLOAD_VIDEO)
+				{
+					_logManager.addLog("投稿動画一覧(" + myListId + ")を保存中...");
+					file = new File(file.url + "/user/" + myListId + ".xml");
+				}
+				else
+				{
+					_logManager.addLog("マイリスト(" + myListId + ")を保存中...");
+					file = new File(file.url + "/myList/" + myListId + ".xml");
+				}
 				
-				file = new File(file.url + "/myList/" + myListId + ".xml");
+				var vector:Vector.<String> = null;
 				
 				if (file.exists)
 				{
@@ -823,7 +857,7 @@ package org.mineap.nndd.myList
 					{
 						// 保存済みXMLの既読/未読を優先
 						
-						var tempXML:XML = readLocalMyList(myListId);
+						var tempXML:XML = readLocalMyList(myListId, type);
 						vector = searchPlayedItem(tempXML);
 						
 						//再生済み項目を新規XMLに反映
@@ -845,11 +879,11 @@ package org.mineap.nndd.myList
 				
 				var fileIO:FileIO = new FileIO(_logManager);
 				fileIO.addFileStreamEventListener(Event.COMPLETE, function(event:Event):void{
-					_logManager.addLog("マイリストを保存:" + file.nativePath);
+					_logManager.addLog(myListId + "を保存:" + file.nativePath);
 					trace(event);
 				});
 				fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-					_logManager.addLog("マイリストの保存に失敗:" + file.nativePath + ":" + event);
+					_logManager.addLog(myListId + "の保存に失敗:" + file.nativePath + ":" + event);
 					trace(event + ":" + file.nativePath);
 				});
 				fileIO.saveXMLSync(file, xml);
@@ -864,10 +898,13 @@ package org.mineap.nndd.myList
 					
 					if (myList.id == myListId)
 					{
+						
+						var type:RssType = checkType(myList.myListUrl);
+						
 						updateMyListVideoId(myList);
 						
 						// 未再生の動画数を登録
-						myList.unPlayVideoCount = countUnPlayVideos(myList.id);
+						myList.unPlayVideoCount = countUnPlayVideos(myList.id, type);
 						break;
 					}
 				}
@@ -886,13 +923,24 @@ package org.mineap.nndd.myList
 		 * @return 
 		 * 
 		 */
-		public function readLocalMyList(myListId:String):XML{
+		public function readLocalMyList(myListId:String, type:RssType):XML{
 			
 			try{
 				
 				var file:File = this._libraryManager.systemFileDir;
 				
-				file = new File(file.url + "/myList/" + myListId + ".xml");
+				if (type == RssType.MY_LIST)
+				{
+					file = new File(file.url + "/myList/" + myListId + ".xml");
+				}
+				else if (type == RssType.CHANNEL)
+				{
+					file = new File(file.url + "/channel/" + myListId + ".xml");
+				}
+				else if (type == RssType.USER_UPLOAD_VIDEO)
+				{
+					file = new File(file.url + "/user/" + myListId + ".xml");
+				}
 				
 				var fileIO:FileIO = new FileIO(_logManager);
 				fileIO.addFileStreamEventListener(Event.COMPLETE, function(event:Event):void{
@@ -937,8 +985,8 @@ package org.mineap.nndd.myList
 				for each(var tempObject:Object in children){
 					
 					var tempVector:Vector.<MyList> = getSubDirMyList(tempObject.label);
-					for each(var tempXML:MyList in tempVector){
-						vector.splice(0,0, tempXML);
+					for each(var tempMyList:MyList in tempVector){
+						vector.splice(0,0, tempMyList);
 					}
 					
 				}
@@ -966,7 +1014,8 @@ package org.mineap.nndd.myList
 			{
 				if (!myList.isDir)
 				{
-					var xml:XML = this.readLocalMyList(myList.id);
+					var type:RssType = checkType(myList.myListUrl);
+					var xml:XML = this.readLocalMyList(myList.id, type);
 					vector.splice(0,0,xml);
 				}
 			}
@@ -981,9 +1030,9 @@ package org.mineap.nndd.myList
 		 * @param isPlayed
 		 * 
 		 */
-		public function updatePlayedAndSave(myListId:String, videoIds:Vector.<String>, isPlayed:Boolean):void{
+		public function updatePlayedAndSave(myListId:String, type:RssType, videoIds:Vector.<String>, isPlayed:Boolean):void{
 			
-			var xml:XML = readLocalMyList(myListId);
+			var xml:XML = readLocalMyList(myListId, type);
 			
 			if(xml != null){
 				
@@ -994,12 +1043,12 @@ package org.mineap.nndd.myList
 				
 				if (!updatePlayed(videoIds, xml, isPlayed))
 				{
-					_logManager.addLog(videoId + "は isPlayed = " + isPlayed + " に設定済(mylist/" + myListId + ")" );
+					_logManager.addLog(videoId + "は isPlayed = " + isPlayed + " に設定済(" + type.toString() + ":" + myListId + ")" );
 					return;
 				}
-				saveMyList(myListId, xml, false);
+				saveMyList(myListId, type, xml, false);
 				
-				_logManager.addLog(videoId + "を isPlayed = " + isPlayed + " に設定(mylist/" + myListId + ")" );
+				_logManager.addLog(videoId + "を isPlayed = " + isPlayed + " に設定(" + type.toString() + ":" + myListId + ")" );
 				
 			}
 			
@@ -1012,11 +1061,11 @@ package org.mineap.nndd.myList
 		 * @return 
 		 * 
 		 */
-		public function readLocalMyListByNNDDVideo(myListId:String):Vector.<NNDDVideo>{
+		public function readLocalMyListByNNDDVideo(myListId:String, type:RssType):Vector.<NNDDVideo>{
 			
 			var videoArray:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
 			
-			var xml:XML = readLocalMyList(myListId);
+			var xml:XML = readLocalMyList(myListId, type);
 			
 			if(xml != null){
 				var xmlList:XMLList = xml.child("channel");
@@ -1199,7 +1248,8 @@ package org.mineap.nndd.myList
 			for each(var myList:MyList in this._myListName_MyList_Map){
 				var myListId:String = MyListUtil.getMyListId(myList.myListUrl);
 				if(myListId != null){
-					var myCount:int = countUnPlayVideos(myListId);
+					var type:RssType = checkType(myList.myListUrl);					
+					var myCount:int = countUnPlayVideos(myListId, type);
 					myList.unPlayVideoCount = myCount;
 					count += myCount;
 				}
@@ -1215,9 +1265,9 @@ package org.mineap.nndd.myList
 		 * @return 
 		 * 
 		 */
-		public function countUnPlayVideos(myListId:String):int{
+		public function countUnPlayVideos(myListId:String, type:RssType):int{
 			
-			var xml:XML = readLocalMyList(myListId);
+			var xml:XML = readLocalMyList(myListId, type);
 			
 			if(xml != null){
 				var vector:Vector.<String> = searchUnPlaydItem(xml);
@@ -1290,14 +1340,15 @@ package org.mineap.nndd.myList
 		
 		/**
 		 * 指定された動画IDの動画を保持するマイリストのマイリストIDの一覧を返します。
+		 * このマイリストIDには、myList/ や channel/ などのプレフィックスが含まれます。
 		 * 
 		 * @param videoId
 		 * @return 
 		 * 
 		 */
-		public function searchMyList(videoId:String):Vector.<String>
+		public function searchMyListIdWithPrefix(videoId:String):Vector.<String>
 		{
-			var myListIds:Vector.<String> = this._videoId_myListId_map[videoId];
+			var myListIds:Vector.<String> = this._videoId_myListIds_map[videoId];
 			
 			var vector:Vector.<String> = new Vector.<String>();
 			
@@ -1314,6 +1365,20 @@ package org.mineap.nndd.myList
 			}
 			
 			return vector;
+		}
+		
+		public static function checkType(url:String):RssType
+		{
+			if (url != null && url.indexOf("channel/") != -1)
+			{
+				return RssType.CHANNEL;
+			}
+			else if (url != null && url.indexOf("user/") != -1)
+			{
+				return RssType.USER_UPLOAD_VIDEO
+			}
+			
+			return RssType.MY_LIST;
 		}
 		
 	}

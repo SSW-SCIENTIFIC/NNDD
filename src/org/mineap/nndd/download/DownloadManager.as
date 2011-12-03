@@ -29,6 +29,7 @@ package org.mineap.nndd.download
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.LibraryUtil;
 	import org.mineap.nndd.util.PathMaker;
+	import org.mineap.util.config.ConfigManager;
 
 	/**
 	 * DownloadManager.as
@@ -40,6 +41,8 @@ package org.mineap.nndd.download
 	 */	
 	public class DownloadManager extends EventDispatcher
 	{
+		public static const DEFAULT_MAX_DLLIST_COUNT:int = 100;
+		
 		
 		public var downloadProvider:ArrayCollection;
 		public var myListProvider:ArrayCollection;
@@ -80,6 +83,8 @@ package org.mineap.nndd.download
 		
 		private var loadedBytes:Number = 0.0;
 		
+		private var _maxDlListCount:int = DEFAULT_MAX_DLLIST_COUNT;
+		
 		/**
 		 * 
 		 * @param downloadProvider
@@ -114,6 +119,22 @@ package org.mineap.nndd.download
 			this.rankingProvider = rankingProvider;
 			this.logManager = logManager;
 			
+			var maxDlListCountStr:String = ConfigManager.getInstance().getItem("maxDlListCount");
+			if (maxDlListCountStr != null)
+			{
+				var temp:int = int(maxDlListCountStr);
+				if (temp >= 100 && temp <= 10000)
+				{
+					this._maxDlListCount = temp;
+				}
+			}
+			else
+			{
+				ConfigManager.getInstance().setItem("maxDlListCount", DEFAULT_MAX_DLLIST_COUNT);
+				ConfigManager.getInstance().save();
+			}
+			
+			
 			this.loadDownloadList();
 		}
 		
@@ -137,7 +158,7 @@ package org.mineap.nndd.download
 		 */
 		public function add(video:NNDDVideo, isStart:Boolean):Boolean{
 			
-			if(downloadProvider.length > 100){
+			if(downloadProvider.length > this.maxDlListCount){
 				return false;
 			}
 			
@@ -1122,6 +1143,16 @@ package org.mineap.nndd.download
 		public function get retryMaxCount():int
 		{
 			return this._retryMaxCount;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get maxDlListCount():int
+		{
+			return this._maxDlListCount;
 		}
 		
 	}

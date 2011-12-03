@@ -56,6 +56,7 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.model.NNDDComment;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.model.PlayList;
+	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.myList.MyListManager;
 	import org.mineap.nndd.playList.PlayListManager;
 	import org.mineap.nndd.player.comment.Command;
@@ -4379,14 +4380,16 @@ package org.mineap.nndd.player
 				return;
 			}
 			
-			var myListIds:Vector.<String> = MyListManager.instance.searchMyList(videoId);
+			var myListIds:Vector.<String> = MyListManager.instance.searchMyListIdWithPrefix(videoId);
 			if(myListIds != null && myListIds.length > 0)
 			{
 				for each(var myListId:String in myListIds)
 				{
 					var videoIds:Vector.<String> = new Vector.<String>();
 					videoIds.push(videoId);
-					MyListManager.instance.updatePlayedAndSave(myListId, videoIds, true);
+					
+					var type:RssType = MyListManager.checkType(myListId);
+					MyListManager.instance.updatePlayedAndSave(myListId, type, videoIds, true);
 				}
 			}
 		}
