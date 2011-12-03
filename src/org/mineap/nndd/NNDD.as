@@ -44,6 +44,7 @@ import flash.utils.ByteArray;
 import flash.utils.Timer;
 
 import mx.collections.ArrayCollection;
+import mx.collections.ICollectionView;
 import mx.collections.Sort;
 import mx.collections.SortField;
 import mx.containers.Canvas;
@@ -735,6 +736,26 @@ private function copyUrl(event:ContextMenuEvent):void{
 		if(url.indexOf("http://") != -1){
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, url);
 		}
+	}
+}
+
+private function selectAll(event:ContextMenuEvent):void
+{
+	var datagrid:DataGrid = (event.contextMenuOwner as DataGrid);
+	if (datagrid != null)
+	{
+		var view:ICollectionView = (datagrid.dataProvider as ICollectionView);
+		if (view == null)
+		{
+			return;
+		}
+		
+		var array:Array = new Array();
+		for(var index:int=0; index < view.length; index++)
+		{
+			array.push(index);
+		}
+		datagrid.selectedIndices = array;
 	}
 }
 
@@ -2589,12 +2610,17 @@ private function tabChanged():void{
 			dataGrid_downloadList.invalidateList();
 //			dataGrid_downloadList.validateNow();
 			
-			if(downloadManager.listLength > 100){
-				Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{
-					if(event.detail == Alert.YES){
-						downloadManager.removeDownloadedVideo();
+			if(downloadManager.listLength > downloadManager.maxDlListCount){
+				Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE_PRE + 
+					downloadManager.maxDlListCount + 
+					Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE_SUF, 
+					Message.M_MESSAGE, (Alert.YES | Alert.NO), null, 
+					function(event:CloseEvent):void{
+						if(event.detail == Alert.YES){
+							downloadManager.removeDownloadedVideo();
+						}
 					}
-				});
+				);
 			}
 			
 			break;
@@ -3228,7 +3254,7 @@ private function addDownloadList(video:NNDDVideo, index:int = -1):void{
 		}, null, Alert.NO);
 	}else{
 		if(!downloadManager.add(video, isAutoDownload)){
-			Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+			showCannotAddDlList();
 		}else{
 			if(index != -1 && rankingProvider.length > index){
 				rankingProvider.setItemAt({
@@ -3261,7 +3287,7 @@ public function addDownloadListForInfoView(video:NNDDVideo):void{
 			Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{
 				if(event.detail == Alert.YES){
 					if(!downloadManager.add(video, isAutoDownload)){
-						Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+						showCannotAddDlList();
 					}else{
 						scrollToLastAddedDownloadItem();
 					}
@@ -3269,7 +3295,7 @@ public function addDownloadListForInfoView(video:NNDDVideo):void{
 			}, null, Alert.NO);
 		}else{
 			if(!downloadManager.add(video, isAutoDownload)){
-				Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+				showCannotAddDlList();
 			}else{
 				scrollToLastAddedDownloadItem();
 			}
@@ -3307,7 +3333,7 @@ public function addDownloadListForSearch(video:NNDDVideo, index:int = -1):void{
 		}, null, Alert.NO);
 	}else{
 		if(!downloadManager.add(video, isAutoDownload)){
-			Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+			showCannotAddDlList();
 		}else{
 			if(index != -1 && searchProvider.length > index){
 				searchProvider.setItemAt({
@@ -5631,7 +5657,7 @@ private function addDLList(url:String):void{
 	if(matchResult != null && matchResult.length > 0){
 		var video:NNDDVideo = new NNDDVideo(url, "-");
 		if(!downloadManager.add(video, auto)){
-			Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+			showCannotAddDlList();
 		}else{
 			scrollToLastAddedDownloadItem();
 		}
@@ -5643,7 +5669,7 @@ private function addDLList(url:String):void{
 		url = "http://www.nicovideo.jp/watch/" + videoId;
 		var video:NNDDVideo = new NNDDVideo(url, "-");
 		if(!downloadManager.add(video, auto)){
-			Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+			showCannotAddDlList();
 		}else{
 			scrollToLastAddedDownloadItem();
 		}
@@ -6009,7 +6035,7 @@ private function addDownloadListForMyList(video:NNDDVideo, index:int = -1):void{
 		}, null, Alert.NO);
 	}else{
 		if(!downloadManager.add(video, isAutoDownload)){
-			Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+			showCannotAddDlList();
 		}else{
 			if(index != -1 && myListItemProvider.length > index){
 				myListItemProvider.setItemAt({
@@ -7022,7 +7048,7 @@ private function historyItemHandler(event:ContextMenuEvent):void{
 								success = downloadManager.add(video, isAutoDownload);
 							}
 							if(!success){
-								Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+								showCannotAddDlList();
 							}else{
 								scrollToLastAddedDownloadItem();
 							}
@@ -7036,7 +7062,7 @@ private function historyItemHandler(event:ContextMenuEvent):void{
 						success = downloadManager.add(video, isAutoDownload);
 					}
 					if(!success){
-						Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+						showCannotAddDlList();
 					}else{
 						scrollToLastAddedDownloadItem();
 					}
@@ -7084,7 +7110,7 @@ private function historyItemDownload(event:Event):void{
 				}
 			}
 			if(!success){
-				Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+				showCannotAddDlList();
 			}else{
 				scrollToLastAddedDownloadItem();
 			}
@@ -7098,7 +7124,7 @@ private function historyItemDownload(event:Event):void{
 		}
 		
 		if(!success){
-			Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+			showCannotAddDlList();
 		}else{
 			scrollToLastAddedDownloadItem();
 		}
@@ -7138,7 +7164,7 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 				Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(event:CloseEvent):void{
 					if(event.detail == Alert.YES){
 						if(!downloadManager.add(video, isAutoDownload)){
-							Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+							showCannotAddDlList();
 						}else{
 							scrollToLastAddedDownloadItem();
 						}
@@ -7146,7 +7172,7 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 				});
 			}else{
 				if(!downloadManager.add(video, isAutoDownload)){
-					Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER, Message.M_ERROR);
+					showCannotAddDlList();
 				}else{
 					scrollToLastAddedDownloadItem();
 				}
@@ -7329,6 +7355,11 @@ protected function playListContextMenuItemDisplayingEventHandler(event:Event):vo
 	}
 }
 
+/**
+ * 
+ * @param event
+ * 
+ */
 protected function addPlayListContextMenuItemClicked(event:ContextMenuEvent):void{
 	var contextMenuItem:ContextMenuItem = (event.target as ContextMenuItem);
 	
@@ -7396,4 +7427,22 @@ protected function addPlayListContextMenuItemClicked(event:ContextMenuEvent):voi
 		}
 	}
 	
+}
+
+private var cannotAddDlListIsShown:Boolean = false;
+
+private function showCannotAddDlList():void
+{
+	if (cannotAddDlListIsShown)
+	{
+		return;
+	}
+	cannotAddDlListIsShown = true;
+	
+	Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_PRE + 
+		downloadManager.maxDlListCount + 
+		Message.M_DOWNLOAD_LIST_COUNT_OVER_SUF, Message.M_ERROR, 4, null, function(event:Event):void{
+			cannotAddDlListIsShown = false;
+		}
+	);
 }

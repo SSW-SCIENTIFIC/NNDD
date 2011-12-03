@@ -65,6 +65,7 @@ package org.mineap.nndd
 		public static var L_COPY_VIDEO_URL:String = "動画のURLをコピー";
 		public static var L_COPY_VIDEO_URL_WITH_TITLE:String = "動画のタイトルとURLをコピー";
 		public static var L_RELOAD_VIDEO:String = "動画を再読み込み";
+		public static var L_SELECT_ALL:String = "すべてを選択";
 		
 		/*主にメッセージ出力*/
 		public static var M_LOCAL_STORE_IS_BROKEN:String = "ローカルストアが破損している可能性があったため、ローカルストアのデータをリセットしました。";
@@ -100,9 +101,11 @@ package org.mineap.nndd
 		
 		public static var M_OUT_PLAYER_NOT_FOUND:String = "外部プレーヤが見つかりませんでした。「設定」タブで外部プレーヤのパスを設定し直すか、外部プレーヤを使用しない設定に変更してください。";
 		
-		public static var M_DOWNLOAD_LIST_COUNT_OVER:String = "DLリストに既に100件の項目が存在します。これ以上追加する場合はDLリストから項目を削除してください。";
+		public static var M_DOWNLOAD_LIST_COUNT_OVER_PRE:String = "DLリストに既に";
+		public static var M_DOWNLOAD_LIST_COUNT_OVER_SUF:String = "件の項目が存在します。これ以上追加する場合はDLリストから項目を削除してください。";
 		
-		public static var M_DOWNLOAD_LIST_COUNT_OVER_DELETE:String = "DLリストに既に100件の項目が存在します。DL済の項目を削除しますか？";
+		public static var M_DOWNLOAD_LIST_COUNT_OVER_DELETE_PRE:String = "DLリストに既に";
+		public static var M_DOWNLOAD_LIST_COUNT_OVER_DELETE_SUF:String = "件の項目が存在します。DL済の項目を削除しますか？";
 		
 		public static var M_RENEW_MYLIST_GROUP:String = "あなたのニコニコ動画上のマイリストをNNDDのマイリストの一覧に追加しますか？\n\n(この操作は「設定」>「ランキング・検索・マイリスト」の「自分のマイリストをマイリスト一覧に追加」からも実行できます。)";
 		
