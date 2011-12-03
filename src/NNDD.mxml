@@ -89,6 +89,7 @@
 			
 			private var copyUrlMenuItem:ContextMenuItem;
 			private var playAllMenuItem:ContextMenuItem;
+			private var selectAllMenuItem:ContextMenuItem;
 			
 			public var thumbImageView:Image = new Image();
 
@@ -193,8 +194,13 @@
 				
 				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
 				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				
+				selectAllMenuItem = new ContextMenuItem(Message.L_SELECT_ALL, true);
+				selectAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectAll);
+				
 				historyMenu.customItems.push(historyPlay, historyDownload, historyDelete, 
-					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
+					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				historyMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_history.contextMenu = historyMenu;
 				
@@ -224,8 +230,13 @@
 				
 				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
 				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				
+				selectAllMenuItem = new ContextMenuItem(Message.L_SELECT_ALL, true);
+				selectAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectAll);
+				
 				downloadMenu.customItems.push(downloadMenuitem1, downloadMenuitem2, 
-					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
+					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				downloadMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_downloadList.contextMenu = downloadMenu;
 				
@@ -262,10 +273,17 @@
 				
 				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
 				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				
+				selectAllMenuItem = new ContextMenuItem(Message.L_SELECT_ALL, true);
+				selectAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectAll);
+				
 				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
 				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
-				myListMenu.customItems.push(myListMenuItem1, myListMenuItem2, playAllMenuItem, myListMenuItem4, myListMenuItem5, myListMenuItem3, 
-					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+				
+				myListMenu.customItems.push(myListMenuItem1, myListMenuItem2, 
+					playAllMenuItem, myListMenuItem4, myListMenuItem5, myListMenuItem3, 
+					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
+					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				myListMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_myList.contextMenu = myListMenu;
 				
@@ -298,11 +316,17 @@
 				
 				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
 				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				
+				selectAllMenuItem = new ContextMenuItem(Message.L_SELECT_ALL, true);
+				selectAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectAll);
+				
 				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
 				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
+				
 				searchMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				searchMenu.customItems.push(searchMenuitem, searchMenuitem2, playAllMenuItem, searchMenuitem3, 
-					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
+					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				
 				dataGrid_search.contextMenu = searchMenu;
 				
@@ -335,10 +359,16 @@
 				
 				copyUrlMenuItem = new ContextMenuItem(Message.L_COPY_URL, true);
 				copyUrlMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyUrl);
+				
+				selectAllMenuItem = new ContextMenuItem(Message.L_SELECT_ALL, true);
+				selectAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectAll);
+				
 				playAllMenuItem = new ContextMenuItem(Message.L_ADD_PLAYER_PLAYLIST_AND_PLAY);
 				playAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, playAllMenuItemHandler);
+				
 				rankingMenu.customItems.push(rankingMenuitem, rankingMenuitem2, playAllMenuItem, rankingMenuitem3,
-					playListContextMenuItem, copyUrlMenuItem, openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
+					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
+					openWebBrowser, openNicosoundMenuItem, openNicomimiMenuItem);
 				rankingMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_ranking.contextMenu = rankingMenu;
 				
