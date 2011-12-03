@@ -502,8 +502,8 @@ package org.mineap.nndd.myList
 				setVideoId_MyListId_Map(tempVideo.key, myList.id, type);
 				
 			}
-			trace("マイリスト(" + myList.id + ")に登録されている動画:" + myVideos.length);
-			LogManager.instance.addLog("マイリスト(" + myList.id + ")に登録されている動画のチェック完了:" + myVideos.length);
+			trace(type.toString() + ":" + myList.id + "に登録されている動画:" + myVideos.length);
+			LogManager.instance.addLog(type.toString() + ":" + myList.id + "に登録されている動画のチェック完了:" + myVideos.length);
 			
 			return myList;
 		}
