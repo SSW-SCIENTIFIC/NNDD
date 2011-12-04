@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.1.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/53478/NNDDv2_0_11.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54078/NNDDv2_1_0.dmg</url>
 	<description><![CDATA[
 v2.1.0
 ・動作環境をAdobe AIR 3.1に変更(Flex SDK 4.6へ移行)
@@ -24,7 +24,7 @@ v2.1.0
 
 <exe>
 	<version>2.1.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/53478/NNDDv2_0_11.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54078/NNDDv2_1_0.exe</url>
 	<description><![CDATA[
 v2.1.0
 ・動作環境をAdobe AIR 3.1に変更(Flex SDK 4.6へ移行)
