@@ -6952,16 +6952,29 @@ public function tagTileListItemDoubleClickEventHandler(event:ListEvent):void{
 public function showMyListOnNico(event:Event):void{
 	var id:String = textinput_mylist.text;
 	
-	if (id.indexOf("channel"))
+	if (id == null)
+	{
+		return;
+	}
+	
+	if (id.indexOf("channel") != -1)
 	{
 		id = MyListUtil.getChannelId(id);
 		if (id != null)
 		{
 			navigateToURL(new URLRequest("http://ch.nicovideo.jp/channel/" + id));
-			logManager.addLog("マイリストをブラウザで表示:" + "http://ch.nicovideo.jp/channel/" + id);
+			logManager.addLog("チャンネルをブラウザで表示:" + "http://ch.nicovideo.jp/channel/" + id);
 		}
 	}
-	else
+	else if (id.indexOf("user") != -1)
+	{
+		id = MyListUtil.getUserUploadVideoListId(id);
+		if (id != null)
+		{
+			navigateToURL(new URLRequest("http://www.nicovideo.jp/user/" + id + "/video"));
+		}
+	}
+	else	// MyListだと推測
 	{
 		id = MyListUtil.getMyListId(id);
 		if(id != null){
