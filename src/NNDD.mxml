@@ -1230,6 +1230,27 @@
 				(event.currentTarget as LinkButton).label = File.applicationStorageDirectory.nativePath;
 			}
 			
+			protected function donate_clickHandler(event:MouseEvent):void
+			{
+				
+				var url:URLRequest = new URLRequest("https://www.paypal.com/cgi-bin/webscr");
+				url.method = URLRequestMethod.POST;
+				
+				var file:File = File.applicationDirectory.resolvePath("donate.txt");
+				var fileStream:FileStream = new FileStream();
+				fileStream.open(file, FileMode.READ);
+				var str:String = fileStream.readUTFBytes(file.size);
+				
+				var v:URLVariables = new URLVariables();
+				v.cmd = "_s-xclick";
+				v.encrypted = str;
+				
+				url.data = v;
+				
+				navigateToURL(url);
+				
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -1963,7 +1984,13 @@
 					</ns1:ConnectionStatusView>
 				</mx:Canvas>
 			</mx:TabNavigator>
-			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>
+			
+			<mx:Label left="10" bottom="10" text="PayPalで寄付："/>
+			<mx:Button x="102" y="523" label="寄付" click="donate_clickHandler(event)"/>
+			
+			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" 
+						   click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>
+			
 			
 		</mx:Canvas>
 		
