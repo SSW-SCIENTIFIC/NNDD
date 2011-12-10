@@ -1251,6 +1251,11 @@
 				
 			}
 			
+			protected function checkBox_CloseNNDDWindowWhenLogin_clickHandler(event:MouseEvent):void
+			{
+				isCloseNNDDWindowWhenLogin = (event.currentTarget as CheckBox).selected;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -1821,25 +1826,30 @@
 								 toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" 
 								 id="checkBox_DisEnableAutoExit" 
 								 click="disEnableAutoExitCheckBoxChanged(event)" left="29" top="259"/>
+					<mx:CheckBox label="ログインが完了したらこのウィンドウを最小化する" 
+								 id="checkBox_CloseNNDDWindowWhenLogin" 
+								 click="checkBox_CloseNNDDWindowWhenLogin_clickHandler(event)" 
+								 toolTip="ログインが完了したらこのウィンドウを最小化するか、閉じます。"
+								 left="29" top="288"/>
 					<mx:HRule left="47" right="10" top="0" height="21"/>
-					<mx:HRule left="29" right="11" top="284" height="8"/>
+					<mx:HRule left="29" right="11" top="313" height="8"/>
 					
 					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					<!--
 					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
 					-->
-					<mx:Label text="アプリケーションで使用するフォント：" left="29" top="302"/>
-					<mx:ComboBox left="259" top="302" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="472" top="300" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
-					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="325"/>
+					<mx:Label text="アプリケーションで使用するフォント：" left="29" top="331"/>
+					<mx:ComboBox left="259" top="331" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+					<mx:Button label="デフォルト" left="472" top="334" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="354"/>
 					
-					<mx:Label left="29" top="354" text="フォントのサイズ："/>
-					<mx:ComboBox left="151" top="354" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
+					<mx:Label left="29" top="383" text="フォントのサイズ："/>
+					<mx:ComboBox left="151" top="383" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
 					
 					
-					<mx:HRule left="30" right="10" top="388" height="8"/>
-					<mx:Label text="アプリケーションの設定情報フォルダ：" left="30" top="404"/>
-					<mx:LinkButton left="239" top="402" height="21"
+					<mx:HRule left="30" right="10" top="417" height="8"/>
+					<mx:Label text="アプリケーションの設定情報フォルダ：" left="30" top="433"/>
+					<mx:LinkButton left="239" top="431" height="21"
 								   click="openApplicationSettingInfoDir(event)" color="#0000FF"
 								   creationComplete="linkbutton1_creationCompleteHandler(event)"
 								   textAlign="left" textDecoration="underline"
@@ -1986,7 +1996,7 @@
 			</mx:TabNavigator>
 			
 			<mx:Label left="10" bottom="10" text="PayPalで寄付："/>
-			<mx:Button x="102" y="523" label="寄付" click="donate_clickHandler(event)"/>
+			<mx:Button left="102" bottom="10" label="寄付" click="donate_clickHandler(event)"/>
 			
 			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" 
 						   click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>

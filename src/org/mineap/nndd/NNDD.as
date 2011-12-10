@@ -14,6 +14,7 @@ import flash.desktop.NativeDragActions;
 import flash.desktop.NativeDragManager;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
+import flash.display.NativeWindowDisplayState;
 import flash.errors.EOFError;
 import flash.events.ContextMenuEvent;
 import flash.events.ErrorEvent;
@@ -69,6 +70,7 @@ import mx.core.ClassFactory;
 import mx.core.FlexGlobals;
 import mx.core.IUIComponent;
 import mx.core.UITextField;
+import mx.core.Window;
 import mx.events.AIREvent;
 import mx.events.CloseEvent;
 import mx.events.DragEvent;
@@ -235,6 +237,8 @@ private var isAppendComment:Boolean = false;
 private var mylistRenewOnScheduleEnable:Boolean = true;
 
 private var myListRenewOnBootTime:Boolean = false;
+
+private var isCloseNNDDWindowWhenLogin:Boolean = false;
 
 private var selectedMyListFolder:Boolean = false;
 
@@ -570,7 +574,8 @@ public function initNNDD(nndd:NNDD):void
 	
 	if(this.isOpenPlayerOnBoot && !this.isEnableNativePlayer)
 	{
-		PlayerManager.instance.getLastPlayerController();
+//		PlayerManager.instance.getLastPlayerController();
+		playerOpen();
 	}
 	
 }
@@ -2299,6 +2304,17 @@ private function readStore(isLogout:Boolean = false):void{
 			this.useOldTypeCommentGet = true;
 		}
 		
+		errorName = "isCloseNNDDWindowWhenLogin";
+		confValue = ConfigManager.getInstance().getItem("isCloseNNDDWindowWhenLogin");
+		if (confValue != null)
+		{
+			this.isCloseNNDDWindowWhenLogin = ConfUtil.parseBoolean(confValue);
+		}
+		else
+		{
+			this.isCloseNNDDWindowWhenLogin = false;
+		}
+		
 		
 	}catch(error:Error){
 		/* ストアをリセット */
@@ -2404,6 +2420,38 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 		}catch(error:Error){
 			Alert.show("引数で指定されていた動画の再生に失敗\n" + this.argumentURL, Message.M_ERROR);
 			logManager.addLog("引数で指定されていた動画の再生に失敗:url" + this.argumentURL + "\n" + error.getStackTrace());
+		}
+	}
+	
+	// ログイン後、Windowを閉じる必要があれば閉じる
+	if (isCloseNNDDWindowWhenLogin)
+	{
+		if (isDisEnableAutoExit && ( NativeApplication.supportsSystemTrayIcon || NativeApplication.supportsDockIcon))
+		{
+			if (this.nativeWindow != null && !this.nativeWindow.closed )
+			{
+				var timer:Timer = new Timer(1000, 1);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void
+				{
+					close();
+					logManager.addLog("ログインに成功したのでウィンドウを閉じます");
+				});
+				timer.start();
+			}
+		}
+		else
+		{
+			if (this.nativeWindow != null && !this.nativeWindow.closed 
+				&& this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED)
+			{
+				var timer:Timer = new Timer(1000, 1);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void
+				{
+					nativeWindow.minimize();
+					logManager.addLog("ログインに成功したのでウィンドウを最小化します");
+				});
+				timer.start();
+			}
 		}
 	}
 	
@@ -2844,9 +2892,23 @@ private function allConfigCanvasCreationComplete(event:FlexEvent):void{
 	
 	checkBox_DisEnableAutoExit.selected = this.isDisEnableAutoExit;
 	
+	checkBox_CloseNNDDWindowWhenLogin.selected = this.isCloseNNDDWindowWhenLogin;
+	
 	fontListRenew();
 	
 	fontSizeListRenew();
+	
+	if (this.isDisEnableAutoExit)
+	{
+		// 自動的に終了しない
+		checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを閉じる";
+	}
+	else
+	{
+		// 自動的に終了する
+		checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを最小化する";
+	}
+	
 }
 
 private function allConfigCanvasShow(event:Event):void{
@@ -4497,6 +4559,9 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("myListRenewOnBootTime");
 		ConfigManager.getInstance().setItem("myListRenewOnBootTime", this.myListRenewOnBootTime);
 		
+		ConfigManager.getInstance().removeItem("isCloseNNDDWindowWhenLogin");
+		ConfigManager.getInstance().setItem("isCloseNNDDWindowWhenLogin", this.isCloseNNDDWindowWhenLogin);
+		
 		ConfigManager.getInstance().save();
 		
 	}catch(error:Error){
@@ -4852,6 +4917,17 @@ private function useDownloadDirCheckBoxChenged():void{
 private function disEnableAutoExitCheckBoxChanged(event:Event):void{
 	
 	this.isDisEnableAutoExit = checkBox_DisEnableAutoExit.selected;
+	
+	if (isDisEnableAutoExit && ( NativeApplication.supportsSystemTrayIcon || NativeApplication.supportsDockIcon))
+	{
+		// 自動的に終了しない
+		checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを閉じる";
+	}
+	else
+	{
+		// 自動的に終了する
+		checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを最小化する";
+	}
 	
 	this.autoExit = !isDisEnableAutoExit;
 	
@@ -5742,6 +5818,22 @@ public function playerOpen():void{
 	if (playerController != null)
 	{
 		playerController.videoPlayer.activate();
+		
+		var confValue:String = ConfigManager.getInstance().getItem("isOpenFileDialogWhenOpenPlayer");
+		if (confValue != null)
+		{
+			var bool:Boolean = ConfUtil.parseBoolean(confValue);
+			if (bool && !playerController.videoPlaying)
+			{
+				var timer:Timer = new Timer(4000, 1);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void
+				{
+					playerController.videoPlayer.fileOpen();
+				});
+				timer.start();
+			}
+		}
+		
 	}
 }
 

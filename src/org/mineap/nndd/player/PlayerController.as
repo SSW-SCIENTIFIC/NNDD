@@ -153,6 +153,8 @@ package org.mineap.nndd.player
 		
 		public var _isEconomyMode:Boolean = false;
 		
+		public var videoPlaying:Boolean = false;
+		
 		private var renewDownloadManager:RenewDownloadManager;
 		private var nnddDownloaderForStreaming:NNDDDownloader;
 		private var playerHistoryManager:PlayerHistoryManager;
@@ -3645,6 +3647,8 @@ package org.mineap.nndd.player
 		public function playMovie(url:String, playList:PlayList = null, playListIndex:int = -1, videoTitle:String = "", isEconomy:Boolean = false):void{
 			
 			try{
+				
+				this.videoPlaying = true;
 				
 				if(videoInfoView != null){
 					videoInfoView.videoServerUrl = "-";

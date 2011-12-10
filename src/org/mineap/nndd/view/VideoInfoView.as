@@ -93,6 +93,7 @@ public var isSmoothingOnlyNotPixelIdenticalDimensions:Boolean = true;
 public var playerQuality:int = 2;
 public var isFollowInfoViewHeight:Boolean = false;
 public var isNotPlayNicowari:Boolean = false;
+public var isOpenFileDialogWhenOpenPlayer:Boolean = false;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -1165,6 +1166,12 @@ private function readStore():void{
 			isNotPlayNicowari = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("isOpenFileDialogWhenOpenPlayer");
+		if (confValue != null)
+		{
+			this.isOpenFileDialogWhenOpenPlayer = ConfUtil.parseBoolean(confValue);
+		}
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -1313,6 +1320,8 @@ public function saveStore():void{
 			DataGridColumnWidthUtil.save(dataGrid_oldComment, new Vector.<String>("mail_column"));
 		}
 		
+		ConfigManager.getInstance().removeItem("isOpenFileDialogWhenOpenPlayer");
+		ConfigManager.getInstance().setItem("isOpenFileDialogWhenOpenPlayer", isOpenFileDialogWhenOpenPlayer);
 		
 		ConfigManager.getInstance().save();
 		
