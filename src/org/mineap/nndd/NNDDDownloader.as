@@ -20,6 +20,7 @@ package org.mineap.nndd
 	import flash.sampler.NewObjectSample;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
@@ -1414,6 +1415,11 @@ package org.mineap.nndd
 		 */
 		private var loadedBytes:ByteArray = new ByteArray();
 		
+		/**
+		 * 
+		 */
+		private var isWriting:Boolean = false;
+		
 //		/**
 //		 * 動画ダウンロードのタイムアウト(デフォルト3分)
 //		 */
@@ -1467,6 +1473,12 @@ package org.mineap.nndd
 				return;
 			}
 			
+			// ファイル書き出し中なら次の機会に
+			if (isWriting)
+			{
+				return;
+			}
+			
 			//ストリームからバイトを読み込み
 			stream.readBytes(loadedBytes, loadedBytes.length);
 			
@@ -1476,9 +1488,14 @@ package org.mineap.nndd
 			// 1MBを越えたらファイルに書き出し
 			if (loadedBytes.length > 1000000)
 			{
+				isWriting = true;
+				
 				trace("append:" + loadedBytes.length + " bytes");
 				outputFile(_saveVideoName, _saveDir.url, loadedBytes);
 				loadedBytes.clear();
+				
+				isWriting = false;
+				
 			}
 		}
 		
@@ -1527,8 +1544,57 @@ package org.mineap.nndd
 //				downloadProgressWatcher = null;
 //			}
 
-			// 書き出してないバイト列をファイルに書き出し
-			outputFile(_saveVideoName, _saveDir.url, loadedBytes);
+			try
+			{
+				var start:int = getTimer();
+				
+				var min:int = 30;
+				var minStr:String = ConfigManager.getInstance().getItem("videoOutputWaitSec");
+				if (minStr == null)
+				{
+					ConfigManager.getInstance().setItem("videoOutputWaitSec", 30);
+					ConfigManager.getInstance().save();
+				}
+				else
+				{
+					var temp:int = int(minStr);
+					if (temp > 0)
+					{
+						min = temp;
+					}
+				}
+				
+				// 書き出してないバイト列をファイルに書き出し
+				while(true)
+				{
+//					outputFile(_saveVideoName, _saveDir.url, loadedBytes);
+					
+					// 一つ前の書き出しが終わるまで待つ
+					if (!isWriting)
+					{
+						var fileIO:FileIO = new FileIO();
+						var savedFile:File = fileIO.saveByteArray(_saveVideoName, _saveDir.url, loadedBytes, true);
+						isWriting = false;
+						this._savedVideoPath = decodeURIComponent(savedFile.url);
+						break;
+					}
+					
+					if (getTimer() - start > 1000*min)
+					{
+						throw new IOError("ファイルの書き込みに失敗( " + min + " 秒待ちましたが、書き出し先のファイルのロックが解放されませんでした。)", 3013);
+					}
+				}
+			}
+			catch(error:Error)
+			{
+				trace(error.getStackTrace());
+				LogManager.instance.addLog("動画の保存に失敗:" + error.toString() + "\n" + _saveVideoName + ":" + _saveDir.url);
+				
+				var myEvent:IOErrorEvent = new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.toString());
+				dispatchEvent(myEvent);
+				close(true, true, myEvent);
+				return;
+			}
 			
 			var file:File = new File(this._savedVideoPath);
 			

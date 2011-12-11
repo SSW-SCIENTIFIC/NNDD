@@ -518,7 +518,6 @@ package org.mineap.nndd
 			
 		}
 		
-		
 		/**
 		 * Fileにリスナーを追加します。<br>
 		 * FileI/Oの完了などの通知を得たい場合はリスナーを追加してください。
