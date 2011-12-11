@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.1.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54078/NNDDv2_1_0.dmg</url>
+	<version>2.1.1</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54151/NNDDv2_1_1.dmg</url>
 	<description><![CDATA[
+v2.1.1
+・「ログインが完了したらウィンドウを閉じる」オプションを追加
+・「Playerを開いたときに"動画を開く"ダイアログを表示する」オプションを追加
+・DLした動画の保存処理を見直し(保存先へのI/Oが低速な場合を考慮するよう変更)
+・設定画面にPayPal寄付ページへのリンクを追加
+・【バグフィックス】マイリストタブの「ニコ動で開く」ボタンからブラウザにジャンプできない問題を修正
+
 v2.1.0
 ・動作環境をAdobe AIR 3.1に変更(Flex SDK 4.6へ移行)
 ・マイリストタブでチャンネルを管理できるようにした
@@ -23,9 +30,16 @@ v2.1.0
 </dmg>
 
 <exe>
-	<version>2.1.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54078/NNDDv2_1_0.exe</url>
+	<version>2.1.1</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54151/NNDDv2_1_1.exe</url>
 	<description><![CDATA[
+v2.1.1
+・「ログインが完了したらウィンドウを閉じる」オプションを追加
+・「Playerを開いたときに"動画を開く"ダイアログを表示する」オプションを追加
+・DLした動画の保存処理を見直し(保存先へのI/Oが低速な場合を考慮するよう変更)
+・設定画面にPayPal寄付ページへのリンクを追加
+・【バグフィックス】マイリストタブの「ニコ動で開く」ボタンからブラウザにジャンプできない問題を修正
+
 v2.1.0
 ・動作環境をAdobe AIR 3.1に変更(Flex SDK 4.6へ移行)
 ・マイリストタブでチャンネルを管理できるようにした
