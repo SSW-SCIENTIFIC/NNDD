@@ -1840,7 +1840,7 @@
 					-->
 					<mx:Label text="アプリケーションで使用するフォント：" left="29" top="331"/>
 					<mx:ComboBox left="259" top="331" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="472" top="334" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<mx:Button label="デフォルト" left="472" top="329" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
 					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="354"/>
 					
 					<mx:Label left="29" top="383" text="フォントのサイズ："/>
@@ -1854,8 +1854,6 @@
 								   creationComplete="linkbutton1_creationCompleteHandler(event)"
 								   textAlign="left" textDecoration="underline"
 								   toolTip="アプリケーションの設定情報フォルダを開きます。"/>
-					
-					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					
 				</mx:Canvas>
 				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" creationComplete="nicoConfigCanvasCreationComplete(event)">
@@ -1917,8 +1915,6 @@
 					<mx:Label x="30" y="272" text="自分のマイリストをマイリスト一覧に追加"/>
 					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="271"/>
 					
-					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
-					
 				</mx:Canvas>
 				<mx:Canvas label="DLリスト・ライブラリ" width="100%" height="100%" id="canvas_library_config"  creationComplete="libraryConfigCanvasCreationComplete(event)">
 					<mx:Label text="ダウンロードリスト" top="0" left="10" fontWeight="bold"/>
@@ -1949,8 +1945,6 @@
 									   change="numericStepperSaveCommentMaxCountChanged(event)" 
 									   toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
 					<mx:Label text="件/動画" left="305" top="216"/>
-					
-					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					
 				</mx:Canvas>
 				<mx:Canvas label="ログ" width="100%" height="100%" id="canvas_innerConfing_log">
@@ -1983,9 +1977,10 @@
 								  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
 					<mx:Button x="463" y="96" label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
 							   click="button_searchNativeProcess_clickHandler(event)"/>
-					<mx:Text left="49" right="10" top="124" bottom="10"
+					<mx:Text left="49" right="10" top="124" bottom="31"
 							 enabled="{NativeProcess.isSupported}"
 							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
+					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
 					
 					
 				</mx:Canvas>
@@ -1995,11 +1990,13 @@
 				</mx:Canvas>
 			</mx:TabNavigator>
 			
-			<mx:Label left="10" bottom="10" text="PayPalで寄付："/>
-			<mx:Button left="102" bottom="10" label="寄付" click="donate_clickHandler(event)"/>
+			<mx:LinkButton left="148" bottom="10" label="寄付ページを開く" click="donate_clickHandler(event)"
+						   toolTip="PayPalでMineAppProject(MineAP)に寄付を行います。既定のブラウザでPayPalのページを開きます。"
+						   color="#0000FF" textDecoration="underline"/>
 			
 			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" 
 						   click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>
+			<mx:Label left="9" bottom="10" height="19" text="PayPalでMineAPに寄付:"/>
 			
 			
 		</mx:Canvas>
