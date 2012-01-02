@@ -254,32 +254,25 @@ package org.mineap.nndd
 				return;
 			}
 			try{
+				
+				var commentCount:int = 0;
+				
 				// 保存済みコメントの集合
 				var oldComments:XML = this.loadXMLSync(file.nativePath, true);
-				// ローカルに保存済みのコメントで一番新しいやつ
-				var newCommentOfOldComments:XML = null;
-				if((oldComments.chat as XMLList).length() > 0){
-					newCommentOfOldComments = oldComments.chat[(oldComments.chat as XMLList).length()-1];
-				}
-				// ローカルに保存済みのコメントで一番古いやつ
-				var oldCommentOfOldComments:XML = null;
-				if((oldComments.chat as XMLList).length() > 0){
-					oldCommentOfOldComments = oldComments.chat[0];
-				}
 				
-				if(newCommentOfOldComments == null || oldCommentOfOldComments == null){
-					//古いコメントが空だったら全部追加
-					oldComments.appendChild(newComments.chat);
-				}else if(newCommentOfOldComments != null && oldCommentOfOldComments != null){
-					
+				if (oldComments != null)
+				{
+				
 					if((newComments.chat as XMLList).length() > 0){
 						
-						// ローカルに保存済みのコメントで一番古いやつの番号
-						var oldOfOldNo:int = int(oldCommentOfOldComments.@no);
-						// ローカルに保存済みのコメントで一番新しいやつの番号
-						var newOfOldNo:int = int(newCommentOfOldComments.@no);
+						// 保存済みコメントからnoとxmlオブジェクトのmapを作る
+						var no_chatXml_map:Object = new Object();
 						
-						var insertCount:int = 0;
+						for each(var chat:XML in oldComments.chat)
+						{
+							no_chatXml_map[int(chat.@no)] = chat;
+							commentCount++;
+						}
 						
 						// 追加対象のコメント群
 						for each(var xml:XML in newComments.chat){
@@ -287,61 +280,34 @@ package org.mineap.nndd
 							// 追加対象コメントの番号
 							var newNo:int = int(xml.@no);
 							
-							if(newNo < oldOfOldNo){
-								// 新しく取得したコメントがローカルコメントのどれよりも古い
-								if(insertCount == 0){
-									oldComments.insertChildBefore(oldComments.chat[0], xml);
-								}else{
-									oldComments.insertChildAfter(oldComments.chat[insertCount-1], xml);
-								}
-								insertCount++;
-								
-							}else if(newNo > newOfOldNo){
-								// 新しく取得したコメントがローカルコメントのどれよりも新しい
-								
-								var lastChatIndex:int = -1;
-								if((oldComments.chat as XMLList).length() > 0){
-									lastChatIndex = (oldComments.chat as XMLList).length() - 1;
-								}
-								
-								if(lastChatIndex != -1){
-									oldComments.insertChildAfter(oldComments.chat[lastChatIndex], xml);
-								}else{
-									oldComments.appendChild(xml);
-								}
-							}else{
-								// 新しく取得したコメントが既存のコメントの間に入る
-								
-								for each(var oldCommentXML:XML in oldComments.chat)
-								{
-									var oldNo:int = int(oldCommentXML.@no);
-									
-									if (newNo == oldNo)
-									{
-										// 既に追加済みなので何もしない
-										break;
-									}
-									else if (newNo < oldNo)
-									{
-										// oldNoよりnewNoの方が古い
-										// oldCommentXMLの前にxmlを追加
-										oldComments.insertChildBefore(oldCommentXML, xml);
-										break;
-									}
-									else
-									{
-										// まだ newNo の方が新しいので次へ
-									}
-								}
+							if (no_chatXml_map[newNo] != null)
+							{
+								// 無かったら追加
+								no_chatXml_map[newNo] = xml;
+								commentCount++;
+							}
+							
+							// 上限を超えないようにチェック
+							if ( commentCount > maxCount)
+							{
+								break;
 							}
 						}
-						
 					}else{
 						// 新しいコメントが空だったら何もしない
 					}
 					
 				}else{
 					trace("データが変です...");
+				}
+				
+				// oldCommentsからchatをすべて削除
+				(oldComments as XML).replace("chat", "");
+				
+				// oldCommentsにmapの内容を追加
+				for (var key:String in no_chatXml_map)
+				{
+					(oldComments as XML).appendChild(no_chatXml_map[key]);
 				}
 				
 				// コメントは最大個数以下しか保存させない
