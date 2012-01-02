@@ -1283,8 +1283,18 @@ package org.mineap.nndd
 			
 			var analyzer:GetFlvResultAnalyzer = new GetFlvResultAnalyzer();
 			analyzer.analyze(String(this._getflvAccess.data));
-			
+
+			if (analyzer.url == null || analyzer.url.length == 0)
+			{
+				trace(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません:" + this.videoUrl);
+				LogManager.instance.addLog(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません。:" + this.videoUrl);
+				var event:ErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "動画サーバーのURLが取得できません。");
+				dispatchEvent(event);
+				close(true, true, event);
+				return;
+			}
 			var videoType:VideoType = VideoStream.checkVideoType(analyzer.url);
+			
 			var extension:String = "";
 			if(VideoType.VIDEO_TYPE_FLV == videoType){
 				extension = ".flv";
