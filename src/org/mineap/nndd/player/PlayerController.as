@@ -4393,6 +4393,7 @@ package org.mineap.nndd.player
 					videoIds.push(videoId);
 					
 					var type:RssType = MyListManager.checkType(myListId);
+					myListId = myListId.substring(myListId.indexOf("/"));
 					MyListManager.instance.updatePlayedAndSave(myListId, type, videoIds, true);
 				}
 			}
