@@ -1480,6 +1480,11 @@
 						 nativeDragDrop="dlListDroped(event)">
 						 <!-- dropEnabled="true" dragEnabled="true" horizontalScrollPolicy="on"> -->
 				<mx:columns>
+					<mx:DataGridColumn headerText="サムネイル" width="70" dataField="col_preview" draggable="false">
+						<mx:itemRenderer>
+							<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true" horizontalCenter="0" verticalCenter="0"/></fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
 					<mx:DataGridColumn width="200" 
 									   dataField="col_videoName" 
 									   headerText="動画名" 

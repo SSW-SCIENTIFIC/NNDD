@@ -167,6 +167,7 @@ package org.mineap.nndd.download
 			var url:String = "http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl());
 			
 			downloadProvider.addItem({
+				col_preview:PathMaker.getThumbImgUrl(url),
 				col_videoName:video.videoName,
 				col_videoUrl:url,
 				col_status:"待機中",
@@ -242,6 +243,7 @@ package org.mineap.nndd.download
 							if(retryCount >= retryMaxCount){
 								// リトライオーバー
 								downloadProvider.setItemAt({
+									col_preview:downloadProvider[i].col_preview,
 									col_videoName:downloadProvider[i].col_videoName,
 									col_videoUrl:downloadProvider[i].col_videoUrl,
 									col_status:downloadProvider[i].col_status,
@@ -268,6 +270,7 @@ package org.mineap.nndd.download
 							
 							timer = new Timer(1000, timerCount);
 							downloadProvider.setItemAt({
+								col_preview:downloadProvider[i].col_preview,
 								col_videoName:downloadProvider[i].col_videoName,
 								col_videoUrl:downloadProvider[i].col_videoUrl,
 								col_status:timerCount+"秒後にDL開始" + retry,
@@ -279,6 +282,7 @@ package org.mineap.nndd.download
 								timerCount--;
 								var index:int = searchQueueIndexByQueueId(queueId);
 								downloadProvider.setItemAt({
+									col_preview:downloadProvider[i].col_preview,
 									col_videoName:downloadProvider[index].col_videoName,
 									col_videoUrl:downloadProvider[index].col_videoUrl,
 									col_status:timerCount+"秒後にDL開始" + retry,
@@ -397,6 +401,7 @@ package org.mineap.nndd.download
 						continue;
 					}
 					downloadProvider.setItemAt({
+						col_preview:downloadProvider[i].col_preview,
 						col_videoName:downloadProvider[i].col_videoName,
 						col_videoUrl:downloadProvider[i].col_videoUrl,
 						col_status:downloadProvider[i].col_status,
@@ -869,6 +874,7 @@ package org.mineap.nndd.download
 			if(downloadProvider != null){
 				if(downloadProvider.length > qIndex && downloadProvider[qIndex] != undefined && downloadProvider[qIndex].col_videoName.indexOf(videoName) != -1){
 					downloadProvider.setItemAt({
+						col_preview:downloadProvider[qIndex].col_preview,
 						col_videoName:downloadingVideoName,
 						col_videoUrl:downloadProvider[qIndex].col_videoUrl,
 						col_status:status,
@@ -1083,8 +1089,9 @@ package org.mineap.nndd.download
 							statusType = DownloadStatusType.NOT_START;
 							status = "待機中";
 						}
-							
+						
 						downloadProvider.addItem({
+							col_preview:PathMaker.getThumbImgUrl(decodeURIComponent(xmlList[i].videoUrl)),
 							col_videoName:name,
 							col_videoUrl:decodeURIComponent(xmlList[i].videoUrl),
 							col_status:status,
