@@ -6,7 +6,6 @@ package org.mineap.nndd.player
 	import flash.display.NativeWindowType;
 	import flash.display.StageDisplayState;
 	import flash.display.StageQuality;
-	import flash.errors.IOError;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -27,7 +26,6 @@ package org.mineap.nndd.player
 	import mx.controls.Text;
 	import mx.controls.videoClasses.VideoError;
 	import mx.core.FlexGlobals;
-	import mx.core.Window;
 	import mx.events.AIREvent;
 	import mx.events.FlexEvent;
 	import mx.events.VideoEvent;
@@ -42,7 +40,6 @@ package org.mineap.nndd.player
 	import org.mineap.nicovideo4as.loader.api.ApiGetRelation;
 	import org.mineap.nicovideo4as.model.RelationResultItem;
 	import org.mineap.nicovideo4as.util.HtmlUtil;
-	import org.mineap.nndd.Access2Nico;
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
@@ -78,7 +75,6 @@ package org.mineap.nndd.player
 	import org.osmf.events.LoadEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.TimeEvent;
-	import org.osmf.layout.ScaleMode;
 	import org.osmf.media.MediaPlayerState;
 	
 	import spark.components.VideoDisplay;
@@ -3908,6 +3904,17 @@ package org.mineap.nndd.player
 							
 						});
 						
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.NICOWARI_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_START, getProgressListener);
+						
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
@@ -4005,30 +4012,58 @@ package org.mineap.nndd.player
 		public function getProgressListener(event:Event):void{
 			var status:String = "";
 			if(event.type == NNDDDownloader.LOGIN_SUCCESS){
-				status = "ログイン...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.WATCH_SUCCESS){
-				status = "動画ページアクセス...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.GETFLV_API_ACCESS_SUCCESS){
-				status = "動画取得APIアクセス...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.COMMENT_GET_SUCCESS){
-				status = "コメント取得...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.OWNER_COMMENT_GET_SUCCESS){
-				status = "投稿者コメント取得...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.NICOWARI_GET_SUCCESS){
-				status = "ニコ割取得...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.THUMB_INFO_GET_SUCCESS){
-				status = "サムネイル情報取得...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.THUMB_IMG_GET_SUCCESS){
-				status = "サムネイル画像取得...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_SUCCESS){
-				status = "市場情報取得...成功";
+				status = "成功";
 			}else if(event.type == NNDDDownloader.VIDEO_GET_SUCCESS){
-				status = "動画取得...成功";
+				status = "成功";
 			}
-
-			trace(status);
-			videoPlayer.label_downloadStatus.text = videoPlayer.label_downloadStatus.text + "\n\t" + status;
 			
+			if(event.type == NNDDDownloader.LOGIN_START){
+				status = "ログインしています...";
+			}else if(event.type == NNDDDownloader.WATCH_START){
+				status = "動画ページにアクセスしています...";
+			}else if(event.type == NNDDDownloader.GETFLV_API_ACCESS_START){
+				status = "動画取得APIにアクセスしています...";
+			}else if(event.type == NNDDDownloader.COMMENT_GET_START){
+				status = "コメントを取得しています...";
+			}else if(event.type == NNDDDownloader.OWNER_COMMENT_GET_START){
+				status = "投稿者コメントを取得しています...";
+			}else if(event.type == NNDDDownloader.NICOWARI_GET_START){
+				status = "ニコ割を取得しています...";
+			}else if(event.type == NNDDDownloader.THUMB_INFO_GET_START){
+				status = "サムネイル情報を取得しています...";
+			}else if(event.type == NNDDDownloader.THUMB_IMG_GET_START){
+				status = "サムネイル画像を取得しています...";
+			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_START){
+				status = "市場情報を取得しています...";
+			}else if(event.type == NNDDDownloader.VIDEO_GET_START){
+				status = "動画を取得しています...";
+			}
+			
+			trace(status);
+			if ("成功" == status)
+			{
+				videoPlayer.label_downloadStatus.text = videoPlayer.label_downloadStatus.text + " " + status;
+			}
+			else
+			{
+				videoPlayer.label_downloadStatus.text = videoPlayer.label_downloadStatus.text + "\n\t" + status;
+			}
 		}
 		
 		/**
@@ -4037,13 +4072,14 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		public function streamingPlayFailListener(event:Event):void{
+			var tempStr:String = videoPlayer.label_downloadStatus.text;
 			if(event.type == NNDDDownloader.DOWNLOAD_PROCESS_CANCELD){
 				stop();
-				videoPlayer.label_downloadStatus.text = "アクセスをキャンセルしました。";
+				videoPlayer.label_downloadStatus.text = tempStr + "\n\nアクセスをキャンセルしました。";
 				logManager.addLog("***ストリーミング再生をキャンセル***");
 			}else if(event.type == NNDDDownloader.DOWNLOAD_PROCESS_ERROR){
 				stop();
-				videoPlayer.label_downloadStatus.text = "動画を取得できませんでした。\n" + event + ":" + (event as IOErrorEvent).text;
+				videoPlayer.label_downloadStatus.text = tempStr + "\n\n動画を取得できませんでした。\n" + (event as IOErrorEvent).text + "\n" + event;
 				logManager.addLog(NNDDDownloader.DOWNLOAD_PROCESS_ERROR + ":" + event + ":" + (event as IOErrorEvent).text);
 				logManager.addLog("***ストリーミング再生に失敗***");
 			}
@@ -4104,6 +4140,17 @@ package org.mineap.nndd.player
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
+			
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.COMMENT_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.GETFLV_API_ACCESS_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.ICHIBA_INFO_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.NICOWARI_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.OWNER_COMMENT_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_START, getProgressListener);
 		}
 		
 		/**

@@ -12,7 +12,6 @@ package org.mineap.nndd.download
 	import mx.collections.ArrayCollection;
 	import mx.containers.Canvas;
 	import mx.controls.Alert;
-	import mx.core.Application;
 	import mx.core.FlexGlobals;
 	import mx.events.CloseEvent;
 	import mx.formatters.NumberFormatter;
@@ -354,6 +353,17 @@ package org.mineap.nndd.download
 				this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getSuccessListener, false, 0, true);
 				this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_SUCCESS, getSuccessListener, false, 0, true);
 				
+				this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener, false, 0, true);
+				this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_START, getProgressListener, false, 0, true);
+				
 				//プログレスハンドラ登録
 				this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_DOWNLOAD_PROGRESS, downloadProgressHandler, false, 0, true);
 				
@@ -601,12 +611,59 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		public function getProgressListener(event:Event):void
+		{
+			var status:String = "";
+			if(event.type == NNDDDownloader.LOGIN_START){
+				status = "ログイン中...";
+			}else if(event.type == NNDDDownloader.WATCH_START){
+				status = "動画ページにアクセス中...";
+			}else if(event.type == NNDDDownloader.GETFLV_API_ACCESS_START){
+				status = "動画取得APIにアクセス中...";
+			}else if(event.type == NNDDDownloader.COMMENT_GET_START){
+				status = "コメント取得中...";
+			}else if(event.type == NNDDDownloader.OWNER_COMMENT_GET_START){
+				status = "投稿者コメント取得中...";
+			}else if(event.type == NNDDDownloader.NICOWARI_GET_START){
+				status = "ニコ割取得中...";
+			}else if(event.type == NNDDDownloader.THUMB_INFO_GET_START){
+				status = "サムネイル情報取得中...";
+			}else if(event.type == NNDDDownloader.THUMB_IMG_GET_START){
+				status = "サムネイル画像取得中...";
+			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_START){
+				status = "市場情報取得中...";
+			}else if(event.type == NNDDDownloader.VIDEO_GET_START){
+				status = "動画取得中...";
+			}
+			
+			var newVideoName:String = null;
+			if(NNDDDownloader(event.currentTarget).nicoVideoName != null){
+				newVideoName = NNDDDownloader(event.currentTarget).nicoVideoName;
+			}
+			
+			logManager.addLog(status + ":" + event.type);
+			
+			var index:int = searchQueueIndexByQueueId(queueId);
+			
+			setStatus("進行中\n" + status, DownloadStatusType.DOWNLOADEING, queueVideoName, index, "", newVideoName);
+			
+			if(newVideoName != null){
+				queueVideoName = newVideoName;
+			}
+		}
+		
+		/**
 		 * 取得成功系リスナー
 		 * @param event
 		 * 
 		 */
 		public function getSuccessListener(event:Event):void{
 			var status:String = "";
+			
 			if(event.type == NNDDDownloader.LOGIN_SUCCESS){
 				status = "ログイン成功";
 			}else if(event.type == NNDDDownloader.WATCH_SUCCESS){
@@ -813,7 +870,7 @@ package org.mineap.nndd.download
 			removeHandler();
 			if(event.type == NNDDDownloader.DOWNLOAD_PROCESS_CANCELD){
 				status = "キャンセル";
-				logManager.addLog("エラー:" + (event.target as NNDDDownloader).saveVideoName);
+				logManager.addLog("キャンセル:" + (event.target as NNDDDownloader).saveVideoName);
 				logManager.addLog("***動画取得キャンセル***");
 				if(isDownloading){
 					isCancel = true;

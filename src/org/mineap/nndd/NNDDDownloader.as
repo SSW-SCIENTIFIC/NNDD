@@ -102,6 +102,11 @@ package org.mineap.nndd
 		private var _useOldType:Boolean = false;
 		
 		/**
+		 * ログイン処理を開始したときに、typeプロパティがこの定数に設定されたEventが発行されます。 
+		 */
+		public static const LOGIN_START:String = "LoginStart";
+		
+		/**
 		 * ログインに失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
 		 */
 		public static const LOGIN_FAIL:String = "LoginFail";
@@ -110,6 +115,11 @@ package org.mineap.nndd
 		 * ログインに成功したとき、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
 		public static const LOGIN_SUCCESS:String = "LoginSuccess";
+		
+		/**
+		 * 動画ページへのアクセスを開始したときに、typeプロパティがこの定数に設定されたEventが発行されます。
+		 */
+		public static const WATCH_START:String = "WatchStart";
 		
 		/**
 		 * 動画ページへのアクセスに失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
@@ -122,6 +132,11 @@ package org.mineap.nndd
 		public static const WATCH_SUCCESS:String = "WatchSuccess";
 		
 		/**
+		 * 
+		 */
+		public static const GETFLV_API_ACCESS_START:String = "GetFlvAccessStart";
+		
+		/**
 		 * ニコニコ動画のAPIであるgetflvへのアクセスに失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
 		 */
 		public static const GETFLV_API_ACCESS_FAIL:String = "GetFlvAccessFail";
@@ -130,6 +145,11 @@ package org.mineap.nndd
 		 * ニコニコ動画のAPIであるgetflvへのアクセスに成功したとき、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
 		public static const GETFLV_API_ACCESS_SUCCESS:String = "GetFlvAccessSuccess";
+		
+		/**
+		 * 
+		 */
+		public static const GETWAYBACKKEY_API_ACCESS_START:String = "GetWaybackkeyAccessStart";
 		
 		/**
 		 * ニコニコ動画のAPIであるgetwaybackkeyへのアクセスに失敗した時、typeプロパティがこの定数に設定されたErrorEventが発行されます。
@@ -142,6 +162,11 @@ package org.mineap.nndd
 		public static const GETWAYBACKKEY_API_ACCESS_SUCCESS:String = "GetWaybackkeyAccessSuccess";
 		
 		/**
+		 * 
+		 */
+		public static const COMMENT_GET_START:String = "CommentGetStart";
+		
+		/**
 		 * 通常コメントの取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
 		 */
 		public static const COMMENT_GET_FAIL:String = "CommentGetFail";
@@ -150,6 +175,11 @@ package org.mineap.nndd
 		 * 通常コメントの取得に成功したとき、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
 		public static const COMMENT_GET_SUCCESS:String = "CommentGetSuccess";
+		
+		/**
+		 * 
+		 */
+		public static const OWNER_COMMENT_GET_START:String = "OwnerCommentGetStart";
 		
 		/**
 		 * 投稿者コメントの取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
@@ -162,6 +192,11 @@ package org.mineap.nndd
 		public static const OWNER_COMMENT_GET_SUCCESS:String = "OwnerCommentGetSuccess";
 		
 		/**
+		 * 
+		 */
+		public static const NICOWARI_GET_START:String = "NicowariGetStart";
+		
+		/**
 		 * ニコ割の取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
 		 */
 		public static const NICOWARI_GET_FAIL:String = "NicowariGetFail";
@@ -170,6 +205,11 @@ package org.mineap.nndd
 		 * ニコ割の取得に成功したとき、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
 		public static const NICOWARI_GET_SUCCESS:String = "NicowariGetSuccess";
+		
+		/**
+		 * 
+		 */
+		public static const THUMB_INFO_GET_START:String = "ThumbInfoGetStart";
 		
 		/**
 		 * サムネイル情報の取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
@@ -182,6 +222,11 @@ package org.mineap.nndd
 		public static const THUMB_INFO_GET_SUCCESS:String = "ThumbInfoGetSuccess";
 		
 		/**
+		 * 
+		 */
+		public static const THUMB_IMG_GET_START:String = "ThumbImgGetStart";
+		
+		/**
 		 * サムネイル画像の取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
 		 */
 		public static const THUMB_IMG_GET_FAIL:String = "ThumbImgGetFail";
@@ -192,6 +237,11 @@ package org.mineap.nndd
 		public static const THUMB_IMG_GET_SUCCESS:String = "ThumbImgGetSuccess";
 		
 		/**
+		 * 
+		 */
+		public static const ICHIBA_INFO_GET_START:String = "IchibaInfoGetStart";
+		
+		/**
 		 * 市場情報の取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
 		 */
 		public static const ICHIBA_INFO_GET_FAIL:String = "IchibaInfoGetFail";
@@ -200,6 +250,11 @@ package org.mineap.nndd
 		 * 市場情報の取得に成功したとき、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
 		public static const ICHIBA_INFO_GET_SUCCESS:String = "IchibaInfoGetSuccess";
+		
+		/**
+		 * 
+		 */
+		public static const VIDEO_GET_START:String = "VideoGetStart";
 		
 		/**
 		 * 動画の取得に失敗したとき、typeプロパティがこの定数に設定されたIOErrorEventが発行されます。
@@ -319,6 +374,9 @@ package org.mineap.nndd
 			});
 			
 			if(isStart){
+				trace(LOGIN_START + ":" + this._videoId);
+				LogManager.instance.addLog(LOGIN_START + ":" + this._videoId);
+				dispatchEvent(new Event(LOGIN_START));
 				this._login.login(user, password);
 			}
 		}
@@ -434,6 +492,9 @@ package org.mineap.nndd
 		 */
 		public function requestStart(user:String, password:String):void{
 			
+			trace(LOGIN_START + ":" + this._videoId);
+			LogManager.instance.addLog(LOGIN_START + ":" + this._videoId);
+			dispatchEvent(new Event(LOGIN_START));
 			this._login.login(user, password);
 			
 		}
@@ -496,6 +557,10 @@ package org.mineap.nndd
 				videoId += "?eco=1";
 			}
 			
+			trace(WATCH_START + ":" + this._videoId);
+			LogManager.instance.addLog(WATCH_START + ":" + this._videoId);
+			dispatchEvent(new Event(WATCH_START));
+			
 			this._watchVideo.watchVideo(videoId, watchHarmful);
 		}
 		
@@ -554,6 +619,17 @@ package org.mineap.nndd
 				return;
 			}
 			
+			getFlvAccess();
+			
+		}
+		
+		/**
+		 * 
+		 * 
+		 */
+		private function getFlvAccess():void
+		{
+			
 			//APIアクセス開始
 			this._getflvAccess.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
 				(event.target as URLLoader).close();
@@ -567,6 +643,12 @@ package org.mineap.nndd
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._getflvAccess.addEventListener(Event.COMPLETE, getFlvAccessSuccess);
+			
+			
+			trace(GETFLV_API_ACCESS_START + ":" + this._videoId);
+			LogManager.instance.addLog(GETFLV_API_ACCESS_START + ":" + this._videoId);
+			dispatchEvent(new Event(GETFLV_API_ACCESS_START));
+			
 			this._getflvAccess.getAPIResult(this._videoId, this._isAlwaysEconomy);
 			
 		}
@@ -580,13 +662,27 @@ package org.mineap.nndd
 		private function getFlvAccessSuccess(event:Event):void{
 			
 			//APIアクセス成功(アクセスは閉じない)
-			trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
-			LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
-			dispatchEvent(new Event(GETFLV_API_ACCESS_SUCCESS));
-			
 			this._flvResultAnalyzer = new GetFlvResultAnalyzer();
 			this._flvResultAnalyzer.analyze(this._getflvAccess.data);
 			this._threadId = this._flvResultAnalyzer.threadId;
+			
+			if (this._flvResultAnalyzer.url == null)
+			{
+				// urlがとれない。
+				trace(GETFLV_API_ACCESS_FAIL + ":" + event);
+				LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_FAIL + ":" + this._videoId + ":" +  this._nicoVideoName);
+				LogManager.instance.addLog("動画が存在しないか、アクセスできません。(" + this._videoId + ")");
+				var errorEvent:ErrorEvent = new IOErrorEvent(GETFLV_API_ACCESS_FAIL, false, false, "動画が存在しないか、アクセスできません。(" + this._videoId + ")");
+				dispatchEvent(errorEvent);
+				close(true, true, errorEvent);
+				return;
+			}
+			else
+			{
+				trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
+				LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+				dispatchEvent(new Event(GETFLV_API_ACCESS_SUCCESS));
+			}
 			
 			if(this._when == null){
 				//過去ログは取得しない
@@ -607,6 +703,11 @@ package org.mineap.nndd
 					trace(event);
 					LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 				});
+				
+				trace(GETWAYBACKKEY_API_ACCESS_START + ":" + this._videoId);
+				LogManager.instance.addLog(GETWAYBACKKEY_API_ACCESS_START + ":" + this._videoId);
+				dispatchEvent(new Event(GETWAYBACKKEY_API_ACCESS_START));
+				
 				this._getWaybackkeyAccess.getAPIResult(this._threadId);
 			}
 		}
@@ -663,6 +764,11 @@ package org.mineap.nndd
 				trace(event);
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
+			
+			trace(COMMENT_GET_START + ":" + this._videoId);
+			LogManager.instance.addLog(COMMENT_GET_START + ":" + this._videoId);
+			dispatchEvent(new Event(COMMENT_GET_START));
+			
 			//通常コメントを1000件取りにいく
 			this._commentLoader.getComment(this._videoId, 1000, false, this._getflvAccess, this._when, this._waybackkey, this._useOldType);
 		}
@@ -766,6 +872,11 @@ package org.mineap.nndd
 				trace(event);
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
+			
+			trace(OWNER_COMMENT_GET_START + ":" + this._videoId);
+			LogManager.instance.addLog(OWNER_COMMENT_GET_START + ":" + this._videoId);
+			dispatchEvent(new Event(OWNER_COMMENT_GET_START));
+			
 			//isOwner=trueでコメントを取得しにいく。過去コメントは取りに行かない。
 			this._ownerCommentLoader.getComment(this._videoId, 1000, true, this._getflvAccess, null, null);
 			
@@ -842,6 +953,7 @@ package org.mineap.nndd
 						dispatchEvent(new IOErrorEvent(NICOWARI_GET_FAIL, false, false, event.text));
 						close(true, true, event);
 					});
+					
 					this._getbgmAccess.getAPIResult(this._threadId);
 				}
 			}
@@ -1049,6 +1161,11 @@ package org.mineap.nndd
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, thumbInfoGetSuccess);
+			
+			trace(THUMB_INFO_GET_START + ":" + this._videoId);
+			LogManager.instance.addLog(THUMB_INFO_GET_START + ":" + this._videoId);
+			dispatchEvent(new Event(THUMB_INFO_GET_START));
+			
 			this._thumbInfoLoader.getThumbInfo(videoId);
 			
 		}
@@ -1119,6 +1236,11 @@ package org.mineap.nndd
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
 			try{
+				
+				trace(THUMB_IMG_GET_START + ":" + this._videoId);
+				LogManager.instance.addLog(THUMB_IMG_GET_START + ":" + this._videoId);
+				dispatchEvent(new Event(THUMB_IMG_GET_START));
+				
 				// サムネ情報からサムネ画像を取得
 				var thumbUrl:String = this._thumbImgLoader.getThumbImgUrl(XML((event.currentTarget as ThumbInfoLoader).thumbInfo));
 				if(thumbUrl != null && thumbUrl != ""){
@@ -1192,6 +1314,11 @@ package org.mineap.nndd
 				trace(event);
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
+			
+			trace(ICHIBA_INFO_GET_START + ":" + this._videoId);
+			LogManager.instance.addLog(ICHIBA_INFO_GET_START + ":" + this._videoId);
+			dispatchEvent(new Event(ICHIBA_INFO_GET_START));
+			
 			this._ichibaInfoLoader.getIchibaInfo(this._thumbInfoId);
 		}
 		
@@ -1319,6 +1446,10 @@ package org.mineap.nndd
 			}
 			
 			LogManager.instance.addLog("動画のDLを開始:DL先=" + analyzer.url);
+			
+			trace(VIDEO_GET_START + ":" + this._videoId);
+			LogManager.instance.addLog(VIDEO_GET_START + ":" + this._videoId);
+			dispatchEvent(new Event(VIDEO_GET_START));
 			
 			this._videoStream.getVideoStart(analyzer.url);
 		}
