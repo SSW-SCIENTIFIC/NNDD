@@ -2,11 +2,11 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.1.2</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54151/NNDDv2_1_2.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54400/NNDDv2_1_2.dmg</url>
 	<description><![CDATA[
 v2.1.2
 ・DL処理の進捗情報表示を詳細化
-・APIアクセスの結果堂がサーバーのURLがとれなかったときの動作を変更
+・APIアクセスの結果動画サーバーのURLがとれなかったときの動作を変更
 ・コメント追記時に重複チェックするように変更
 ・DLリストにサムネイル画像を表示するよう変更
 ・【バグフィックス】マイリストの既読処理が行われないことがある問題を修正
@@ -38,11 +38,11 @@ v2.1.0
 
 <exe>
 	<version>2.1.2</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54151/NNDDv2_1_2.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54400/NNDDv2_1_2.exe</url>
 	<description><![CDATA[
 v2.1.2
 ・DL処理の進捗情報表示を詳細化
-・APIアクセスの結果堂がサーバーのURLがとれなかったときの動作を変更
+・APIアクセスの結果動画サーバーのURLがとれなかったときの動作を変更
 ・コメント追記時に重複チェックするように変更
 ・DLリストにサムネイル画像を表示するよう変更
 ・【バグフィックス】マイリストの既読処理が行われないことがある問題を修正
