@@ -280,7 +280,7 @@ package org.mineap.nndd
 							// 追加対象コメントの番号
 							var newNo:int = int(xml.@no);
 							
-							if (no_chatXml_map[newNo] != null)
+							if (no_chatXml_map[newNo] == null)
 							{
 								// 無かったら追加
 								no_chatXml_map[newNo] = xml;
@@ -302,7 +302,8 @@ package org.mineap.nndd
 				}
 				
 				// oldCommentsからchatをすべて削除
-				(oldComments as XML).replace("chat", "");
+//				(oldComments as XML).replace("chat", "");
+				delete (oldComments as XML).chat;
 				
 				// oldCommentsにmapの内容を追加
 				for (var key:String in no_chatXml_map)
