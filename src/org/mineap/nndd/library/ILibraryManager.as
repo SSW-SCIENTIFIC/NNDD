@@ -53,8 +53,17 @@ package org.mineap.nndd.library
 		/**
 		 * ライブラリファイルの保存先をアプリケーションディレクトリにするかどうか指定します
 		 * 
+		 * @param value
 		 */
 		function set useAppDirLibFile(value:Boolean):void;
+		
+		/**
+		 * システムファイルの保存先をアプリケーションディレクトリにするかどうかを指定します
+		 * 
+		 * @param value
+		 * 
+		 */
+		function set useAppDirSystemFile(value:Boolean):void;
 		
 		/**
 		 * ライブラリディレクトリを変更します

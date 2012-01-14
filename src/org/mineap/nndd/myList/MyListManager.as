@@ -857,15 +857,17 @@ package org.mineap.nndd.myList
 					{
 						// 保存済みXMLの既読/未読を優先
 						
+						// 保存済みの再生済み項目を取得
 						var tempXML:XML = readLocalMyList(myListId, type);
 						vector = searchPlayedItem(tempXML);
 						
-						//再生済み項目を新規XMLに反映
+						// 再生済み項目を新規XMLに反映
 						updatePlayed(vector, xml, true);
 						
+						// 保存済みの未再生項目を取得
 						var tempVector:Vector.<String> = searchUnPlaydItem(tempXML, true);
 						
-						//未視聴に上書き
+						// 未視聴に上書き
 						if (tempVector != null && tempVector.length > 0)
 						{
 							updatePlayed(tempVector, xml, false);
@@ -1113,6 +1115,11 @@ package org.mineap.nndd.myList
 		 * 
 		 */
 		private function updatePlayed(videoIds:Vector.<String>, xml:XML, isPlayed:Boolean):Boolean{
+			
+			if (videoIds == null || videoIds.length > 0)
+			{
+				return false;
+			}
 			
 			if(xml != null){
 				

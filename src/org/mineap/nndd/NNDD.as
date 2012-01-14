@@ -357,6 +357,16 @@ public function initNNDD(nndd:NNDD):void
 	LibraryManagerBuilder.instance.libraryType = libraryType;
 	this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
 	
+	var useSystemFileStr:String = ConfigManager.getInstance().getItem("useAppDirSystemFile");
+	if (useSystemFileStr != null)
+	{
+		var useSystemFile:Boolean = ConfUtil.parseBoolean(useSystemFileStr);
+		if (useSystemFile)
+		{
+			this.libraryManager.useAppDirSystemFile = useSystemFile;
+		}
+	}
+	
 	/*クラスインスタンスの初期化*/
 	this.nndd = nndd;
 	

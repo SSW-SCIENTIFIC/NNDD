@@ -55,7 +55,8 @@ package org.mineap.nndd.library.sqlite
 		private var _totalVideoCount:Number = 0;
 		private var _videoCount:Number = 0;
 		
-		private var _useAppDirLibFile:Boolean = true;
+		private var _useAppDirLibFile:Boolean = false;
+		private var _useAppDirSystemFile:Boolean = false;
 		
 		public static const LIBRARY_FILE_NAME:String = "library.db";
 		
@@ -93,7 +94,7 @@ package org.mineap.nndd.library.sqlite
 		 */
 		public function get libraryFile():File{
 			if(_useAppDirLibFile){
-				return File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
+				return File.applicationStorageDirectory.resolvePath("system/" + SQLiteLibraryManager.LIBRARY_FILE_NAME);
 			}else{
 				return this.systemFileDir.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
 			}
@@ -126,7 +127,14 @@ package org.mineap.nndd.library.sqlite
 		 */
 		public function get systemFileDir():File
 		{
-			return new File(libraryDir.resolvePath("system/").url);
+			if (!_useAppDirSystemFile)
+			{
+				return new File(libraryDir.resolvePath("system/").url);
+			}
+			else
+			{
+				return new File(File.applicationStorageDirectory.resolvePath("system/").url);
+			}
 		}
 		
 		/**
@@ -157,6 +165,16 @@ package org.mineap.nndd.library.sqlite
 		public function set useAppDirLibFile(value:Boolean):void
 		{
 			this._useAppDirLibFile = value;
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */
+		public function set useAppDirSystemFile(value:Boolean):void
+		{
+			this._useAppDirSystemFile = value;
 		}
 		
 		/**

@@ -101,6 +101,11 @@ package org.mineap.nndd.library.namedarray
 		
 		/**
 		 * 
+		 */
+		private var _useAppDirSystemFile:Boolean = false;
+		
+		/**
+		 * 
 		 * 
 		 */
 		public function NamedArrayLibraryManager()
@@ -152,8 +157,14 @@ package org.mineap.nndd.library.namedarray
 		 * 
 		 */
 		public function get systemFileDir():File{
-			var systemDir:File = new File(libraryDir.url + "/system/");
-			return systemDir;
+			if (!_useAppDirSystemFile)
+			{
+				return new File(libraryDir.resolvePath("system/").url);
+			}
+			else
+			{
+				return new File(File.applicationStorageDirectory.resolvePath("system/").url);
+			}
 		}
 		
 		/**
@@ -184,6 +195,16 @@ package org.mineap.nndd.library.namedarray
 		public function set useAppDirLibFile(value:Boolean):void
 		{
 			this._useAppDirLibFile = value;
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */
+		public function set useAppDirSystemFile(value:Boolean):void
+		{
+			this._useAppDirSystemFile = value;
 		}
 		
 		/**
