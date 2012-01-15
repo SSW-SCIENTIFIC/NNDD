@@ -1116,7 +1116,7 @@ package org.mineap.nndd.myList
 		 */
 		private function updatePlayed(videoIds:Vector.<String>, xml:XML, isPlayed:Boolean):Boolean{
 			
-			if (videoIds == null || videoIds.length > 0)
+			if (videoIds == null || videoIds.length <= 0)
 			{
 				return false;
 			}
