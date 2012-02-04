@@ -852,8 +852,9 @@ package org.mineap.nndd.myList
 				
 				if (file.exists)
 				{
+					var xmlList:XMLList = xml.descendants("item");
 					
-					if (savedXMLprecedence)
+					if (savedXMLprecedence && xmlList.length() != 0)
 					{
 						// 保存済みXMLの既読/未読を優先
 						
