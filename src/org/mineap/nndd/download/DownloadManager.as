@@ -195,6 +195,23 @@ package org.mineap.nndd.download
 		}
 		
 		/**
+		 * DLリスト内の項目のうち、DL済みの件数を返します。
+		 * @return 
+		 * 
+		 */
+		public function get downloadedItem():int
+		{
+			var count:int = 0;
+			for(var i:int = 0; downloadProvider.length > i; i++){
+				if(downloadProvider[i].col_statusType == DownloadStatusType.COMPLETE)
+				{
+					++count;
+				}
+			}
+			return count;
+		}
+		
+		/**
 		 * 次のダウンロードを開始します。
 		 * キューを上から探索し、ダウンロード済みでないものを見つけたらダウンロードを開始します。
 		 * 

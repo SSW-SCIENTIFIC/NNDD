@@ -19,6 +19,7 @@ import flash.errors.EOFError;
 import flash.events.ContextMenuEvent;
 import flash.events.ErrorEvent;
 import flash.events.Event;
+import flash.events.FileListEvent;
 import flash.events.FocusEvent;
 import flash.events.IOErrorEvent;
 import flash.events.InvokeEvent;
@@ -29,6 +30,8 @@ import flash.events.ProgressEvent;
 import flash.events.TimerEvent;
 import flash.filesystem.File;
 import flash.geom.Rectangle;
+import flash.globalization.LocaleID;
+import flash.globalization.NumberFormatter;
 import flash.net.FileFilter;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
@@ -57,6 +60,7 @@ import mx.controls.DataGrid;
 import mx.controls.FileSystemComboBox;
 import mx.controls.FileSystemEnumerationMode;
 import mx.controls.Label;
+import mx.controls.Text;
 import mx.controls.TextInput;
 import mx.controls.TileList;
 import mx.controls.Tree;
@@ -71,6 +75,7 @@ import mx.core.FlexGlobals;
 import mx.core.IUIComponent;
 import mx.core.UITextField;
 import mx.core.Window;
+import mx.core.windowClasses.StatusBar;
 import mx.events.AIREvent;
 import mx.events.CloseEvent;
 import mx.events.DragEvent;
@@ -2626,6 +2631,9 @@ private function folderSelectButtonClicked(event:MouseEvent):void
  * 
  */
 private function tabChanged():void{
+	
+	this.status = "";
+	
 	switch(viewStack.selectedIndex){
 		case RANKING_AND_SERACH_TAB_NUM:
 			
@@ -2682,6 +2690,8 @@ private function tabChanged():void{
 				);
 			}
 			
+			updateDownloadStatusBar();
+			
 			break;
 		case LIBRARY_LIST_TAB_NUM:
 			
@@ -2708,6 +2718,8 @@ private function tabChanged():void{
 //				}
 //			}
 			
+			var totalSize:Number = -1;
+			
 			if(playListManager.isSelectedPlayList){
 				updatePlayListSummery();
 				var index:int = playListManager.selectedPlayListIndex;
@@ -2715,6 +2727,7 @@ private function tabChanged():void{
 					index = 0;
 				}
 				updatePlayList(index);
+				
 			}else if(isEnableLibrary){
 				if(isEnableLibrary){
 					
@@ -2731,9 +2744,13 @@ private function tabChanged():void{
 			}
 	  		
 			(this.dataGrid_downloaded.dataProvider as ArrayCollection).refresh();
+			
 			break;
 		case HISTORY_LIST_TAB_NUM:
 			historyManager.refresh();
+			
+//			this.status = historyProvider.length + " 項目";
+			
 			break;
 		case OPTION_TAB_NUM:
 			if(textArea_log != null){
@@ -2746,6 +2763,20 @@ private function tabChanged():void{
 			break;
 		
 	}
+}
+
+public function updateDownloadStatusBar():void
+{
+	// ギガバイト単位
+	var space:Number = this.libraryManager.libraryDir.spaceAvailable / (1000*1000*1000);
+	var formatter:NumberFormatter = new NumberFormatter(LocaleID.DEFAULT);
+	formatter.fractionalDigits = 2;
+	
+	var totalCount:int = downloadManager.listLength;
+	var downloadedCount:int = downloadManager.downloadedItem;
+	var notDownloadedCount:int = totalCount - downloadedCount;
+	
+	this.status = "DL済み " + downloadedCount + " 項目, 未DL " + notDownloadedCount + " 項目, " + formatter.formatNumber(space) + " GB空き";
 }
 
 private function sourceTabChanged(event:IndexChangedEvent):void{
@@ -3323,6 +3354,7 @@ private function addDownloadList(video:NNDDVideo, index:int = -1):void{
 					}, index);
 				}
 				scrollToLastAddedDownloadItem();
+				updateDownloadStatusBar();
 			}
 		}, null, Alert.NO);
 	}else{
@@ -3343,6 +3375,9 @@ private function addDownloadList(video:NNDDVideo, index:int = -1):void{
 			scrollToLastAddedDownloadItem();
 		}
 	}
+	
+	updateDownloadStatusBar();
+	
 }
 
 /**
@@ -3364,6 +3399,7 @@ public function addDownloadListForInfoView(video:NNDDVideo):void{
 					}else{
 						scrollToLastAddedDownloadItem();
 					}
+					updateDownloadStatusBar();
 				}
 			}, null, Alert.NO);
 		}else{
@@ -3372,6 +3408,7 @@ public function addDownloadListForInfoView(video:NNDDVideo):void{
 			}else{
 				scrollToLastAddedDownloadItem();
 			}
+			updateDownloadStatusBar();
 		}
 	}
 }
@@ -3422,6 +3459,8 @@ public function addDownloadListForSearch(video:NNDDVideo, index:int = -1):void{
 			scrollToLastAddedDownloadItem();
 		}
 	}
+	
+	updateDownloadStatusBar();
 }
 
 /**
@@ -4068,15 +4107,25 @@ private function updateLibrary(index:int):void{
 		
 		this.playListManager.isSelectedPlayList = false;
 		
+		var dir:File = null;
+		
 		if(index > -1){
 			var item:ITreeItem = (tree_library.selectedItem as ITreeItem);
 			this._selectedLibraryFile = item.file;
-			this.tagManager.tagRenew(tileList_tag, _selectedLibraryFile);
-			this.downloadedListManager.updateDownloadedListItems(this._selectedLibraryFile.url, this.showAll);
+			dir = this._selectedLibraryFile;
 		}else if(index == -1){
-			this.tagManager.tagRenew(tileList_tag, this.libraryManager.libraryDir);
-			this.downloadedListManager.updateDownloadedListItems(this.libraryManager.libraryDir.url, this.showAll);
+			dir = this.libraryManager.libraryDir;
 		}
+		
+		this.tagManager.tagRenew(tileList_tag, dir);
+		this.downloadedListManager.updateDownloadedListItems(dir.url, this.showAll);
+		
+		// ギガバイト単位
+		var space:Number = dir.spaceAvailable / (1000*1000*1000);
+		var formatter:NumberFormatter = new NumberFormatter(LocaleID.DEFAULT);
+		formatter.fractionalDigits = 2;
+		
+		nndd.status = downloadedProvider.length + " 項目, " + formatter.formatNumber(space) + " GB空き";
 		
 		if(tileList_tag != null){
 			tileList_tag.selectedIndices = tagIndices;
@@ -5197,6 +5246,9 @@ public function updatePlayList(index:int):void{
 		tree_library.selectedIndex = selectedIndex;
 	}
 	
+	var size:int = playListManager.getNNDDVideoListByIndex(index).length;
+	this.status = size + " 項目";
+	
 }
 
 /**
@@ -5748,6 +5800,7 @@ private function addDLList(url:String):void{
 		}else{
 			scrollToLastAddedDownloadItem();
 		}
+		updateDownloadStatusBar();
 		return;
 	}
 	
@@ -5760,6 +5813,7 @@ private function addDLList(url:String):void{
 		}else{
 			scrollToLastAddedDownloadItem();
 		}
+		updateDownloadStatusBar();
 		return;
 	}
 	
@@ -6157,6 +6211,8 @@ private function addDownloadListForMyList(video:NNDDVideo, index:int = -1):void{
 			scrollToLastAddedDownloadItem();
 		}
 	}
+	
+	updateDownloadStatusBar();
 }
 
 /**
@@ -7191,6 +7247,7 @@ private function historyItemHandler(event:ContextMenuEvent):void{
 							}else{
 								scrollToLastAddedDownloadItem();
 							}
+							updateDownloadStatusBar();
 						}
 					});
 				}else{
@@ -7205,6 +7262,7 @@ private function historyItemHandler(event:ContextMenuEvent):void{
 					}else{
 						scrollToLastAddedDownloadItem();
 					}
+					updateDownloadStatusBar();
 					
 				}
 				
@@ -7253,6 +7311,7 @@ private function historyItemDownload(event:Event):void{
 			}else{
 				scrollToLastAddedDownloadItem();
 			}
+			updateDownloadStatusBar();
 		});
 	}else{
 		var success:Boolean = false;
@@ -7267,6 +7326,7 @@ private function historyItemDownload(event:Event):void{
 		}else{
 			scrollToLastAddedDownloadItem();
 		}
+		updateDownloadStatusBar();
 	}
 	
 }
@@ -7307,6 +7367,7 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 						}else{
 							scrollToLastAddedDownloadItem();
 						}
+						updateDownloadStatusBar();
 					}
 				});
 			}else{
@@ -7315,6 +7376,7 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 				}else{
 					scrollToLastAddedDownloadItem();
 				}
+				updateDownloadStatusBar();
 			}
 		}
 	}
