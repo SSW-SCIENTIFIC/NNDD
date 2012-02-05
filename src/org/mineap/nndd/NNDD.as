@@ -2,7 +2,7 @@
  * NNDD.as
  * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
  * 
- * Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved.
+ * Copyright (c) 2008-2012 MAP - MineApplicationProject. All Rights Reserved.
  * 
  */
 

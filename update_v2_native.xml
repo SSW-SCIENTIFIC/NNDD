@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.1.3</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54579/NNDDv2_1_3.dmg</url>
+	<version>2.1.4</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54579/NNDDv2_1_4.dmg</url>
 	<description><![CDATA[
+v2.1.4
+・DLリストおよびライブラリ画面で、DataGridに表示中の項目数とディスクの空き容量を表示するようにした。
+・【バグフィックス】マイリストの視聴済みがリセットされてしまうことがある問題を修正
+
 v2.1.3
 ・【バグフィックス】コメントが追記されない問題を修正
 ・【バグフィックス】視聴済みかどうかが保存されない問題を修正
@@ -41,9 +45,13 @@ v2.1.0
 </dmg>
 
 <exe>
-	<version>2.1.3</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54579/NNDDv2_1_3.exe</url>
+	<version>2.1.4</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54579/NNDDv2_1_4.exe</url>
 	<description><![CDATA[
+v2.1.4
+・DLリストおよびライブラリ画面で、DataGridに表示中の項目数とディスクの空き容量を表示するようにした。
+・【バグフィックス】マイリストの視聴済みがリセットされてしまうことがある問題を修正
+
 v2.1.3
 ・【バグフィックス】コメントが追記されない問題を修正
 ・【バグフィックス】視聴済みかどうかが保存されない問題を修正
