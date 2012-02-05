@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.1.4</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54579/NNDDv2_1_4.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54792/NNDDv2_1_4.dmg</url>
 	<description><![CDATA[
 v2.1.4
 ・DLリストおよびライブラリ画面で、DataGridに表示中の項目数とディスクの空き容量を表示するようにした。
@@ -46,7 +46,7 @@ v2.1.0
 
 <exe>
 	<version>2.1.4</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54579/NNDDv2_1_4.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54792/NNDDv2_1_4.exe</url>
 	<description><![CDATA[
 v2.1.4
 ・DLリストおよびライブラリ画面で、DataGridに表示中の項目数とディスクの空き容量を表示するようにした。
