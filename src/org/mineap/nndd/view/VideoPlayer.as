@@ -147,9 +147,51 @@ public function resetInfo():void{
  */
 public function setTagArray(tags:Vector.<PlayerTagString>):void{
 	var text:String = "";
+	
+	// すべてのタグを見せるかどうか
+	var showAll:Boolean = false;
+	var showAllStr:String = ConfigManager.getInstance().getItem("showAllTag");
+	if (showAllStr != null)
+	{
+		showAll = ConfUtil.parseBoolean(showAllStr);
+		if (showAll)
+		{
+			logManager.addLog("Playerですべてのタグを表示");
+		}
+	}
+	else
+	{
+		ConfigManager.getInstance().setItem("showAllTag", "false");
+		ConfigManager.getInstance().save();
+	}
+	
+	// 見せるロケール
+	var showLoc:String = "jp";
+	if (showAll == false)
+	{
+		var loc:String = ConfigManager.getInstance().getItem("showTagLoc");
+		if (loc == null)
+		{
+			ConfigManager.getInstance().setItem("showTagLoc", "jp");
+			ConfigManager.getInstance().save();
+		}
+		else
+		{
+			// e.g. "jp","tw","es","de"
+			showLoc = loc;
+		}
+		logManager.addLog("表示するタグのロケール:" + showLoc);
+	}
+	
 	for each(var tagStr:PlayerTagString in tags)
 	{
 		var tag:String = tagStr.tag;
+		
+		if (showAll == false && tagStr.loc != showLoc)
+		{
+			// このロケールは見せない
+			continue;
+		}
 		
 		if (tag != null 
 				&& tag.indexOf("(取得できなかった") == -1 
@@ -168,6 +210,11 @@ public function setTagArray(tags:Vector.<PlayerTagString>):void{
 		{
 			text += tag + "  ";
 		}
+	}
+	
+	if (showAll == false && text.length == 0)
+	{
+		text = "この言語で表示できるタグはありません(ロケール:" + showLoc + ")";
 	}
 	
 	this.textAreaTagProvider = text;

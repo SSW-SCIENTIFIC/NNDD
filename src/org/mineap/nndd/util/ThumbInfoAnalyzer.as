@@ -91,9 +91,8 @@ package org.mineap.nndd.util
 					this._lastResBody = HtmlUtil.convertSpecialCharacterNotIncludedString(xml.thumb.last_res_body.text());
 					this._length = xml.thumb.length;
 					
-					var tags:XMLList = xml.thumb.tags;
 					for each(var temptags:XML in xml.thumb.tags){
-						var loc:String = tags.@domain;
+						var loc:String = temptags.@domain;
 						
 						for each(var tag:XML in temptags.tag){
 							var str:String = HtmlUtil.convertSpecialCharacterNotIncludedString(tag.text())
@@ -110,6 +109,7 @@ package org.mineap.nndd.util
 						}
 					}
 					
+					var tags:XMLList = xml.thumb.tags;
 					if(tags.length() == 0){
 						//タグが一つも無い。削除されている模様。
 						this._tagArray.push(Message.L_VIDEO_DELETED);
