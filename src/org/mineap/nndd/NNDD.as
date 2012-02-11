@@ -5191,12 +5191,22 @@ public function updatePlayList(index:int):void{
 		selectedIndex = tree_library.selectedIndex;
 	}
 	
-	var word:String = textInput_searchInDLList.text;
-	var tagWord:String = textInput_searchInTagList.text;
+	if (!downloadedDataGridComplete)
+	{
+		// ライブラリタブがまだ初期化されていない
+		return;
+	}
+	
+	
+	var word:String = null;
+	var tagWord:String = null;
+	word = textInput_searchInDLList.text;
+	tagWord = textInput_searchInTagList.text;
 	textInput_searchInDLList.text = "";
 	textInput_searchInTagList.text = "";
 	searchDLListTextInputChange();
 	searchTagListTextInputChange();
+	
 	
 	playListManager.isSelectedPlayList = true;
 	tree_library.selectedIndex = -1;

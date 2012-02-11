@@ -210,6 +210,8 @@ package org.mineap.nndd.playList
 					this.playLists[pIndex].items.splice(index, 0, video);
 					index++;
 				}
+				savePlayListByIndex(pIndex);
+				this.playLists[pIndex].items = readPlayList(getFullPath(pIndex), pIndex);
 			}
 		}
 		
@@ -350,6 +352,11 @@ package org.mineap.nndd.playList
 		 * 
 		 */
 		public function getNNDDVideoListByIndex(index:int):Vector.<NNDDVideo>{
+			
+			if (index == -1)
+			{
+				return new Vector.<NNDDVideo>();
+			}
 			
 			var nnddVideoArray:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
 			for each(var video:NNDDVideo in playLists[index].items){
