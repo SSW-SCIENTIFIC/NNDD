@@ -822,6 +822,7 @@ package org.mineap.nndd.myList
 		 * 指定されたxmlをマイリストとして保存します。
 		 * 
 		 * @param myListId
+		 * @param type
 		 * @param xml 
 		 * @param savedXMLprecedence 保存済みのXMLの既読/未読を優先するかどうか。trueの場合優先する。falseの場合は引数で渡した既読/未読を優先する。
 		 * 
@@ -848,13 +849,47 @@ package org.mineap.nndd.myList
 					file = new File(file.url + "/myList/" + myListId + ".xml");
 				}
 				
+				var xmlList:XMLList = xml.descendants("item");
+				if (xmlList.length() == 0)
+				{
+					// xmlが正しくないと思われる
+					return;
+				}
+				
 				var vector:Vector.<String> = null;
 				
 				if (file.exists)
 				{
-					var xmlList:XMLList = xml.descendants("item");
 					
-					if (savedXMLprecedence && xmlList.length() != 0)
+//					// 保存済みのxmlとDLしたxmlをマージ
+//					var map:Object = new Object();
+//					for each(var item:XML in xmlList)
+//					{
+//						map[item.link] = item;
+//					}
+//					
+//					var tempXML:XML = readLocalMyList(myListId, type);
+//					
+//					var localItemList:XMLList = tempXML.descendants("item");
+//					
+//					var count:int = localItemList.length();
+//					for each(var tempItem:XML in localItemList)
+//					{
+//						if (map[tempItem.link] == null)
+//						{
+//							// ユーザ投稿動画の保存上限
+//							if (count > 500)
+//							{
+//								break;
+//							}
+//							
+//							// DLしたXMLに、ローカルにはある動画が無いので追加
+//							xml.channel.appendChild(tempItem);
+//							count++;
+//						}
+//					}
+					
+					if (savedXMLprecedence)
 					{
 						// 保存済みXMLの既読/未読を優先
 						
