@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.1.4</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54792/NNDDv2_1_4.dmg</url>
+	<version>2.1.5</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54860/NNDDv2_1_5.dmg</url>
 	<description><![CDATA[
+v2.1.5
+・Playerでjpドメイン以外でつけられたタグを表示しないようにした(すべて表示/特定の言語のみ表示はプロパティで切り替え可能)
+	・showAllTagプロパティ：trueかfalseを指定。trueの時はすべてのタグを表示。
+	・showTagLocプロパティ："jp","tw","es","de"... などのうち、いづれか一つを指定。デフォルトは"jp"。showAllTagがfalseの時に、指定したロケールのタグのみを表示。
+・プレイリストの動画にニコニコ動画のURLが記載されていても、ローカルに保存済みの場合は保存済みの動画を使って再生するように変更。
+・【バグフィックス】右クリックメニューからプレイリストに追加を選択した際に、追加されないことがある問題を修正。
+・【バグフィックス】マイリストの視聴済みがリセットされてしまうことがある問題を修正。
+・【バグフィックス】DLリストを開いている状態で、Playerの動画を選択するダイアログのテキストフィールドにctrl+vすると、DLリストにも動画(URL)が追加されてしまう問題を修正。
+
 v2.1.4
 ・DLリストおよびライブラリ画面で、DataGridに表示中の項目数とディスクの空き容量を表示するようにした。
 ・【バグフィックス】マイリストの視聴済みがリセットされてしまうことがある問題を修正
@@ -45,9 +54,18 @@ v2.1.0
 </dmg>
 
 <exe>
-	<version>2.1.4</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54792/NNDDv2_1_4.exe</url>
+	<version>2.1.5</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54860/NNDDv2_1_5.exe</url>
 	<description><![CDATA[
+v2.1.5
+・Playerでjpドメイン以外でつけられたタグを表示しないようにした(すべて表示/特定の言語のみ表示はプロパティで切り替え可能)
+	・showAllTagプロパティ：trueかfalseを指定。trueの時はすべてのタグを表示。
+	・showTagLocプロパティ："jp","tw","es","de"... などのうち、いづれか一つを指定。デフォルトは"jp"。showAllTagがfalseの時に、指定したロケールのタグのみを表示。
+・プレイリストの動画にニコニコ動画のURLが記載されていても、ローカルに保存済みの場合は保存済みの動画を使って再生するように変更。
+・【バグフィックス】右クリックメニューからプレイリストに追加を選択した際に、追加されないことがある問題を修正。
+・【バグフィックス】マイリストの視聴済みがリセットされてしまうことがある問題を修正。
+・【バグフィックス】DLリストを開いている状態で、Playerの動画を選択するダイアログのテキストフィールドにctrl+vすると、DLリストにも動画(URL)が追加されてしまう問題を修正。
+
 v2.1.4
 ・DLリストおよびライブラリ画面で、DataGridに表示中の項目数とディスクの空き容量を表示するようにした。
 ・【バグフィックス】マイリストの視聴済みがリセットされてしまうことがある問題を修正
