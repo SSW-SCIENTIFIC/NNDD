@@ -1431,7 +1431,8 @@
 					<mx:Button label="更新" click="myListRenewButtonClicked(event)" right="94" top="0" width="80" id="button_myListRenew"/>
 					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
 					
-					<mx:VDividedBox left="0" right="0" top="25" bottom="30">
+					
+					<mx:VDividedBox left="0" right="0" top="29" bottom="30" id="vdevidedbox_myList">
 						<mx:TextArea left="0" top="25" right="0" bottom="480" id="textArea_myList" width="100%" height="50" 
 									 verticalScrollPolicy="on" creationComplete="textArea_myList_creationCompleteHandler(event)"/>
 						<mx:Canvas width="100%" height="100%" id="canvas_myListItem">

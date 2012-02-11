@@ -248,5 +248,25 @@ package org.mineap.nndd.player
 				}
 			}
 		}
+		
+		/**
+		 * いずれかのPlayerで、Fileを開くダイアログがopenしているかを返します。
+		 * @return 一つでもダイアログが開いている場合はfalse
+		 * 
+		 */
+		public function isOpenFileDialogFocusIn():Boolean
+		{
+			for each(var player:PlayerController in players)
+			{
+				if (player.isOpen())
+				{
+					if (player.videoPlayer.isFileOpenDialogFocusIn)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 	}
 }

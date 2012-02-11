@@ -11,6 +11,8 @@
 			import org.mineap.nndd.util.PathMaker;
 			import org.mineap.util.config.ConfigManager;
 
+			private var textInput_focusIn:Boolean = false;
+			
 			protected function window1_creationCompleteHandler(event:FlexEvent):void
 			{
 				loadStore();
@@ -92,6 +94,8 @@
 				var textInput:TextInput = TextInput(event.currentTarget);
 				textInput.selectionBeginIndex = 0;
 				textInput.selectionEndIndex = textInput.text.length;
+				textInput_focusIn = true;
+				
 			}
 
 
@@ -109,6 +113,16 @@
 					textInput_source.text = String(event.clipboard);
 				}
 			}
+			
+			protected function textInput_source_focusOutHandler(event:FocusEvent):void
+			{
+				textInput_focusIn = false;
+			}
+			
+			public function get isTextInputFocusIn():Boolean
+			{
+				return this.textInput_focusIn;
+			}
 
 		]]>
 	</mx:Script>
@@ -116,6 +130,7 @@
 	<mx:TextInput left="10" right="10" top="36" id="textInput_source" 
 				  enter="button_play_clickHandler(event)" 
 				  focusIn="textInput_source_focusInHandler(event)"
+				  focusOut="textInput_source_focusOutHandler(event)"
 				  nativeDragEnter="textInput_source_nativeDragEnterHandler(event)"
 				  nativeDragDrop="textInput_source_nativeDragDropHandler(event)"/>
 	<mx:Button label="参照..." right="64" bottom="10" id="button_open" click="button_open_clickHandler(event)"/>

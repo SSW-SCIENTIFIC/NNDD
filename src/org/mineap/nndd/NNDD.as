@@ -92,6 +92,7 @@ import mx.managers.PopUpManager;
 
 import org.mineap.nicovideo4as.*;
 import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
+import org.mineap.nicovideo4as.loader.MyListLoader;
 import org.mineap.nicovideo4as.loader.api.ApiGetThumbInfoAccess;
 import org.mineap.nicovideo4as.model.*;
 import org.mineap.nicovideo4as.util.HtmlUtil;
@@ -195,6 +196,7 @@ private var isRankingRenewAtStart:Boolean = false;
 
 private var rankingPageIndex:int = 0;
 private var searchPageIndex:int = 0;
+private var myListPageIndex:int = 1;
 
 private var lastRect:Rectangle = new Rectangle();
 private var lastCanvasPlaylistHight:int = -1;
@@ -327,7 +329,7 @@ private var myListStatsToolTip:String = new String();
 private var fontDataProvider:Array = new Array();
 [Bindable]
 private var searchHistoryProvider:Array = new Array();
-[Bindalbe]
+[Bindable]
 private var fontSizeDataProvider:Array = new Array("小","中","大");
 
 /**
@@ -5841,6 +5843,11 @@ private function queueKeyDownHandler(event:KeyboardEvent):void{
 	}
 }
 
+/**
+ * WindowsとLinuxの時のctrl+vイベントハンドラ
+ * @param event
+ * 
+ */
 private function queueKeyUpHandler(event:KeyboardEvent):void{
 	if(viewstack1.selectedIndex == DOWNLOAD_LIST_TAB_NUM){
 		if(!textInput_url_foculsIn){
@@ -5848,16 +5855,28 @@ private function queueKeyUpHandler(event:KeyboardEvent):void{
 				downloadManager.deleteSelectedItems(dataGrid_downloadList.selectedIndices);
 			}else if(isCtrlKeyPush && event.keyCode == Keyboard.V){
 				isCtrlKeyPush = false;
-				addDLListForClipboard(Clipboard.generalClipboard);
+				
+				if (!PlayerManager.instance.isOpenFileDialogFocusIn())
+				{
+					addDLListForClipboard(Clipboard.generalClipboard);
+				}
 			}
 		}
 	}
 }
 
+/**
+ * Macの時のctrl+vイベントハンドラ
+ * @param event
+ * 
+ */
 private function queueMenuHandler(event:Event):void{
 	if(viewstack1.selectedIndex == DOWNLOAD_LIST_TAB_NUM){
 		if(!textInput_url_foculsIn){
-			addDLListForClipboard(Clipboard.generalClipboard);
+			if (!PlayerManager.instance.isOpenFileDialogFocusIn())
+			{
+				addDLListForClipboard(Clipboard.generalClipboard);
+			}
 		}
 	}
 }
@@ -6258,9 +6277,9 @@ public function renewMyList(myListId:String):void{
 /**
  * 
  * @param event
- * 
+ * @param addMode 追記モード
  */
-private function myListRenewButtonClicked(event:Event):void{
+private function myListRenewButtonClicked(event:Event, addMode:Boolean = false):void{
 	try{
 	
 		var url:String = this.textinput_mylist.text;
@@ -6651,6 +6670,7 @@ private function myListUrlChanged(event:Event):void{
 }
 
 private function myListClicked(event:ListEvent):void{
+	myListPageIndex = 1;
 	myListRenewForName(String(event.itemRenderer.data.label));
 }
 
@@ -6668,6 +6688,11 @@ private function myListRenewForName(name:String):void{
 	if(url.indexOf("channel") != -1)
 	{
 		myListId = MyListUtil.getChannelId(url);
+		xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
+	}
+	else if (url.indexOf("user") != -1)
+	{
+		myListId = MyListUtil.getUserUploadVideoListId(url);
 		xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
 	}
 	else
@@ -6725,6 +6750,9 @@ private function myListRenewForName(name:String):void{
 	}
 }
 
+/**
+ * 受け取ったXMLを使ってマイリストを更新します
+ */
 private function myListRenew(myListId:String, xml:XML, renewUnPlayCount:Boolean = true):void{
 	
 	var index:int = dataGrid_myList.selectedIndex;
@@ -6765,6 +6793,7 @@ private function myListRenew(myListId:String, xml:XML, renewUnPlayCount:Boolean 
 }
 
 private function myListDoubleClicked(event:ListEvent):void{
+	myListPageIndex = 1;
 	var name:String = String(event.itemRenderer.data.label);
 	textinput_mylist.text = this._myListManager.getUrl(name);
 	
@@ -7657,3 +7686,8 @@ private function showCannotAddDlList():void
 		}
 	);
 }
+
+
+
+
+

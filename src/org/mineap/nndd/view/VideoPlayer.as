@@ -1224,6 +1224,26 @@ private function fileOpenClickEventHandler(event:Event):void{
 	this.fileOpen();
 }
 
+public function get isFileOpenDialogFocusIn():Boolean
+{
+	if (this.videoSourceSelectWindow == null)
+	{
+		return false;
+	}
+	if (this.videoSourceSelectWindow.visible == false)
+	{
+		return false;
+	}
+	if (this.videoSourceSelectWindow.isTextInputFocusIn)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 public function fileOpen():void{
 	if(videoSourceSelectWindow != null && videoSourceSelectWindow.visible ){
 		videoSourceSelectWindow.activate();
