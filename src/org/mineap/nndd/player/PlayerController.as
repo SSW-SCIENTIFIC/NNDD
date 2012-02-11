@@ -1982,8 +1982,16 @@ package org.mineap.nndd.player
 					{
 						logManager.addLog("***動画のリピート(ローカル)***");
 						this.stop();
+						
+						var url:String = this.videoInfoView.getPlayListUrl(playingIndex);
+						var video:NNDDVideo = libraryManager.isExistByVideoId(LibraryUtil.getVideoKey(url));
+						if (video != null)
+						{
+							url = video.getDecodeUrl();
+						}
+						
 						playMovie(
-								this.videoInfoView.getPlayListUrl(playingIndex), 
+								url, 
 								this.videoInfoView.playList, 
 								playingIndex, 
 								this.videoPlayer.title);
@@ -2026,8 +2034,15 @@ package org.mineap.nndd.player
 						playingIndex = 0;
 						if (this.videoPlayer.videoInfoView.isRepeatAll())
 						{
+							var url:String = this.videoInfoView.getPlayListUrl(playingIndex);
+							var video:NNDDVideo = libraryManager.isExistByVideoId(LibraryUtil.getVideoKey(url));
+							if (video != null)
+							{
+								url = video.getDecodeUrl();
+							}
+							
 							playMovie(
-									this.videoInfoView.getPlayListUrl(playingIndex), 
+									url, 
 									this.videoInfoView.playList,
 									playingIndex, 
 									PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
@@ -2037,8 +2052,16 @@ package org.mineap.nndd.player
 					{
 						/* プレイリストの次の項目へ */
 						playingIndex++;
+						
+						var url:String = this.videoInfoView.getPlayListUrl(playingIndex);
+						var video:NNDDVideo = libraryManager.isExistByVideoId(LibraryUtil.getVideoKey(url));
+						if (video != null)
+						{
+							url = video.getDecodeUrl();
+						}
+						
 						playMovie(
-								this.videoInfoView.getPlayListUrl(playingIndex), 
+								url, 
 								this.videoInfoView.playList, 
 								playingIndex, 
 								PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
