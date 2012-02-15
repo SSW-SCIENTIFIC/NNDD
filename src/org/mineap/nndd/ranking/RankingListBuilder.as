@@ -32,6 +32,8 @@ package org.mineap.nndd.ranking
 		
 		private static const CATEGORY_LIST_FILE_NAME:String = "CategoryList.xml";
 		
+		private static const CATEGORY_VERSION:String = "20120216";
+		
 		/**
 		 * 
 		 * 
@@ -212,14 +214,22 @@ package org.mineap.nndd.ranking
 			
 			var file:File = File.applicationStorageDirectory.resolvePath(CATEGORY_LIST_FILE_NAME);
 			
+			var defCategoryList:File = File.applicationDirectory.resolvePath(CATEGORY_LIST_FILE_NAME);
 			if (!file.exists)
 			{
-				var defCategoryList:File = File.applicationDirectory.resolvePath(CATEGORY_LIST_FILE_NAME);
 				defCategoryList.copyTo(file);
 			}
 			
 			var fileIO:FileIO = new FileIO();
 			var categoryListXml:XML = fileIO.loadXMLSync(file.nativePath, true);
+			
+			if (CATEGORY_VERSION != categoryListXml.version.text())
+			{
+				// カテゴリバージョンが違うならバックアップして強制的に上書き
+				file.copyTo(File.applicationStorageDirectory.resolvePath(CATEGORY_LIST_FILE_NAME + ".back"));
+				file.deleteFile();
+				defCategoryList.copyTo(file, true);
+			}
 			
 			var categories:XMLList = categoryListXml.category;
 			
