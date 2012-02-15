@@ -93,6 +93,7 @@ import mx.managers.PopUpManager;
 import org.mineap.nicovideo4as.*;
 import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
 import org.mineap.nicovideo4as.loader.MyListLoader;
+import org.mineap.nicovideo4as.loader.RankingLoader;
 import org.mineap.nicovideo4as.loader.api.ApiGetThumbInfoAccess;
 import org.mineap.nicovideo4as.model.*;
 import org.mineap.nicovideo4as.util.HtmlUtil;
@@ -128,6 +129,7 @@ import org.mineap.nndd.playList.PlayListDataGridBuilder;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.player.PlayerManager;
+import org.mineap.nndd.ranking.RankingListBuilder;
 import org.mineap.nndd.search.SearchItemManager;
 import org.mineap.nndd.tag.NgTagManager;
 import org.mineap.nndd.tag.TagManager;
@@ -154,7 +156,7 @@ private var scheduleManager:ScheduleManager;
 private var historyManager:HistoryManager;
 
 private var renewDownloadManager:RenewDownloadManager;
-private var a2nForRanking:Access2Nico;
+private var rankingLoader:RankingLoader;
 private var a2nForSearch:Access2Nico;
 
 private var _nnddMyListLoader:NNDDMyListLoader;
@@ -3492,7 +3494,7 @@ private function categoryListItemClicked(event:ListEvent):void{
 private function rankingRenewButtonClicked(url:String = null):void{
 	
 	if(rankingRenewButton.label != Message.L_CANCEL){
-		if(a2nForRanking == null){
+		if(rankingLoader == null){
 
 			//選択中の期間、対象を保存
 			this.period = int(this.radiogroup_period.selectedValue);
@@ -3574,16 +3576,33 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				loading.show(dataGrid_ranking, dataGrid_ranking.width/2, dataGrid_ranking.height/2);
 				loading.start(360/12);
 				
-				a2nForRanking = new Access2Nico(null, downloadedListManager, null, logManager, null);
-				a2nForRanking.addEventListener(Access2Nico.RANKING_GET_COMPLETE, function(event:Event):void{
+				rankingLoader = new RankingLoader();
+				rankingLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+				{
+					setEnableRadioButtons(true);
+					rankingRenewButton.label = Message.L_RENEW;
+					list_categoryList.enabled = true;
+					dataGrid_ranking.enabled = true;
+					logManager.addLog("ランキング更新に失敗:" + event.text + ":" + event);
+					Alert.show("ランキングの取得に失敗\n" + event.text, Message.M_ERROR);
+				});
+				rankingLoader.addEventListener(Event.COMPLETE, function(event:Event):void
+				{
 					setEnableRadioButtons(true);
 					rankingRenewButton.label = Message.L_RENEW;
 					list_categoryList.enabled = true;
 					dataGrid_ranking.enabled = true;
 					
-					rankingProvider = a2nForRanking.getRankingList();
+					var rankingListBuilder:RankingListBuilder = new RankingListBuilder();
+					rankingListBuilder.addEventListener(Event.COMPLETE, function(event:Event):void
+					{
+//						dataGrid_ranking.validateDisplayList();
+						dataGrid_ranking.validateNow();
+					});
+					rankingProvider = rankingListBuilder.getRankingArrayCollection(new XML((event.currentTarget as RankingLoader).data), rankingPageIndex);
+					
 					if(period != 5){
-						categoryList = a2nForRanking.getCategoryTitleList();
+						categoryList = RankingListBuilder.getCategoryList();
 						categoryListProvider = new Array(categoryList.length);
 						for(var index:int = 0; index<categoryList.length;index++){
 							categoryListProvider[index] = categoryList[index][0];
@@ -3609,7 +3628,7 @@ private function rankingRenewButtonClicked(url:String = null):void{
 						list_categoryList.scrollToIndex(categoryListIndex);
 					}
 					
-					a2nForRanking = null;
+					rankingLoader = null;
 					loading.stop();
 					loading.remove();
 					loading = null;
@@ -3621,9 +3640,9 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				}
 				
 				if(period == 5){
-					a2nForRanking.request_rankingRenew(period, target, category, rankingProvider, rankingPageIndex, new ArrayCollection());
+					rankingLoader.getRanking(period, target, rankingPageIndex, category);
 				}else{
-					a2nForRanking.request_rankingRenew(period, target, category, rankingProvider, 1, new ArrayCollection());
+					rankingLoader.getRanking(period, target, 1, category);
 				}
 			}catch(error:Error){
 				trace(error.getStackTrace());
@@ -3632,7 +3651,6 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				list_categoryList.enabled = true;
 				Alert.show("ランキング更新中に想定外の例外が発生しました。\n"+ error + "\nURL:" + rankingURL, "エラー");
 				logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n"+ "\nURL:"+rankingURL +error.getStackTrace() );
-				a2nForRanking = null;
 				if(loading != null){
 					loading.stop();
 					loading.remove();
@@ -3641,8 +3659,10 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				dataGrid_ranking.enabled = true;
 			}
 		}else if(rankingRenewButton.label == Message.L_CANCEL){
-			a2nForRanking.rankingRenewCancel();
-			a2nForRanking = null;
+			try{
+				rankingLoader.close();
+			}catch(e:Error){}
+			rankingLoader = null;
 			rankingRenewButton.label = Message.L_RENEW;
 			setEnableRadioButtons(true);
 			rankingRenewButton.label = Message.L_RENEW;
@@ -3658,8 +3678,10 @@ private function rankingRenewButtonClicked(url:String = null):void{
 	}
 	else if(rankingRenewButton.label == Message.L_CANCEL)
 	{
-		a2nForRanking.rankingRenewCancel();
-		a2nForRanking = null;
+		try{
+			rankingLoader.close();
+		}catch(e:Error){}
+		rankingLoader = null;
 		rankingRenewButton.label = Message.L_RENEW;
 		setEnableRadioButtons(true);
 		rankingRenewButton.label = Message.L_RENEW;

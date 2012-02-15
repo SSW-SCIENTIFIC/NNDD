@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categorylist>
+	<category title="カテゴリ合算" suffix="all">
+	</category>
+	<category title="エンタメ・音楽" suffix="g_ent2">
+		<category title="エンターテイメント" suffix="ent"></category>
+		<category title="音楽" suffix="music"></category>
+		<category title="歌ってみた" suffix="sing"></category>
+		<category title="演奏してみた" suffix="play"></category>
+		<category title="踊ってみた" suffix="dance"></category>
+		<category title="VOCALOID" suffix="vocaloid"></category>
+		<category title="ニコニコインディーズ" suffix="nicoindies"></category>
+	</category>
+	<category title="生活・一般・スポ" suffix="g_life2">
+		<category title="動物" suffix="animal"></category>
+		<category title="料理" suffix="cooking"></category>
+		<category title="自然" suffix="nature"></category>
+		<category title="旅行" suffix="travel"></category>
+		<category title="スポーツ" suffix="sport"></category>
+		<category title="ニコニコ動画講座" suffix="lecture"></category>
+		<category title="車載動画" suffix="drive"></category>
+		<category title="歴史" suffix="history"></category>
+	</category>
+	<category title="政治" suffix="g_politics">
+	</category>
+	<category title="科学・技術" suffix="g_tech">
+		<category title="科学" suffix="science"></category>
+		<category title="ニコニコ技術部" suffix="tech"></category>
+		<category title="ニコニコ手芸部" suffix="handcraft"></category>
+		<category title="作ってみた" suffix="make"></category>
+	</category>
+	<category title="アニメ・ゲーム・絵" suffix="g_culture2">
+		<category title="アニメ" suffix="anime"></category>
+		<category title="ゲーム" suffix="game"></category>
+		<category title="東方" suffix="toho"></category>
+		<category title="アイドルマスター" suffix="imas"></category>
+		<category title="ラジオ" suffix="radio"></category>
+		<category title="描いてみた" suffix="draw"></category>
+	</category>
+	<category title="その他" suffix="g_other">
+		<category title="例のアレ" suffix="are"></category>
+		<category title="日記" suffix="diary"></category>
+		<category title="その他" suffix="other"></category>
+	</category>
+</categorylist>
