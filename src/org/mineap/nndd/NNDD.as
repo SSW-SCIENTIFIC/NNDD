@@ -21,6 +21,7 @@ import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.FileListEvent;
 import flash.events.FocusEvent;
+import flash.events.HTTPStatusEvent;
 import flash.events.IOErrorEvent;
 import flash.events.InvokeEvent;
 import flash.events.KeyboardEvent;
@@ -3491,7 +3492,7 @@ private function categoryListItemClicked(event:ListEvent):void{
  * ランキングの更新ボタンが押されたときの動作
  * 
  */
-private function rankingRenewButtonClicked(url:String = null):void{
+private function rankingRenewButtonClicked():void{
 	
 	if(rankingRenewButton.label != Message.L_CANCEL){
 		if(rankingLoader == null){
@@ -3518,52 +3519,40 @@ private function rankingRenewButtonClicked(url:String = null):void{
 			trace(selectedItem);
 			
 			try{
-				//ランキングのURL
-				var rankingURL:String;
+				rankingProvider.removeAll();
 				
-				if(url == null){
+				if(this.radiogroup_period.selectedValue != 5){
+					//普通のライブラリ更新
+					combobox_pageCounter_ranking.selectedIndex = 0;
 					
-					rankingProvider.removeAll();
-					
-					//urlが指定されていなければ
-					if(this.radiogroup_period.selectedValue != 5){
-						//普通のライブラリ更新
-						combobox_pageCounter_ranking.selectedIndex = 0;
-						
-						this.rankingPageCountProvider = new Array();
-						this.rankingPageCountProvider.push(1);
-						this.rankingPageIndex = 1;
-						rankingURL = Access2Nico.NICO_RANKING_URLS[this.radiogroup_period.selectedValue][this.radiogroup_target.selectedValue];
-						setEnableTargetRadioButtons(true);
-					}else{
-						//新着の場合は期間を無視
-						if(this.combobox_pageCounter_ranking.selectedIndex >= 0){
-							this.rankingPageIndex = this.combobox_pageCounter_ranking.selectedIndex + 1;
-							this.combobox_pageCounter_ranking.selectedIndex = 0;
-							this.rankingPageCountProvider = new Array();
-							
-						}else{
-							this.rankingPageIndex = 1;
-							this.combobox_pageCounter_ranking.selectedIndex = 0;
-							this.rankingPageCountProvider = new Array();
-							
-						}
-						
-						//ページインデックスを挿入
-						for(var i:int = 0; i<10; i++){
-							this.rankingPageCountProvider.push(i+1);
-						}
-						
-						this.categoryListProvider = new Array();
-						
-						combobox_pageCounter_ranking.selectedIndex = rankingPageIndex - 1;
-						
-						rankingURL = Access2Nico.NICO_RANKING_URLS[this.radiogroup_period.selectedValue][0];
-						setEnableTargetRadioButtons(false);
-					}
+					this.rankingPageCountProvider = new Array();
+					this.rankingPageCountProvider.push(1);
+					this.rankingPageIndex = 1;
+					setEnableTargetRadioButtons(true);
 				}else{
-					//urlが指定されていれば
-					rankingURL = url;
+					//新着の場合は期間を無視
+					if(this.combobox_pageCounter_ranking.selectedIndex >= 0){
+						this.rankingPageIndex = this.combobox_pageCounter_ranking.selectedIndex + 1;
+						this.combobox_pageCounter_ranking.selectedIndex = 0;
+						this.rankingPageCountProvider = new Array();
+						
+					}else{
+						this.rankingPageIndex = 1;
+						this.combobox_pageCounter_ranking.selectedIndex = 0;
+						this.rankingPageCountProvider = new Array();
+						
+					}
+					
+					//ページインデックスを挿入
+					for(var i:int = 0; i<10; i++){
+						this.rankingPageCountProvider.push(i+1);
+					}
+					
+					this.categoryListProvider = new Array();
+					
+					combobox_pageCounter_ranking.selectedIndex = rankingPageIndex - 1;
+					
+					setEnableTargetRadioButtons(false);
 				}
 				
 				setEnableRadioButtons(false);
@@ -3577,6 +3566,10 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				loading.start(360/12);
 				
 				rankingLoader = new RankingLoader();
+				rankingLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
+				{
+					logManager.addLog("\t応答を取得, url=" + decodeURIComponent(event.responseURL) + ", status=" + event.status);
+				});
 				rankingLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
 				{
 					setEnableRadioButtons(true);
@@ -3594,11 +3587,6 @@ private function rankingRenewButtonClicked(url:String = null):void{
 					dataGrid_ranking.enabled = true;
 					
 					var rankingListBuilder:RankingListBuilder = new RankingListBuilder();
-					rankingListBuilder.addEventListener(Event.COMPLETE, function(event:Event):void
-					{
-//						dataGrid_ranking.validateDisplayList();
-						dataGrid_ranking.validateNow();
-					});
 					rankingProvider = rankingListBuilder.getRankingArrayCollection(new XML((event.currentTarget as RankingLoader).data), rankingPageIndex);
 					
 					if(period != 5){
@@ -3607,15 +3595,6 @@ private function rankingRenewButtonClicked(url:String = null):void{
 						for(var index:int = 0; index<categoryList.length;index++){
 							categoryListProvider[index] = categoryList[index][0];
 						}
-					}
-					
-					logManager.addLog("ランキング更新:"+rankingURL+" page:"+rankingPageIndex);
-					if(radiogroup_period.selectedValue != 5){
-						logManager.addLog("カテゴリ更新:"+rankingURL);
-					}
-					
-					if(rankingURL.indexOf("?") != -1){
-						rankingURL = rankingURL.substring(0, rankingURL.lastIndexOf("?"));
 					}
 					
 					if(radiogroup_period.selectedValue != 5){
@@ -3638,7 +3617,7 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				if(categoryListIndex != -1 && categoryList.length > 0){
 					category = categoryList[categoryListIndex][1];
 				}
-				
+				logManager.addLog("ランキングを更新:期間=" + period + ", 種別=" + target + ", カテゴリ=" + category);
 				if(period == 5){
 					rankingLoader.getRanking(period, target, rankingPageIndex, category);
 				}else{
@@ -3649,8 +3628,8 @@ private function rankingRenewButtonClicked(url:String = null):void{
 				setEnableRadioButtons(true);
 				rankingRenewButton.label = Message.L_RENEW;
 				list_categoryList.enabled = true;
-				Alert.show("ランキング更新中に想定外の例外が発生しました。\n"+ error + "\nURL:" + rankingURL, "エラー");
-				logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n"+ "\nURL:"+rankingURL +error.getStackTrace() );
+				Alert.show("ランキング更新中に想定外の例外が発生しました。\n"+ error + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" + category, "エラー");
+				logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n"+ "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" + category + "\n" + error.getStackTrace() );
 				if(loading != null){
 					loading.stop();
 					loading.remove();
