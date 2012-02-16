@@ -155,7 +155,7 @@ package org.mineap.nndd.myList
 					if(array != null && array.length >= 1){
 						info = array[1];
 						try{
-							info = decodeURIComponent(info);
+//							info = decodeURIComponent(info);
 							info = HtmlUtil.convertSpecialCharacterNotIncludedString(info);
 						}catch(error:Error){
 							trace(error);

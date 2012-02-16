@@ -18,6 +18,7 @@ package org.mineap.nndd.ranking
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.util.NicoPattern;
+	import org.mineap.nndd.util.NumberUtil;
 	import org.mineap.nndd.util.PathMaker;
 	
 	/**
@@ -75,7 +76,7 @@ package org.mineap.nndd.ranking
 				
 				var title:String = item.title.text();
 				try{
-					title = decodeURIComponent(title);
+//					title = decodeURIComponent(title);
 					title = HtmlUtil.convertSpecialCharacterNotIncludedString(title);
 				}catch(error:Error){
 					trace(error);
@@ -176,9 +177,9 @@ package org.mineap.nndd.ranking
 				}
 				else
 				{
-					videoStatus = "再生:" + thumbInfoAnalyzer.viewCounter +
-						" コメント:" + thumbInfoAnalyzer.commentNum +
-						"\nマイリスト:" + thumbInfoAnalyzer.myListNum +
+					videoStatus = "再生:" + NumberUtil.addComma(String(thumbInfoAnalyzer.viewCounter)) +
+						" コメント:" + NumberUtil.addComma(String(thumbInfoAnalyzer.commentNum)) +
+						"\nマイリスト:" + NumberUtil.addComma(String(thumbInfoAnalyzer.myListNum)) +
 						"\n" + thumbInfoAnalyzer.lastResBody;
 				}
 				
