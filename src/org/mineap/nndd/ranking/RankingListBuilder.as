@@ -223,10 +223,10 @@ package org.mineap.nndd.ranking
 			var fileIO:FileIO = new FileIO();
 			var categoryListXml:XML = fileIO.loadXMLSync(file.nativePath, true);
 			
-			if (CATEGORY_VERSION != categoryListXml.version.text())
+			if (categoryListXml.@version != null && CATEGORY_VERSION != categoryListXml.@version.toString())
 			{
 				// カテゴリバージョンが違うならバックアップして強制的に上書き
-				file.copyTo(File.applicationStorageDirectory.resolvePath(CATEGORY_LIST_FILE_NAME + ".back"));
+				file.copyTo(File.applicationStorageDirectory.resolvePath(CATEGORY_LIST_FILE_NAME + ".back"), true);
 				file.deleteFile();
 				defCategoryList.copyTo(file, true);
 			}
