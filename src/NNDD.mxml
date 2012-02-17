@@ -59,6 +59,9 @@
 			private var downloadMenu:ContextMenu;
 			private var downloadMenuitem1:ContextMenuItem;
 			private var downloadMenuitem2:ContextMenuItem;
+			private var myListTreeMenu:ContextMenu;
+			private var myListTreeMenuItem1:ContextMenuItem;
+			private var myListTreeMenuItem2:ContextMenuItem;
 			private var myListMenu:ContextMenu;
 			private var myListMenuItem1:ContextMenuItem;
 			private var myListMenuItem2:ContextMenuItem;
@@ -533,10 +536,22 @@
 
 			protected function tree_myList_creationCompleteHandler(event:FlexEvent):void
 			{
+				
 				tree_myList.dataProvider = myListProvider;
 				(tree_myList.dataProvider as ArrayCollection).refresh();
 				tree_myList.invalidateList();
 				tree_myList.validateNow();
+				
+				
+				myListTreeMenu = new ContextMenu();
+				myListTreeMenuItem1 = new ContextMenuItem(Message.L_MYLIST_TREE_RENEW);
+				myListTreeMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,myListTreeItemHandler);
+				myListTreeMenuItem2 = new ContextMenuItem(Message.L_MYLIST_TREE_RENEW_ALL);
+				myListTreeMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,myListTreeItemHandler);
+				
+				myListTreeMenu.customItems.push(myListTreeMenuItem1, myListTreeMenuItem2);
+				
+				tree_myList.contextMenu = myListTreeMenu;
 				
 				var timer:Timer = new Timer(100, 1);
 				timer.addEventListener(TimerEvent.TIMER_COMPLETE, function(event:Event):void{

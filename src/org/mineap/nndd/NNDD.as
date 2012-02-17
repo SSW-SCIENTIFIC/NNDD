@@ -1189,6 +1189,36 @@ private function downloadedItemHandler(event:ContextMenuEvent):void {
 }
 
 /**
+ * 
+ * @param event
+ * 
+ */
+private function myListTreeItemHandler(event:ContextMenuEvent):void
+{
+	if ((event.target as ContextMenuItem).label == Message.L_MYLIST_TREE_RENEW)
+	{
+		myListPageIndex = 1;
+		
+		var name:String = (event.mouseTarget as UITextField).text;
+		
+		if (name != null && name.length > 0)
+		{
+			textinput_mylist.text = this._myListManager.getUrl(name);
+			
+			this.myListRenewButtonClicked(event);
+			
+			if(textinput_mylist.text == null || textinput_mylist.text == ""){
+				textinput_mylist.text = name;
+			}
+		}
+	}
+	else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_TREE_RENEW_ALL)
+	{
+		myListRenewNow();
+	}
+}
+
+/**
  * ライブラリタブのライブラリツリーコンテキストメニュー用イベントハンドラ
  * @param event
  * 

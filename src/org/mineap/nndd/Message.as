@@ -67,6 +67,9 @@ package org.mineap.nndd
 		public static var L_RELOAD_VIDEO:String = "動画を再読み込み";
 		public static var L_SELECT_ALL:String = "すべてを選択";
 		
+		public static var L_MYLIST_TREE_RENEW:String = "マイリストを更新";
+		public static var L_MYLIST_TREE_RENEW_ALL:String = "すべてのマイリストを更新";
+		
 		/*主にメッセージ出力*/
 		public static var M_LOCAL_STORE_IS_BROKEN:String = "ローカルストアが破損している可能性があったため、ローカルストアのデータをリセットしました。";
 		public static var M_CONF_FILE_IS_BROKEN:String = "設定ファイルから正しい設定がロードできませんでした。";
