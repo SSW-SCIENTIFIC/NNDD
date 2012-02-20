@@ -21,6 +21,7 @@ package org.mineap.nndd.myList
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.TreeDataBuilder;
 	import org.mineap.util.config.ConfUtil;
+	import org.mineap.util.config.ConfigManager;
 
 	/**
 	 * MyListManager.as<br>
@@ -1240,10 +1241,11 @@ package org.mineap.nndd.myList
 		 * 
 		 * @param xml
 		 * @param onlyIsPlayFalse isPlayedがfalseと明示的に設定されているもののみをカウントするかどうか。trueの時はfalseに設定されているもののみ取得
+		 * @param withOutDownloadedVideo DL済みの動画をリストからのぞくかどうか。falseの時はDL済みでも、未視聴の動画はリストに含まれます。trueの場合は、DL済みなら視聴済みであると判断します。
 		 * @return 
 		 * 
 		 */
-		private function searchUnPlaydItem(xml:XML, onlyIsPlayFalse:Boolean = false):Vector.<String>{
+		private function searchUnPlaydItem(xml:XML, onlyIsPlayFalse:Boolean = false, withOutDownloadedVideo:Boolean = false):Vector.<String>{
 			var videoIds:Vector.<String> = new Vector.<String>();
 			
 			if(xml != null){
@@ -1265,9 +1267,19 @@ package org.mineap.nndd.myList
 								videoId = PathMaker.getVideoID(tempXML.link);
 							}
 						}
-						if(videoId != null && this._libraryManager.isExistByVideoId(videoId) == null){
+						
+						if (withOutDownloadedVideo)
+						{
+							if (this._libraryManager.isExist(videoId) != null)
+							{
+								videoId = null;
+							}
+						}
+						
+						if(videoId != null){
 							videoIds.push(videoId);
 						}
+						
 					}catch(error:Error){
 						trace(error.getStackTrace());
 					}
@@ -1312,8 +1324,21 @@ package org.mineap.nndd.myList
 			
 			var xml:XML = readLocalMyList(myListId, type);
 			
+			// DL済み動画を未再生としてカウントするかどうか(デフォルトしない)
+			var withOutDownloadedVideo:Boolean = false;
+			var str:String = ConfigManager.getInstance().getItem("withOutDownloadedVideo");
+			if (str != null)
+			{
+				withOutDownloadedVideo = ConfUtil.parseBoolean(str);
+			}
+			else
+			{
+				ConfigManager.getInstance().setItem("withOutDownloadedVideo", "false");
+				ConfigManager.getInstance().save();
+			}
+			
 			if(xml != null){
-				var vector:Vector.<String> = searchUnPlaydItem(xml);
+				var vector:Vector.<String> = searchUnPlaydItem(xml, false, withOutDownloadedVideo);
 				return vector.length;
 			}else{
 				return 0;

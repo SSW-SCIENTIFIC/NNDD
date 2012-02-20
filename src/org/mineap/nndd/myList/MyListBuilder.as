@@ -124,7 +124,7 @@ package org.mineap.nndd.myList
 					if(videoArray != null){
 						var str:String = "";
 						var tempVideo:NNDDVideo = videoMap[videoId];
-						if(tempVideo != null && tempVideo.yetReading || video != null){
+						if(tempVideo != null && tempVideo.yetReading){
 //							str = "既読";
 							played = true;
 							
@@ -137,9 +137,11 @@ package org.mineap.nndd.myList
 							played = false;
 						}
 						
-						if(condition != null && condition.length > 0){
-							condition += "\n";
+						if (!played && video != null)
+						{
+							condition = str + "(DL済)\n右クリックから再生できます。";
 						}
+						
 						condition += str;
 					}
 					
