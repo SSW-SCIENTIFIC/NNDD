@@ -47,7 +47,7 @@ package org.mineap.nndd.model
 						order = SearchSortType.ORDER_A;
 					}
 					
-					return new SearchSortType(index, order);
+					return new SearchSortType(index / 2, order);
 				}
 			}
 			
@@ -62,7 +62,7 @@ package org.mineap.nndd.model
 		 */
 		public static function convertTextArrayIndexFromSearchSortType(searchSortType:SearchSortType):int{
 			var index:int = 0;
-			index = searchSortType.sort;
+			index = searchSortType.sort * 2;
 			index += searchSortType.order;
 			return index;
 		}

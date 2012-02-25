@@ -2675,6 +2675,7 @@ private function tabChanged():void{
 			break;
 		case SEARCH_TAB_NUM:
 			(tree_SearchItem.dataProvider as ArrayCollection).refresh();
+			tree_SearchItem.dataProvider = tree_SearchItem.dataProvider;
 			tree_SearchItem.invalidateList();
 			tree_SearchItem.validateNow();
 			
@@ -7038,6 +7039,11 @@ private function editSearchItem(event:MouseEvent):void{
 			tree_SearchItem.dataProvider = searchListProvider;
 			tree_SearchItem.validateNow();
 			tree_SearchItem.openItems = object;
+			
+			combobox_serchType.selectedIndex = searchItemEdit.searchItem.searchType;
+			comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItemEdit.searchItem.sortType);
+			combobox_NicoSearch.text = searchItemEdit.searchItem.searchWord;
+			
 			PopUpManager.removePopUp(searchItemEdit);
 		});
 		searchItemEdit.addEventListener(Event.CANCEL, function(event:Event):void{

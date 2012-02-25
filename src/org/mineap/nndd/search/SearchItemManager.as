@@ -279,7 +279,16 @@ package org.mineap.nndd.search
 				if(object.hasOwnProperty("children") && object.children != null){
 					
 					if(object.label == searchItemName){
-						//フォルダそのものを消す
+						//フォルダとその下を消す
+						
+						for each(var child:Object in object.children)
+						{
+							if (object.hasOwnProperty("label"))
+							{
+								deleteSearchItemFromTree(child.label, searchItemArray);
+							}
+						}
+						
 						return searchItemArray.splice(index, 1)[0];
 												
 					}else{
