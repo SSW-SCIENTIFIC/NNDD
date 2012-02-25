@@ -247,6 +247,9 @@
 				  creationComplete="image_thumbImg_creationCompleteHandler(event)" enabled="true"
 				  left="1" top="1" scaleContent="true" toolTip="クリックするとブラウザで動画を再生します"/>
 	</mx:Canvas>
+	
+	<mx:Text id="text_info" left="100" top="2" height="55"/>
+	
 	<mx:ComboBox left="100" top="53" right="128" id="comboBox_mylist" dataProvider="{myListDataProvider}" close="comboBox_mylist_closeHandler(event)" height="20"></mx:ComboBox>
 	<mx:Button id="button_mylist" right="74" top="53" width="50" height="20" label="追加"
 			   click="myListAddButtonClicked(event)" toolTip="ニコニコ動画のマイリストに動画を追加します"/>
@@ -255,11 +258,13 @@
 	<mx:Button id="button_download" right="5" top="53" width="50" height="20" label="DL"
 			   click="button_addDownloadList(event)" toolTip="ダウンロードリストに動画を追加します"/>
 	
+	<mx:Label top="75" left="5" right="5" id="label_deletedInfo" visible="false" color="0xff0000"/>
+	
 	<mx:TextArea left="5" top="75" right="5" height="73" htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)"/>
 	<mx:CheckBox label="HTML" right="20" id="checkbox_showHtml" alpha="0.3" enabled="true" selected="true" rollOver="checkbox_showHtml_rollOverHandler(event)"
 				 rollOut="checkbox_showHtml_rollOutHandler(event)" change="checkbox_showHtml_changeHandler(event)" top="127" creationComplete="checkbox_showHtml_creationCompleteHandler(event)"
 				 toolTip="HTML形式の投稿者説明文が表示できない場合、このチェックを外してプレーンテキストの投稿者説明文を表示させてください。" fontWeight="bold"/>
-	<mx:Text id="text_info" left="100" top="2" height="55"/>
+	
 	<mx:ViewStack id="viewstack1" left="5" right="5" top="150" bottom="27">
 		<mx:Canvas label="動画情報" width="100%" height="100%" id="canvas_videoInfo">
 			<mx:TabNavigator left="0" right="0" top="0" bottom="0">

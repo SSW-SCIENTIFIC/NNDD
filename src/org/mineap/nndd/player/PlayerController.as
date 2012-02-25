@@ -3039,14 +3039,29 @@ package org.mineap.nndd.player
 								var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(new XML(thumbInfo));
 								var video:NNDDVideo = libraryManager.isExist(videoId);
 								if(analyzer.errorCode != null && analyzer.errorCode.length > 0 && !isStreamingPlay){ 
+									
+									logManager.addLog("サムネイル情報取得時のエラーコード:" + analyzer.errorCode);
+									
 									// エラーコードが返ってきて、かつ、ストリーミングではないとき
 									if(video != null){
+										
+										logManager.addLog("ニコニコ動画からサムネイル情報が取得できなかったためローカルのデータを使用");
+										
+										if (analyzer.errorCode == ThumbInfoAnalyzer.ERROR_CODE_DELETED)
+										{
+											setVideoDeleted(true);
+										}
+										else
+										{
+											setVideoDeleted(false);
+										}
+										
 										var thumbInfoPath:String = PathMaker.createThmbInfoPathByVideoPath(video.getDecodeUrl());
 										var fileIO:FileIO = new FileIO();
 										var xml:XML = fileIO.loadXMLSync(thumbInfoPath, false);
 										analyzer = new ThumbInfoAnalyzer(xml);
 									}
-//									setNicoThumbInfo(analyzer);
+									
 								}else{
 									if(video != null && video.pubDate == null){
 										video.pubDate = analyzer.getDateByFirst_retrieve();
@@ -3138,6 +3153,28 @@ package org.mineap.nndd.player
 			
 			if(videoPlayer.videoInfoView.owner_text_nico.length == 0){
 				videoPlayer.videoInfoView.owner_text_nico = ownerText;
+			}
+		}
+		
+		public function setVideoDeleted(isDeleted:Boolean):void
+		{
+			if (isDeleted)
+			{
+				videoInfoView.label_deletedInfo.text = "【注意】この動画はニコニコ動画上では削除されています";
+				videoInfoView.label_deletedInfo.toolTip = "ニコニコ動画上では削除されていますが、ダウンロード済みの動画/情報を使用して再生しています。";
+				videoInfoView.label_deletedInfo.visible = true;
+				videoInfoView.textArea_upperOwnerText.top = "92";
+				videoInfoView.checkbox_showHtml.top = "144";
+				videoInfoView.viewstack1.top = "167";
+			}
+			else
+			{
+				videoInfoView.label_deletedInfo.text = "";
+				videoInfoView.label_deletedInfo.toolTip = null;
+				videoInfoView.label_deletedInfo.visible = false;
+				videoInfoView.textArea_upperOwnerText.top = "75";
+				videoInfoView.checkbox_showHtml.top = "127";
+				videoInfoView.viewstack1.top = "150";
 			}
 		}
 		
@@ -3677,6 +3714,8 @@ package org.mineap.nndd.player
 					videoInfoView.economyMode = "-";
 					videoInfoView.nickName = "-";
 					videoInfoView.isPremium = "-";
+					
+					setVideoDeleted(false);
 				}
 				
 				try{
