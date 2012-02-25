@@ -25,6 +25,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.mineap.nndd.LogManager;
+			import org.mineap.nndd.Message;
 
 			public var newVersion:String = null;
 			
@@ -43,6 +44,7 @@
 				updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitalizedHandler);
 				updater.addEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, statusErrorHandler);
 				updater.addEventListener(StatusUpdateEvent.UPDATE_STATUS, checkForUpdateEventHandler);
+				updater.addEventListener(ErrorEvent.ERROR, unknownErrorHandler);
 				updater.initialize();
 				
 				this.stage.nativeWindow.x = Capabilities.screenResolutionX/2 - this.width/2;
@@ -72,9 +74,13 @@
 
 			private function updater_downloadErrorHandler(event:ErrorEvent):void
 			{
-				Alert.show("アップデートに失敗しました。¥n" + event.text, "エラー");
-				update.enabled = true;
-				cancel.enabled = true;
+				Alert.show("アップデートに失敗しました。¥n" + event.text, Message.ERROR);
+				
+				if (update != null || cancel != null)
+				{
+					update.enabled = true;
+					cancel.enabled = true;
+				}
 			}
 
 
@@ -82,8 +88,10 @@
 			{
 				updater.installUpdate();
 				
-				update.enabled = true;
-				cancel.enabled = true;
+				progressBar.label = "新しいバージョンのNNDDをインストールする準備をしています...";
+				
+//				update.enabled = true;
+//				cancel.enabled = true;
 			}
 
 
@@ -114,8 +122,13 @@
 
 			protected function statusErrorHandler(event:StatusUpdateErrorEvent):void
 			{
-				LogManager.instance.addLog("バージョンアップ中にエラー" + event.text);
-				Alert.show(event.text);
+				LogManager.instance.addLog("バージョンチェック中にエラー" + event.text);
+				Alert.show("バージョンチェック中にエラーが発生しました。\n" + event.text);
+				if (update != null || cancel != null)
+				{
+					update.enabled = true;
+					cancel.enabled = true;
+				}
 			}
 
 
@@ -132,6 +145,16 @@
 				}
 			}
 
+			protected function unknownErrorHandler(event:ErrorEvent):void
+			{
+				Alert.show("バージョンチェック中に予期せぬエラーが発生しました。\n" + event.text , Message.ERROR);
+				if (update != null || cancel != null)
+				{
+					update.enabled = true;
+					cancel.enabled = true;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
