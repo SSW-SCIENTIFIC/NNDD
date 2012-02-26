@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.1.5</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54860/NNDDv2_1_5.dmg</url>
+	<version>2.1.6</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54860/NNDDv2_1_6.dmg</url>
 	<description><![CDATA[
+v2.1.6
+・ランキングタブのカテゴリ再編対応
+・マイリストの一覧から右クリックで更新ができるように変更
+・マイリストの未視聴かどうかの判定に、DL済みかどうかをチェックしないように変更
+	・withOutDownloadedVideoオプションで従来どおり、DL済みも使用済みとカウントするように切り替え可能
+・exe/dmg版の自動アップデータの挙動を変更
+・ニコ動上で削除された動画をローカルで再生した際に、InfoViewに削除済みであることを表示するように変更
+・【バグフィックス】マイリストで動画のタイトルが文字化けする問題を修正
+・【バグフィックス】検索項目の順序が正しく保存されない/読み込まれない問題を修正
+
 v2.1.5
 ・Playerでjpドメイン以外でつけられたタグを表示しないようにした(すべて表示/特定の言語のみ表示はプロパティで切り替え可能)
 	・showAllTagプロパティ：trueかfalseを指定。trueの時はすべてのタグを表示。
@@ -54,9 +64,19 @@ v2.1.0
 </dmg>
 
 <exe>
-	<version>2.1.5</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/54860/NNDDv2_1_5.exe</url>
+	<version>2.1.6</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/54860/NNDDv2_1_6.exe</url>
 	<description><![CDATA[
+v2.1.6
+・ランキングタブのカテゴリ再編対応
+・マイリストの一覧から右クリックで更新ができるように変更
+・マイリストの未視聴かどうかの判定に、DL済みかどうかをチェックしないように変更
+	・withOutDownloadedVideoオプションで従来どおり、DL済みも使用済みとカウントするように切り替え可能
+・exe/dmg版の自動アップデータの挙動を変更
+・ニコ動上で削除された動画をローカルで再生した際に、InfoViewに削除済みであることを表示するように変更
+・【バグフィックス】マイリストで動画のタイトルが文字化けする問題を修正
+・【バグフィックス】検索項目の順序が正しく保存されない/読み込まれない問題を修正
+
 v2.1.5
 ・Playerでjpドメイン以外でつけられたタグを表示しないようにした(すべて表示/特定の言語のみ表示はプロパティで切り替え可能)
 	・showAllTagプロパティ：trueかfalseを指定。trueの時はすべてのタグを表示。
