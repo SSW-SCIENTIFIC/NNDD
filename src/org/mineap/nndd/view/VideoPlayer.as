@@ -203,7 +203,22 @@ public function setTagArray(tags:Vector.<PlayerTagString>):void{
 				lockStr = "<font color=\"#ff0000\" size=\"8\">[LOCK]</font> ";
 			}
 			
-			text += "<a href=\"event:" + tag + "\"><u><font color=\"#0000ff\">" + tag + "</font></u></a>" +
+			// 実体参照に置き換え
+			// "&lt;" represents the < sign.
+			// "&gt;" represents the > sign.
+			// "&amp;" represents the & sign.
+			// "&quot; represents the " mark.
+			
+			var myPattern:RegExp = new RegExp("<", "g");
+			var replacedTagStr:String = tag.replace(myPattern, "&lt;");
+			myPattern = new RegExp(">", "g");
+			replacedTagStr = replacedTagStr.replace(myPattern, "&gt;");
+			myPattern = new RegExp("&", "g");
+			replacedTagStr = replacedTagStr.replace(myPattern, "&amp;");
+			myPattern = new RegExp("\"", "g");
+			replacedTagStr = replacedTagStr.replace(myPattern, "&quot;");
+			
+			text += "<a href=\"event:" + replacedTagStr + "\"><u><font color=\"#0000ff\">" + replacedTagStr + "</font></u></a>" +
 				"<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) + "\"><font color=\"#0000ff\">【<u>百</u>】</font></a>" + lockStr + "  ";
 		}
 		else
