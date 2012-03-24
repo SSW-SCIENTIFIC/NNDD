@@ -260,7 +260,7 @@
 	
 	<mx:Label top="75" left="5" right="5" id="label_deletedInfo" visible="false" color="0xff0000"/>
 	
-	<mx:TextArea left="5" top="75" right="5" height="73" htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)"/>
+	<mx:TextArea left="5" top="75" right="5" height="73" htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)" editable="false"/>
 	<mx:CheckBox label="HTML" right="20" id="checkbox_showHtml" alpha="0.3" enabled="true" selected="true" rollOver="checkbox_showHtml_rollOverHandler(event)"
 				 rollOut="checkbox_showHtml_rollOutHandler(event)" change="checkbox_showHtml_changeHandler(event)" top="127" creationComplete="checkbox_showHtml_creationCompleteHandler(event)"
 				 toolTip="HTML形式の投稿者説明文が表示できない場合、このチェックを外してプレーンテキストの投稿者説明文を表示させてください。" fontWeight="bold"/>
