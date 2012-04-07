@@ -236,6 +236,14 @@
 				checkBox_openFileDialogWhenOpenPlayer.selected = isOpenFileDialogWhenOpenPlayer;
 			}
 			
+			protected function dataGrid_playList_showHandler(event:FlexEvent):void
+			{
+				if (playerController.isPlayListPlaying)
+				{
+					dataGrid_playList.selectedIndex = playerController.playingIndexOnPlaylist;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -337,7 +345,7 @@
 				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true" 
 						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
-						itemDoubleClick="playListDoubleClicked()" showHeaders="false">
+						itemDoubleClick="playListDoubleClicked()" showHeaders="false" show="dataGrid_playList_showHandler(event)">
 						<mx:columns>
 							<mx:DataGridColumn>
 							</mx:DataGridColumn>
@@ -352,13 +360,14 @@
 					<mx:Button id="button_reverse" left="68" bottom="28" width="50" label="↓↑"
 							   click="playListReverseButtonClicked(event)"
 							   toolTip="このプレイリストの順番を逆順にします"/>
+					<mx:Button id="button_shuffle" left="126" bottom="28" width="80" label="シャッフル"
+							   click="playListShuffleButtonClicked(event)"
+							   toolTip="このプレイリストをシャッフルします"/>
+					
 					<mx:Button left="10" bottom="3" label="保存"
 							   click="playListSaveButtonClicked(event)" toolTip="このプレイリストの内容を保存します"/>
 					<mx:Button left="89" bottom="3" label="クリア"
 							   click="playListClearButtonClicked(event)" toolTip="このプレイリストを空にします"/>
-					<mx:Button id="button_shuffle" left="126" bottom="28" width="80" label="シャッフル"
-							   click="playListShuffleButtonClicked(event)"
-							   toolTip="このプレイリストをシャッフルします"/>
 					<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
 				</mx:Canvas>
 				<mx:Canvas label="タグ" width="100%" height="100%" id="canvas_Tag">
