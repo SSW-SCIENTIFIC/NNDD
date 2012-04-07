@@ -204,17 +204,18 @@ public function setTagArray(tags:Vector.<PlayerTagString>):void{
 			}
 			
 			// 実体参照に置き換え
+			// "&amp;" represents the & sign.
 			// "&lt;" represents the < sign.
 			// "&gt;" represents the > sign.
-			// "&amp;" represents the & sign.
-			// "&quot; represents the " mark.
+			// "&quot;" represents the " mark.
 			
-			var myPattern:RegExp = new RegExp("<", "g");
-			var replacedTagStr:String = tag.replace(myPattern, "&lt;");
+			var myPattern:RegExp= new RegExp("&", "g");
+			var replacedTagStr:String = tag.replace(myPattern, "&amp;");
+			
+			myPattern = new RegExp("<", "g");
+			replacedTagStr = replacedTagStr.replace(myPattern, "&lt;");
 			myPattern = new RegExp(">", "g");
 			replacedTagStr = replacedTagStr.replace(myPattern, "&gt;");
-			myPattern = new RegExp("&", "g");
-			replacedTagStr = replacedTagStr.replace(myPattern, "&amp;");
 			myPattern = new RegExp("\"", "g");
 			replacedTagStr = replacedTagStr.replace(myPattern, "&quot;");
 			
@@ -1233,6 +1234,24 @@ private function changeShowCommentClickEventHandler(event:Event):void{
 
 private function backClickEventHandler(event:Event):void{
 	playerController.back();
+}
+
+private function backPlayListClickEventHandler(event:Event):void
+{
+	playerController.next();
+}
+
+private function controlPlayListContextMenuDisplayHandler(event:Event):void
+{
+	var contextMenuItem:ContextMenuItem = (event.currentTarget as ContextMenuItem);
+	
+	if (playerController.isPlayListPlaying)
+	{
+		contextMenuItem.enabled = true;
+	}
+	else {
+		contextMenuItem.enabled = false;
+	}
 }
 
 private function fileOpenClickEventHandler(event:Event):void{
