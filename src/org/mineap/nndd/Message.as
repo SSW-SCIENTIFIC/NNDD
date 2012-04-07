@@ -54,6 +54,7 @@ package org.mineap.nndd
 		public static var L_PLAYLIST_ADD_SELECTED_ITEM:String = "プレイリストに追加";
 		
 		public static var L_BACK:String = "一つ前の動画に戻る";
+		public static var L_NEXT:String = "次の動画に進む";
 		public static var L_OPEN_FILE:String = "ファイル/URLを指定して動画を開く";
 		public static var L_OPEN_NICOMIMI:String = "nicomimi-にこみみ- でひらく(MP3)";
 		public static var L_OPEN_NICOSOUND:String = "にこ☆さうんど# でひらく(MP3)";

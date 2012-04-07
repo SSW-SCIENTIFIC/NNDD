@@ -4482,6 +4482,48 @@ package org.mineap.nndd.player
 		}
 		
 		/**
+		 * 次の動画に進みます。これはプレイリストを再生している場合にのみ有効です。
+		 * 
+		 */
+		public function next():void
+		{
+			if (isPlayListingPlay)
+			{
+				// プレイリスト再生中
+				if(playingIndex >= this.videoInfoView.getPlayList().length-1){
+					playingIndex = 0;
+					if(this.videoPlayer.videoInfoView.isRepeatAll()){
+						playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, 
+							playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+					}
+				}else{
+					playingIndex++;
+					playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, 
+						playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+				}
+			}
+		}
+		
+		/**
+		 * 現在プレイリストを再生中かどうかを返す
+		 * @reutrn
+		 */
+		public function get isPlayListPlaying():Boolean
+		{
+			return this.isPlayListingPlay;
+		}
+		
+		/**
+		 * プレイリストにおける、現在再生中の動画のインデックスを返す
+		 * @return 
+		 * 
+		 */
+		public function get playingIndexOnPlaylist():int
+		{
+			return this.playingIndex;
+		}
+		
+		/**
 		 * 指定された動画がローカルのマイリストに存在する場合、マイリストの動画を既読に設定します。
 		 * @param videoId
 		 * 
