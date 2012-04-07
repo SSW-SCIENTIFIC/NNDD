@@ -1521,6 +1521,13 @@ public function resetPlayList():void{
  * @see https://github.com/edvakf/NNDDMOD/commit/6984ba8919727a98c249e1bc8a4848705de27df5
  */
 public function shufflePlayList():void{
+	
+	var selectedObject:Object = null;
+	if (dataGrid_playList != null)
+	{
+		selectedObject = dataGrid_playList.selectedItem;
+	}
+	
 	var tempArrayCollection:ArrayCollection = new ArrayCollection();
 	for each(var object:Object in playListProvider){
 		tempArrayCollection.addItem(object);
@@ -1536,6 +1543,11 @@ public function shufflePlayList():void{
 		tempArrayCollection.setItemAt( object, j );
 	}
 	playListProvider = tempArrayCollection;
+	
+	if (dataGrid_playList != null && selectedObject != null)
+	{
+		dataGrid_playList.selectedItem = selectedObject;
+	}
 }
 
 /**
@@ -1850,11 +1862,26 @@ private function ownerTextLinkClicked(event:TextEvent):void{
 private function playListReverseButtonClicked(event:Event):void{
 	var tempArrayCollection:ArrayCollection = new ArrayCollection();
 	
+	var newIndex:int = -1;
+	if (dataGrid_playList != null)
+	{
+		var selectedIndex:int = dataGrid_playList.selectedIndex;
+		if (selectedIndex != -1)
+		{
+			newIndex = (playListProvider.length-1) - selectedIndex;
+		}
+	}
+	
 	for each(var object:Object in playListProvider){
 		tempArrayCollection.addItemAt(object, 0);
 	}
 	
 	playListProvider = tempArrayCollection;
+	
+	if (dataGrid_playList != null && newIndex != -1)
+	{
+		dataGrid_playList.selectedIndex = newIndex;
+	}
 }
 
 public function get playList():PlayList{

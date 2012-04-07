@@ -4464,7 +4464,7 @@ package org.mineap.nndd.player
 				if(!isPlayListingPlay){
 					// 通常再生中
 					playMovie(nnddVideo.getDecodeUrl());
-				}else{
+				}else if (this.videoInfoView.getPlayList().length > 0){
 					// プレイリスト再生中
 					if(playingIndex >= this.videoInfoView.getPlayList().length-1){
 						playingIndex = this.videoInfoView.getPlayList().length-1;
@@ -4477,6 +4477,9 @@ package org.mineap.nndd.player
 						playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, 
 							playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 					}
+				}else
+				{
+					isPlayListingPlay = false;
 				}
 			}
 		}
@@ -4487,7 +4490,7 @@ package org.mineap.nndd.player
 		 */
 		public function next():void
 		{
-			if (isPlayListingPlay)
+			if (isPlayListingPlay && this.videoInfoView.getPlayList().length > 0)
 			{
 				// プレイリスト再生中
 				if(playingIndex >= this.videoInfoView.getPlayList().length-1){
@@ -4501,6 +4504,10 @@ package org.mineap.nndd.player
 					playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList, 
 						playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 				}
+			}
+			else
+			{
+				isPlayListingPlay = false;
 			}
 		}
 		
