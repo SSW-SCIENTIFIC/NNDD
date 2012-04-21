@@ -343,11 +343,11 @@
 					<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" click="checkBoxIsSOPCChanged(event)" left="160" bottom="2" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
 				</mx:Canvas>
 				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true" 
+					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true"
 						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
 						itemDoubleClick="playListDoubleClicked()" showHeaders="false" creationComplete="dataGrid_playList_creationCompleteHandler(event)">
 						<mx:columns>
-							<mx:DataGridColumn>
+							<mx:DataGridColumn showDataTips="true">
 							</mx:DataGridColumn>
 						</mx:columns>
 					</mx:DataGrid>
