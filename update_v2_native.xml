@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.1.6</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55017/NNDDv2_1_6.dmg</url>
+	<version>2.1.7</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55017/NNDDv2_1_7.dmg</url>
 	<description><![CDATA[
+v2.1.7
+・InfoViewのプレイリストで動画タイトルのツールチップが表示されるようにした
+・Playerの右クリックメニューに"進む"を追加(プレイリスト再生中にのみ使用可能)
+・【バグフィックス】「"」を含むタグがあるとPlayerでタグが表示されない問題を修正
+・【バグフィックス】プレイリストをクリアした際の動作を修正
+・【バグフィックス】プレイリスト再生時に、Playerのプレイリストの再生中の項目が選択されないことがある問題を修正
+・【バグフィックス】動画IDがsm****でない場合にサムネイル画像が表示されないことがある問題を修正
+
 v2.1.6
 ・ランキングタブのカテゴリ再編対応
 ・マイリストの一覧から右クリックで更新ができるように変更
@@ -64,9 +72,17 @@ v2.1.0
 </dmg>
 
 <exe>
-	<version>2.1.6</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55017/NNDDv2_1_6.exe</url>
+	<version>2.1.7</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55017/NNDDv2_1_7.exe</url>
 	<description><![CDATA[
+v2.1.7
+・InfoViewのプレイリストで動画タイトルのツールチップが表示されるようにした
+・Playerの右クリックメニューに"進む"を追加(プレイリスト再生中にのみ使用可能)
+・【バグフィックス】「"」を含むタグがあるとPlayerでタグが表示されない問題を修正
+・【バグフィックス】プレイリストをクリアした際の動作を修正
+・【バグフィックス】プレイリスト再生時に、Playerのプレイリストの再生中の項目が選択されないことがある問題を修正
+・【バグフィックス】動画IDがsm****でない場合にサムネイル画像が表示されないことがある問題を修正
+
 v2.1.6
 ・ランキングタブのカテゴリ再編対応
 ・マイリストの一覧から右クリックで更新ができるように変更
