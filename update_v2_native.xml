@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.1.7</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55017/NNDDv2_1_7.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55657/NNDDv2_1_7.dmg</url>
 	<description><![CDATA[
 v2.1.7
 ・InfoViewのプレイリストで動画タイトルのツールチップが表示されるようにした
@@ -73,7 +73,7 @@ v2.1.0
 
 <exe>
 	<version>2.1.7</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55017/NNDDv2_1_7.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55657/NNDDv2_1_7.exe</url>
 	<description><![CDATA[
 v2.1.7
 ・InfoViewのプレイリストで動画タイトルのツールチップが表示されるようにした
