@@ -1271,6 +1271,7 @@
 				isCloseNNDDWindowWhenLogin = (event.currentTarget as CheckBox).selected;
 			}
 			
+			
 		]]>
 	</fx:Script>
 	

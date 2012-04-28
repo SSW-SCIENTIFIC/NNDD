@@ -418,7 +418,7 @@ private function addPlayListContextMenuItemClicked(event:ContextMenuEvent):void{
 		return;
 	}
 	var videos:Array = new Array();
-	videos.push(new NNDDVideo("http://www.nicovideo.co.jo/watch/" + videoId, this.title));
+	videos.push(new NNDDVideo("http://www.nicovideo.jp/watch/" + videoId, this.title));
 	
 	PlayListManager.instance.addNNDDVideos(pIndex, videos);
 	
