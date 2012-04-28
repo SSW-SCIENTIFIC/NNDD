@@ -70,6 +70,7 @@ package org.mineap.nndd.player
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;
 	import org.mineap.nndd.util.ThumbInfoUtil;
 	import org.mineap.nndd.util.WebServiceAccessUtil;
+	import org.mineap.util.config.ConfUtil;
 	import org.mineap.util.config.ConfigIO;
 	import org.mineap.util.config.ConfigManager;
 	import org.osmf.events.LoadEvent;
@@ -202,6 +203,8 @@ package org.mineap.nndd.player
 		private var nicoRelationInfoLoader:ApiGetRelation = null;
 		
 		private var lastLoadedBytes:Number = 0;
+		
+		private var isLengthwisePreferred:Boolean = true;
 		
 		[Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play:Class;
@@ -410,6 +413,17 @@ package org.mineap.nndd.player
 			}
 			
 			this.videoPlayer.videoController.resetAlpha(true);
+			
+			var value:String = ConfigManager.getInstance().getItem("isLengthwisePreferred");
+			if (value != null)
+			{
+				this.isLengthwisePreferred = ConfUtil.parseBoolean(value);
+			}
+			else
+			{
+				this.isLengthwisePreferred = true;
+				ConfigManager.getInstance().setItem("isLengthwisePreferred", this.isLengthwisePreferred);
+			}
 			
 			if(isStreamingPlay){
 				if(streamingProgressTimer != null){
@@ -2176,9 +2190,43 @@ package org.mineap.nndd.player
 			}
 		}
 		
+		private function updateVideoStatus():void
+		{
+			
+			var formatter:NumberFormatter = new NumberFormatter();
+			formatter.precision = 2;
+			
+			if (videoDisplay != null && videoInfoView != null)
+			{
+				if (videoDisplay.videoObject != null)
+				{
+					videoInfoView.format = videoDisplay.videoObject.videoWidth + " × " + videoDisplay.videoObject.videoHeight;
+				}
+				else
+				{
+					videoInfoView.format = "-";
+				}
+				
+				videoInfoView.currentWindowSize = videoDisplay.width + " × " + videoDisplay.height;
+				
+				videoInfoView.videoSize = formatter.format( (videoDisplay.bytesTotal / (1024 * 1024)) )  + " MB";
+			}
+			else if (loader != null)
+			{
+				if (loader.contentLoaderInfo != null)
+				{
+					videoInfoView.format = loader.contentLoaderInfo.width + " × " + loader.contentLoaderInfo.height;
+					videoInfoView.currentWindowSize = loader.width + " × " + loader.height;
+					videoInfoView.videoSize = formatter.format( (loader.contentLoaderInfo.bytesTotal / (1024 * 1024)) )  + " MB";
+				}
+			}
+
+		}
+		
+		
 		/**
 		 * コメント表示用のタイマーです。
-		 * swfの再生中はSWFのタイムラインヘッダを更新します。
+		 * swfの再生中はSWFのタイムラインヘッダも更新します。
 		 * 
 		 * @param event
 		 * 
@@ -2195,6 +2243,8 @@ package org.mineap.nndd.player
 			
 			//	音量を反映
 			this.setVolume(this.videoPlayer.videoController.slider_volume.value);
+			
+			this.updateVideoStatus();
 			
 			var nowSec:String="00",nowMin:String="0";
 			nowSec = String(int(commentTimerVpos/1000%60));
@@ -2270,7 +2320,7 @@ package org.mineap.nndd.player
 			}
 			
 			//コメントを更新
-			var commentArray:Vector.<NNDDComment> = this.commentManager.setComment(commentTimerVpos, (tempTime - this.time)*3, this.videoPlayer.isShowComment);
+			var commentArray:Vector.<NNDDComment> = this.commentManager.setComment(commentTimerVpos, (tempTime - this.time)*3, this.videoPlayer.isShowComment, this.isLengthwisePreferred);
 			this.commentManager.moveComment(tempTime/1000 - this.time/1000, videoInfoView.showCommentSec);
 			this.commentManager.removeComment(commentTimerVpos, videoInfoView.showCommentSec * 1000);
 			this.time = tempTime;
@@ -3680,7 +3730,7 @@ package org.mineap.nndd.player
 				commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password, videoID, comment, command, commentTimerVpos/10);
 				
 				// とりあえずコメントを表示。通し番号をマイナスにして正規のコメントと区別する。
-				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, "", -1, "", -1, true));
+				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, "", -1, "", -1, true), this.isLengthwisePreferred);
 				
 			}else{
 				//動画IDがついてないのでPostできなかった
@@ -3714,6 +3764,9 @@ package org.mineap.nndd.player
 					videoInfoView.economyMode = "-";
 					videoInfoView.nickName = "-";
 					videoInfoView.isPremium = "-";
+					videoInfoView.format = "-";
+					videoInfoView.videoSize = "-";
+					videoInfoView.currentWindowSize = "-";
 					
 					setVideoDeleted(false);
 				}
@@ -4164,6 +4217,7 @@ package org.mineap.nndd.player
 					videoInfoView.economyMode = String(downloader.getFlvResultAnalyzer.economyMode);
 					videoInfoView.nickName = downloader.getFlvResultAnalyzer.nickName;
 					videoInfoView.isPremium = String(downloader.getFlvResultAnalyzer.isPremium);
+
 				}
 			}
 			

@@ -41,23 +41,32 @@ package org.mineap.nndd.player.comment
 		
 		private var _isCommentBold:Boolean = false;
 		
-		private var commentNomalTextArray:Vector.<Vector.<NNDDText>> = new Vector.<Vector.<NNDDText>>(2);
+		private var commentNomalTextArray:Vector.<Vector.<NNDDText>> = new Vector.<Vector.<NNDDText>>(COMMENT_MULTIPLEX_COUNT);
 		
 		private var commentUeTextArray:Vector.<NNDDText> = new Vector.<NNDDText>(12);
 		
 		private var commentShitaTextArray:Vector.<NNDDText> = new Vector.<NNDDText>(12);
 		
+		private const MAX_NORMAL_COMMENT_STEP_COUNT:int = 12;
+		
+		private const COMMENT_MULTIPLEX_COUNT:int = 5;
+		
 		/**
 		 * コンストラクタ<br>
 		 * 指定されたVidepPlayerでCommentManagerを初期化します。
+		 * 
 		 * @param videoPlayer
+		 * @param videoInfoView
+		 * @param playerController
 		 * 
 		 */
 		public function CommentManager(videoPlayer:VideoPlayer, videoInfoView:VideoInfoView, playerController:PlayerController)
 		{
 			
-			commentNomalTextArray[0] = new Vector.<NNDDText>(12);
-			commentNomalTextArray[1] = new Vector.<NNDDText>(12);
+			for (var i:int=0; i<commentNomalTextArray.length; i++)
+			{
+				commentNomalTextArray[i] = new Vector.<NNDDText>(MAX_NORMAL_COMMENT_STEP_COUNT);
+			}
 			
 			this.videoPlayer = videoPlayer;
 			this.videoInfoView = videoInfoView;
@@ -158,10 +167,11 @@ package org.mineap.nndd.player.comment
 		 * @param vpos 表示タイミングです。
 		 * @param interval このメソッドが呼び出されるインターバルです。
 		 * @param isShow コメントの表示状態です。
+		 * @param isLengthwisePreferred
 		 * @return 
 		 * 
 		 */
-		public function setComment(vpos:Number, interval:int, isShow:Boolean):Vector.<NNDDComment>
+		public function setComment(vpos:Number, interval:int, isShow:Boolean, isLengthwisePreferred:Boolean = true):Vector.<NNDDComment>
 		{
 			var commentArray:Vector.<NNDDComment> = comments.getComment(vpos, interval);
 			var command:Command = new Command();
@@ -276,7 +286,7 @@ package org.mineap.nndd.player.comment
 									break;
 								case Command.NAKA:
 								default:
-									this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail);
+									this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail, isLengthwisePreferred);
 									break;
 							}
 						}
@@ -335,9 +345,12 @@ package org.mineap.nndd.player.comment
 		
 		/**
 		 * ポストされたコメントを画面上に追加します。
-		 * array [vpos,comment,mail]
+		 * 
+		 * @param comment
+		 * @param isLengthwisePreferred
+		 * 
 		 */
-		public function addPostComment(comment:NNDDComment):void{
+		public function addPostComment(comment:NNDDComment, isLengthwisePreferred:Boolean = true):void{
 			var command:Command = new Command();
 			var commandPosition:int = command.getPosition(comment.mail);
 			switch(commandPosition){
@@ -349,7 +362,7 @@ package org.mineap.nndd.player.comment
 					break;
 				case Command.NAKA:
 				default:
-					this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail);
+					this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail, isLengthwisePreferred);
 					break;
 			}
 		}
@@ -357,73 +370,119 @@ package org.mineap.nndd.player.comment
 		
 		/**
 		 * 通常コメントを追加します。
+		 * 
 		 * @param vpos
 		 * @param comment
 		 * @param size
 		 * @param color
+		 * @param no
+		 * @param mail
+		 * @param isLengthwisePreferred
+		 * 
+		 */
+		private function addNomalComment(vpos:int, comment:String, size:int, color:int, no:Number, mail:String, isLengthwisePreferred:Boolean):void
+		{
+			
+			var nnddText:NNDDText = searchNextNNDDText(isLengthwisePreferred);
+							
+			if (nnddText != null)
+			{
+							
+				nnddText.text = comment;
+				nnddText.vpos = vpos;
+				nnddText.no = no;
+				nnddText.mail = mail;
+				nnddText.visible = true;
+				nnddText.setStyle("color", color);
+				
+				if(no<0){
+					nnddText.setStyle("textDecoration", "underline");
+				}else{
+					nnddText.clearStyle("textDecoration");
+				}
+				
+				switch(size){
+					case Command.BIG:
+						size = nnddText.parent.height/15;
+						break;
+					case Command.SMALL:
+						size = nnddText.parent.height/25;
+						break;
+					case Command.MEDIUM:
+						size = nnddText.parent.height/20;
+						break;
+				}
+				
+				size = size*videoInfoView.commentScale;
+				nnddText.setStyle("fontSize", size);
+				
+				var filterArray:Array = new Array();
+				if(color == int("0x000000")){
+					filterArray.push(new DropShadowFilter(2, 45, int("0xffffff"), 1, 5, 5, 2));
+				}else{
+					filterArray.push(new DropShadowFilter(2, 45, 0, 1, 5, 5, 2));
+				}
+				
+				nnddText.filters = filterArray;
+				
+				if(!nnddText.hasEventListener(MouseEvent.CLICK)){
+					nnddText.addEventListener(MouseEvent.CLICK, commentClickEventHandler);
+				}
+				
+				nnddText.alpha = 0;
+				nnddText.addEventListener(FlexEvent.UPDATE_COMPLETE, yCoordinateUpdateCompleteHandler);
+				
+			}
+		}
+		
+		/**
+		 * 
+		 * @param isLengthwisePreferred trueの時、縦方向に空いているNNDDTextを優先して返します。falseの時は、同じ行の空いているNNDDTextを優先して返します。
 		 * @return 
 		 * 
 		 */
-		private function addNomalComment(vpos:int, comment:String, size:int, color:int, no:Number, mail:String):void
+		private function searchNextNNDDText(isLengthwisePreferred:Boolean = true):NNDDText
 		{
-			for(var j:int = 0; j<commentNomalTextArray.length; j++){
-				for(var i:int = 0; i<commentNomalTextArray[j].length; i++){
-					if(commentNomalTextArray[j][i].vpos == -1){
-						if((j == 0 && 
+			
+			if (isLengthwisePreferred)
+			{
+				for(var j:int = 0; j<COMMENT_MULTIPLEX_COUNT; j++){
+					for(var i:int = 0; i<MAX_NORMAL_COMMENT_STEP_COUNT; i++){
+						if(commentNomalTextArray[j][i].vpos == -1){
+							
+							if((j == 0 && 
 								((commentNomalTextArray[commentNomalTextArray.length-1][i].vpos == -1) 
-									|| commentNomalTextArray[commentNomalTextArray.length-1][i].x + commentNomalTextArray[commentNomalTextArray.length-1][i].width 
-										< commentNomalTextArray[commentNomalTextArray.length-1][i].parent.width/2))
-								|| (j!=0 && commentNomalTextArray[j-1][i].x + commentNomalTextArray[j-1][i].width < commentNomalTextArray[j-1][i].parent.width/2)){
-							
-							commentNomalTextArray[j][i].text = comment;
-							commentNomalTextArray[j][i].vpos = vpos;
-							commentNomalTextArray[j][i].no = no;
-							commentNomalTextArray[j][i].mail = mail;
-							commentNomalTextArray[j][i].visible = true;
-							commentNomalTextArray[j][i].setStyle("color", color);
-							
-							if(no<0){
-								commentNomalTextArray[j][i].setStyle("textDecoration", "underline");
-							}else{
-								commentNomalTextArray[j][i].clearStyle("textDecoration");
+									|| commentNomalTextArray[commentNomalTextArray.length-1][i].x  + commentNomalTextArray[commentNomalTextArray.length-1][i].width 
+									< commentNomalTextArray[commentNomalTextArray.length-1][i].parent.width*0.7))
+								|| (j!=0 && commentNomalTextArray[j-1][i].x + commentNomalTextArray[j-1][i].width < commentNomalTextArray[j-1][i].parent.width*0.7)){
+								
+								return commentNomalTextArray[j][i];
 							}
-							
-							switch(size){
-								case Command.BIG:
-									size = (commentNomalTextArray[j][i]).parent.height/15;
-									break;
-								case Command.SMALL:
-									size = (commentNomalTextArray[j][i]).parent.height/25;
-									break;
-								case Command.MEDIUM:
-									size = (commentNomalTextArray[j][i]).parent.height/20;
-									break;
-							}
-							
-							size = size*videoInfoView.commentScale;
-							(commentNomalTextArray[j][i]).setStyle("fontSize", size);
-							
-							var filterArray:Array = new Array();
-							if(color == int("0x000000")){
-								filterArray.push(new DropShadowFilter(2, 45, int("0xffffff"), 1, 5, 5, 2));
-							}else{
-								filterArray.push(new DropShadowFilter(2, 45, 0, 1, 5, 5, 2));
-							}
-							
-							(commentNomalTextArray[j][i]).filters = filterArray;
-							
-							if(!(commentNomalTextArray[j][i]).hasEventListener(MouseEvent.CLICK)){
-								(commentNomalTextArray[j][i]).addEventListener(MouseEvent.CLICK, commentClickEventHandler);
-							}
-							
-							(commentNomalTextArray[j][i]).alpha = 0;
-							(commentNomalTextArray[j][i]).addEventListener(FlexEvent.UPDATE_COMPLETE, yCoordinateUpdateCompleteHandler);
-							
-							return;
 						}
 					}
 				}
 			}
+			else
+			{
+				
+				for(var i:int = 0; i<MAX_NORMAL_COMMENT_STEP_COUNT; i++){
+					for(var j:int = 0; j<COMMENT_MULTIPLEX_COUNT; j++){
+						if(commentNomalTextArray[j][i].vpos == -1){
+							
+							if((j == 0 && 
+								((commentNomalTextArray[commentNomalTextArray.length-1][i].vpos == -1) 
+									|| commentNomalTextArray[commentNomalTextArray.length-1][i].x  + commentNomalTextArray[commentNomalTextArray.length-1][i].width 
+									< commentNomalTextArray[commentNomalTextArray.length-1][i].parent.width*0.7))
+								|| (j!=0 && commentNomalTextArray[j-1][i].x + commentNomalTextArray[j-1][i].width < commentNomalTextArray[j-1][i].parent.width*0.7)){
+								
+								return commentNomalTextArray[j][i];
+							}
+						}
+					}
+				}				
+			}
+			
+			return null;
 		}
 		
 		

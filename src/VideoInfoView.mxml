@@ -184,6 +184,9 @@
 				economyMode = "-";
 				nickName = "-";
 				isPremium = "-";
+				format = "-";
+				videoSize = "-";
+				currentWindowSize = "-";
 				
 			}
 
@@ -473,25 +476,36 @@
 		</mx:Canvas>
 		<mx:Canvas width="100%" height="100%" label="接続情報" creationComplete="canvas1_creationCompleteHandler(event)">
 			<mx:Label left="10" top="10" text="動画種別："/>
-			<mx:Label id="videoTypeText" left="83" right="5" top="10" text="{videoType}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="videoTypeText" left="140" right="5" top="10" text="{videoType}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="30" text="接続種別："/>
-			<mx:Label id="connectionTypeText" left="83" right="5" top="30" text="{connectionType}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="connectionTypeText" left="140" right="5" top="30" text="{connectionType}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="50" text="動画サーバー："/>
-			<mx:Label id="videoServerUrlText" left="107" right="5" top="50" text="{videoServerUrl}"  toolTip="{videoServerUrl}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="videoServerUrlText" left="140" right="5" top="50" text="{videoServerUrl}"  toolTip="{videoServerUrl}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="70" text="メッセージサーバー："/>
-			<mx:Label id="messageServerUrlText" left="143" right="5" top="70" text="{messageServerUrl}" toolTip="{messageServerUrl}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="messageServerUrlText" left="140" right="5" top="70" text="{messageServerUrl}" toolTip="{messageServerUrl}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="90" text="エコノミーモード："/>
-			<mx:Label id="economyModeText" left="131" right="6" top="90" text="{economyMode}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="economyModeText" left="140" right="6" top="90" text="{economyMode}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="110" text="ニックネーム："/>
-			<mx:Label id="nickNameText" left="107" right="6" top="110" text="{nickName}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="nickNameText" left="140" right="6" top="110" text="{nickName}" truncateToFit="true" selectable="true"/>
 			
 			<mx:Label left="10" top="130" text="プレミアム："/>
-			<mx:Label id="premiumText" left="95" right="6" top="130" text="{isPremium}" truncateToFit="true" selectable="true"/>
+			<mx:Label id="premiumText" left="140" right="6" top="130" text="{isPremium}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="150" text="デフォルトのサイズ："/>
+			<mx:Label id="formatText" left="140" right="6" top="150" text="{format}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="170" text="現在のサイズ："/>
+			<mx:Label id="currentWindowSizeText" left="140" right="6" top="170" text="{currentWindowSize}" truncateToFit="true" selectable="true"/>
+			
+			<mx:Label left="10" top="190" text="動画の容量："/>
+			<mx:Label id="videoSizeText" left="140" right="6" top="190" text="{videoSize}" truncateToFit="true" selectable="true"/>
+			
+			
 		</mx:Canvas>
 		<mx:Canvas label="設定" width="100%" height="100%">
 			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0"
@@ -531,27 +545,35 @@
 					</mx:Canvas>
 					<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">
 						
-						<mx:CheckBox label="コメントを太字にする" top="36" left="10" id="checkBox_commentBold" 
+						
+						<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" 
+									 toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" 
+									 id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
+						<mx:CheckBox label="コメントを太字にする" top="30" left="10" id="checkBox_commentBold" 
 									 change="checkBoxCommentBoldChanged(event)"
 									 creationComplete="configCanvas2CreationCompleteHandler(event)"/>
-						<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
-						<mx:CheckBox left="10" top="62" label="投稿者フィルターを有効にする" toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
+						<mx:CheckBox left="10" top="50" label="投稿者フィルターを有効にする" 
+									 toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" 
+									 id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
+						<mx:CheckBox left="10" top="70" label="コメントを縦方向に優先して表示する" selected="true"
+									 toolTip="流れるコメントを表示する際、縦方向に最大12個まで優先して表示されます。この設定がオフの場合、同一行に最大5個まで優先して表示します。いずれの場合も、一度に画面に表示できるコメントは最大60個です。" 
+									 id="checkBox_isLengthwisePreferred" change="checkBoxIsLengthwisePreferredChanged(event)"/>
 						
-						<mx:Label left="10" top="88" text="表示する通常コメント："
+						<mx:Label left="10" top="95" text="表示する通常コメント："
 								  toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:NumericStepper left="167" top="85" maximum="100000" stepSize="50"
+						<mx:NumericStepper left="167" top="92" maximum="100000" stepSize="50"
 										   value="50" id="commentNumStepper"
 										   change="commentCountNumStepperChanged(event)"
 										   toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:Label left="260" top="88" text="コメント/分"/>
+						<mx:Label left="260" top="95" text="コメント/分"/>
 						
-						<mx:Label left="10" top="119" text="表示する投稿者コメント："
+						<mx:Label left="10" top="125" text="表示する投稿者コメント："
 								  toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:NumericStepper left="167" top="116" maximum="100000" value="50" 
+						<mx:NumericStepper left="167" top="122" maximum="100000" value="50" 
 										   stepSize="50" id="ownerCommentNumStepper"
 										   change="ownerCommentCountNumStepperChanged(event)"
 										   toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:Label left="260" top="119" text="コメント/分"/>
+						<mx:Label left="260" top="125" text="コメント/分"/>
 						
 						<mx:Label text="コメントの大きさ：" left="10" top="147"/>
 						<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>

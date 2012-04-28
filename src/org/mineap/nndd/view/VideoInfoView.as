@@ -165,6 +165,12 @@ public var pubUserNameIconUrl:String = "";
 public var pubUserName:String = "";
 [Bindalbe]
 public var pubUserLinkButtonText:String = "";
+[Bindable]
+public var currentWindowSize:String = "";
+[Bindable]
+public var format:String = "";
+[Bindable]
+public var videoSize:String = "";
 
 public function init(playerController:PlayerController, videoPlayer:VideoPlayer, logManager:LogManager):void{
 	this.videoPlayer = videoPlayer;
@@ -245,6 +251,21 @@ public function checkBoxNgUpChanged(event:Event):void{
 	if(this.playerController != null){
 		this.playerController.reloadLocalComment();
 	}
+}
+
+public function checkBoxIsLengthwisePreferredChanged(event:Event):void
+{
+	var checkBox:CheckBox = (event.currentTarget as CheckBox); 
+	
+	if (checkBox.selected)
+	{
+		ConfigManager.getInstance().setItem("isLengthwisePreferred", "true");
+	}
+	else
+	{
+		ConfigManager.getInstance().setItem("isLengthwisePreferred", "false");
+	}
+	ConfigManager.getInstance().save();
 }
 
 public function checkBoxSmoothingChanged(event:Event):void{
@@ -799,7 +820,12 @@ private function configCanvas2CreationCompleteHandler(event:FlexEvent):void{
 	slider_showCommentTime.value = showCommentSec;
 	slider_commentAlpha.value = commentAlpha;
 	
-	
+	var value:String = ConfigManager.getInstance().getItem("isLengthwisePreferred");
+	if (value != null)
+	{
+		var isLengthwisePreferred:Boolean = ConfUtil.parseBoolean(value);
+		checkBox_isLengthwisePreferred.selected = isLengthwisePreferred;
+	}
 }
 
 private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
