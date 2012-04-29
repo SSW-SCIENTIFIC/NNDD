@@ -204,7 +204,7 @@ package org.mineap.nndd.player
 		
 		private var lastLoadedBytes:Number = 0;
 		
-		private var isLengthwisePreferred:Boolean = true;
+		private var _isLengthwisePreferred:Boolean = true;
 		
 		[Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play:Class;
@@ -422,7 +422,7 @@ package org.mineap.nndd.player
 			else
 			{
 				this.isLengthwisePreferred = true;
-				ConfigManager.getInstance().setItem("isLengthwisePreferred", this.isLengthwisePreferred);
+				ConfigManager.getInstance().setItem("isLengthwisePreferred", this._isLengthwisePreferred);
 			}
 			
 			if(isStreamingPlay){
@@ -2320,7 +2320,7 @@ package org.mineap.nndd.player
 			}
 			
 			//コメントを更新
-			var commentArray:Vector.<NNDDComment> = this.commentManager.setComment(commentTimerVpos, (tempTime - this.time)*3, this.videoPlayer.isShowComment, this.isLengthwisePreferred);
+			var commentArray:Vector.<NNDDComment> = this.commentManager.setComment(commentTimerVpos, (tempTime - this.time)*3, this.videoPlayer.isShowComment, this._isLengthwisePreferred);
 			this.commentManager.moveComment(tempTime/1000 - this.time/1000, videoInfoView.showCommentSec);
 			this.commentManager.removeComment(commentTimerVpos, videoInfoView.showCommentSec * 1000);
 			this.time = tempTime;
@@ -3730,7 +3730,7 @@ package org.mineap.nndd.player
 				commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password, videoID, comment, command, commentTimerVpos/10);
 				
 				// とりあえずコメントを表示。通し番号をマイナスにして正規のコメントと区別する。
-				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, "", -1, "", -1, true), this.isLengthwisePreferred);
+				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, "", -1, "", -1, true), this._isLengthwisePreferred);
 				
 			}else{
 				//動画IDがついてないのでPostできなかった
@@ -4582,6 +4582,11 @@ package org.mineap.nndd.player
 		public function get playingIndexOnPlaylist():int
 		{
 			return this.playingIndex;
+		}
+		
+		public function set isLengthwisePreferred(value:Boolean):void
+		{
+			this._isLengthwisePreferred = value;
 		}
 		
 		/**

@@ -265,6 +265,9 @@ public function checkBoxIsLengthwisePreferredChanged(event:Event):void
 	{
 		ConfigManager.getInstance().setItem("isLengthwisePreferred", "false");
 	}
+	
+	this.playerController.isLengthwisePreferred = checkBox.selected;
+	
 	ConfigManager.getInstance().save();
 }
 

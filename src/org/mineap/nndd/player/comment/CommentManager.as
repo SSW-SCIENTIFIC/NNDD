@@ -453,8 +453,8 @@ package org.mineap.nndd.player.comment
 							if((j == 0 && 
 								((commentNomalTextArray[commentNomalTextArray.length-1][i].vpos == -1) 
 									|| commentNomalTextArray[commentNomalTextArray.length-1][i].x  + commentNomalTextArray[commentNomalTextArray.length-1][i].width 
-									< commentNomalTextArray[commentNomalTextArray.length-1][i].parent.width*0.7))
-								|| (j!=0 && commentNomalTextArray[j-1][i].x + commentNomalTextArray[j-1][i].width < commentNomalTextArray[j-1][i].parent.width*0.7)){
+									< commentNomalTextArray[commentNomalTextArray.length-1][i].parent.width*0.5))
+								|| (j!=0 && commentNomalTextArray[j-1][i].x + commentNomalTextArray[j-1][i].width < commentNomalTextArray[j-1][i].parent.width*0.5)){
 								
 								return commentNomalTextArray[j][i];
 							}

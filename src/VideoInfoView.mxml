@@ -556,7 +556,7 @@
 									 toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" 
 									 id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
 						<mx:CheckBox left="10" top="70" label="コメントを縦方向に優先して表示する" selected="true"
-									 toolTip="流れるコメントを表示する際、縦方向に最大12個まで優先して表示されます。この設定がオフの場合、同一行に最大5個まで優先して表示します。いずれの場合も、一度に画面に表示できるコメントは最大60個です。" 
+									 toolTip="流れるコメントを表示する際、縦方向に最大12個まで優先して表示されます。この設定がオフの場合、同一行に最大5個まで優先して表示します。" 
 									 id="checkBox_isLengthwisePreferred" change="checkBoxIsLengthwisePreferredChanged(event)"/>
 						
 						<mx:Label left="10" top="95" text="表示する通常コメント："
