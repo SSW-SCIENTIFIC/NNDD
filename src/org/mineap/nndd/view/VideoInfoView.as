@@ -85,6 +85,7 @@ public var isAppendComment:Boolean = false;
 public var isHideSekaShinComment:Boolean = false;
 public var isShowHTMLOwnerComment:Boolean = true;
 public var isEnableWideMode:Boolean = true;
+public var useOldVersionVideoSize:Boolean = false;
 public var relationSortIndex:int = 0;
 public var relationOrderIndex:int = 0;
 public var isNgUpEnable:Boolean = true;
@@ -652,6 +653,13 @@ private function checkboxEnableWideModeChanged(event:Event):void{
 	this.playerController.resizePlayerJustVideoSize(this.videoPlayer.nowRatio);
 }
 
+private function checkboxUseOldVersionVideoSizeChanged(event:Event):void
+{
+	this.useOldVersionVideoSize = event.target.selected;
+	this.playerController.isUseOldVersionVideoSize(this.useOldVersionVideoSize);
+	this.playerController.resizePlayerJustVideoSize(this.videoPlayer.nowRatio);
+}
+
 private function checkBox_repeatAllCompleteHandler(event:FlexEvent):void{
 	checkBox_repeatAll.selected = isPlayListRepeat;
 }
@@ -793,6 +801,8 @@ private function configCanvas1CreationCompleteHandler(event:FlexEvent):void{
 		radioButton_resizeNicoDou.enabled = false;
 		radioButton_resizeVideo.enabled = false;
 	}
+	
+	checkbox_useOldVersionVideoSize.selected = useOldVersionVideoSize;
 	
 	checkbox_enableWideMode.selected = isEnableWideMode;
 	checkBox_isSmoothing.selected = isSmoothing;
@@ -1136,6 +1146,16 @@ private function readStore():void{
 			isEnableWideMode = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("useOldVersionVideoSize");
+		if (confValue == null)
+		{
+			useOldVersionVideoSize = false;
+		}else
+		{
+			useOldVersionVideoSize = ConfUtil.parseBoolean(confValue);
+		}
+		
+		
 		confValue = ConfigManager.getInstance().getItem("relationSortIndex");
 		if(confValue == null){
 			//何もしない
@@ -1307,9 +1327,6 @@ public function saveStore():void{
 		ConfigManager.getInstance().removeItem("isShowHTMLOwnerComment");
 		ConfigManager.getInstance().setItem("isShowHTMLOwnerComment", isShowHTMLOwnerComment);
 		
-		ConfigManager.getInstance().removeItem("isEnableWideMode");
-		ConfigManager.getInstance().setItem("isEnableWideMode", isEnableWideMode);
-		
 		ConfigManager.getInstance().removeItem("relationSortIndex");
 		ConfigManager.getInstance().setItem("relationSortIndex", relationSortIndex);
 		
@@ -1330,6 +1347,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isEnableWideMode");
 		ConfigManager.getInstance().setItem("isEnableWideMode", isEnableWideMode);
+		
+		ConfigManager.getInstance().removeItem("useOldVersionVideoSize");
+		ConfigManager.getInstance().setItem("useOldVersionVideoSize", useOldVersionVideoSize);
 		
 		ConfigManager.getInstance().removeItem("isFollowInfoViewHeight");
 		ConfigManager.getInstance().setItem("isFollowInfoViewHeight", isFollowInfoViewHeight);

@@ -897,7 +897,14 @@ public function setShowAlwaysNicowariArea(isShowNicowariArea:Boolean):void{
  */
 public function showNicowariArea():void{
 	if(canvas_nicowari != null && !videoInfoView.isNotPlayNicowari){
-		(canvas_nicowari as Canvas).percentHeight = 15;
+		if (videoInfoView.useOldVersionVideoSize)
+		{
+			(canvas_nicowari as Canvas).percentHeight = 15;
+		}
+		else
+		{
+			(canvas_nicowari as Canvas).percentHeight = 12;
+		}
 	}
 }
 
@@ -915,7 +922,14 @@ public function hideNicowariArea():void{
 private function panelDoubleClicked(event:MouseEvent):void{
 	isResize = true;
 	if(isNicowariShow == false){
-		(canvas_nicowari as Canvas).percentHeight = 15;
+		if (videoInfoView.useOldVersionVideoSize)
+		{
+			(canvas_nicowari as Canvas).percentHeight = 15;
+		}
+		else
+		{
+			(canvas_nicowari as Canvas).percentHeight = 12;
+		}
 		isNicowariShow = true;
 	}else{
 		(canvas_nicowari as Canvas).percentHeight = 0;

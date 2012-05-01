@@ -518,29 +518,45 @@
 									 creationComplete="configCanvas1CreationCompleteHandler(event)"/>
 						
 						<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
-						<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" groupName="radioGroup_resizeType" value="1" left="35" top="28" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
-						<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" left="68" top="45" change="checkboxEnableWideModeChanged(event)" toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
-						<mx:RadioButton label="動画のサイズに合わせる" id="radioButton_resizeVideo" groupName="radioGroup_resizeType" value="2" left="35" top="70" change="radioButtonResizeTypeChanged(event)" toolTip="再生のたびに、ウィンドウのサイズを動画の大きさに合わせます"/>
+						<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" 
+										groupName="radioGroup_resizeType" value="1" left="35" top="30" 
+										change="radioButtonResizeTypeChanged(event)" 
+										toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
+						<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" 
+									 left="68" top="50" change="checkboxEnableWideModeChanged(event)" 
+									 toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
+						<mx:CheckBox label="古いバージョンの動画サイズを使う" id="checkbox_useOldVersionVideoSize" selected="false" 
+									 left="68" top="70" change="checkboxUseOldVersionVideoSizeChanged(event)" 
+									 toolTip="ニコニコ動画(原宿)以前の動画サイズである640×368をデフォルトの動画サイズに使います。"/>
+						<mx:RadioButton label="動画のサイズに合わせる" id="radioButton_resizeVideo" 
+										groupName="radioGroup_resizeType" value="2" left="35" top="90" 
+										change="radioButtonResizeTypeChanged(event)" 
+										toolTip="再生のたびに、ウィンドウのサイズを動画の大きさに合わせます"/>
 						
-						<mx:CheckBox left="10" top="122" 
+						<mx:CheckBox label="常にエコノミーモードでストリーミングする" id="checkBox_isAlwaysEconomyForStreaming" 
+									 left="10" top="120" change="checkBoxAlwaysEconomyChanged(event)" 
+									 toolTip="ストリーミング再生を常にエコノミーモードで行います。ローカルのファイルを再生する際は無視されます。"/>
+						
+						<mx:CheckBox left="10" top="150" 
 									 label="再生時に動画をスムージングする" 
 									 toolTip="FLV/MP4の再生時にスムージングを有効にします。"
 									 id="checkBox_isSmoothing" 
 									 change="checkBoxSmoothingChanged(event)" 
 									 selected="true"/>
-						<mx:CheckBox left="35" top="149" 
+						<mx:CheckBox left="35" top="170" 
 									 label="ピクセル等倍の場合はスムージングしない" 
 									 toolTip="FLV/MP4の再生時、動画の表示がピクセル等倍になっている場合はスムージングを行いません。"
 									 id="checkBox_isSmoothingOnlyNotPixelIdenticalDimensions"
 									 change="checkBoxSmoothingOnlyNotPixelIdenticalDimensionsChanged(event)" 
 									 selected="true"/>
 						
-						<mx:CheckBox label="常にエコノミーモードでストリーミングする" id="checkBox_isAlwaysEconomyForStreaming" left="10" top="96" change="checkBoxAlwaysEconomyChanged(event)" toolTip="ストリーミング再生を常にエコノミーモードで行います。ローカルのファイルを再生する際は無視されます。"/>
-						<mx:Label x="10" y="182" text="再生品質:"/>
-						<mx:HSlider minimum="2" maximum="3" snapInterval="1" value="2" left="143" top="182" change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="10" toolTip="Playerの再生品質を設定します。デフォルトでは「高」です。"
+						<mx:Label x="10" top="200" text="再生品質:"/>
+						<mx:HSlider minimum="2" maximum="3" snapInterval="1" value="2" left="143" top="200" 
+									change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="10" 
+									toolTip="Playerの再生品質を設定します。デフォルトでは「高」です。"
 									dataTipFormatFunction="showQualitySliderDataTipFunction"/>
-						<mx:Label text="高" left="143" top="208"/>
-						<mx:Label right="10" top="208" text="最高"/>
+						<mx:Label text="高" left="143" top="225"/>
+						<mx:Label right="10" top="225" text="最高"/>
 						
 					</mx:Canvas>
 					<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">

@@ -160,13 +160,19 @@ package org.mineap.nndd.player
 		public static const NICO_WARI_HEIGHT:int = 56;
 		public static const NICO_WARI_WIDTH:int = 544;
 		
-		public static const NICO_SWF_HEIGHT:int = 384;
+		public static const NICO_SWF_HEIGHT:int = 368;
 		public static const NICO_SWF_WIDTH:int = 512;
 		
-		public static const NICO_VIDEO_WINDOW_HEIGHT:int = 384;
+		// 640×368
+		public static const NICO_VIDEO_WINDOW_HEIGHT:int = 368;
 		public static const NICO_VIDEO_WINDOW_WIDTH:int = 512;
 		public static const NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE:int = 640;
 		
+		// 864×486
+		public static const NICO_VIDEO_NEW_WINDOW_WIDTH_WIDE_MODE:int = 864
+		public static const NICO_VIDEO_NEW_WINDOW_WIDTH:int = 654;
+		public static const NICO_VIDEO_NEW_WINDOW_HEIGHT:int = 486;
+			
 		public static const NICO_VIDEO_PADDING:int = 10;
 		
 		public static const WIDE_MODE_ASPECT_RATIO:Number = 1.7;
@@ -205,6 +211,9 @@ package org.mineap.nndd.player
 		private var lastLoadedBytes:Number = 0;
 		
 		private var _isLengthwisePreferred:Boolean = true;
+		
+		/** 新サイズ 864×486ピクセル 旧サイズ 640×368ピクセル */
+		private var _useOldVersionVideoSize:Boolean = false;
 		
 		[Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play:Class;
@@ -1279,6 +1288,17 @@ package org.mineap.nndd.player
 		}
 		
 		/**
+		 * 
+		 * @param bool
+		 * 
+		 */
+		public function isUseOldVersionVideoSize(bool:Boolean):void
+		{
+			this._useOldVersionVideoSize = bool;
+		}
+		
+		
+		/**
 		 * videoDisplayの大きさを動画にあわせ、同時にウィンドウの大きさを変更します。
 		 * フルスクリーン時に呼ばれても何もしません。
 		 */		
@@ -1291,8 +1311,18 @@ package org.mineap.nndd.player
 				}
 				
 				//再生窓の既定の大きさ
-				var videoWindowHeight:int = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
-				var videoWindowWidth:int = PlayerController.NICO_VIDEO_WINDOW_WIDTH * ratio;
+				var videoWindowHeight:int;
+				var videoWindowWidth:int; 
+					
+				if (_useOldVersionVideoSize)
+				{
+					videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
+					videoWindowWidth = PlayerController.NICO_VIDEO_WINDOW_WIDTH * ratio;
+				}else
+				{
+					videoWindowHeight = PlayerController.NICO_VIDEO_NEW_WINDOW_HEIGHT * ratio;
+					videoWindowWidth = PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH_WIDE_MODE * ratio;
+				}				
 				
 				//ニコ割窓の既定の大きさ
 				var nicowariWindowHeight:int = PlayerController.NICO_WARI_HEIGHT * ratio;
@@ -1326,13 +1356,24 @@ package org.mineap.nndd.player
 									trace("enable 16:9 mode");
 								}
 								
-								videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
-								if(this.videoInfoView.isEnableWideMode && isWideVideo){
-//									logManager.addLog("ワイド(16:9)モード");
-									videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
-								}else{
-//									logManager.addLog("ノーマル(4:3)モード");
-									videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+								
+								if (_useOldVersionVideoSize)
+								{
+									videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
+									if(this.videoInfoView.isEnableWideMode && isWideVideo){
+										videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+									}else{
+										videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+									}
+								}
+								else
+								{
+									videoWindowHeight = PlayerController.NICO_VIDEO_NEW_WINDOW_HEIGHT * ratio;
+									if(this.videoInfoView.isEnableWideMode && isWideVideo){
+										videoWindowWidth = (PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH_WIDE_MODE + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+									}else{
+										videoWindowWidth = (PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+									}
 								}
 								
 								//動画そのものはセンターに表示
@@ -1356,8 +1397,8 @@ package org.mineap.nndd.player
 								
 								//動画の大きさにウィンドウの大きさを合わせるとき(videoHeightが0の時は動画がまだ読み込まれていないのでスキップ)
 								
-								videoWindowHeight = this.videoDisplay.videoObject.videoHeight * ratio;
-								videoWindowWidth = this.videoDisplay.videoObject.videoWidth * ratio;
+								videoWindowHeight = (this.videoDisplay.videoObject.videoHeight + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+								videoWindowWidth = (this.videoDisplay.videoObject.videoWidth + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
 								
 								this.videoDisplay.setConstraintValue("bottom", 0);
 								this.videoDisplay.setConstraintValue("left", 0);
@@ -1381,8 +1422,16 @@ package org.mineap.nndd.player
 							//SWF再生か？
 							
 							//SWFの場合は一律でサイズを固定
-							videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
-							videoWindowWidth = PlayerController.NICO_VIDEO_WINDOW_WIDTH * ratio;
+							if (_useOldVersionVideoSize)
+							{
+								videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
+								videoWindowWidth = PlayerController.NICO_VIDEO_WINDOW_WIDTH * ratio;
+							}
+							else
+							{
+								videoWindowHeight = PlayerController.NICO_VIDEO_NEW_WINDOW_HEIGHT * ratio;
+								videoWindowWidth = PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH * ratio;
+							}
 							
 						}
 						
@@ -1392,6 +1441,7 @@ package org.mineap.nndd.player
 						if(videoPlayer.canvas_nicowari.height < 1 ){
 							//ニコ割領域が表示されていなければ、その文余分に高さを設定
 							videoWindowHeight += int(videoWindowWidth / rate);
+							videoWindowHeight += 20;
 						}
 						
 						this.videoPlayer.nativeWindow.height += int(videoWindowHeight - this.videoPlayer.canvas_video_back.height);
