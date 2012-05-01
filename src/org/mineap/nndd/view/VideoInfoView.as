@@ -641,8 +641,10 @@ private function radioButtonResizeTypeChanged(event:Event):void{
 	
 	if(this.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO){
 		this.checkbox_enableWideMode.enabled = true;
+		this.checkbox_useOldVersionVideoSize.enabled = true;
 	}else{
 		this.checkbox_enableWideMode.enabled = false;
+		this.checkbox_useOldVersionVideoSize.enabled = false;
 	}
 	
 	this.playerController.resizePlayerJustVideoSize(this.videoPlayer.nowRatio);
@@ -793,7 +795,6 @@ private function playerQualitySliderChanged(event:Event):void{
 private function configCanvas1CreationCompleteHandler(event:FlexEvent):void{
 	checkbox_resizePlayerEachPlay.selected = isResizePlayerEachPlay;
 	
-	radioGroup_resizeType.selectedValue = selectedResizeType;
 	if(isResizePlayerEachPlay){
 		radioButton_resizeNicoDou.enabled = true;
 		radioButton_resizeVideo.enabled = true;
@@ -802,9 +803,15 @@ private function configCanvas1CreationCompleteHandler(event:FlexEvent):void{
 		radioButton_resizeVideo.enabled = false;
 	}
 	
+	radioGroup_resizeType.selectedValue = selectedResizeType;
+	if (selectedResizeType != 1)
+	{	
+		checkbox_useOldVersionVideoSize.enabled = false;
+		checkbox_enableWideMode.enabled = false;
+	}
 	checkbox_useOldVersionVideoSize.selected = useOldVersionVideoSize;
-	
 	checkbox_enableWideMode.selected = isEnableWideMode;
+	
 	checkBox_isSmoothing.selected = isSmoothing;
 	checkBox_isSmoothingOnlyNotPixelIdenticalDimensions.enabled = isSmoothing;
 	checkBox_isSmoothingOnlyNotPixelIdenticalDimensions.selected = isSmoothingOnlyNotPixelIdenticalDimensions;

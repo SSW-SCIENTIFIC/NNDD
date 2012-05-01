@@ -897,14 +897,7 @@ public function setShowAlwaysNicowariArea(isShowNicowariArea:Boolean):void{
  */
 public function showNicowariArea():void{
 	if(canvas_nicowari != null && !videoInfoView.isNotPlayNicowari){
-		if (videoInfoView.useOldVersionVideoSize)
-		{
-			(canvas_nicowari as Canvas).percentHeight = 15;
-		}
-		else
-		{
-			(canvas_nicowari as Canvas).percentHeight = 12;
-		}
+		(canvas_nicowari as Canvas).height = int(PlayerController.NICO_WARI_HEIGHT);
 	}
 }
 
@@ -914,7 +907,7 @@ public function showNicowariArea():void{
  */
 public function hideNicowariArea():void{
 	if(canvas_nicowari != null){
-		(canvas_nicowari as Canvas).percentHeight = 0;
+		(canvas_nicowari as Canvas).height = 0;
 	}
 }
 
@@ -922,17 +915,10 @@ public function hideNicowariArea():void{
 private function panelDoubleClicked(event:MouseEvent):void{
 	isResize = true;
 	if(isNicowariShow == false){
-		if (videoInfoView.useOldVersionVideoSize)
-		{
-			(canvas_nicowari as Canvas).percentHeight = 15;
-		}
-		else
-		{
-			(canvas_nicowari as Canvas).percentHeight = 12;
-		}
+		(canvas_nicowari as Canvas).height = int(PlayerController.NICO_WARI_HEIGHT);
 		isNicowariShow = true;
 	}else{
-		(canvas_nicowari as Canvas).percentHeight = 0;
+		(canvas_nicowari as Canvas).height = 0;
 		isNicowariShow = false;
 	}
 	

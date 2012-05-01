@@ -561,7 +561,7 @@ package org.mineap.nndd.player
 		 */
 		private function initStart(videoPath:String, thumbInfoPath:String, autoPlay:Boolean):void
 		{
-			trace(videoPlayer.stage.quality);
+//			trace(videoPlayer.stage.quality);
 			
 			try{
 				if(_isEconomyMode){
@@ -1377,8 +1377,10 @@ package org.mineap.nndd.player
 								}
 								
 								//動画そのものはセンターに表示
-								this.videoDisplay.setConstraintValue("left", PlayerController.NICO_VIDEO_PADDING);
-								this.videoDisplay.setConstraintValue("right", PlayerController.NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("bottom", 0);
+								this.videoDisplay.setConstraintValue("left", NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("right", NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("top", 0);
 								
 								trace(videoDisplay.width + "," + videoDisplay.height);
 								
@@ -1397,13 +1399,13 @@ package org.mineap.nndd.player
 								
 								//動画の大きさにウィンドウの大きさを合わせるとき(videoHeightが0の時は動画がまだ読み込まれていないのでスキップ)
 								
-								videoWindowHeight = (this.videoDisplay.videoObject.videoHeight + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
-								videoWindowWidth = (this.videoDisplay.videoObject.videoWidth + PlayerController.NICO_VIDEO_PADDING*2) * ratio;
+								videoWindowHeight = (this.videoDisplay.videoObject.videoHeight * ratio) + PlayerController.NICO_VIDEO_PADDING*2;
+								videoWindowWidth = (this.videoDisplay.videoObject.videoWidth * ratio) + PlayerController.NICO_VIDEO_PADDING*2;
 								
-								this.videoDisplay.setConstraintValue("bottom", 0);
-								this.videoDisplay.setConstraintValue("left", 0);
-								this.videoDisplay.setConstraintValue("right", 0);
-								this.videoDisplay.setConstraintValue("top", 0);
+								this.videoDisplay.setConstraintValue("bottom", NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("left", NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("right", NICO_VIDEO_PADDING);
+								this.videoDisplay.setConstraintValue("top", NICO_VIDEO_PADDING);
 								
 								if(videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)){
 									//init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
@@ -1435,13 +1437,12 @@ package org.mineap.nndd.player
 							
 						}
 						
-						//TODO 設定されたVideoDisplayの大きさに基づいてニコ割領域の大きさを決定
-						
-						var rate:Number = PlayerController.NICO_WARI_WIDTH / PlayerController.NICO_WARI_HEIGHT;
 						if(videoPlayer.canvas_nicowari.height < 1 ){
 							//ニコ割領域が表示されていなければ、その文余分に高さを設定
-							videoWindowHeight += int(videoWindowWidth / rate);
-							videoWindowHeight += 20;
+							videoWindowHeight += (NICO_WARI_HEIGHT + NICO_VIDEO_PADDING);
+						}else
+						{
+							videoWindowHeight += NICO_VIDEO_PADDING;
 						}
 						
 						this.videoPlayer.nativeWindow.height += int(videoWindowHeight - this.videoPlayer.canvas_video_back.height);
@@ -1492,6 +1493,8 @@ package org.mineap.nndd.player
 						}
 					}
 				}
+				
+				updateVideoStatus();
 			
 			}catch(error:Error){	//ウィンドウが閉じられた後に呼ばれるとエラー。停止処理を行う。
 				trace(error.getStackTrace());
@@ -2251,13 +2254,13 @@ package org.mineap.nndd.player
 				if (videoDisplay.videoObject != null)
 				{
 					videoInfoView.format = videoDisplay.videoObject.videoWidth + " × " + videoDisplay.videoObject.videoHeight;
+					videoInfoView.currentWindowSize = videoDisplay.videoObject.width + " × " + videoDisplay.videoObject.height;
 				}
 				else
 				{
 					videoInfoView.format = "-";
+					videoInfoView.currentWindowSize = "-";
 				}
-				
-				videoInfoView.currentWindowSize = videoDisplay.width + " × " + videoDisplay.height;
 				
 				videoInfoView.videoSize = formatter.format( (videoDisplay.bytesTotal / (1024 * 1024)) )  + " MB";
 			}
