@@ -596,9 +596,11 @@ package org.mineap.nndd
 			}
 			
 			if(this._saveVideoName == null || this._saveVideoName == ""){
-				this._saveVideoName = getVideoName(event.target.data);
+//				this._saveVideoName = getVideoName(event.target.data);
+				this._saveVideoName = "[" + videoId + "]";
 			}
-			this._nicoVideoName = getVideoName(event.target.data);
+//			this._nicoVideoName = getVideoName(event.target.data);
+			this._nicoVideoName = "[" + videoId + "]";
 			if(this._saveVideoName == null || this._saveVideoName == ""){
 				LogManager.instance.addLog(WATCH_FAIL + ":VideoNameNotFound:" +  _videoId);
 				trace(WATCH_FAIL + ":VideoNameNotFound");
@@ -618,6 +620,185 @@ package org.mineap.nndd
 				close(false, false);
 				return;
 			}
+			
+			getThumbInfo(videoId);
+			
+		}
+		
+		/**
+		 * サムネイル情報を取得します。
+		 * 
+		 * @param videoId
+		 * 
+		 */
+		private function getThumbInfo(videoId:String):void{
+			
+			// closeが呼ばれていないか？
+			if (this._thumbInfoLoader == null)
+			{
+				return;
+			}
+			
+			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, function(event:IOErrorEvent):void{
+				(event.target as URLLoader).close();
+				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + videoId + "(" + _videoId + "):" + event + ":" + event.target +  ":" + event.text);
+				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
+				close(true, true, event);
+			});
+			this._thumbInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+				trace(event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+			});
+			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, thumbInfoGetSuccess);
+			
+			trace(THUMB_INFO_GET_START + ":" + this._videoId);
+			LogManager.instance.addLog(THUMB_INFO_GET_START + ":" + this._videoId);
+			dispatchEvent(new Event(THUMB_INFO_GET_START));
+			
+			this._thumbInfoLoader.getThumbInfo(videoId);
+			
+		}
+		
+		/**
+		 * サムネイル情報の取得が完了したら呼ばれます。<br>
+		 * サムネルの保存が完了したら、サムネイル画像の取得を行います。
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function thumbInfoGetSuccess(event:Event):void{
+			
+			// closeが呼ばれていないか？
+			if (this._thumbImgLoader == null)
+			{
+				return;
+			}
+			
+			try{
+				
+				var xml:XML = new XML((event.currentTarget as ThumbInfoLoader).thumbInfo);
+				
+				var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(xml);
+				
+				if (this._saveVideoName == null || this._saveVideoName == "")
+				{
+					this._saveVideoName = analyzer.title + " - [" + _videoId + "]";
+				}
+				this._nicoVideoName = analyzer.title + " - [" + _videoId + "]";
+				
+				// サムネイル情報を取得したが動画は削除済み。サムネ情報およびサムネ画像取得をスキップして市場を取りに行く
+				if(analyzer.status == ThumbInfoAnalyzer.STATUS_FAIL){
+					
+//					downloadIchibaInfo();
+					getFlvAccess();
+					
+					return;
+				}
+				
+			}catch(error:Error){
+				trace(error.getStackTrace());
+				
+				// 取得したサムネイルが正しくない。スキップしてflvアクセス
+//				downloadIchibaInfo();
+				getFlvAccess();
+				
+				return;
+			}
+			
+			if(this._isCommentOnlyDownload){
+				//コメントのみ取得モード
+				getFlvAccess();
+			}else
+			{
+				//コメント以外も取得するモード
+				var fileIO:FileIO = new FileIO();
+				fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
+					trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
+					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + _saveVideoName + "[ThumbInfo].xml" + ":" + event + ":" + event.target +  ":" + event.text);
+					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
+					close(true, true, event);
+				});
+				var path:String = fileIO.saveComment(new XML((event.currentTarget as ThumbInfoLoader).thumbInfo), this._saveVideoName + "[ThumbInfo].xml", this._saveDir.url, false, 0).nativePath;
+				
+				//サムネイル情報取得完了通知
+				this._thumbInfoLoader.close();
+				trace(THUMB_INFO_GET_SUCCESS + ":" + event + "\n" + path);
+				LogManager.instance.addLog("\t" + THUMB_INFO_GET_SUCCESS + ":" + path);
+				dispatchEvent(new Event(THUMB_INFO_GET_SUCCESS));
+				
+				var thumbUrl:String = this._thumbImgLoader.getThumbImgUrl(XML((event.currentTarget as ThumbInfoLoader).thumbInfo));
+				
+				getThumbImg(thumbUrl);
+			
+			}
+			
+		}
+		
+		private function getThumbImg(thumbUrl:String):void{	
+			
+			this._thumbImgLoader.addThumbImgLoaderListener(Event.COMPLETE, thumbImgGetSuccess);
+			this._thumbImgLoader.addThumbImgLoaderListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
+				//				(event.target as URLLoader).close();
+				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
+//				downloadIchibaInfo();
+				getFlvAccess();
+			});
+			this._thumbImgLoader.addThumbImgLoaderListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+				trace(event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+			});
+			try{
+				
+				trace(THUMB_IMG_GET_START + ":" + this._videoId);
+				LogManager.instance.addLog(THUMB_IMG_GET_START + ":" + this._videoId);
+				dispatchEvent(new Event(THUMB_IMG_GET_START));
+				
+				// サムネ情報からサムネ画像を取得
+				if(thumbUrl != null && thumbUrl != ""){
+					this._thumbImgLoader.getThumbImgByUrl(thumbUrl);
+				}else{
+					
+					// サムネ情報から取得できなければ自分で作る
+					thumbUrl = PathMaker.getThumbImgUrl(this._thumbInfoId);
+					this._thumbImgLoader.getThumbImgByUrl(thumbUrl);
+					
+				}
+			}catch(error:Error){
+				trace(error + ":" + error.getStackTrace());
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + _videoId + ":" + error.getStackTrace());
+				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, error.getStackTrace()));
+				close(true, true, new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, error.getStackTrace()));
+			}
+			
+		}
+		
+		/**
+		 * サムネイル画像のダウンロードが完了したら呼ばれます。<br>
+		 * サムネイル画像の保存が完了したら市場情報のダウンロードを行います。
+		 * 
+		 * @param event
+		 * 
+		 */
+		private function thumbImgGetSuccess(event:Event):void{
+			
+			var fileIO:FileIO = new FileIO();
+			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
+				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
+				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
+				close(true, true, event);
+			});
+			this._thumbPath = fileIO.saveByteArray(this._saveVideoName + "[ThumbImg].jpeg", this._saveDir.url, (event.target as URLLoader).data).url;
+			
+			//サムネイル画像取得完了通知
+			(event.target as URLLoader).close();
+			this._thumbImgLoader.close();
+			LogManager.instance.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
+			trace(THUMB_IMG_GET_SUCCESS + ":" + event + "\n" + (new File(this._thumbPath)).nativePath);
+			dispatchEvent(new Event(THUMB_IMG_GET_SUCCESS));
 			
 			getFlvAccess();
 			
@@ -774,35 +955,35 @@ package org.mineap.nndd
 		}
 		
 		
-		/**
-		 * 動画ページのタイトルから動画のタイトルを取得します。
-		 * @param html
-		 * 
-		 */
-		private function getVideoName(html:String):String{
-			var pattern:RegExp = new RegExp("<title>(.*)</title>","ig"); 
-			
-			var array:Array = pattern.exec(html);
-			
-			var videoName:String = "不明";
-			
-			if(array != null && array.length > 1){
-				videoName = array[1];
-				var index:int = videoName.lastIndexOf("‐ ニコニコ動画(");
-				if(index != -1){
-					videoName = videoName.substr(0, index);
-				}
-				videoName = StringUtil.trim(videoName);
-			}
-			
-			var videoId:String = PathMaker.getVideoID(this._videoId);
-			
-			videoName = HtmlUtil.convertSpecialCharacterNotIncludedString(videoName) + " - [" + videoId + "]";
-			videoName = FileIO.getSafeFileName(videoName);
-			
-			return videoName;
-			
-		}
+//		/**
+//		 * 動画ページのタイトルから動画のタイトルを取得します。
+//		 * @param html
+//		 * 
+//		 */
+//		private function getVideoName(html:String):String{
+//			var pattern:RegExp = new RegExp("<title>(.*)</title>","ig"); 
+//			
+//			var array:Array = pattern.exec(html);
+//			
+//			var videoName:String = "不明";
+//			
+//			if(array != null && array.length > 1){
+//				videoName = array[1];
+//				var index:int = videoName.lastIndexOf("‐ ニコニコ動画(");
+//				if(index != -1){
+//					videoName = videoName.substr(0, index);
+//				}
+//				videoName = StringUtil.trim(videoName);
+//			}
+//			
+//			var videoId:String = PathMaker.getVideoID(this._videoId);
+//			
+//			videoName = HtmlUtil.convertSpecialCharacterNotIncludedString(videoName) + " - [" + videoId + "]";
+//			videoName = FileIO.getSafeFileName(videoName);
+//			
+//			return videoName;
+//			
+//		}
 		
 		/**
 		 * コメントのダウンロードが終わったら呼ばれます。
@@ -941,8 +1122,9 @@ package org.mineap.nndd
 				this._nicowariVideoIds = this.searchAtCMInstruction(ownerComments);
 				
 				if(this._nicowariVideoIds.length == 0){
-					//投コメにニコ割は指定されていない。getbgmを確認せずにサムネイル情報取得へ
-					getThumbInfo(this._thumbInfoId);
+					//投コメにニコ割は指定されていない。getbgmを確認せずに市場情報を取得しにいく
+//					getThumbInfo(this._thumbInfoId);
+					downloadIchibaInfo();
 				}else{
 					//投コメにニコ割が指定されている。getbgmを確認してニコ割をダウンロード
 					this._getbgmAccess.addEventListener(ApiGetBgmAccess.SUCCESS, getNicowariUrlsSuccess);
@@ -1027,7 +1209,8 @@ package org.mineap.nndd
 				
 			}else if(this._nicowariVideoUrls == null || this._nicowariVideoUrls.length <= 0){
 				//ニコ割無し
-				getThumbInfo(this._thumbInfoId);
+//				getThumbInfo(this._thumbInfoId);
+				downloadIchibaInfo();
 				
 			}else{
 				
@@ -1077,7 +1260,8 @@ package org.mineap.nndd
 				// ニコ割が取れていなくても次へ
 				if(_nicowariVideoIds.length <= 0 || _nicowariVideoUrls.length <= 0){
 					//サムネイル情報取得
-					getThumbInfo(_thumbInfoId);
+//					getThumbInfo(_thumbInfoId);
+					downloadIchibaInfo();
 					
 				}else{
 					//次のニコ割を取りにいく
@@ -1123,8 +1307,9 @@ package org.mineap.nndd
 			dispatchEvent(new Event(NICOWARI_GET_SUCCESS));
 			
 			if(this._nicowariVideoIds.length <= 0 || this._nicowariVideoUrls.length <= 0){
-				//サムネイル情報取得
-				getThumbInfo(this._thumbInfoId);
+				//市場情報取得
+//				getThumbInfo(this._thumbInfoId);
+				downloadIchibaInfo();
 				
 			}else{
 				//次のニコ割を取りにいく
@@ -1135,160 +1320,6 @@ package org.mineap.nndd
 			
 		}
 		
-		/**
-		 * サムネイル情報を取得します。
-		 * 
-		 * @param videoId
-		 * 
-		 */
-		private function getThumbInfo(videoId:String):void{
-			
-			// closeが呼ばれていないか？
-			if (this._thumbInfoLoader == null)
-			{
-				return;
-			}
-			
-			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, function(event:IOErrorEvent):void{
-				(event.target as URLLoader).close();
-				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + videoId + "(" + _videoId + "):" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
-				close(true, true, event);
-			});
-			this._thumbInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
-				trace(event);
-				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
-			});
-			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, thumbInfoGetSuccess);
-			
-			trace(THUMB_INFO_GET_START + ":" + this._videoId);
-			LogManager.instance.addLog(THUMB_INFO_GET_START + ":" + this._videoId);
-			dispatchEvent(new Event(THUMB_INFO_GET_START));
-			
-			this._thumbInfoLoader.getThumbInfo(videoId);
-			
-		}
-		
-		/**
-		 * サムネイル情報の取得が完了したら呼ばれます。<br>
-		 * サムネルの保存が完了したら、サムネイル画像の取得を行います。
-		 * 
-		 * @param event
-		 * 
-		 */
-		private function thumbInfoGetSuccess(event:Event):void{
-			
-			// closeが呼ばれていないか？
-			if (this._thumbImgLoader == null)
-			{
-				return;
-			}
-			
-			try{
-			
-				var xml:XML = new XML((event.currentTarget as ThumbInfoLoader).thumbInfo);
-				
-				var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(xml);
-				
-				// サムネイル情報を取得したが動画は削除済み。サムネ情報およびサムネ画像取得をスキップして市場を取りに行く
-				if(analyzer.status == ThumbInfoAnalyzer.STATUS_FAIL){
-					
-					downloadIchibaInfo();
-					
-					return;
-				}
-				
-			}catch(error:Error){
-				trace(error.getStackTrace());
-				
-				// 取得したサムネイルが正しくない。スキップして市場を取りに行く
-				downloadIchibaInfo();
-				
-				return;
-			}
-			
-			var fileIO:FileIO = new FileIO();
-			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + _saveVideoName + "[ThumbInfo].xml" + ":" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
-				close(true, true, event);
-			});
-			var path:String = fileIO.saveComment(new XML((event.currentTarget as ThumbInfoLoader).thumbInfo), this._saveVideoName + "[ThumbInfo].xml", this._saveDir.url, false, 0).nativePath;
-			
-			//サムネイル情報取得完了通知
-			this._thumbInfoLoader.close();
-			trace(THUMB_INFO_GET_SUCCESS + ":" + event + "\n" + path);
-			LogManager.instance.addLog("\t" + THUMB_INFO_GET_SUCCESS + ":" + path);
-			dispatchEvent(new Event(THUMB_INFO_GET_SUCCESS));
-			
-			this._thumbImgLoader.addThumbImgLoaderListener(Event.COMPLETE, thumbImgGetSuccess);
-			this._thumbImgLoader.addThumbImgLoaderListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-//				(event.target as URLLoader).close();
-				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
-				downloadIchibaInfo();
-			});
-			this._thumbImgLoader.addThumbImgLoaderListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
-				trace(event);
-				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
-			});
-			try{
-				
-				trace(THUMB_IMG_GET_START + ":" + this._videoId);
-				LogManager.instance.addLog(THUMB_IMG_GET_START + ":" + this._videoId);
-				dispatchEvent(new Event(THUMB_IMG_GET_START));
-				
-				// サムネ情報からサムネ画像を取得
-				var thumbUrl:String = this._thumbImgLoader.getThumbImgUrl(XML((event.currentTarget as ThumbInfoLoader).thumbInfo));
-				if(thumbUrl != null && thumbUrl != ""){
-					this._thumbImgLoader.getThumbImgByUrl(thumbUrl);
-				}else{
-					
-					// サムネ情報から取得できなければ自分で作る
-					thumbUrl = PathMaker.getThumbImgUrl(this._thumbInfoId);
-					this._thumbImgLoader.getThumbImgByUrl(thumbUrl);
-					
-				}
-			}catch(error:Error){
-				trace(error + ":" + error.getStackTrace());
-				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + _videoId + ":" + error.getStackTrace());
-				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, error.getStackTrace()));
-				close(true, true, new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, error.getStackTrace()));
-			}
-			
-		}
-		
-		/**
-		 * サムネイル画像のダウンロードが完了したら呼ばれます。<br>
-		 * サムネイル画像の保存が完了したら市場情報のダウンロードを行います。
-		 * 
-		 * @param event
-		 * 
-		 */
-		private function thumbImgGetSuccess(event:Event):void{
-			
-			var fileIO:FileIO = new FileIO();
-			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
-				close(true, true, event);
-			});
-			this._thumbPath = fileIO.saveByteArray(this._saveVideoName + "[ThumbImg].jpeg", this._saveDir.url, (event.target as URLLoader).data).url;
-			
-			//サムネイル画像取得完了通知
-			(event.target as URLLoader).close();
-			this._thumbImgLoader.close();
-			LogManager.instance.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
-			trace(THUMB_IMG_GET_SUCCESS + ":" + event + "\n" + (new File(this._thumbPath)).nativePath);
-			dispatchEvent(new Event(THUMB_IMG_GET_SUCCESS));
-			
-			//市場情報の取得
-			downloadIchibaInfo();
-		}
 		
 		/**
 		 * サムネイル情報の取得を行います。
