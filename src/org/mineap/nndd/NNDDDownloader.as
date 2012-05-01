@@ -595,21 +595,6 @@ package org.mineap.nndd
 				LogManager.instance.addLog("サムネイル情報用ID:" + videoId);
 			}
 			
-			if(this._saveVideoName == null || this._saveVideoName == ""){
-//				this._saveVideoName = getVideoName(event.target.data);
-				this._saveVideoName = "[" + videoId + "]";
-			}
-//			this._nicoVideoName = getVideoName(event.target.data);
-			this._nicoVideoName = "[" + videoId + "]";
-			if(this._saveVideoName == null || this._saveVideoName == ""){
-				LogManager.instance.addLog(WATCH_FAIL + ":VideoNameNotFound:" +  _videoId);
-				trace(WATCH_FAIL + ":VideoNameNotFound");
-				dispatchEvent(new IOErrorEvent(WATCH_FAIL, false, false, "VideoNameNotFound"));
-				close(true, true, new IOErrorEvent(WATCH_FAIL, false, false, "VideoNameNotFound"));
-				return;
-			}
-			trace(this._saveVideoName);
-			
 			//動画ページアクセス完了通知(動画ページへのアクセスは閉じない)
 			trace(WATCH_SUCCESS + ":" + event);
 			LogManager.instance.addLog("\t" + WATCH_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
@@ -681,17 +666,26 @@ package org.mineap.nndd
 				
 				var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(xml);
 				
-				if (this._saveVideoName == null || this._saveVideoName == "")
+				if (analyzer.status == ThumbInfoAnalyzer.STATUS_OK)
 				{
-					this._saveVideoName = analyzer.title + " - [" + _videoId + "]";
-				}
-				this._nicoVideoName = analyzer.title + " - [" + _videoId + "]";
-				
-				// サムネイル情報を取得したが動画は削除済み。サムネ情報およびサムネ画像取得をスキップして市場を取りに行く
-				if(analyzer.status == ThumbInfoAnalyzer.STATUS_FAIL){
 					
-//					downloadIchibaInfo();
-					getFlvAccess();
+					if (this._saveVideoName == null || this._saveVideoName == "")
+					{
+						this._saveVideoName = analyzer.title + " - [" + _videoId + "]";
+					}
+					this._nicoVideoName = analyzer.title + " - [" + _videoId + "]";
+					
+				} else {
+					
+					// サムネイル情報を取得したが動画は削除済み？とりあえず次に進む。
+					
+					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title);
+					trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
+					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
+					close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
+					
+					trace(this._saveVideoName);
+					trace(xml);
 					
 					return;
 				}
@@ -699,9 +693,13 @@ package org.mineap.nndd
 			}catch(error:Error){
 				trace(error.getStackTrace());
 				
-				// 取得したサムネイルが正しくない。スキップしてflvアクセス
-//				downloadIchibaInfo();
-				getFlvAccess();
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title);
+				trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
+				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
+				close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
+				
+				trace(this._saveVideoName);
+				trace(xml);
 				
 				return;
 			}
