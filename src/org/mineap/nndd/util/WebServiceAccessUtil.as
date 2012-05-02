@@ -1,8 +1,12 @@
 package org.mineap.nndd.util
 {
+	import flash.events.Event;
 	import flash.net.URLRequest;
 	import flash.net.URLVariables;
 	import flash.net.navigateToURL;
+	
+	import mx.controls.Alert;
+	import mx.core.FlexGlobals;
 	
 	import org.mineap.nicovideo4as.WatchVideoPage;
 	import org.mineap.nndd.LogManager;
@@ -30,6 +34,41 @@ package org.mineap.nndd.util
 		
 		/**
 		 * 
+		 * @return 
+		 * 
+		 */		
+		public static function openNicoSound(videoId:String):void
+		{
+			var watch:WatchVideoPage = new WatchVideoPage();
+			watch.addEventListener(WatchVideoPage.WATCH_SUCCESS, function(event:Event):void
+			{
+				var url:String = watch.audioDownloadUrl;
+				
+				if (url == null)
+				{
+					Alert.show("この動画はNicoSoundでダウンロードできません。", "情報");
+					FlexGlobals.topLevelApplication.activate();
+					LogManager.instance.addLog("この動画はNicoSoundに非対応:" + videoId);
+				}
+				else
+				{
+					navigateToURL(new URLRequest(url));
+					LogManager.instance.addLog("NicoSoundで開く:" + url);
+				}
+				
+			});
+			watch.addEventListener(WatchVideoPage.WATCH_FAIL, function(event:Event):void
+			{
+				Alert.show("ダウンロードページを開けませんでした。\n" + event, "エラー");
+				FlexGlobals.topLevelApplication.activate();
+				LogManager.instance.addLog("NicoSoundで開くのに失敗:" + event);
+			});
+			watch.watchVideo(videoId, true);
+			
+		}
+		
+		/**
+		 * 
 		 * @param videoId
 		 * 
 		 */
@@ -43,12 +82,13 @@ package org.mineap.nndd.util
 			}
 		}
 		
+		
 		/**
 		 * 
 		 * @param videoId
 		 * 
 		 */
-		public static function openNicoSound(videoId:String):void{
+		public static function openNicoStarSound(videoId:String):void{
 			var url:String = null;
 			
 			if(videoId != null){

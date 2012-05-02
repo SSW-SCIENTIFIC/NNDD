@@ -34,6 +34,7 @@
 			private var thumbImgMenuItem3:ContextMenuItem;
 			private var thumbImgMenuItem4:ContextMenuItem;
 			private var thumbImgMenuItem5:ContextMenuItem;
+			private var thumbImgMenuItem6:ContextMenuItem;
 			
 			protected function window1_activateHandler(event:Event):void
 			{
@@ -58,13 +59,17 @@
 				thumbImgMenuItem3 = new ContextMenuItem(Message.L_ADD_HATENA_BOOKMARK, true);
 				thumbImgMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, addHatenaBookmark);
 				
-				thumbImgMenuItem4 = new ContextMenuItem(Message.L_OPEN_NICOSOUND, true);
-				thumbImgMenuItem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
+				thumbImgMenuItem6 = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
+				thumbImgMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
+				
+				thumbImgMenuItem4 = new ContextMenuItem(Message.L_OPEN_NICO_STAR_SOUND, true);
+				thumbImgMenuItem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoStarSound);
 				
 				thumbImgMenuItem5 = new ContextMenuItem(Message.L_OPEN_NICOMIMI, false)
 				thumbImgMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicomimi);
 				
-				thumbImgMenu.customItems.push(thumbImgMenuItem1, thumbImgMenuItem2, thumbImgMenuItem3, thumbImgMenuItem4, thumbImgMenuItem5);
+				thumbImgMenu.customItems.push(thumbImgMenuItem1, thumbImgMenuItem2, thumbImgMenuItem3, 
+					thumbImgMenuItem6, thumbImgMenuItem4, thumbImgMenuItem5);
 				
 				image_thumbImg.contextMenu = thumbImgMenu;
 				

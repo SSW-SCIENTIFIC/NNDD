@@ -970,6 +970,11 @@ public function openNicoSound(event:Event):void{
 	this.playerController.openNicoSound();
 }
 
+public function openNicoStarSound(event:Event):void
+{
+	this.playerController.openNicoStarSound();
+}
+
 public function openNicomimi(event:Event):void{
 	this.playerController.openNicomimi();
 }

@@ -36,6 +36,7 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.player.comment.Command;
+	import org.mineap.nndd.util.LibraryUtil;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;
 	import org.mineap.util.config.ConfigManager;
@@ -671,7 +672,7 @@ package org.mineap.nndd
 					
 					if (this._saveVideoName == null || this._saveVideoName == "")
 					{
-						this._saveVideoName = analyzer.title + " - [" + _videoId + "]";
+						this._saveVideoName = FileIO.getSafeFileName(analyzer.title) + " - [" + _videoId + "]";
 					}
 					this._nicoVideoName = analyzer.title + " - [" + _videoId + "]";
 					

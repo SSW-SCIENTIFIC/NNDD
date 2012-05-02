@@ -4444,7 +4444,7 @@ package org.mineap.nndd.player
 		}
 		
 		/**
-		 * 再生中の項目をにこ☆さうんどで開きます
+		 * 再生中の項目をNicoSoundで開きます
 		 * 
 		 */
 		public function openNicoSound():void{
@@ -4456,6 +4456,21 @@ package org.mineap.nndd.player
 				WebServiceAccessUtil.openNicoSound(videoId);
 			}
 			
+			
+		}
+		
+		/**
+		 * 再生中の項目をにこ☆さうんどで開きます
+		 * 
+		 */
+		public function openNicoStarSound():void
+		{
+			var title:String = this.videoPlayer.title;
+			
+			if(title.length > 0){
+				var videoId:String = PathMaker.getVideoID(title);
+				WebServiceAccessUtil.openNicoStarSound(videoId);
+			}
 		}
 		
 		/**

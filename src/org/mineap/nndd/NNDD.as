@@ -791,6 +791,14 @@ private function openNicomimi(event:ContextMenuEvent):void{
 	}
 }
 
+private function openNicoStarSound(event:ContextMenuEvent):void
+{
+	var videoId:String = getVideoIdDataGridContextEvent(event);
+	if(videoId != null){
+		WebServiceAccessUtil.openNicoStarSound(videoId);
+	}
+}
+
 private function openNicoSound(event:ContextMenuEvent):void{
 	var videoId:String = getVideoIdDataGridContextEvent(event);
 	if(videoId != null){
