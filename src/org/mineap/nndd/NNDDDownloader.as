@@ -672,9 +672,9 @@ package org.mineap.nndd
 					
 					if (this._saveVideoName == null || this._saveVideoName == "")
 					{
-						this._saveVideoName = FileIO.getSafeFileName(analyzer.title) + " - [" + _videoId + "]";
+						this._saveVideoName = FileIO.getSafeFileName(HtmlUtil.convertSpecialCharacterNotIncludedString(analyzer.title)) + " - [" + _videoId + "]";
 					}
-					this._nicoVideoName = analyzer.title + " - [" + _videoId + "]";
+					this._nicoVideoName = HtmlUtil.convertSpecialCharacterNotIncludedString(analyzer.title) + " - [" + _videoId + "]";
 					
 				} else {
 					
