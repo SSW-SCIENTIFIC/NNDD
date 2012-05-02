@@ -1161,6 +1161,7 @@ private function readStore():void{
 		{
 			useOldVersionVideoSize = ConfUtil.parseBoolean(confValue);
 		}
+		playerController.isUseOldVersionVideoSize(useOldVersionVideoSize);
 		
 		
 		confValue = ConfigManager.getInstance().getItem("relationSortIndex");
