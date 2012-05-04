@@ -175,12 +175,33 @@ package org.mineap.nndd.player
 			//　分割
 			var array:Array = command.toUpperCase().split(" ");
 			
-			for each(var com:String in array){
+			var isAll:Boolean = false;
+			
+			// Ngにコマンドが"all"指定されている場合は、"184"以外のコマンドを見つけたら一律でtrue
+			var kind:String = this.ngMap["all"];
+			if (Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind)
+			{
+				isAll = true;
+			}
+			
+			for each(var com:String in array)
+			{
 				
-				var kind:String = this.ngMap[com];
-				
-				if(Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind){
-					return true;
+				if (isAll)
+				{
+					// 184、iPhone、docomo以外のコメントを見つけたらこのコマンドはNG
+					if ("184" != com && "iPhone" != com && "docomo" != com)
+					{
+						return true;
+					}
+				}
+				else
+				{
+					kind = this.ngMap[com];
+					
+					if(Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind){
+						return true;
+					}
 				}
 				
 			}
