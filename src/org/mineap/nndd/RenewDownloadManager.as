@@ -25,6 +25,7 @@ package org.mineap.nndd
 		private var _logManager:LogManager;
 		private var _videoName:String;
 		private var _localThumbUri:String;
+		private var _savedVideoFile:File;
 		
 		/**
 		 * 
@@ -265,6 +266,7 @@ package org.mineap.nndd
 		 */
 		public function downlaodFailListener(event:Event):void{
 			var status:String = "";
+			
 			if(event.type == NNDDDownloader.DOWNLOAD_PROCESS_CANCELD){
 				status = "キャンセル";
 				this._logManager.addLog("***更新キャンセル***");
@@ -285,11 +287,21 @@ package org.mineap.nndd
 		 * 
 		 */
 		public function downloadCompleteListener(event:Event):void{
-			this._localThumbUri = (event.currentTarget as NNDDDownloader).localThumbUri;
+			
 			removeHandler();
 			this._logManager.addLog("***更新完了***")
 			var status:String = "更新完了";
 			setStatus(status, this._videoName);
+			
+			if (this._nnddDownloader != null)
+			{
+				this._nnddDownloader.close(false, false, null);
+				
+				this._localThumbUri = (event.currentTarget as NNDDDownloader).localThumbUri;
+				this._savedVideoFile = (event.currentTarget as NNDDDownloader).savedVideoPath;
+				
+			}
+			
 			dispatchEvent(new Event(PROCCESS_COMPLETE));
 		}
 		
@@ -310,6 +322,16 @@ package org.mineap.nndd
 		 */
 		public function get localThumbUri():String{
 			return this._localThumbUri;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get savedVideoFile():File
+		{
+			return this._savedVideoFile;
 		}
 		
 		/**

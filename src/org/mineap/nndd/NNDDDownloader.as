@@ -34,6 +34,7 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.model.VideoType;
 	import org.mineap.nicovideo4as.stream.VideoStream;
 	import org.mineap.nicovideo4as.util.HtmlUtil;
+	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.util.LibraryUtil;
@@ -101,6 +102,7 @@ package org.mineap.nndd
 		private var _isAlwaysEconomy:Boolean = false;
 		private var _isAppendComment:Boolean = false;
 		private var _useOldType:Boolean = false;
+		private var _isRedirected:Boolean = false;
 		
 		/**
 		 * ログイン処理を開始したときに、typeプロパティがこの定数に設定されたEventが発行されます。 
@@ -543,11 +545,12 @@ package org.mineap.nndd
 			});
 			this._watchVideo.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
-				var videoId:String = PathMaker.getVideoID(event.responseURL);
+				var threadId:String = PathMaker.getVideoID(event.responseURL);
 				// リダイレクトされた。
-				if(videoId != _videoId){
-					LogManager.instance.addLog("リダイレクト: " + _videoId + " -> " + videoId);
-					_videoId = videoId;
+				if(threadId != _videoId){
+					LogManager.instance.addLog("リダイレクト: " + _videoId + " -> " + threadId);
+					_isRedirected = true;
+					_threadId = threadId;
 				}
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
@@ -556,6 +559,13 @@ package org.mineap.nndd
 			var videoId:String = this._videoId;
 			if(this._isAlwaysEconomy){
 				videoId += "?eco=1";
+			}
+			
+			// 動画IDとしてスレッドIDがわたってきたときは、threadIDとしても使用する
+			var regexp:RegExp = new RegExp("\\d+");
+			if (videoId.match(regexp).length > 0)
+			{
+				this._threadId = this._videoId;
 			}
 			
 			trace(WATCH_START + ":" + this._videoId);
@@ -669,6 +679,7 @@ package org.mineap.nndd
 				
 				if (analyzer.status == ThumbInfoAnalyzer.STATUS_OK)
 				{
+					this._videoId = analyzer.videoId;
 					
 					if (this._saveVideoName == null || this._saveVideoName == "")
 					{
@@ -824,12 +835,11 @@ package org.mineap.nndd
 			});
 			this._getflvAccess.addEventListener(Event.COMPLETE, getFlvAccessSuccess);
 			
-			
-			trace(GETFLV_API_ACCESS_START + ":" + this._videoId);
-			LogManager.instance.addLog(GETFLV_API_ACCESS_START + ":" + this._videoId);
+			trace(GETFLV_API_ACCESS_START + ":" + this._threadId + "(" + this._videoId + ")");
+			LogManager.instance.addLog(GETFLV_API_ACCESS_START + ":" + this._threadId + "(" + this._videoId + ")");
 			dispatchEvent(new Event(GETFLV_API_ACCESS_START));
 			
-			this._getflvAccess.getAPIResult(this._videoId, this._isAlwaysEconomy);
+			this._getflvAccess.getAPIResult(this._threadId, this._isAlwaysEconomy);
 			
 		}
 		
@@ -1030,8 +1040,6 @@ package org.mineap.nndd
 				close(true, true, event);
 			});
 			var path:String = fileIO.saveComment(loader.xml, this._saveVideoName + ".xml", this._saveDir.url, this._isAppendComment, this._maxCommentCount).nativePath;
-			
-			this._threadId = this._commentLoader.threadId;
 			
 			//通常コメントの取得完了を通知
 			loader.close();
@@ -1441,6 +1449,8 @@ package org.mineap.nndd
 			var analyzer:GetFlvResultAnalyzer = new GetFlvResultAnalyzer();
 			analyzer.analyze(String(this._getflvAccess.data));
 
+			this._threadId = analyzer.threadId;
+			
 			if (analyzer.url == null || analyzer.url.length == 0)
 			{
 				trace(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません:" + this.videoUrl);
@@ -1830,6 +1840,48 @@ package org.mineap.nndd
 		 */
 		public function close(isCancel:Boolean, isError:Boolean, event:ErrorEvent = null):void{
 			
+			if (isCancel == false && isError == false)
+			{
+				var nnddVideo:NNDDVideo = LibraryManagerBuilder.instance.libraryManager.remove(this._threadId, true);
+				var file:File = null;
+				if (nnddVideo != null)
+				{
+					file = nnddVideo.file;	
+				}
+				
+				try
+				{
+					// 動画タイトルにスレッドIDが含まれているか？
+					if (file != null && file.exists && nnddVideo != null && file.name.indexOf(this._threadId) != -1)
+					{
+						
+						LogManager.instance.addLog("動画タイトルのスレッドID(" + this._threadId + ")を動画ID(" + this._videoId + ")に置き換え中...");
+						LogManager.instance.addLog("対象動画:" + file.nativePath);
+						var newVideoFile:File = changeThreadIdToVideoId(file, this._threadId, this._videoId);
+						LogManager.instance.addLog("置き換え完了");
+						
+						if (nnddVideo != null)
+						{
+							var thumbImgUrl:String = PathMaker.createThumbImgFilePath(newVideoFile.url);
+							var newVideo:NNDDVideo = new NNDDVideo(newVideoFile.url, null, nnddVideo.isEconomy, 
+								nnddVideo.tagStrings, nnddVideo.modificationDate, nnddVideo.creationDate, 
+								thumbImgUrl, nnddVideo.playCount, nnddVideo.time, nnddVideo.lastPlayDate, 
+								nnddVideo.pubDate);
+							LibraryManagerBuilder.instance.libraryManager.add(newVideo, true);
+							
+							this._savedVideoPath = newVideoFile.url;
+							this._thumbPath = newVideo.thumbUrl;
+							this._saveVideoName = newVideoFile.name;
+						}
+					}
+				}
+				catch(error:Error)
+				{
+					trace(error.getStackTrace());
+					LogManager.instance.addLog("置き換えに失敗:" + error);
+				}
+			}
+			
 			//終了処理
 			try{
 				this._login.close();
@@ -1979,6 +2031,108 @@ package org.mineap.nndd
 		public function get getFlvResultAnalyzer():GetFlvResultAnalyzer{
 			return this._flvResultAnalyzer;
 		}
-
+		
+		/**
+		 * ファイル名にスレッドIDが使用されている動画について、スレッドIDを動画IDに置き換えます。
+		 * @param nowVideoFile
+		 * @param threadId
+		 * @param videoId
+		 * 
+		 */
+		public function changeThreadIdToVideoId(nowVideoFile:File, threadId:String, videoId:String):File
+		{
+			var newVideoFile:File = null;
+			var file:File = new File(nowVideoFile.url);
+			if (file != null)
+			{
+				var oldVideoPath:String = decodeURIComponent(file.url);
+				
+				// 動画ファイルを置き換え
+				var newFile:File = file.parent.resolvePath(file.name.replace(threadId, videoId));
+				if (newFile.exists)
+				{
+					newFile.moveToTrash();
+				}
+				file.moveTo(newFile, false);
+				
+				newVideoFile = newFile;
+				
+				// コメントを置き換え
+				var nowFile:File = new File(PathMaker.createNomalCommentPathByVideoPath(oldVideoPath));
+				if (nowFile.exists)
+				{
+					newFile = nowFile.parent.resolvePath(nowFile.name.replace(threadId, videoId));
+					if (newFile.exists)
+					{
+						newFile.moveToTrash();
+					}
+					nowFile.moveTo(newFile, false);
+				}
+				
+				// 投稿者コメントを置き換え
+				nowFile = new File(PathMaker.createOwnerCommentPathByVideoPath(oldVideoPath));
+				if (nowFile.exists)
+				{
+					newFile = nowFile.parent.resolvePath(nowFile.name.replace(threadId, videoId));
+					if (newFile.exists)
+					{
+						newFile.moveToTrash();
+					}
+					nowFile.moveTo(newFile, false);
+				}
+				
+				// サムネイル情報を置き換え
+				nowFile = new File(PathMaker.createThmbInfoPathByVideoPath(oldVideoPath));
+				if (nowFile.exists)
+				{
+					newFile = nowFile.parent.resolvePath(nowFile.name.replace(threadId, videoId));
+					if (newFile.exists)
+					{
+						newFile.moveToTrash();
+					}
+					nowFile.moveTo(newFile, false);
+				}
+				
+				// サムネイル画像を置き換え
+				nowFile = new File(PathMaker.createThumbImgFilePath(oldVideoPath));
+				if (nowFile.exists)
+				{
+					newFile = nowFile.parent.resolvePath(nowFile.name.replace(threadId, videoId));
+					if (newFile.exists)
+					{
+						newFile.moveToTrash();
+					}
+					nowFile.moveTo(newFile, false);
+				}
+				
+				// 市場情報を置き換え
+				nowFile = new File(PathMaker.createNicoIchibaInfoPathByVideoPath(oldVideoPath));
+				if (nowFile.exists)
+				{
+					newFile = nowFile.parent.resolvePath(nowFile.name.replace(threadId, videoId));
+					if (newFile.exists)
+					{
+						newFile.moveToTrash();
+					}
+					nowFile.moveTo(newFile, false);
+				}
+				
+				// ニコ割を置き換え
+				var nicowariArray:Vector.<File> = PathMaker.seachNicowariPathByVideoPath(oldVideoPath);
+				for each(var nicowari:File in nicowariArray)
+				{
+					if (nicowari.exists)
+					{
+						newFile = nicowari.parent.resolvePath(nicowari.name.replace(threadId, videoId));
+						if (newFile.exists)
+						{
+							newFile.moveToTrash();
+						}
+						nicowari.moveTo(newFile, false);
+					}
+				}
+			}
+			return newVideoFile;
+		}
 	}
 }

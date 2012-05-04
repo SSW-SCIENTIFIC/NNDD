@@ -185,6 +185,17 @@ package org.mineap.nndd.util
 		}
 		
 		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get videoId():String
+		{
+			return this._videoId;
+		}
+		
+		
+		/**
 		 * HTML形式の動画のタイトルを返します。
 		 * @return 
 		 * 

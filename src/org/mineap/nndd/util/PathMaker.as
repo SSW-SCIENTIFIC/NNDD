@@ -256,6 +256,47 @@ package org.mineap.nndd.util
 		}
 		
 		/**
+		 * 指定された動画と関係すると思われるニコ割動画の一覧を返します。
+		 * 
+		 * @param videoPath
+		 * @return 
+		 * 
+		 */
+		public static function seachNicowariPathByVideoPath(videoPath:String):Vector.<File>
+		{
+			var vector:Vector.<File> = new Vector.<File>();
+			
+			if (videoPath != null)
+			{
+				
+				var videoId:String = PathMaker.getVideoID(videoPath);
+				
+				var videoFile:File = new File(videoPath);
+				
+				if (videoFile.parent != null)
+				{
+					var dir:File = videoFile.parent;
+					var files:Array = dir.getDirectoryListing();
+					
+					for each(var file:File in files)
+					{
+						var extension:String =  file.extension;
+						if (extension != null && extension.toUpperCase() == "SWF")
+						{
+							if (file.name.indexOf(videoId) != -1)
+							{
+								vector.push(file);
+							}
+						}
+					}
+				}
+				
+			}
+			return vector;
+			
+		}
+		
+		/**
 		 * 渡された動画のパスとニコ割動画のIDからニコ割動画のパスを生成し、返します。
 		 * nicowariVideoIDが設定されていない場合は、最初に発見したvideoPathに対応するニコ割を返します。
 		 * 
@@ -387,12 +428,20 @@ package org.mineap.nndd.util
 		public static function getVideoName(videoPath:String):String{
 			videoPath = decodeURIComponent(videoPath);
 			var videoName:String = "";
-			var lastIndex:int = videoPath.lastIndexOf("- [");
-			if(lastIndex != -1){
-				videoName = videoPath.substring(videoPath.lastIndexOf("/")+1, lastIndex-1);
-			}else{
-				lastIndex = videoPath.lastIndexOf(".");
+			var lastIndex:int = videoPath.lastIndexOf(" - [");
+			if(lastIndex != -1)
+			{
 				videoName = videoPath.substring(videoPath.lastIndexOf("/")+1, lastIndex);
+			}
+			else
+			{
+				lastIndex = videoPath.lastIndexOf("- [");
+				if(lastIndex != -1){
+					videoName = videoPath.substring(videoPath.lastIndexOf("/")+1, lastIndex);
+				}else{
+					lastIndex = videoPath.lastIndexOf(".");
+					videoName = videoPath.substring(videoPath.lastIndexOf("/")+1, lastIndex);
+				}
 			}
 			return videoName;
 		}

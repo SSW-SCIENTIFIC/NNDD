@@ -3943,17 +3943,30 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 							dataGrid_downloaded.validateNow();
 						});
 						renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_COMPLETE, function(event:Event):void{
-							
+							filePath = decodeURIComponent(renewDownloadManager.savedVideoFile.url);
 							var video:NNDDVideo = libraryManager.remove(LibraryUtil.getVideoKey(filePath), false);
 							if(video == null){
 								if(!new File(filePath).exists){
 									Alert.show("ファイルが見つかりませんでした。\n" + new File(filePath).nativePath, Message.M_ERROR);
+									
+									newCommentOnlyDownloadButton.label = "コメント";
+									newCommentDownloadButton.label = "動画以外";
+									
+									newCommentOnlyDownloadButton.enabled = true;
+									newCommentDownloadButton.enabled = true;
+									
+									renewDownloadManager = null;
+									
+									dataGrid_downloaded.invalidateList();
+									dataGrid_downloaded.validateNow();
+									
 									return;
 								}
 								video = new LocalVideoInfoLoader().loadInfo(filePath);
 								video.modificationDate = new File(filePath).modificationDate;
 								video.creationDate = new File(filePath).creationDate;
 							}else{
+								filePath = video.file.url;
 								var tempVideo:NNDDVideo = new LocalVideoInfoLoader().loadInfo(filePath);
 								video.time = tempVideo.time;
 								video.pubDate = tempVideo.pubDate;
@@ -4001,15 +4014,27 @@ private function newCommentDownloadButtonClicked(isCommentOnly:Boolean = false):
 						});
 						
 						if(isCommentOnly){
-							renewDownloadManager.renewForCommentOnly(UserManager.instance.user, 
-								UserManager.instance.password, PathMaker.getVideoID(filePath), 
-								PathMaker.getVideoName(filePath), new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
-								this.isAppendComment, null, this.saveCommentMaxCount, this.useOldTypeCommentGet);
-						}else{
-							renewDownloadManager.renewForOtherVideo(UserManager.instance.user, UserManager.instance.password, 
-								PathMaker.getVideoID(filePath), PathMaker.getVideoName(filePath), 
+							renewDownloadManager.renewForCommentOnly(
+								UserManager.instance.user, 
+								UserManager.instance.password, 
+								PathMaker.getVideoID(filePath), 
+								PathMaker.getVideoName(filePath), 
 								new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
-								this.isAppendComment, null, this.saveCommentMaxCount, this.useOldTypeCommentGet);
+								this.isAppendComment, 
+								null, 
+								this.saveCommentMaxCount, 
+								this.useOldTypeCommentGet);
+						}else{
+							renewDownloadManager.renewForOtherVideo(
+								UserManager.instance.user, 
+								UserManager.instance.password, 
+								PathMaker.getVideoID(filePath), 
+								PathMaker.getVideoName(filePath), 
+								new File(filePath.substring(0, filePath.lastIndexOf("/")+1)), 
+								this.isAppendComment, 
+								null, 
+								this.saveCommentMaxCount, 
+								this.useOldTypeCommentGet);
 						}
 						
 					}else{
