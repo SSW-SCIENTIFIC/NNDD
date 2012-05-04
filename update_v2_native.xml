@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.2.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55749/NNDDv2_2_0.dmg</url>
+	<version>2.2.1</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55765/NNDDv2_2_1.dmg</url>
 	<description><![CDATA[
+v2.2.1
+・【バグフィックス】「古いバージョンの動画サイズを使う」チェックボックスの設定がPlayerのサイズ設定に反映されないことがある問題を修正
+・【バグフィックス】動画タイトルに「&」が含まれていると、DL後にタイトルが「&amp;」と表示される問題を修正
+
 v2.2.0
 ・Zero対応
 　・動画のタイトルが取得できない問題を修正。
@@ -15,9 +19,13 @@ v2.2.0
 </dmg>
 
 <exe>
-	<version>2.2.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55749/NNDDv2_2_0.exe</url>
+	<version>2.2.1</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55765/NNDDv2_2_1.exe</url>
 	<description><![CDATA[
+v2.2.1
+・【バグフィックス】「古いバージョンの動画サイズを使う」チェックボックスの設定がPlayerのサイズ設定に反映されないことがある問題を修正
+・【バグフィックス】動画タイトルに「&」が含まれていると、DL後にタイトルが「&amp;」と表示される問題を修正
+
 v2.2.0
 ・Zero対応
 　・動画のタイトルが取得できない問題を修正。
