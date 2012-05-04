@@ -95,6 +95,7 @@ public var playerQuality:int = 2;
 public var isFollowInfoViewHeight:Boolean = false;
 public var isNotPlayNicowari:Boolean = false;
 public var isOpenFileDialogWhenOpenPlayer:Boolean = false;
+public var is184:Boolean = true;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -686,6 +687,11 @@ private function checkBoxIsAskToUserOnJump(event:MouseEvent):void{
 	isAskToUserOnJump = event.currentTarget.selected;
 }
 
+private function checkBoxIs184(event:MouseEvent):void
+{
+	is184 = event.currentTarget.selected;
+}
+
 private function checkBoxHideSekaShinComment(event:MouseEvent):void{
 	isHideSekaShinComment = event.currentTarget.selected;
 	
@@ -872,6 +878,7 @@ private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
 	checkBox_askToUserOnJump.selected = isAskToUserOnJump;
 	checkBox_askToUserOnJump.enabled = isEnableJump;
 	
+	checkBox_is184.selected = is184;
 	
 }
 
@@ -1229,6 +1236,12 @@ private function readStore():void{
 			this.isOpenFileDialogWhenOpenPlayer = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("is184");
+		if (confValue != null)
+		{
+			this.is184 = ConfUtil.parseBoolean(confValue);
+		}
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -1379,6 +1392,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isOpenFileDialogWhenOpenPlayer");
 		ConfigManager.getInstance().setItem("isOpenFileDialogWhenOpenPlayer", isOpenFileDialogWhenOpenPlayer);
+		
+		ConfigManager.getInstance().removeItem("is184");
+		ConfigManager.getInstance().setItem("is184", is184);
 		
 		ConfigManager.getInstance().save();
 		

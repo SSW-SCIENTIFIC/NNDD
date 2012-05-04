@@ -3780,7 +3780,8 @@ package org.mineap.nndd.player
 				});
 				
 				// コメントを投稿
-				commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password, videoID, comment, command, commentTimerVpos/10);
+				commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password, 
+					videoID, comment, command, commentTimerVpos/10, videoInfoView.is184);
 				
 				// とりあえずコメントを表示。通し番号をマイナスにして正規のコメントと区別する。
 				commentManager.addPostComment(new NNDDComment(commentTimerVpos/10, comment, command, "", -1, "", -1, true), this._isLengthwisePreferred);
