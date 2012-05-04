@@ -124,6 +124,9 @@ public function init(playerController:PlayerController, videoInfoView:VideoInfoV
 		stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreen);
 		playerController.resizePlayerJustVideoSize();
 		videoController.resetAlpha(true);
+		
+		stage.frameRate = 60;
+		
 	});
 	
 	readStore();
