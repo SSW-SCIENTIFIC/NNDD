@@ -817,8 +817,7 @@ package org.mineap.nndd.player
 			
 			renewDownloadManager = new RenewDownloadManager(null, logManager);
 			renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_COMPLETE, function(event:Event):void{
-				videoPath = renewDownloadManager.savedVideoFile.url;
-				var video:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(videoPath));
+				var video:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(renewDownloadManager.savedVideoFile.url));
 				if(video == null){
 					try{
 						video = new LocalVideoInfoLoader().loadInfo(videoPath);
@@ -830,6 +829,7 @@ package org.mineap.nndd.player
 					libraryManager.add(video, false);
 					video = libraryManager.isExist(video.key);
 				}
+				videoPath = video.file.url;
 				if (videoPlayer != null)
 				{
 					videoPlayer.title = video.file.name;
