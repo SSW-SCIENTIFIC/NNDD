@@ -422,6 +422,7 @@ package org.mineap.nndd.player
 			}
 			
 			this.videoPlayer.videoController.resetAlpha(true);
+			this.videoPlayer.updateFrameRate();
 			
 			var value:String = ConfigManager.getInstance().getItem("isLengthwisePreferred");
 			if (value != null)
@@ -3739,6 +3740,7 @@ package org.mineap.nndd.player
 		 */
 		public function changeFps(fps:Number):void{
 			this.commentTimer.delay = 1000/fps;
+			this.videoPlayer.updateFrameRate();
 		}
 		
 		/**

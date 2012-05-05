@@ -125,7 +125,7 @@ public function init(playerController:PlayerController, videoInfoView:VideoInfoV
 		playerController.resizePlayerJustVideoSize();
 		videoController.resetAlpha(true);
 		
-		stage.frameRate = 60;
+		updateFrameRate();
 		
 	});
 	
@@ -1336,4 +1336,20 @@ public function videoReload(event:Event):void{
 	
 	playerController.reload(videoId);
 	
+}
+
+public function updateFrameRate():void
+{
+	if (this.stage != null)
+	{
+		if (videoInfoView.fps > 30)
+		{
+			this.stage.frameRate = int(videoInfoView.fps);
+		}
+		else
+		{
+			this.stage.frameRate = 30;
+		}
+		trace("stage.frameRate:" + this.stage.frameRate);
+	}
 }
