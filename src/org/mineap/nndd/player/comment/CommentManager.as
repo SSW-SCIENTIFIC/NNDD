@@ -796,7 +796,7 @@ package org.mineap.nndd.player.comment
 					commentShitaTextArray[i].visible = false;
 					commentShitaTextArray[i].x = videoPlayer.canvas_video.width;
 //					commentShitaTextArray[i].y = videoPlayer.canvas_video.height - (videoPlayer.canvas_video.height/12)*(i+2);
-					commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*i;
+					commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*i + 5;
 				}
 			}
 			
@@ -869,8 +869,7 @@ package org.mineap.nndd.player.comment
 				commentShitaTextArray[j].text = "";
 				commentShitaTextArray[j].x = displayObjectContainer.width;
 //				commentShitaTextArray[j].y = displayObjectContainer.height - (displayObjectContainer.height/15)*(j+2);
-				commentShitaTextArray[j].bottom = (videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*j;
-				commentShitaTextArray[j].bottom += 5;
+				commentShitaTextArray[j].bottom = (videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*j + 5;
 				
 			}
 			
@@ -933,7 +932,7 @@ package org.mineap.nndd.player.comment
 							if(!commentNomalTextArray[j][i].visible || commentNomalTextArray[j][i].text == ""){
 								commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
 							}
-							commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height/15)*(i);
+							commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i);
 						}
 					}
 				}
@@ -962,7 +961,7 @@ package org.mineap.nndd.player.comment
 						}
 						
 						commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
-						commentShitaTextArray[i].y = this.videoPlayer.canvas_video.height - (this.videoPlayer.canvas_video.height/15)*(i+2);
+						commentShitaTextArray[i].bottom = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i) + 5;
 					}
 				}
 			}
@@ -990,7 +989,7 @@ package org.mineap.nndd.player.comment
 						}
 						
 						commentUeTextArray[i].x = this.videoPlayer.canvas_video.width;
-						commentUeTextArray[i].y = (this.videoPlayer.canvas_video.height/15)*(i);
+						commentUeTextArray[i].top = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i);
 					}
 				}
 			}
@@ -1015,7 +1014,7 @@ package org.mineap.nndd.player.comment
 							commentNomalTextArray[j][i].no = 0;
 							commentNomalTextArray[j][i].visible = false;
 							commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
-							commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height/15)*(i);
+							commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i);
 						}
 					}
 				}
@@ -1029,7 +1028,7 @@ package org.mineap.nndd.player.comment
 						commentShitaTextArray[i].no = 0;
 						commentShitaTextArray[i].visible = false;
 						commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
-						commentShitaTextArray[i].y = this.videoPlayer.canvas_video.height - (this.videoPlayer.canvas_video.height/15)*(i+2);
+						commentShitaTextArray[i].bottom = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i) + 5;
 					}
 				}
 			}
@@ -1042,7 +1041,7 @@ package org.mineap.nndd.player.comment
 						commentUeTextArray[i].no = 0;
 						commentUeTextArray[i].visible = false;
 						commentUeTextArray[i].x = this.videoPlayer.canvas_video.width;
-						commentUeTextArray[i].y = (this.videoPlayer.canvas_video.height/15)*(i);
+						commentUeTextArray[i].top = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i);
 					}
 				}
 			}
