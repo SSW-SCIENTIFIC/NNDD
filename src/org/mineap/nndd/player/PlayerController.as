@@ -14,18 +14,21 @@ package org.mineap.nndd.player
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.filesystem.File;
+	import flash.geom.Rectangle;
 	import flash.media.SoundMixer;
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
+	import mx.containers.Canvas;
 	import mx.controls.Alert;
 	import mx.controls.DataGrid;
 	import mx.controls.SWFLoader;
 	import mx.controls.Text;
 	import mx.controls.videoClasses.VideoError;
 	import mx.core.FlexGlobals;
+	import mx.core.UIComponent;
 	import mx.events.AIREvent;
 	import mx.events.FlexEvent;
 	import mx.events.VideoEvent;
@@ -653,12 +656,14 @@ package org.mineap.nndd.player
 					videoDisplay.setConstraintValue("top", 0);
 					
 					if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
+						// http
 						videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
 					}else{
-						videoInfoView.videoServerUrl = videoPath;
+						// file(ローカル)
+						videoInfoView.videoServerUrl = decodeURIComponent(videoPath);
 						var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
 						if(messageServerUrl != null){
-							videoInfoView.messageServerUrl = messageServerUrl;
+							videoInfoView.messageServerUrl = decodeURIComponent(messageServerUrl);
 						}
 					}
 					videoInfoView.videoType = "FLV/MP4";
@@ -742,10 +747,11 @@ package org.mineap.nndd.player
 					if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
 						videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
 					}else{
-						videoInfoView.videoServerUrl = videoPath;
+						// file(ローカル)
+						videoInfoView.videoServerUrl = decodeURIComponent(videoPath);
 						var messageServerUrl:String = PathMaker.createNomalCommentPathByVideoPath(videoPath);
 						if(messageServerUrl != null){
-							videoInfoView.messageServerUrl = messageServerUrl;
+							videoInfoView.messageServerUrl = decodeURIComponent(messageServerUrl);
 						}
 					}
 					videoInfoView.videoType = "SWF";
@@ -797,6 +803,26 @@ package org.mineap.nndd.player
 			}
 		}
 		
+		public function get videoRectangle():Rectangle
+		{
+			var uicomp:UIComponent = videoPlayer.vbox_videoPlayer;
+			
+			var videoRectangle:Rectangle = new Rectangle(uicomp.x, uicomp.y, uicomp.width, uicomp.height);
+//			if (videoDisplay != null)
+//			{
+//				videoRectangle = new Rectangle(videoDisplay.x, videoDisplay.y, videoDisplay.width, videoDisplay.height);
+//			}
+//			else if (swfLoader != null)
+//			{
+//				videoRectangle = new Rectangle(swfLoader.x, swfLoader.y, swfLoader.width, swfLoader.height);
+//			}
+//			else
+//			{
+//				videoRectangle = 
+//			}
+			
+			return videoRectangle;
+		}
 		
 		/**
 		 * コメントを最新に更新します

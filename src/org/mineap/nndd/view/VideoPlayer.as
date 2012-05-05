@@ -1151,6 +1151,8 @@ public function setFull():void{
 	this.videoPlayer.button_ChangeFullScreen.label = Message.L_NORMAL;
 	this.videoPlayer.showUnderController(false, false);
 	this.videoPlayer.showTagArea(false, false);
+	
+//	this.videoPlayer.stage.fullScreenSourceRect = playerController.videoRectangle;	
 	this.videoPlayer.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 }
 
