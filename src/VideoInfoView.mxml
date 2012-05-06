@@ -182,16 +182,16 @@
 
 			protected function canvas1_creationCompleteHandler(event:FlexEvent):void
 			{
-				videoType = "-";
-				videoServerUrl = "-";
-				connectionType = "-";
-				messageServerUrl = "-";
-				economyMode = "-";
-				nickName = "-";
-				isPremium = "-";
-				format = "-";
-				videoSize = "-";
-				currentWindowSize = "-";
+//				videoType = "-";
+//				videoServerUrl = "-";
+//				connectionType = "-";
+//				messageServerUrl = "-";
+//				economyMode = "-";
+//				nickName = "-";
+//				isPremium = "-";
+//				format = "-";
+//				videoSize = "-";
+//				currentWindowSize = "-";
 				
 			}
 
