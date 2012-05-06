@@ -1342,16 +1342,16 @@ public function videoReload(event:Event):void{
 
 public function updateFrameRate():void
 {
-	if (this.stage != null)
+	if (this.stage != null && videoPlayer.canvas_video != null)
 	{
 		if (videoInfoView.fps > 30)
 		{
-			this.stage.frameRate = int(videoInfoView.fps);
+			videoPlayer.canvas_video.stage.frameRate = int(videoInfoView.fps);
 		}
 		else
 		{
-			this.stage.frameRate = 30;
+			videoPlayer.canvas_video.stage.frameRate = 30;
 		}
-		trace("stage.frameRate:" + this.stage.frameRate);
+		trace("stage.frameRate:" + videoPlayer.canvas_video.stage.frameRate);
 	}
 }

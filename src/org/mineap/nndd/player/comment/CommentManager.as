@@ -3,6 +3,7 @@ package org.mineap.nndd.player.comment
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
+	import flash.system.Capabilities;
 	
 	import mx.controls.Text;
 	import mx.events.FlexEvent;
@@ -961,7 +962,7 @@ package org.mineap.nndd.player.comment
 						}
 						
 						commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
-						commentShitaTextArray[i].bottom = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i) + 5;
+						commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*i + 5;
 					}
 				}
 			}
@@ -1028,7 +1029,7 @@ package org.mineap.nndd.player.comment
 						commentShitaTextArray[i].no = 0;
 						commentShitaTextArray[i].visible = false;
 						commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
-						commentShitaTextArray[i].bottom = (this.videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*(i) + 5;
+						commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height/MAX_NORMAL_COMMENT_STEP_COUNT)*i + 5;
 					}
 				}
 			}
