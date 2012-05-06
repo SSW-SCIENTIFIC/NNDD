@@ -1557,6 +1557,12 @@ private function invokeEventHandler(event:InvokeEvent):void{
 				arguments = arguments + ",";
 			}
 			arguments = arguments + arg;
+			
+			if (arg == "-showRedrawRegions")
+			{
+				flash.profiler.showRedrawRegions( true, 0x0000FF );
+			}
+			
 		}
 		
 		logManager.addLog(Message.INVOKE_ARGUMENT + ":" + arguments);

@@ -51,6 +51,7 @@ package org.mineap.nndd
 				"\n\tオペレーティングシステム:" + Capabilities.os + 
 				"\n\tネイティブプロセスAPIサポート:" + NativeProcess.isSupported +
 				"\n\t暗号化された保存領域のサポート:" + EncryptedLocalStore.isSupported + 
+				"\n\t最高レベルIDC:" + Capabilities.maxLevelIDC + 
 				"\n" +
 				"\n\tNNDDは以下のライブラリを使用しています。" +
 				"\n\t・NativeApplicationUpdater - Apache License V2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
