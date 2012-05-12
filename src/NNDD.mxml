@@ -1279,6 +1279,57 @@
 			}
 			
 			
+			protected function player_button_dragDropHandler(event:NativeDragEvent):void
+			{
+				var str:String = (event.clipboard.getData(ClipboardFormats.TEXT_FORMAT) as String);
+				if (str == null)
+				{
+					str = event.clipboard.getData(ClipboardFormats.URL_FORMAT).toString();
+				}
+				if (str != null && str.length > 0)
+				{
+					trace("Playerボタンに次のURLがドロップされた:" + str);
+					var checker:ShortUrlChecker = new ShortUrlChecker();
+					if (checker.isShortUrl(str))
+					{
+						// 短縮URLサービス
+						checker.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+						{
+							trace(error);
+							Alert.show("次のURLを展開できませんでした\n" + str + "\n\n" + event, "エラー");
+						});
+						checker.addEventListener(Event.COMPLETE, function(event:Event):void{
+							PlayerManager.instance.getLastPlayerController().playMovie(checker.url, null, -1, "",isAlwaysEconomy);
+						});
+						checker.expansion(str);
+					}
+					else
+					{
+						PlayerManager.instance.getLastPlayerController().playMovie(str, null, -1, "",isAlwaysEconomy);
+					}
+				}
+			}
+			
+			protected function player_button_dragEnterHandler(event:NativeDragEvent):void
+			{
+				if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) 
+					|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT))
+				{
+					NativeDragManager.acceptDragDrop(player_button);
+					NativeDragManager.dropAction = NativeDragActions.COPY;
+				}
+				else
+				{
+					NativeDragManager.dropAction = NativeDragActions.NONE;
+				}
+			}
+			
+			protected function player_button_nativeDragExitHandler(event:NativeDragEvent):void
+			{
+				
+				NativeDragManager.dropAction = NativeDragActions.NONE;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -1288,7 +1339,12 @@
 		<mx:ToggleButtonBar dataProvider="viewstack1" id="viewStack">
 		</mx:ToggleButtonBar>
 		<mx:VRule width="20" height="20"/>
-		<mx:Button label="Player" click="playerOpenButtonClicked(event)" toolTip="Playerウィンドウを開きます" id="player_button" creationComplete="player_button_creationCompleteHandler(event)"/>
+		<mx:Button label="Player" click="playerOpenButtonClicked(event)" 
+				   toolTip="Playerウィンドウを開きます" id="player_button" 
+				   creationComplete="player_button_creationCompleteHandler(event)"
+				   nativeDragDrop="player_button_dragDropHandler(event)"
+				   nativeDragEnter="player_button_dragEnterHandler(event)"
+				   nativeDragExit="player_button_nativeDragExitHandler(event)"/>
 		<mx:VRule width="20" height="20"/>
 		<mx:Button label="ログアウト" id="logoutButton" click="logoutButtonClicked()" toolTip="ニコニコ動画へログイン・ニコニコ動画からログアウトします"/>
 		<mx:Button label="終了" id="exitButton" click="exitButtonClicked()" toolTip="NNDDを終了します"/>
