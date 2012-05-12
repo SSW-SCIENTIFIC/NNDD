@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.2.1</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55765/NNDDv2_2_1.dmg</url>
+	<version>2.2.2</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55797/NNDDv2_2_2.dmg</url>
 	<description><![CDATA[
+v2.2.2
+・shitaコメントの表示位置を改善
+・コメントのFPSに対応してFlashランタイムの描画フレームレートを変更するようにした
+・チャンネル動画をスレッドIDで管理していたのを、動画ID(so〜)で管理するように変更
+
 v2.2.1
 ・【バグフィックス】「古いバージョンの動画サイズを使う」チェックボックスの設定がPlayerのサイズ設定に反映されないことがある問題を修正
 ・【バグフィックス】動画タイトルに「&」が含まれていると、DL後にタイトルが「&amp;」と表示される問題を修正
@@ -19,9 +24,14 @@ v2.2.0
 </dmg>
 
 <exe>
-	<version>2.2.1</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55765/NNDDv2_2_1.exe</url>
+	<version>2.2.2</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55797/NNDDv2_2_2.exe</url>
 	<description><![CDATA[
+v2.2.2
+・shitaコメントの表示位置を改善
+・コメントのFPSに対応してFlashランタイムの描画フレームレートを変更するようにした
+・チャンネル動画をスレッドIDで管理していたのを、動画ID(so〜)で管理するように変更
+
 v2.2.1
 ・【バグフィックス】「古いバージョンの動画サイズを使う」チェックボックスの設定がPlayerのサイズ設定に反映されないことがある問題を修正
 ・【バグフィックス】動画タイトルに「&」が含まれていると、DL後にタイトルが「&amp;」と表示される問題を修正
