@@ -589,16 +589,37 @@
 
 			protected function textInput_url_nativeDragEnterHandler(event:NativeDragEvent):void
 			{
-				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
+						|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)){
 					NativeDragManager.acceptDragDrop(this.textInput_url);
+					
+					if (event.allowedActions.allowCopy)
+					{
+						NativeDragManager.dropAction = NativeDragActions.COPY;
+					} else if (event.allowedActions.allowMove)
+					{
+						NativeDragManager.dropAction = NativeDragActions.MOVE;
+					} else if (event.allowedActions.allowLink)
+					{
+						NativeDragManager.dropAction = NativeDragActions.LINK;
+					}
+					
 				}
 			}
 
 
 			protected function textInput_url_nativeDragDropHandler(event:NativeDragEvent):void
 			{
-				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT))
+				{
 					textInput_url.text = String(event.clipboard);
+				} else if (event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT))
+				{
+					var obj:Object = event.clipboard.getData(ClipboardFormats.URL_FORMAT);
+					if (obj != null)
+					{
+						textInput_url.text = String(obj);
+					}
 				}
 			}
 			
@@ -606,8 +627,20 @@
 
 			protected function button_addDlList_nativeDragEnterHandler(event:NativeDragEvent):void
 			{
-				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
+						|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)){
 					NativeDragManager.acceptDragDrop(this.button_addDlList);
+					
+					if (event.allowedActions.allowCopy)
+					{
+						NativeDragManager.dropAction = NativeDragActions.COPY;
+					} else if (event.allowedActions.allowMove)
+					{
+						NativeDragManager.dropAction = NativeDragActions.MOVE;
+					} else if (event.allowedActions.allowLink)
+					{
+						NativeDragManager.dropAction = NativeDragActions.LINK;
+					}
 				}
 			}
 
@@ -616,6 +649,13 @@
 			{
 				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
 					addDLListForClipboard(event.clipboard);
+				}else if (event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT))
+				{
+					var obj:Object = event.clipboard.getData(ClipboardFormats.URL_FORMAT);
+					if (obj != null)
+					{
+						textInput_url.text = String(obj);
+					}
 				}
 			}
 
@@ -1281,11 +1321,32 @@
 			
 			protected function player_button_dragDropHandler(event:NativeDragEvent):void
 			{
-				var str:String = (event.clipboard.getData(ClipboardFormats.TEXT_FORMAT) as String);
-				if (str == null)
+				trace(event.clipboard.formats);
+				var str:String = null;
+				var obj:Object = event.clipboard.getData(ClipboardFormats.TEXT_FORMAT);
+				if (obj == null)
 				{
-					str = event.clipboard.getData(ClipboardFormats.URL_FORMAT).toString();
+					obj = event.clipboard.getData(ClipboardFormats.URL_FORMAT);
 				}
+				if (obj == null)
+				{
+					obj = event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT);
+					var array:Array = (obj as Array);
+					if (array != null && array.length > 0)
+					{
+						var file:File = (array[0] as File);
+						if (file != null)
+						{
+							obj = file.nativePath;
+						}
+					}
+				}
+				
+				if (obj != null)
+				{
+					str = String(obj);
+				}
+				
 				if (str != null && str.length > 0)
 				{
 					trace("Playerボタンに次のURLがドロップされた:" + str);
@@ -1313,10 +1374,21 @@
 			protected function player_button_dragEnterHandler(event:NativeDragEvent):void
 			{
 				if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) 
-					|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT))
+						|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)
+						|| event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
 				{
 					NativeDragManager.acceptDragDrop(player_button);
-					NativeDragManager.dropAction = NativeDragActions.COPY;
+					if (event.allowedActions.allowCopy)
+					{
+						NativeDragManager.dropAction = NativeDragActions.COPY;
+					} else if (event.allowedActions.allowMove)
+					{
+						NativeDragManager.dropAction = NativeDragActions.MOVE;
+					} else if (event.allowedActions.allowLink)
+					{
+						NativeDragManager.dropAction = NativeDragActions.LINK;
+					}
+					trace("accept:" + event);
 				}
 				else
 				{

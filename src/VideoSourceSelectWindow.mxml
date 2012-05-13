@@ -101,8 +101,22 @@
 
 			protected function textInput_source_nativeDragEnterHandler(event:NativeDragEvent):void
 			{
-				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
+						|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)
+						|| event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{
 					NativeDragManager.acceptDragDrop(textInput_source);
+					
+					if (event.allowedActions.allowCopy)
+					{
+						NativeDragManager.dropAction = NativeDragActions.COPY;
+					} else if (event.allowedActions.allowMove)
+					{
+						NativeDragManager.dropAction = NativeDragActions.MOVE;
+					} else if (event.allowedActions.allowLink)
+					{
+						NativeDragManager.dropAction = NativeDragActions.LINK;
+					}
 				}
 			}
 
@@ -111,7 +125,26 @@
 			{
 				if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
 					textInput_source.text = String(event.clipboard);
+				}else if (event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT))
+				{
+					var obj:Object = event.clipboard.getData(ClipboardFormats.URL_FORMAT);
+					if (obj != null)
+					{
+						textInput_source.text = String(obj);
+					}
+				}else if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT))
+				{
+					var array:Array = (event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array);
+					if (array != null && array.length > 0)
+					{
+						var file:File = (array[0] as File);
+						if (file != null)
+						{
+							textInput_source.text = file.nativePath;
+						}
+					}
 				}
+				
 			}
 			
 			protected function textInput_source_focusOutHandler(event:FocusEvent):void

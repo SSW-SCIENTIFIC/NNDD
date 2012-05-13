@@ -8,6 +8,7 @@
 import flash.data.EncryptedLocalStore;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
+import flash.desktop.NativeDragActions;
 import flash.desktop.NativeDragManager;
 import flash.display.NativeMenu;
 import flash.display.NativeWindowDisplayState;
@@ -1036,10 +1037,16 @@ private function resizeNow(event:ResizeEvent):void{
 }
 
 private function canvasVideoDroped(event:NativeDragEvent):void{
-	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) 
+			|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)){
 		var url:String = (event.clipboard.getData(ClipboardFormats.TEXT_FORMAT) as String);
 		
-		if(url == null){
+		if (url == null)
+		{
+			url = (event.clipboard.getData(ClipboardFormats.URL_FORMAT) as String);
+		}
+		
+		if(url == null || url == "null"){
 			return;
 		}
 		
@@ -1089,8 +1096,22 @@ private function canvasVideoDroped(event:NativeDragEvent):void{
 }
 
 private function canvasVideoDragEnter(event:NativeDragEvent):void{
-	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) || event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)){
+	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) 
+			|| event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)
+			|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)){
 		NativeDragManager.acceptDragDrop(canvas_video);
+		
+//		if (event.allowedActions.allowCopy)
+//		{
+//			NativeDragManager.dropAction = NativeDragActions.COPY;
+//		} else if (event.allowedActions.allowMove)
+//		{
+//			NativeDragManager.dropAction = NativeDragActions.MOVE;
+//		} else if (event.allowedActions.allowLink)
+//		{
+			NativeDragManager.dropAction = NativeDragActions.LINK;
+//		}
+		
 	}
 }
 

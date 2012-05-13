@@ -6004,11 +6004,19 @@ public function playerOpen():void{
 private function dlListDroped(event:NativeDragEvent):void{
 	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
 		addDLListForClipboard(event.clipboard);
+	}else if (event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT))
+	{
+		var obj:Object = event.clipboard.getData(ClipboardFormats.URL_FORMAT);
+		if (obj != null)
+		{
+			textInput_url.text = String(obj);
+		}
 	}
 }
 
 private function dlListDragEnter(event:NativeDragEvent):void{
-	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)){
+	if(event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
+			|| event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)){
 		NativeDragManager.acceptDragDrop(this.dataGrid_downloadList);
 	}
 }
