@@ -2,11 +2,12 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.2.3</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55797/NNDDv2_2_3.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55845/NNDDv2_2_3.dmg</url>
 	<description><![CDATA[
 v2.2.3
 ・メイン画面の「Player」ボタンにURLをDrag&Dropして動画を再生できるようにした
 ・【バグフィックス】チャンネル動画でコメントが投稿できない問題を修正
+・【バグフィックス】WindowsでDrag&Dropができない問題を修正
 
 v2.2.2
 ・shitaコメントの表示位置を改善
@@ -29,11 +30,12 @@ v2.2.0
 
 <exe>
 	<version>2.2.3</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/55797/NNDDv2_2_3.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/55845/NNDDv2_2_3.exe</url>
 	<description><![CDATA[
 v2.2.3
 ・メイン画面の「Player」ボタンにURLをDrag&Dropして動画を再生できるようにした
 ・【バグフィックス】チャンネル動画でコメントが投稿できない問題を修正
+・【バグフィックス】WindowsでDrag&Dropができない問題を修正
 
 v2.2.2
 ・shitaコメントの表示位置を改善
