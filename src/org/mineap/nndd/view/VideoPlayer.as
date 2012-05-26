@@ -252,7 +252,7 @@ protected function changeShowVideoInfoView(event:Event):void{
 
 private var inhibitActivate:Boolean = false;
 
-public function showVideoPlayerAndVideoInfoView():void{
+public function showVideoPlayerAndVideoInfoView(forcePlayerFront:Boolean = false):void{
 	if(videoInfoView != null){
 		
 //		trace("ShowVideoInfoView");
@@ -280,7 +280,14 @@ public function showVideoPlayerAndVideoInfoView():void{
 	if (this.nativeWindow != null
 		&& !this.closed)
 	{
-		this.nativeWindow.orderToFront();
+		if (forcePlayerFront)
+		{
+			this.nativeWindow.activate();
+		}
+		else
+		{
+			this.nativeWindow.orderToFront();
+		}
 	}
 }
 

@@ -707,7 +707,7 @@ package org.mineap.nndd.player
 //						videoInfoView.activate();
 //					}
 //					videoPlayer.activate();
-					videoPlayer.showVideoPlayerAndVideoInfoView();
+					videoPlayer.showVideoPlayerAndVideoInfoView(true);
 					
 					windowResized(false);
 					
@@ -780,7 +780,7 @@ package org.mineap.nndd.player
 //						videoInfoView.activate();
 //					}
 //					videoPlayer.activate();
-					videoPlayer.showVideoPlayerAndVideoInfoView();
+					videoPlayer.showVideoPlayerAndVideoInfoView(true);
 					
 					videoPlayer.setControllerEnable(true);
 					
