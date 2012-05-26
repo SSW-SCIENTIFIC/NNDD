@@ -605,7 +605,7 @@ package org.mineap.nndd.player
 					var nnddVideo:NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(videoPath));
 					
 					if(nnddVideo != null){
-						videoInfoView.image_thumbImg.source = nnddVideo.thumbUrl;
+						videoInfoView.image_thumbImg.source = decodeURIComponent(nnddVideo.thumbUrl);
 					}
 				}
 				
