@@ -3789,6 +3789,8 @@ package org.mineap.nndd.player
 			
 			if(videoID != null){
 				
+				logManager.addLog("コメント投稿の準備中...");
+				
 				var commentPost:CommentPost = new CommentPost();
 				commentPost.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
 				{
@@ -3797,19 +3799,20 @@ package org.mineap.nndd.player
 				commentPost.addEventListener(CommentPost.COMMENT_POST_FAIL, function(event:IOErrorEvent):void
 				{
 					trace(event);
-					logManager.addLog("\t\t" + CommentPost.COMMENT_POST_FAIL + ":" + event);
+					logManager.addLog("\t" + CommentPost.COMMENT_POST_FAIL + ":" + event);
 					logManager.addLog("コメント投稿失敗");
 					Alert.show("コメントの投稿に失敗\n\n" + event.text, Message.M_ERROR);
 					commentPost.close();
 				});
-				commentPost.addEventListener(CommentPost.COMMENT_POST_SUCCESS, function():void{
+				commentPost.addEventListener(CommentPost.COMMENT_POST_SUCCESS, function(event:Event):void{
 					var post:XML = commentPost.getPostComment();
 					if(!isStreamingPlay){
 						var path:String = PathMaker.createNomalCommentPathByVideoPath(source);
 						(new FileIO(logManager)).addComment(path, post);
 					}
 					trace("コメントを投稿:" + videoID);
-					logManager.addLog("\t\tコメントを投稿:" + videoID);
+					logManager.addLog("\t" + CommentPost.COMMENT_POST_SUCCESS + ":" + event);
+					logManager.addLog("コメントを投稿(対象動画:" + videoID + ")");
 					logManager.addLog("***コメント投稿完了***");
 					commentPost.close();
 				});
