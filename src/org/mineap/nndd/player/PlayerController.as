@@ -3791,6 +3791,10 @@ package org.mineap.nndd.player
 				
 				logManager.addLog("コメント投稿の準備中...");
 				
+				logManager.addLog("\tcomment:" + comment);
+				logManager.addLog("\tcommand:" + command);
+				logManager.addLog("\tvpos:" + commentTimerVpos/10);
+				
 				var commentPost:CommentPost = new CommentPost();
 				commentPost.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
 				{
