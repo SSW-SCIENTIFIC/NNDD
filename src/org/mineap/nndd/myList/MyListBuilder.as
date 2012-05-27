@@ -114,6 +114,21 @@ package org.mineap.nndd.myList
 					
 					var videoId:String = PathMaker.getVideoID(temp.link.text());
 					var video:NNDDVideo = this._libraryManager.isExist(videoId);
+					if (video == null)
+					{
+						if (videoId != null && videoId.indexOf("sm") == -1)
+						{
+							var description:String = temp.description.text();
+							var regexp:RegExp = new RegExp("smile.i.(\\d+)");
+							var array:Array = description.match(regexp);
+							if (array != null && array.length > 1)
+							{
+								var id:String = array[1];
+								video = this._libraryManager.isExist("so" + id);
+							}
+						}
+					}
+					
 					var played:Boolean = false;
 					var videoLocalPath:String = "";
 					if(video != null){
