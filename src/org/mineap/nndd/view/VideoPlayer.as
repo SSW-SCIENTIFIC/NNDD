@@ -530,6 +530,7 @@ public function hbox_displayLabelsInit(event:Event):void{
 	filterArray.push(new DropShadowFilter(1));
 	
 	button_x1.filters = filterArray;
+	button_x1_5.filters = filterArray;
 	button_x2.filters = filterArray;
 	button_ChangeFullScreen.filters = filterArray;
 	button_ChangeShowInfoView.filters = filterArray;
