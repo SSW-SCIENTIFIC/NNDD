@@ -31,3 +31,17 @@ public function postButtonClicked(event:Event):void{
 //		textinput_command.text = "";
 	}
 }
+
+public function changeColor(isDark:Boolean):void
+{
+	if (isDark)
+	{
+		textinput_command.setStyle("contentBackgroundColor", "#DDDDDD");
+		textInput_comment.setStyle("contentBackgroundColor", "#DDDDDD");
+	}
+	else
+	{
+		textinput_command.setStyle("contentBackgroundColor", "#FFFFFF");
+		textInput_comment.setStyle("contentBackgroundColor", "#FFFFFF");
+	}
+}

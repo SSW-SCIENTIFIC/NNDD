@@ -36,6 +36,24 @@
 			private var thumbImgMenuItem5:ContextMenuItem;
 			private var thumbImgMenuItem6:ContextMenuItem;
 			
+			
+			public function changeColor(isDark:Boolean):void
+			{
+				if (isDark)
+				{
+					this.setStyle("backgroundColor", "#646464");
+					this.setStyle("contentBackgroundColor", "#969696");
+				}
+				else
+				{
+					this.setStyle("backgroundColor", "#FFFFFF");
+					this.setStyle("contentBackgroundColor", "#FFFFFF");
+				}
+				
+				videoPlayer.changeColor(isDark);
+				
+			}
+			
 			protected function window1_activateHandler(event:Event):void
 			{
 				if (videoPlayer != null)
@@ -282,17 +300,23 @@
 				 toolTip="HTML形式の投稿者説明文が表示できない場合、このチェックを外してプレーンテキストの投稿者説明文を表示させてください。" fontWeight="bold"/>
 	
 	<mx:ViewStack id="viewstack1" left="5" right="5" top="150" bottom="27">
-		<mx:Canvas label="動画情報" width="100%" height="100%" id="canvas_videoInfo">
-			<mx:TabNavigator left="0" right="0" top="0" bottom="0">
+		<mx:Canvas id="canvas_videoInfo" width="100%" height="100%" label="動画情報">
+			<mx:TabNavigator left="0" right="0" top="0" bottom="0" backgroundAlpha="0.3">
 				<mx:Canvas label="コメント" width="100%" height="100%" id="canvas_comment_parent">
-					<mx:TabNavigator right="0" left="0" top="0" bottom="48" id="tabNavigator_comment" change="tabNavigator_comment_changeHandler(event)">
+					<mx:TabNavigator right="0" left="0" top="0" bottom="48" id="tabNavigator_comment" 
+									 change="tabNavigator_comment_changeHandler(event)" backgroundAlpha="0.3">
 						<mx:Canvas label="コメントリスト" width="100%" height="100%" id="canvas_comment" toolTip="コメントの一覧を表示します。">
-							<mx:DataGrid left="0" right="0" top="0" bottom="0" dataProvider="{commentListProvider}" resizableColumns="true"
-									id="dataGrid_comment" headerRelease="headerReleaseHandler(event)" doubleClickEnabled="true" 
-									itemDoubleClick="commentListDoubleClicked(event)" editable="false" rowHeight="22"
-									horizontalScrollPolicy="on" creationComplete="dataGrid_comment_creationCompleteHandler(event)">
+							<mx:DataGrid id="dataGrid_comment" left="0" right="0" top="0" bottom="0"
+										 borderVisible="true"
+										 creationComplete="dataGrid_comment_creationCompleteHandler(event)"
+										 dataProvider="{commentListProvider}"
+										 doubleClickEnabled="true" editable="false"
+										 headerRelease="headerReleaseHandler(event)"
+										 horizontalScrollPolicy="on"
+										 itemDoubleClick="commentListDoubleClicked(event)"
+										 resizableColumns="true" rowHeight="22">
 								<mx:columns>
-									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
+									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50" />
 									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
 									<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
 									<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
@@ -313,7 +337,8 @@
 							<mx:DataGrid left="0" right="0" top="55" bottom="0" dataProvider="{commentListProvider}" resizableColumns="true"
 									id="dataGrid_oldComment" editable="false" rowHeight="22" horizontalScrollPolicy="on" headerRelease="headerReleaseHandler(event)"
 									creationComplete="dataGrid_oldComment_creationCompleteHandler(event)" doubleClickEnabled="true"
-									itemDoubleClick="commentListDoubleClicked(event)">
+									itemDoubleClick="commentListDoubleClicked(event)"
+									contentBackgroundAlpha="0.3">
 								<mx:columns>
 									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
 									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
@@ -335,7 +360,9 @@
 							<mx:Button id="button_removeNgList" right="5" top="5" width="40"
 									   label="-" click="removeItemFromNgList()"
 									   toolTip="NGリストから項目を削除します"/>
-							<mx:DataGrid id="dataGrid_NG" dataProvider="{ngListProvider}" itemClick="ngListItemClicked(event)" left="0" bottom="0" right="0" top="35">
+							<mx:DataGrid id="dataGrid_NG" dataProvider="{ngListProvider}" 
+										 itemClick="ngListItemClicked(event)" left="0" bottom="0" right="0" top="35"
+										 contentBackgroundAlpha="0.3">
 								<mx:columns>
 									<mx:DataGridColumn headerText="種類" dataField="ng_kind_column" width="80"/>
 									<mx:DataGridColumn headerText="対象" dataField="ng_word_column"/>
@@ -353,7 +380,9 @@
 				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true"
 						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
-						itemDoubleClick="playListDoubleClicked()" showHeaders="false" creationComplete="dataGrid_playList_creationCompleteHandler(event)">
+						itemDoubleClick="playListDoubleClicked()" showHeaders="false" 
+						creationComplete="dataGrid_playList_creationCompleteHandler(event)"
+						contentBackgroundAlpha="0.3">
 						<mx:columns>
 							<mx:DataGridColumn showDataTips="true">
 							</mx:DataGridColumn>
@@ -379,7 +408,8 @@
 					<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
 				</mx:Canvas>
 				<mx:Canvas label="タグ" width="100%" height="100%" id="canvas_Tag">
-					<mx:TabNavigator left="0" top="0" bottom="0" right="0">
+					<mx:TabNavigator left="0" top="0" bottom="0" right="0"
+									 backgroundAlpha="0.3">
 						<mx:Canvas label="ニコニコ" width="100%" height="100%">
 							<mx:List id="list_nicoTag" dataProvider="{nicoTagProvider}" doubleClickEnabled="true" itemDoubleClick="tagListDoubleClickEventHandler(event)" left="0" top="0" bottom="0" right="0"></mx:List>
 						</mx:Canvas>
@@ -389,9 +419,14 @@
 					</mx:TabNavigator>
 				</mx:Canvas>
 				<mx:Canvas label="市場" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_ichiba">
-					<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_inner_ichiba">
+					<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_inner_ichiba"
+									 backgroundAlpha="0.3">
 						<mx:Canvas label="ニコニコ" width="100%" height="100%">
-							<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" right="0" rowHeight="80" dataProvider="{ichibaNicoProvider}" id="dataGrid_ichiba_nico" doubleClickEnabled="true" itemDoubleClick="ichibaDataGridDoubleClicked(event)">
+							<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" right="0" 
+										 rowHeight="80" dataProvider="{ichibaNicoProvider}" 
+										 id="dataGrid_ichiba_nico" doubleClickEnabled="true" 
+										 itemDoubleClick="ichibaDataGridDoubleClicked(event)"
+										 contentBackgroundAlpha="0.3">
 								<mx:columns>
 									<mx:DataGridColumn dataField="col_image" width="80">
 										<mx:itemRenderer>
@@ -403,7 +438,11 @@
 							</mx:DataGrid>
 						</mx:Canvas>
 						<mx:Canvas label="ローカル" width="100%" height="100%">
-							<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" right="0" rowHeight="80" dataProvider="{ichibaLocalProvider}" id="dataGrid_ichiba_local" doubleClickEnabled="true" itemDoubleClick="ichibaDataGridDoubleClicked(event)">
+							<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" 
+										 right="0" rowHeight="80" dataProvider="{ichibaLocalProvider}" 
+										 id="dataGrid_ichiba_local" doubleClickEnabled="true" 
+										 itemDoubleClick="ichibaDataGridDoubleClicked(event)"
+										 contentBackgroundAlpha="0.3">
 								<mx:columns>
 									<mx:DataGridColumn dataField="col_image" width="80">
 										<mx:itemRenderer>
@@ -435,7 +474,8 @@
 								   toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
 					
 					<mx:VDividedBox left="0" top="50" bottom="0" right="0">
-						<mx:TabNavigator width="100%" height="180">
+						<mx:TabNavigator width="100%" height="180"
+										 backgroundAlpha="0.3">
 							<mx:Canvas id="canvas_owner_onNico" label="ニコニコ" width="100%" height="100%">
 								<mx:TextArea id="textArea_owner_onNico" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_nico}" link="ownerTextLinkClicked(event)"/>
 							</mx:Canvas>
@@ -443,7 +483,10 @@
 								<mx:TextArea id="textArea_owner" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_local}" link="ownerTextLinkClicked(event)"/>
 							</mx:Canvas>
 						</mx:TabNavigator>
-						<mx:DataGrid width="100%" height="50%" id="dataGrid_ownerComment" dataProvider="{ownerCommentProvider}" doubleClickEnabled="true" itemDoubleClick="commentListDoubleClicked(event)" rowHeight="22">
+						<mx:DataGrid width="100%" height="50%" id="dataGrid_ownerComment" 
+									 dataProvider="{ownerCommentProvider}" doubleClickEnabled="true" 
+									 itemDoubleClick="commentListDoubleClicked(event)" rowHeight="22"
+									 contentBackgroundAlpha="0.3">
 							<mx:columns>
 								<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
 								<mx:DataGridColumn headerText="コマンド" dataField="command_column" width="100"/>
@@ -466,7 +509,8 @@
 								 creationComplete="comboboxRelationOrderCreationCompleteHandler(event)">
 					</mx:ComboBox>
 					<mx:DataGrid left="0" top="30" bottom="0" right="0" dataProvider="{relationDataProvider}" doubleClickEnabled="true"
-								 id="datagrid_relation" showHeaders="false" itemDoubleClick="relationItemDoubleClickHandler(event)" rowHeight="70">
+								 id="datagrid_relation" showHeaders="false" itemDoubleClick="relationItemDoubleClickHandler(event)" 
+								 rowHeight="70" contentBackgroundAlpha="0.3">
 						<mx:columns>
 							<mx:DataGridColumn dataField="col_image" width="80">
 								<mx:itemRenderer>
@@ -513,9 +557,9 @@
 			
 		</mx:Canvas>
 		<mx:Canvas label="設定" width="100%" height="100%">
-			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0"
-						backgroundColor="#ffffff">
-				<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config">
+			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0">
+				<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config"
+								 backgroundAlpha="0.3">
 					<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1">
 						
 						<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" 
@@ -627,52 +671,56 @@
 						<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" 
 									 change="checkboxFollowInfoViewHeight(event)" left="10" top="70"
 									 toolTip="InfoViewの大きさをPlayerの大きさに合わせて変更します。"/>
+						<mx:CheckBox label="Playerで暗い配色を使う" left="10" top="90" 
+									 id="checkBox_useDarkColor" click="checkBox_useDarkColorChanged(event)" 
+									 toolTip="Playerの配色を暗い色に変更します"
+									 selected="false"/>
 						
-						<mx:HRule left="10" right="10" top="95" height="5"/>
+						<mx:HRule left="10" right="10" top="115" height="5"/>
 						
-						<mx:CheckBox label="ユーザーニコ割を再生しない" left="10" top="110" id="checkBox_isNotPlayNicowari" 
+						<mx:CheckBox label="ユーザーニコ割を再生しない" left="10" top="130" id="checkBox_isNotPlayNicowari" 
 									 change="checkBoxIsNotPlayNicowariChanged(event)" 
 									 toolTip="動画の投稿者が設定したニコ割を再生しないようにします。"/>
-						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="130" id="checkBox_showAlwaysNicowariArea" 
+						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="150" id="checkBox_showAlwaysNicowariArea" 
 									 change="checkBoxShowAlwaysNicowariAreaChanged(event)" 
 									 toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。" 
 									 enabled="{!checkBox_isNotPlayNicowari.selected}"/>
-						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="150" id="checkbox_hideTagArea" 
+						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="170" id="checkbox_hideTagArea" 
 									 change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
-						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="170" height="22"
+						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="190" height="22"
 									 label="Player下のコントローラを表示しない"
 									 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
 									 rollOut="videoPlayer.videoController.rollOut(event)"
 									 rollOver="videoPlayer.videoController.rollOver(event)"
 									 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
-						<mx:CheckBox label="Playerを開いたときに「動画を開く」ダイアログも一緒に開く" left="10" top="190" 
+						<mx:CheckBox label="Playerを開いたときに「動画を開く」ダイアログも一緒に開く" left="10" top="210" 
 									 id="checkBox_openFileDialogWhenOpenPlayer" click="checkBox_openFileDialogWhenOpenPlayer_clickHandler(event)"
 									 creationComplete="checkBox_openFileDialogWhenOpenPlayer_creationCompleteHandler(event)"
 									 toolTip="Playerがあたらし開いた場合、動画が再生されていないときに、「動画を開く」ダイアログも同時に開きます。"/>
 						
-						<mx:HRule left="10" right="10" top="215" height="5"/>
+						<mx:HRule left="10" right="10" top="235" height="5"/>
 						
-						<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="230" 
+						<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="250" 
 									 id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" 
 									 toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
-						<mx:CheckBox label="動画以外をすべて更新する" left="36" top="250"
+						<mx:CheckBox label="動画以外をすべて更新する" left="36" top="270"
 									 id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" 
 									 toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
 						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" 
-									 left="36" top="270" id="checkBox_isAppendComment" 
+									 left="36" top="290" id="checkBox_isAppendComment" 
 									 change="checkBoxAppendCommentChanged(event)" 
 									 toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
 						
-						<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="300" 
+						<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="320" 
 									 id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" 
 									 toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
-						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="320"
+						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="340"
 									 id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" 
 									 toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
 						
-						<mx:HRule left="10" right="10" top="345" height="5"/>
+						<mx:HRule left="10" right="10" top="365" height="5"/>
 						
-						<mx:CheckBox label="コメントを匿名で投稿(184)" left="10" top="360" 
+						<mx:CheckBox label="コメントを匿名で投稿(184)" left="10" top="380" 
 									 id="checkBox_is184" click="checkBoxIs184(event)" 
 									 toolTip="コメントを匿名(184)で投稿します"
 									 selected="true"/>

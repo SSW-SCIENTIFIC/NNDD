@@ -3,22 +3,16 @@
 <!-- VideoPlayer.mxml -->
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
 	
-<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		  xmlns:s="library://ns.adobe.com/flex/spark" 
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns:ns1="*"
-		  width="550" height="540" minWidth="300" minHeight="300" 
-		  backgroundColor="#FFFFFF"
-		  close="windowClosed()" 
-		  closing="windowClosing(event)" 
-		  resize="resizeNow(event)" 
-		  title="NNDD - Player"
-		  updateComplete="updateComplete()" 
-		  windowActivate="window1_windowActivateHandler(event)"
-		  windowComplete="windowComplete(event)" 
-		  windowMove="windowMove(event)"
-		  windowResize="windowResized(event)"
-		  showStatusBar="false">
+		  width="550" height="540" minWidth="300" minHeight="300" backgroundColor="#FFFFFF"
+		  close="windowClosed()" closing="windowClosing(event)" contentBackgroundColor="#BBBBBB"
+		  resize="resizeNow(event)" showStatusBar="false" title="NNDD - Player"
+		  updateComplete="updateComplete()" windowActivate="window1_windowActivateHandler(event)"
+		  windowComplete="windowComplete(event)" windowMove="windowMove(event)"
+		  windowResize="windowResized(event)">
 
 	<fx:Script>
 		<![CDATA[
@@ -43,6 +37,25 @@
 			private var downnloadNicoSoundMenuItem:ContextMenuItem;
 			
 			private var _contextMenuShowing:Boolean = false;
+			
+			public function changeColor(isDark:Boolean):void
+			{
+				if (isDark)
+				{
+					this.setStyle("backgroundColor", "#646464");
+					this.setStyle("contentBackgroundColor", "#969696");
+					vbox_videoPlayer.setStyle("backgroundColor", "#646464");
+				}
+				else
+				{
+					this.setStyle("backgroundColor", "#FFFFFF");
+					this.setStyle("contentBackgroundColor", "#FFFFFF");
+					vbox_videoPlayer.setStyle("backgroundColor", "#FFFFFF");
+				}
+				
+				videoController.commentPostView.changeColor(isDark);
+				videoController_under.commentPostView.changeColor(isDark);
+			}
 			
 			protected function textArea_tag_keyDownHandler(event:KeyboardEvent):void
 			{
@@ -123,6 +136,9 @@
 					videoDisplayMenuItem6, videoDisplayMenuItem9 ,videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13, videoDisplayMenuItem14);
 				
 				canvas_video_back.contextMenu = videoDisplayMenu;
+				
+				videoInfoView.changeColor(videoInfoView.useDarkColor);
+				
 			}
 			
 			protected function videoDisplayContextMenuDisplayHandler(event:Event):void{

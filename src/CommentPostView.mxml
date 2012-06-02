@@ -3,7 +3,7 @@
 
 	<mx:Script source="org/mineap/nndd/view/CommentPostView.as" />
 	
-	<mx:TextInput top="2" bottom="1" left="54" width="60" id="textinput_command" enter="postButtonClicked(event)"/>
+	<mx:TextInput id="textinput_command" left="54" top="2" bottom="1" width="60" enter="postButtonClicked(event)"/>
 	<mx:TextInput top="2" bottom="1" right="50" left="118" id="textInput_comment" enter="postButtonClicked(event)"/>
 	<mx:Button right="1" top="1" bottom="1" width="45" label="投稿" click="postButtonClicked(event)"
 			   focusEnabled="false" fontSize="10"/>
