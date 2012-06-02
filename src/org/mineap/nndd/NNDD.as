@@ -270,6 +270,8 @@ private var downloadRetryMaxCount:int = 2;
 
 private var useOldTypeCommentGet:Boolean = true;
 
+private var useAppDirSystemFile:Boolean = false;
+
 private var period:int = 0;
 private var target:int = 0;
 
@@ -371,6 +373,7 @@ public function initNNDD(nndd:NNDD):void
 	if (useSystemFileStr != null)
 	{
 		var useSystemFile:Boolean = ConfUtil.parseBoolean(useSystemFileStr);
+		this.useAppDirSystemFile = useSystemFile;
 		if (useSystemFile)
 		{
 			this.libraryManager.useAppDirSystemFile = useSystemFile;
@@ -2315,14 +2318,14 @@ private function readStore(isLogout:Boolean = false):void{
 		confValue = FontUtil.setSize(Number(confValue));
 		ConfigManager.getInstance().setItem("fontSize", confValue);
 		
-		
-		errorName = "useAppDirLibFile";
-		confValue = ConfigManager.getInstance().getItem("useAppDirLibFile");
-		if(confValue != null){
-			useAppDirLibFile = ConfUtil.parseBoolean(confValue);
-		}else{
+// このオプションは無効(useAppDirSystemFileを使う)		
+//		errorName = "useAppDirLibFile";
+//		confValue = ConfigManager.getInstance().getItem("useAppDirLibFile");
+//		if(confValue != null){
+//			useAppDirLibFile = ConfUtil.parseBoolean(confValue);
+//		}else{
 			useAppDirLibFile = false;
-		}
+//		}
 		
 		errorName = "isOpenPlayerOnBoot";
 		confValue = ConfigManager.getInstance().getItem("isOpenPlayerOnBoot");
@@ -2978,6 +2981,8 @@ private function libraryTabCreationComplete():void{
 private function allConfigCanvasCreationComplete(event:FlexEvent):void{
 	textInput_saveAdress.text = this.libraryManager.libraryDir.nativePath;
 	checkBox_useDownloadDir.selected = this.isUseDownloadDir;
+	
+	checkBox_useLibraryDirForSystemDir.selected = !this.useAppDirSystemFile;
 	
 	checkBox_versionCheck.selected = this.isVersionCheckEnable;
 	
@@ -4641,8 +4646,9 @@ private function saveStore():void{
 		ConfigManager.getInstance().setItem("isEnableNativePlayer", this.isEnableNativePlayer);
 		
 		/* ライブラリファイルをアプリケーションディレクトリに保存するかどうか */
-		ConfigManager.getInstance().removeItem("useAppDirLibFile");
-		ConfigManager.getInstance().setItem("useAppDirLibFile", this.useAppDirLibFile);
+		// このオプションは無効(useAppDirLibFile)をつかう
+//		ConfigManager.getInstance().removeItem("useAppDirLibFile");
+//		ConfigManager.getInstance().setItem("useAppDirLibFile", this.useAppDirLibFile);
 		
 		/* 起動時にPlayerを開くかどうか */
 		ConfigManager.getInstance().removeItem("isOpenPlayerOnBoot");
@@ -5044,6 +5050,101 @@ private function versionCheckCheckBoxChenged():void{
 private function useDownloadDirCheckBoxChenged():void{
 	isUseDownloadDir = checkBox_useDownloadDir.selected;
 	this.downloadManager.isUseDownloadDir = isUseDownloadDir;
+}
+
+private function useAppSystemDirChanged(event:Event):void
+{
+	
+	Alert.show("この変更を行った後、NNDDを起動しなおす必要があります。よろしいですか？","注意",Alert.OK | Alert.CANCEL,null,function(event:CloseEvent):void
+	{
+		if (event.detail != Alert.OK)
+		{
+			checkBox_useLibraryDirForSystemDir.selected = !checkBox_useLibraryDirForSystemDir.selected;
+			return;
+		}
+		
+		var useAppStorageDir:Boolean = !checkBox_useLibraryDirForSystemDir.selected;
+		
+		if (useAppStorageDir)
+		{
+			// ApplicationStorageDirectoryを使うように変更
+			
+			var newSystemDir:File = File.applicationStorageDirectory.resolvePath("system/");
+			
+			if (newSystemDir.exists)
+			{
+				// フォルダがすでにある
+				
+				if (libraryManager.systemFileDir.modificationDate.time > newSystemDir.modificationDate.time)
+				{
+					
+					//動画保存先のシステム情報のほうが新しいならバックアップ
+					
+					var newSystemDirBackFile:File = File.applicationStorageDirectory.resolvePath("system_back/");
+					newSystemDir.moveTo(newSystemDirBackFile, true);
+					
+				}
+				
+				// 上書きでコピー
+				libraryManager.systemFileDir.copyTo(newSystemDir, true);
+				
+				
+			}
+			else
+			{
+				// フォルダがない
+				
+				// 現状のシステム情報を全部コピー
+				libraryManager.systemFileDir.copyTo(newSystemDir, true);
+			}
+			
+			ConfigManager.getInstance().setItem("useAppDirSystemFile", true);
+			
+		}
+		else
+		{
+			// 動画の保存先ディレクトリを使うように変更
+			
+			var librarySystemDir:File = libraryManager.libraryDir.resolvePath("system/");
+			if (librarySystemDir.exists)
+			{
+				
+				// フォルダがすでにある
+				if (libraryManager.systemFileDir.modificationDate.time < librarySystemDir.modificationDate.time)
+				{
+					
+					//ApplicationStraogeDirの情報のほうが新しいなら、動画保存先のsystemをバックアップ
+					newSystemDirBackFile = File.applicationStorageDirectory.resolvePath("system_back/");
+					librarySystemDir.copyTo(newSystemDirBackFile, true);
+					
+					
+				}
+				
+				// 上書きでコピー
+				libraryManager.systemFileDir.copyTo(librarySystemDir, true);
+				
+			}
+			else
+			{
+				
+				//　フォルダがない
+				
+				// 現状のシステム情報を全部コピー
+				libraryManager.systemFileDir.copyTo(librarySystemDir, true);
+				
+			}
+			
+			ConfigManager.getInstance().setItem("useAppDirSystemFile", false);
+			
+		}
+		
+		// 設定を更新したのでシステム終了。
+		downloadManager.stop();
+		
+		exitButtonClicked();
+		
+	});
+	
 }
 
 private function disEnableAutoExitCheckBoxChanged(event:Event):void{
