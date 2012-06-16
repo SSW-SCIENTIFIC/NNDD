@@ -30,6 +30,23 @@ package org.mineap.nndd.util
 			var videoId_pattern:RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/watch/[^\"]+\"[^>]*>([^<]+)</a>|" + VideoTypeUtil.VIDEO_ID_WITHOUT_NUMONLY_SEARCH_PATTERN_STRING, "ig");
 			var channel_pattern:RegExp = new RegExp("<a href=\"http://ch.nicovideo.jp/(channel/ch[^\"]+)\">[^<]+</a>|(channel/\\w+)", "ig");
 			
+			var fontsize_pattern:RegExp = new RegExp("size=\"(\\d+)\"", "ig");
+			
+			// 小さすぎるサイズを全置換
+			text = text.replace(fontsize_pattern, replFn_changeFontSize);
+			function replFn_changeFontSize():String{
+				var str:String = arguments[0];
+				if(arguments.length>1 && arguments[1] != "" ){
+					var size:int = int(arguments[1]);
+					if (size < 10)
+					{
+						size = size + 8;
+						str = String(size);
+					}
+				}
+				return "size=\"" + size + "\"";
+			}
+			
 			var returnString:String = text.replace(myList_pattern, replFN_mylist);
 			function replFN_mylist():String{
 				var str:String = arguments[0];
@@ -99,5 +116,8 @@ package org.mineap.nndd.util
 			return returnString;
 			
 		}
+		
+		
+		
 	}
 }
