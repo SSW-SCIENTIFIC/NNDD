@@ -22,7 +22,7 @@
 				liveDragging="true" maximum="1" minimum="0" mouseFocusEnabled="true"
 				mouseWheel="mouseWheel(event)" snapInterval="0.1" thumbPress="thumbPress(event)"
 				thumbRelease="thumbRelease(event)"/>
-	<mx:HSlider id="slider_volume" right="0" top="34" width="51" height="14"
+	<mx:HSlider id="slider_volume" right="3" top="34" width="47" height="14"
 				change="sliderVolumeChanged(event)" focusEnabled="false" liveDragging="true"
 				maximum="1" minimum="0" mouseFocusEnabled="true" mouseWheel="mouseWheel(event)"
 				snapInterval="0.01" value="0.5"/>

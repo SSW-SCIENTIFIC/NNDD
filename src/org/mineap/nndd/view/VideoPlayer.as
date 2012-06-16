@@ -8,6 +8,7 @@
 import flash.data.EncryptedLocalStore;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
+import flash.desktop.NativeApplication;
 import flash.desktop.NativeDragActions;
 import flash.desktop.NativeDragManager;
 import flash.display.NativeMenu;
@@ -64,6 +65,8 @@ import org.mineap.nndd.util.PathMaker;
 import org.mineap.nndd.util.ShortUrlChecker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
+
+import spark.primitives.Rect;
 
 public var isShowComment:Boolean = true;
 
@@ -317,7 +320,24 @@ private function mouseMove(event:MouseEvent):void{
 }
 
 private function windowResized(event:NativeWindowBoundsEvent):void{
-	lastRect = event.afterBounds;
+	
+	if (Capabilities.screenResolutionX < event.afterBounds.width || Capabilities.screenResolutionY < event.afterBounds.height)
+	{
+		event.preventDefault();
+		
+		// Playerウィンドウの大きさがディスプレイの最大値を超えているとき
+		this.nativeWindow.x = 0;
+		this.nativeWindow.y = 0;
+		this.nativeWindow.width = Capabilities.screenResolutionX;
+		this.nativeWindow.height = Capabilities.screenResolutionY;
+		lastRect = new Rectangle(0, 0, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+	}
+	else
+	{
+		// Playerウィンドウの大きさがディスプレイの最大値を超えていないとき
+		lastRect = event.afterBounds;
+	}
+	
 	followInfoView(lastRect);
 	resizeInfoView();
 	
