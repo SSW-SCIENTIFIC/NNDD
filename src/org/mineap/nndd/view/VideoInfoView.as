@@ -97,6 +97,7 @@ public var isNotPlayNicowari:Boolean = false;
 public var isOpenFileDialogWhenOpenPlayer:Boolean = false;
 public var is184:Boolean = true;
 public var useDarkColor:Boolean = false;
+public var ownerCommentTextSize:int = 70;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -1259,6 +1260,16 @@ private function readStore():void{
 			this.useDarkColor = ConfUtil.parseBoolean(confValue);
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("ownerCommentTextSize");
+		if (confValue != null)
+		{
+			var height:int = int(confValue);
+			
+			if (height >= 0) {
+				this.ownerCommentTextSize = height;
+			}
+		}
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -1415,6 +1426,9 @@ public function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("useDarkColor");
 		ConfigManager.getInstance().setItem("useDarkColor", useDarkColor);
+		
+		ConfigManager.getInstance().removeItem("ownerCommentTextSize");
+		ConfigManager.getInstance().setItem("ownerCommentTextSize", ownerCommentTextSize);
 		
 		ConfigManager.getInstance().save();
 		

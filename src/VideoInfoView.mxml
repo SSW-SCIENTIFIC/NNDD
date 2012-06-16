@@ -24,6 +24,7 @@
 			
 			import mx.events.DropdownEvent;
 			import mx.events.IndexChangedEvent;
+			import mx.events.ResizeEvent;
 			
 			import org.mineap.nndd.player.comment.Comments;
 			import org.mineap.nndd.util.DataGridColumnWidthUtil;
@@ -36,6 +37,7 @@
 			private var thumbImgMenuItem5:ContextMenuItem;
 			private var thumbImgMenuItem6:ContextMenuItem;
 			
+			private var ownerTextInitialized:Boolean = false;
 			
 			public function changeColor(isDark:Boolean):void
 			{
@@ -270,6 +272,19 @@
 				}
 			}
 			
+			protected function canvas2_resizeHandler(event:ResizeEvent):void
+			{
+				if (ownerTextInitialized){
+					ownerCommentTextSize = (event.currentTarget as Canvas).height;
+				}
+			}
+			
+			protected function canvas2_creationCompleteHandler(event:FlexEvent):void
+			{
+				ownerTextInitialized = true;
+				(event.currentTarget as Canvas).height = ownerCommentTextSize;
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -294,443 +309,449 @@
 	
 	<mx:Label top="75" left="5" right="5" id="label_deletedInfo" visible="false" color="0xff0000"/>
 	
-	<mx:TextArea left="5" top="75" right="5" height="73" htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)" editable="false"/>
-	<mx:CheckBox label="HTML" right="20" id="checkbox_showHtml" alpha="0.3" enabled="true" selected="true" rollOver="checkbox_showHtml_rollOverHandler(event)"
-				 rollOut="checkbox_showHtml_rollOutHandler(event)" change="checkbox_showHtml_changeHandler(event)" top="127" creationComplete="checkbox_showHtml_creationCompleteHandler(event)"
-				 toolTip="HTML形式の投稿者説明文が表示できない場合、このチェックを外してプレーンテキストの投稿者説明文を表示させてください。" fontWeight="bold"/>
+	<mx:VDividedBox left="5" top="75" right="5" bottom="30" id="ownertext_comment_dividedbox" >
+		<mx:Canvas width="100%" height="20%" horizontalScrollPolicy="off" verticalScrollPolicy="off" resize="canvas2_resizeHandler(event)" creationComplete="canvas2_creationCompleteHandler(event)" show="canvas2_creationCompleteHandler(event)">
 	
-	<mx:ViewStack id="viewstack1" left="5" right="5" top="150" bottom="27">
-		<mx:Canvas id="canvas_videoInfo" width="100%" height="100%" label="動画情報">
-			<mx:TabNavigator left="0" right="0" top="0" bottom="0" backgroundAlpha="0.3">
-				<mx:Canvas label="コメント" width="100%" height="100%" id="canvas_comment_parent">
-					<mx:TabNavigator right="0" left="0" top="0" bottom="48" id="tabNavigator_comment" 
-									 change="tabNavigator_comment_changeHandler(event)" backgroundAlpha="0.3">
-						<mx:Canvas label="コメントリスト" width="100%" height="100%" id="canvas_comment" toolTip="コメントの一覧を表示します。">
-							<mx:DataGrid id="dataGrid_comment" left="0" right="0" top="0" bottom="0"
-										 borderVisible="true"
-										 creationComplete="dataGrid_comment_creationCompleteHandler(event)"
-										 dataProvider="{commentListProvider}"
-										 doubleClickEnabled="true" editable="false"
-										 headerRelease="headerReleaseHandler(event)"
-										 horizontalScrollPolicy="on"
-										 itemDoubleClick="commentListDoubleClicked(event)"
-										 resizableColumns="true" rowHeight="22">
-								<mx:columns>
-									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50" />
-									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
-									<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
-									<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
-									<mx:DataGridColumn headerText="番号" dataField="no_column" width="50"/>
-									<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50" showDataTips="true"/>
-								</mx:columns>
-							</mx:DataGrid>
-						</mx:Canvas>
-						<mx:Canvas label="過去コメント" width="100%" height="100%" toolTip="過去コメントを表示します。過去コメントが動画に表示されるのは、このタブを開いている間だけです。">
-							<mx:DateField left="5" top="5" id="dateField_oldComment"/>
-							<mx:NumericStepper left="103" top="5" minimum="0" maximum="23" id="numericStepper_hour_oldComment"/>
-							<mx:Label text="時" left="169" top="7"/>
-							<mx:NumericStepper left="196" top="5" minimum="0" maximum="59" id="numericStepper_min_oldComment"/>
-							<mx:Label text="分" left="262" top="7"/>
-							<mx:Button label="リセット" right="5" top="5" click="oldCommentTimeResetButton_clickHandler(event)" toolTip="現在の時刻にリセットします。"/>
-							<mx:Button label="更新(ニコニコ動画)" right="109" top="30" id="button_oldComment_reloadFromNico" click="button_oldComment_reloadFromNico_clickHandler(event)" toolTip="指定した時刻以前のコメントをニコニコ動画から読み込みます。(この機能はプレミアムアカウントでのみ利用可能です。)"/>
-							<mx:Button label="更新(ローカル)" top="30" right="5" id="button_oldComment_reload" click="button_oldComment_reload_clickHandler(event)" toolTip="指定した時刻以前のコメントをローカルのファイルから読み込みます。"/>
-							<mx:DataGrid left="0" right="0" top="55" bottom="0" dataProvider="{commentListProvider}" resizableColumns="true"
-									id="dataGrid_oldComment" editable="false" rowHeight="22" horizontalScrollPolicy="on" headerRelease="headerReleaseHandler(event)"
-									creationComplete="dataGrid_oldComment_creationCompleteHandler(event)" doubleClickEnabled="true"
-									itemDoubleClick="commentListDoubleClicked(event)"
-									contentBackgroundAlpha="0.3">
-								<mx:columns>
-									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
-									<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
-									<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
-									<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
-									<mx:DataGridColumn headerText="番号" dataField="no_column" width="50"/>
-									<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50" showDataTips="true"/>
-								</mx:columns>
-							</mx:DataGrid>
-						</mx:Canvas>
-						<mx:Canvas label="NG設定" width="100%" height="100%" toolTip="コメントに対するNG設定を管理します。">
-							<mx:ComboBox id="combobox_ngKind" left="5" top="5" width="85" height="22"
-										 dataProvider="{Comments.NG_KIND_ARRAY}" selectedIndex="0"></mx:ComboBox>
-							<mx:TextInput left="97" enabled="true" id="textInput_ng" enter="ngTextInputEnter(event)" right="97" top="5"/>
-							
-							<mx:Button right="50" top="5" width="40" label="+"
-									   click="addItemToNgList()" enabled="true"
-									   toolTip="NGリストに項目を追加します"/>
-							<mx:Button id="button_removeNgList" right="5" top="5" width="40"
-									   label="-" click="removeItemFromNgList()"
-									   toolTip="NGリストから項目を削除します"/>
-							<mx:DataGrid id="dataGrid_NG" dataProvider="{ngListProvider}" 
-										 itemClick="ngListItemClicked(event)" left="0" bottom="0" right="0" top="35"
-										 contentBackgroundAlpha="0.3">
-								<mx:columns>
-									<mx:DataGridColumn headerText="種類" dataField="ng_kind_column" width="80"/>
-									<mx:DataGridColumn headerText="対象" dataField="ng_word_column"/>
-								</mx:columns>
-							</mx:DataGrid>
-							
-						</mx:Canvas>
-					</mx:TabNavigator>
-					<mx:Button label="IDをNG" bottom="23" left="5" enabled="true" id="button_addNgList_ID" click="addNGListIdButtonClicked()" toolTip="選択中のコメントのIDをNGに設定します"/>
-					<mx:Button label="コメントをNG" left="80" bottom="23" id="button_addNgList_Word" click="addNGListWordButtonClicked()" toolTip="選択中のコメント(文字)をNGに設定します"/>
-					<mx:Button label="IDを許可" left="180" bottom="23" click="addPermissionIdButtonClicked()" toolTip="選択中のコメントのIDを許可IDに設定します"/>
-					<mx:CheckBox label="コメントを再生と同期" left="5" bottom="2" id="checkbox_SyncComment" click="checkboxSyncCommentChanged()" toolTip="コメントリストを再生に同期させてスクロールします。動作が重い場合はチェックを外すと改善することがあります"/>
-					<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" click="checkBoxIsSOPCChanged(event)" left="160" bottom="2" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
-				</mx:Canvas>
-				<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-					<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true"
-						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
-						itemDoubleClick="playListDoubleClicked()" showHeaders="false" 
-						creationComplete="dataGrid_playList_creationCompleteHandler(event)"
-						contentBackgroundAlpha="0.3">
-						<mx:columns>
-							<mx:DataGridColumn showDataTips="true">
-							</mx:DataGridColumn>
-						</mx:columns>
-					</mx:DataGrid>
-					<mx:CheckBox id="checkBox_repeatAll" right="5" bottom="5" label="すべてリピート"
-								 change="checkboxRepeatAllChanged()" creationComplete="checkBox_repeatAllCompleteHandler(event)" 
-								 toolTip="プレイリストの項目が最後まで再生されたら最初から再生し直します"/>
-					<mx:Button left="10" bottom="28" width="50" label="-"
-							   click="playListItemDeleteButtonClicked(event)"
-							   toolTip="選択中の項目をプレイリストから削除します"/>
-					<mx:Button id="button_reverse" left="68" bottom="28" width="50" label="↓↑"
-							   click="playListReverseButtonClicked(event)"
-							   toolTip="このプレイリストの順番を逆順にします"/>
-					<mx:Button id="button_shuffle" left="126" bottom="28" width="80" label="シャッフル"
-							   click="playListShuffleButtonClicked(event)"
-							   toolTip="このプレイリストをシャッフルします"/>
-					
-					<mx:Button left="10" bottom="3" label="保存"
-							   click="playListSaveButtonClicked(event)" toolTip="このプレイリストの内容を保存します"/>
-					<mx:Button left="89" bottom="3" label="クリア"
-							   click="playListClearButtonClicked(event)" toolTip="このプレイリストを空にします"/>
-					<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
-				</mx:Canvas>
-				<mx:Canvas label="タグ" width="100%" height="100%" id="canvas_Tag">
-					<mx:TabNavigator left="0" top="0" bottom="0" right="0"
-									 backgroundAlpha="0.3">
-						<mx:Canvas label="ニコニコ" width="100%" height="100%">
-							<mx:List id="list_nicoTag" dataProvider="{nicoTagProvider}" doubleClickEnabled="true" itemDoubleClick="tagListDoubleClickEventHandler(event)" left="0" top="0" bottom="0" right="0"></mx:List>
-						</mx:Canvas>
-						<mx:Canvas label="ローカル" width="100%" height="100%">
-							<mx:List id="list_localTag" dataProvider="{localTagProvider}" doubleClickEnabled="true" itemDoubleClick="tagListDoubleClickEventHandler(event)" left="0" top="0" bottom="0" right="0"></mx:List>
-						</mx:Canvas>
-					</mx:TabNavigator>
-				</mx:Canvas>
-				<mx:Canvas label="市場" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_ichiba">
-					<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_inner_ichiba"
-									 backgroundAlpha="0.3">
-						<mx:Canvas label="ニコニコ" width="100%" height="100%">
-							<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" right="0" 
-										 rowHeight="80" dataProvider="{ichibaNicoProvider}" 
-										 id="dataGrid_ichiba_nico" doubleClickEnabled="true" 
-										 itemDoubleClick="ichibaDataGridDoubleClicked(event)"
-										 contentBackgroundAlpha="0.3">
-								<mx:columns>
-									<mx:DataGridColumn dataField="col_image" width="80">
-										<mx:itemRenderer>
-											<fx:Component><mx:Image width="80" height="80" /></fx:Component>
-										</mx:itemRenderer>
-									</mx:DataGridColumn>
-									<mx:DataGridColumn dataField="col_info"/>
-								</mx:columns>
-							</mx:DataGrid>
-						</mx:Canvas>
-						<mx:Canvas label="ローカル" width="100%" height="100%">
-							<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" 
-										 right="0" rowHeight="80" dataProvider="{ichibaLocalProvider}" 
-										 id="dataGrid_ichiba_local" doubleClickEnabled="true" 
-										 itemDoubleClick="ichibaDataGridDoubleClicked(event)"
-										 contentBackgroundAlpha="0.3">
-								<mx:columns>
-									<mx:DataGridColumn dataField="col_image" width="80">
-										<mx:itemRenderer>
-											<fx:Component><mx:Image width="80" height="80" /></fx:Component>
-										</mx:itemRenderer>
-									</mx:DataGridColumn>
-									<mx:DataGridColumn dataField="col_info"/>
-								</mx:columns>
-							</mx:DataGrid>
-						</mx:Canvas>
-					</mx:TabNavigator>
-				</mx:Canvas>
-				<mx:Canvas label="投稿者" width="100%" height="100%" id="canvas_owner" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-					
-					<mx:Canvas left="5" top="0" width="50" height="50" backgroundColor="#969696"
-							   contentBackgroundColor="#969696" dropShadowVisible="false">
-						<view:SmoothImage id="image_pubUserIcon" width="48" height="48"
-										  doubleClick="pubUserLinkButton_clickHandler(event)"
-										  doubleClickEnabled="true" top="1" left="1"
-										  source="{pubUserNameIconUrl}"/>
-					</mx:Canvas>
-					<mx:Label left="63" top="0" text="投稿者名："/>
-					<mx:Label id="label_pubUserName" left="133" right="5" top="0"
-							  text="{pubUserName}"/>
-					<mx:LinkButton id="pubUserLinkButton" left="58" top="22"
-								   label="{pubUserLinkButtonText}"
-								   click="pubUserLinkButton_clickHandler(event)" 
-								   color="#0000FF" textDecoration="underline"
-								   toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
-					
-					<mx:VDividedBox left="0" top="50" bottom="0" right="0">
-						<mx:TabNavigator width="100%" height="180"
-										 backgroundAlpha="0.3">
-							<mx:Canvas id="canvas_owner_onNico" label="ニコニコ" width="100%" height="100%">
-								<mx:TextArea id="textArea_owner_onNico" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_nico}" link="ownerTextLinkClicked(event)"/>
+			<mx:TextArea htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)" editable="false" width="100%" height="100%" />
+			<mx:CheckBox label="HTML" right="20" id="checkbox_showHtml" alpha="0.3" enabled="true" selected="true" rollOver="checkbox_showHtml_rollOverHandler(event)"
+						 rollOut="checkbox_showHtml_rollOutHandler(event)" change="checkbox_showHtml_changeHandler(event)" bottom="5" creationComplete="checkbox_showHtml_creationCompleteHandler(event)"
+						 toolTip="HTML形式の投稿者説明文が表示できない場合、このチェックを外してプレーンテキストの投稿者説明文を表示させてください。" fontWeight="bold"/>
+		</mx:Canvas>
+			
+		<mx:ViewStack id="viewstack1" width="100%" height="80%">
+			<mx:Canvas id="canvas_videoInfo" width="100%" height="100%" label="動画情報">
+				<mx:TabNavigator left="0" right="0" top="0" bottom="0" backgroundAlpha="0.3">
+					<mx:Canvas label="コメント" width="100%" height="100%" id="canvas_comment_parent">
+						<mx:TabNavigator right="0" left="0" top="0" bottom="48" id="tabNavigator_comment" 
+										 change="tabNavigator_comment_changeHandler(event)" backgroundAlpha="0.3">
+							<mx:Canvas label="コメントリスト" width="100%" height="100%" id="canvas_comment" toolTip="コメントの一覧を表示します。">
+								<mx:DataGrid id="dataGrid_comment" left="0" right="0" top="0" bottom="0"
+											 borderVisible="true"
+											 creationComplete="dataGrid_comment_creationCompleteHandler(event)"
+											 dataProvider="{commentListProvider}"
+											 doubleClickEnabled="true" editable="false"
+											 headerRelease="headerReleaseHandler(event)"
+											 horizontalScrollPolicy="on"
+											 itemDoubleClick="commentListDoubleClicked(event)"
+											 resizableColumns="true" rowHeight="22">
+									<mx:columns>
+										<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50" />
+										<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
+										<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
+										<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
+										<mx:DataGridColumn headerText="番号" dataField="no_column" width="50"/>
+										<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50" showDataTips="true"/>
+									</mx:columns>
+								</mx:DataGrid>
 							</mx:Canvas>
-							<mx:Canvas id="canvas_owner_local" label="ローカル" width="100%" height="100%">
-								<mx:TextArea id="textArea_owner" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_local}" link="ownerTextLinkClicked(event)"/>
+							<mx:Canvas label="過去コメント" width="100%" height="100%" toolTip="過去コメントを表示します。過去コメントが動画に表示されるのは、このタブを開いている間だけです。">
+								<mx:DateField left="5" top="5" id="dateField_oldComment"/>
+								<mx:NumericStepper left="103" top="5" minimum="0" maximum="23" id="numericStepper_hour_oldComment"/>
+								<mx:Label text="時" left="169" top="7"/>
+								<mx:NumericStepper left="196" top="5" minimum="0" maximum="59" id="numericStepper_min_oldComment"/>
+								<mx:Label text="分" left="262" top="7"/>
+								<mx:Button label="リセット" right="5" top="5" click="oldCommentTimeResetButton_clickHandler(event)" toolTip="現在の時刻にリセットします。"/>
+								<mx:Button label="更新(ニコニコ動画)" right="109" top="30" id="button_oldComment_reloadFromNico" click="button_oldComment_reloadFromNico_clickHandler(event)" toolTip="指定した時刻以前のコメントをニコニコ動画から読み込みます。(この機能はプレミアムアカウントでのみ利用可能です。)"/>
+								<mx:Button label="更新(ローカル)" top="30" right="5" id="button_oldComment_reload" click="button_oldComment_reload_clickHandler(event)" toolTip="指定した時刻以前のコメントをローカルのファイルから読み込みます。"/>
+								<mx:DataGrid left="0" right="0" top="55" bottom="0" dataProvider="{commentListProvider}" resizableColumns="true"
+										id="dataGrid_oldComment" editable="false" rowHeight="22" horizontalScrollPolicy="on" headerRelease="headerReleaseHandler(event)"
+										creationComplete="dataGrid_oldComment_creationCompleteHandler(event)" doubleClickEnabled="true"
+										itemDoubleClick="commentListDoubleClicked(event)"
+										contentBackgroundAlpha="0.3">
+									<mx:columns>
+										<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
+										<mx:DataGridColumn headerText="コメント" dataField="comment_column" width="300" showDataTips="true"/>
+										<mx:DataGridColumn headerText="ユーザーID" dataField="user_id_column" width="150"/>
+										<mx:DataGridColumn headerText="投稿日時" dataField="pubDate_column" width="150"/>
+										<mx:DataGridColumn headerText="番号" dataField="no_column" width="50"/>
+										<mx:DataGridColumn headerText="オプション" dataField="mail_column" width="50" showDataTips="true"/>
+									</mx:columns>
+								</mx:DataGrid>
+							</mx:Canvas>
+							<mx:Canvas label="NG設定" width="100%" height="100%" toolTip="コメントに対するNG設定を管理します。">
+								<mx:ComboBox id="combobox_ngKind" left="5" top="5" width="85" height="22"
+											 dataProvider="{Comments.NG_KIND_ARRAY}" selectedIndex="0"></mx:ComboBox>
+								<mx:TextInput left="97" enabled="true" id="textInput_ng" enter="ngTextInputEnter(event)" right="97" top="5"/>
+								
+								<mx:Button right="50" top="5" width="40" label="+"
+										   click="addItemToNgList()" enabled="true"
+										   toolTip="NGリストに項目を追加します"/>
+								<mx:Button id="button_removeNgList" right="5" top="5" width="40"
+										   label="-" click="removeItemFromNgList()"
+										   toolTip="NGリストから項目を削除します"/>
+								<mx:DataGrid id="dataGrid_NG" dataProvider="{ngListProvider}" 
+											 itemClick="ngListItemClicked(event)" left="0" bottom="0" right="0" top="35"
+											 contentBackgroundAlpha="0.3">
+									<mx:columns>
+										<mx:DataGridColumn headerText="種類" dataField="ng_kind_column" width="80"/>
+										<mx:DataGridColumn headerText="対象" dataField="ng_word_column"/>
+									</mx:columns>
+								</mx:DataGrid>
+								
 							</mx:Canvas>
 						</mx:TabNavigator>
-						<mx:DataGrid width="100%" height="50%" id="dataGrid_ownerComment" 
-									 dataProvider="{ownerCommentProvider}" doubleClickEnabled="true" 
-									 itemDoubleClick="commentListDoubleClicked(event)" rowHeight="22"
-									 contentBackgroundAlpha="0.3">
+						<mx:Button label="IDをNG" bottom="23" left="5" enabled="true" id="button_addNgList_ID" click="addNGListIdButtonClicked()" toolTip="選択中のコメントのIDをNGに設定します"/>
+						<mx:Button label="コメントをNG" left="80" bottom="23" id="button_addNgList_Word" click="addNGListWordButtonClicked()" toolTip="選択中のコメント(文字)をNGに設定します"/>
+						<mx:Button label="IDを許可" left="180" bottom="23" click="addPermissionIdButtonClicked()" toolTip="選択中のコメントのIDを許可IDに設定します"/>
+						<mx:CheckBox label="コメントを再生と同期" left="5" bottom="2" id="checkbox_SyncComment" click="checkboxSyncCommentChanged()" toolTip="コメントリストを再生に同期させてスクロールします。動作が重い場合はチェックを外すと改善することがあります"/>
+						<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" click="checkBoxIsSOPCChanged(event)" left="160" bottom="2" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
+					</mx:Canvas>
+					<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+						<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true"
+							dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
+							itemDoubleClick="playListDoubleClicked()" showHeaders="false" 
+							creationComplete="dataGrid_playList_creationCompleteHandler(event)"
+							contentBackgroundAlpha="0.3">
 							<mx:columns>
-								<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
-								<mx:DataGridColumn headerText="コマンド" dataField="command_column" width="100"/>
-								<mx:DataGridColumn headerText="コメント" dataField="comment_column"/>
+								<mx:DataGridColumn showDataTips="true">
+								</mx:DataGridColumn>
 							</mx:columns>
 						</mx:DataGrid>
-					</mx:VDividedBox>
-				</mx:Canvas>
-				<mx:Canvas label="オススメ" width="100%" height="100%" >
-					<mx:ComboBox left="0" top="0" width="120" 
-								 dataProvider="{relationSortComboboxDataProvider}" 
-								 id="combobox_relationSort" 
-								 change="relationSortComboboxChange(event)"
-								 creationComplete="comboboxRelationSortCreationCompleteHandler(event)">
-					</mx:ComboBox>
-					<mx:ComboBox left="128" top="0" width="120" 
-								 dataProvider="{relationOrderComboboxDataProvider}" 
-								 id="combobox_relationOrder" 
-								 change="relationOrderComboboxChange(event)"
-								 creationComplete="comboboxRelationOrderCreationCompleteHandler(event)">
-					</mx:ComboBox>
-					<mx:DataGrid left="0" top="30" bottom="0" right="0" dataProvider="{relationDataProvider}" doubleClickEnabled="true"
-								 id="datagrid_relation" showHeaders="false" itemDoubleClick="relationItemDoubleClickHandler(event)" 
-								 rowHeight="70" contentBackgroundAlpha="0.3">
-						<mx:columns>
-							<mx:DataGridColumn dataField="col_image" width="80">
-								<mx:itemRenderer>
-									<fx:Component><mx:Image width="80" height="70" /></fx:Component>
-								</mx:itemRenderer>
-							</mx:DataGridColumn>
-							<mx:DataGridColumn dataField="col_info"/>
-						</mx:columns>
-					</mx:DataGrid>
-				</mx:Canvas>
-			</mx:TabNavigator>
-		</mx:Canvas>
-		<mx:Canvas width="100%" height="100%" label="接続情報" creationComplete="canvas1_creationCompleteHandler(event)">
-			<mx:Label left="10" top="10" text="動画種別："/>
-			<mx:Label id="videoTypeText" left="140" right="5" top="10" text="{videoType}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="30" text="接続種別："/>
-			<mx:Label id="connectionTypeText" left="140" right="5" top="30" text="{connectionType}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="50" text="動画サーバー："/>
-			<mx:Label id="videoServerUrlText" left="140" right="5" top="50" text="{videoServerUrl}"  toolTip="{videoServerUrl}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="70" text="メッセージサーバー："/>
-			<mx:Label id="messageServerUrlText" left="140" right="5" top="70" text="{messageServerUrl}" toolTip="{messageServerUrl}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="90" text="エコノミーモード："/>
-			<mx:Label id="economyModeText" left="140" right="6" top="90" text="{economyMode}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="110" text="ニックネーム："/>
-			<mx:Label id="nickNameText" left="140" right="6" top="110" text="{nickName}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="130" text="プレミアム："/>
-			<mx:Label id="premiumText" left="140" right="6" top="130" text="{isPremium}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="150" text="デフォルトのサイズ："/>
-			<mx:Label id="formatText" left="140" right="6" top="150" text="{format}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="170" text="現在のサイズ："/>
-			<mx:Label id="currentWindowSizeText" left="140" right="6" top="170" text="{currentWindowSize}" truncateToFit="true" selectable="true"/>
-			
-			<mx:Label left="10" top="190" text="動画の容量："/>
-			<mx:Label id="videoSizeText" left="140" right="6" top="190" text="{videoSize}" truncateToFit="true" selectable="true"/>
-			
-			
-		</mx:Canvas>
-		<mx:Canvas label="設定" width="100%" height="100%">
-			<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0">
-				<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config"
-								 backgroundAlpha="0.3">
-					<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1">
+						<mx:CheckBox id="checkBox_repeatAll" right="5" bottom="5" label="すべてリピート"
+									 change="checkboxRepeatAllChanged()" creationComplete="checkBox_repeatAllCompleteHandler(event)" 
+									 toolTip="プレイリストの項目が最後まで再生されたら最初から再生し直します"/>
+						<mx:Button left="10" bottom="28" width="50" label="-"
+								   click="playListItemDeleteButtonClicked(event)"
+								   toolTip="選択中の項目をプレイリストから削除します"/>
+						<mx:Button id="button_reverse" left="68" bottom="28" width="50" label="↓↑"
+								   click="playListReverseButtonClicked(event)"
+								   toolTip="このプレイリストの順番を逆順にします"/>
+						<mx:Button id="button_shuffle" left="126" bottom="28" width="80" label="シャッフル"
+								   click="playListShuffleButtonClicked(event)"
+								   toolTip="このプレイリストをシャッフルします"/>
 						
-						<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" 
-									 change="checkboxResizePlayerEachPlay(event)" left="10" top="10"
-									 creationComplete="configCanvas1CreationCompleteHandler(event)"/>
-						
-						<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
-						<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" 
-										groupName="radioGroup_resizeType" value="1" left="35" top="30" 
-										change="radioButtonResizeTypeChanged(event)" 
-										toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
-						<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" 
-									 left="68" top="50" change="checkboxEnableWideModeChanged(event)" 
-									 toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
-						<mx:CheckBox label="古いバージョンの動画サイズを使う" id="checkbox_useOldVersionVideoSize" selected="false" 
-									 left="68" top="70" change="checkboxUseOldVersionVideoSizeChanged(event)" 
-									 toolTip="ニコニコ動画(原宿)以前の動画サイズである640×368をデフォルトの動画サイズに使います。"/>
-						<mx:RadioButton label="動画のサイズに合わせる" id="radioButton_resizeVideo" 
-										groupName="radioGroup_resizeType" value="2" left="35" top="90" 
-										change="radioButtonResizeTypeChanged(event)" 
-										toolTip="再生のたびに、ウィンドウのサイズを動画の大きさに合わせます"/>
-						
-						<mx:CheckBox label="常にエコノミーモードでストリーミングする" id="checkBox_isAlwaysEconomyForStreaming" 
-									 left="10" top="120" change="checkBoxAlwaysEconomyChanged(event)" 
-									 toolTip="ストリーミング再生を常にエコノミーモードで行います。ローカルのファイルを再生する際は無視されます。"/>
-						
-						<mx:CheckBox left="10" top="150" 
-									 label="再生時に動画をスムージングする" 
-									 toolTip="FLV/MP4の再生時にスムージングを有効にします。"
-									 id="checkBox_isSmoothing" 
-									 change="checkBoxSmoothingChanged(event)" 
-									 selected="true"/>
-						<mx:CheckBox left="35" top="170" 
-									 label="ピクセル等倍の場合はスムージングしない" 
-									 toolTip="FLV/MP4の再生時、動画の表示がピクセル等倍になっている場合はスムージングを行いません。"
-									 id="checkBox_isSmoothingOnlyNotPixelIdenticalDimensions"
-									 change="checkBoxSmoothingOnlyNotPixelIdenticalDimensionsChanged(event)" 
-									 selected="true"/>
-						
-						<mx:Label x="10" top="200" text="再生品質:"/>
-						<mx:HSlider minimum="2" maximum="3" snapInterval="1" value="2" left="143" top="200" 
-									change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="10" 
-									toolTip="Playerの再生品質を設定します。デフォルトでは「高」です。"
-									dataTipFormatFunction="showQualitySliderDataTipFunction"/>
-						<mx:Label text="高" left="143" top="225"/>
-						<mx:Label right="10" top="225" text="最高"/>
-						
+						<mx:Button left="10" bottom="3" label="保存"
+								   click="playListSaveButtonClicked(event)" toolTip="このプレイリストの内容を保存します"/>
+						<mx:Button left="89" bottom="3" label="クリア"
+								   click="playListClearButtonClicked(event)" toolTip="このプレイリストを空にします"/>
+						<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
 					</mx:Canvas>
-					<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">
-						
-						
-						<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" 
-									 toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" 
-									 id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
-						<mx:CheckBox label="コメントを太字にする" top="30" left="10" id="checkBox_commentBold" 
-									 change="checkBoxCommentBoldChanged(event)"
-									 creationComplete="configCanvas2CreationCompleteHandler(event)"/>
-						<mx:CheckBox left="10" top="50" label="投稿者フィルターを有効にする" 
-									 toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" 
-									 id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
-						<mx:CheckBox left="10" top="70" label="コメントを縦方向に優先して表示する" selected="true"
-									 toolTip="流れるコメントを表示する際、縦方向に最大12個まで優先して表示されます。この設定がオフの場合、同一行に最大5個まで優先して表示します。" 
-									 id="checkBox_isLengthwisePreferred" change="checkBoxIsLengthwisePreferredChanged(event)"/>
-						
-						<mx:Label left="10" top="95" text="表示する通常コメント："
-								  toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:NumericStepper left="167" top="92" maximum="100000" stepSize="50"
-										   value="50" id="commentNumStepper"
-										   change="commentCountNumStepperChanged(event)"
-										   toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:Label left="260" top="95" text="コメント/分"/>
-						
-						<mx:Label left="10" top="125" text="表示する投稿者コメント："
-								  toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:NumericStepper left="167" top="122" maximum="100000" value="50" 
-										   stepSize="50" id="ownerCommentNumStepper"
-										   change="ownerCommentCountNumStepperChanged(event)"
-										   toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-						<mx:Label left="260" top="125" text="コメント/分"/>
-						
-						<mx:Label text="コメントの大きさ：" left="10" top="147"/>
-						<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
-						<mx:Label text="0.5倍" left="143" top="173"/>
-						<mx:Label right="10" top="173" text="1.5倍"/>
-						<mx:Label text="コメントのFPS：" left="10" top="199" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
-						<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
-						<mx:Label text="7.5fps" left="143" top="225"/>
-						<mx:Label right="10" top="225" text="120fps"/>
-						<mx:Label x="10" y="249" text="コメント表示時間："/>
-						<mx:HSlider y="249" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
-						<mx:Label text="1秒" left="143" top="275"/>
-						<mx:Label text="5秒" top="275" right="10"/>
-						<mx:Label x="10" y="301" text="コメントの不透明度：" toolTip="コメントを消す場合はPlayer右下の[Comment]ボタンで表示/非表示を切り替えてください。"/>
-						<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください。"/>
-						<mx:Label text="1%" left="143" top="327"/>
-						<mx:Label text="100%" top="327" right="10"/>
-						
+					<mx:Canvas label="タグ" width="100%" height="100%" id="canvas_Tag">
+						<mx:TabNavigator left="0" top="0" bottom="0" right="0"
+										 backgroundAlpha="0.3">
+							<mx:Canvas label="ニコニコ" width="100%" height="100%">
+								<mx:List id="list_nicoTag" dataProvider="{nicoTagProvider}" doubleClickEnabled="true" itemDoubleClick="tagListDoubleClickEventHandler(event)" left="0" top="0" bottom="0" right="0"></mx:List>
+							</mx:Canvas>
+							<mx:Canvas label="ローカル" width="100%" height="100%">
+								<mx:List id="list_localTag" dataProvider="{localTagProvider}" doubleClickEnabled="true" itemDoubleClick="tagListDoubleClickEventHandler(event)" left="0" top="0" bottom="0" right="0"></mx:List>
+							</mx:Canvas>
+						</mx:TabNavigator>
 					</mx:Canvas>
-					<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3">
+					<mx:Canvas label="市場" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_ichiba">
+						<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_inner_ichiba"
+										 backgroundAlpha="0.3">
+							<mx:Canvas label="ニコニコ" width="100%" height="100%">
+								<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" right="0" 
+											 rowHeight="80" dataProvider="{ichibaNicoProvider}" 
+											 id="dataGrid_ichiba_nico" doubleClickEnabled="true" 
+											 itemDoubleClick="ichibaDataGridDoubleClicked(event)"
+											 contentBackgroundAlpha="0.3">
+									<mx:columns>
+										<mx:DataGridColumn dataField="col_image" width="80">
+											<mx:itemRenderer>
+												<fx:Component><mx:Image width="80" height="80" /></fx:Component>
+											</mx:itemRenderer>
+										</mx:DataGridColumn>
+										<mx:DataGridColumn dataField="col_info"/>
+									</mx:columns>
+								</mx:DataGrid>
+							</mx:Canvas>
+							<mx:Canvas label="ローカル" width="100%" height="100%">
+								<mx:DataGrid showHeaders="false" left="0" top="0" bottom="0" 
+											 right="0" rowHeight="80" dataProvider="{ichibaLocalProvider}" 
+											 id="dataGrid_ichiba_local" doubleClickEnabled="true" 
+											 itemDoubleClick="ichibaDataGridDoubleClicked(event)"
+											 contentBackgroundAlpha="0.3">
+									<mx:columns>
+										<mx:DataGridColumn dataField="col_image" width="80">
+											<mx:itemRenderer>
+												<fx:Component><mx:Image width="80" height="80" /></fx:Component>
+											</mx:itemRenderer>
+										</mx:DataGridColumn>
+										<mx:DataGridColumn dataField="col_info"/>
+									</mx:columns>
+								</mx:DataGrid>
+							</mx:Canvas>
+						</mx:TabNavigator>
+					</mx:Canvas>
+					<mx:Canvas label="投稿者" width="100%" height="100%" id="canvas_owner" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 						
-						<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" 
-									 change="checkBoxPlayerAlwaysFrontChanged(event)" 
-									 minHeight="20" left="10" top="10"
-									 creationComplete="configCanvas3CreationCompleteHandler(event)"/>
-						<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" 
-									 change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="30"/>
-						<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" 
-									 change="checkboxPlayerFollowChanged(event)" left="10" top="50"/>
-						<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" 
-									 change="checkboxFollowInfoViewHeight(event)" left="10" top="70"
-									 toolTip="InfoViewの大きさをPlayerの大きさに合わせて変更します。"/>
-						<mx:CheckBox label="Playerで暗い配色を使う" left="10" top="90" 
-									 id="checkBox_useDarkColor" click="checkBox_useDarkColorChanged(event)" 
-									 toolTip="Playerの配色を暗い色に変更します"
-									 selected="false"/>
+						<mx:Canvas left="5" top="0" width="50" height="50" backgroundColor="#969696"
+								   contentBackgroundColor="#969696" dropShadowVisible="false">
+							<view:SmoothImage id="image_pubUserIcon" width="48" height="48"
+											  doubleClick="pubUserLinkButton_clickHandler(event)"
+											  doubleClickEnabled="true" top="1" left="1"
+											  source="{pubUserNameIconUrl}"/>
+						</mx:Canvas>
+						<mx:Label left="63" top="0" text="投稿者名："/>
+						<mx:Label id="label_pubUserName" left="133" right="5" top="0"
+								  text="{pubUserName}"/>
+						<mx:LinkButton id="pubUserLinkButton" left="58" top="22"
+									   label="{pubUserLinkButtonText}"
+									   click="pubUserLinkButton_clickHandler(event)" 
+									   color="#0000FF" textDecoration="underline"
+									   toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
 						
-						<mx:HRule left="10" right="10" top="115" height="5"/>
-						
-						<mx:CheckBox label="ユーザーニコ割を再生しない" left="10" top="130" id="checkBox_isNotPlayNicowari" 
-									 change="checkBoxIsNotPlayNicowariChanged(event)" 
-									 toolTip="動画の投稿者が設定したニコ割を再生しないようにします。"/>
-						<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="150" id="checkBox_showAlwaysNicowariArea" 
-									 change="checkBoxShowAlwaysNicowariAreaChanged(event)" 
-									 toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。" 
-									 enabled="{!checkBox_isNotPlayNicowari.selected}"/>
-						<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="170" id="checkbox_hideTagArea" 
-									 change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
-						<mx:CheckBox id="checkbox_hideUnderController" left="10" top="190" height="22"
-									 label="Player下のコントローラを表示しない"
-									 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
-									 rollOut="videoPlayer.videoController.rollOut(event)"
-									 rollOver="videoPlayer.videoController.rollOver(event)"
-									 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
-						<mx:CheckBox label="Playerを開いたときに「動画を開く」ダイアログも一緒に開く" left="10" top="210" 
-									 id="checkBox_openFileDialogWhenOpenPlayer" click="checkBox_openFileDialogWhenOpenPlayer_clickHandler(event)"
-									 creationComplete="checkBox_openFileDialogWhenOpenPlayer_creationCompleteHandler(event)"
-									 toolTip="Playerがあたらし開いた場合、動画が再生されていないときに、「動画を開く」ダイアログも同時に開きます。"/>
-						
-						<mx:HRule left="10" right="10" top="235" height="5"/>
-						
-						<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="250" 
-									 id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" 
-									 toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
-						<mx:CheckBox label="動画以外をすべて更新する" left="36" top="270"
-									 id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" 
-									 toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
-						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" 
-									 left="36" top="290" id="checkBox_isAppendComment" 
-									 change="checkBoxAppendCommentChanged(event)" 
-									 toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
-						
-						<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="320" 
-									 id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" 
-									 toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
-						<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="340"
-									 id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" 
-									 toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
-						
-						<mx:HRule left="10" right="10" top="365" height="5"/>
-						
-						<mx:CheckBox label="コメントを匿名で投稿(184)" left="10" top="380" 
-									 id="checkBox_is184" click="checkBoxIs184(event)" 
-									 toolTip="コメントを匿名(184)で投稿します"
-									 selected="true"/>
-						
-						
+						<mx:VDividedBox left="0" top="50" bottom="0" right="0">
+							<mx:TabNavigator width="100%" height="180"
+											 backgroundAlpha="0.3">
+								<mx:Canvas id="canvas_owner_onNico" label="ニコニコ" width="100%" height="100%">
+									<mx:TextArea id="textArea_owner_onNico" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_nico}" link="ownerTextLinkClicked(event)"/>
+								</mx:Canvas>
+								<mx:Canvas id="canvas_owner_local" label="ローカル" width="100%" height="100%">
+									<mx:TextArea id="textArea_owner" editable="false" wordWrap="true" left="0" top="0" bottom="0" right="0" htmlText="{owner_text_local}" link="ownerTextLinkClicked(event)"/>
+								</mx:Canvas>
+							</mx:TabNavigator>
+							<mx:DataGrid width="100%" height="50%" id="dataGrid_ownerComment" 
+										 dataProvider="{ownerCommentProvider}" doubleClickEnabled="true" 
+										 itemDoubleClick="commentListDoubleClicked(event)" rowHeight="22"
+										 contentBackgroundAlpha="0.3">
+								<mx:columns>
+									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
+									<mx:DataGridColumn headerText="コマンド" dataField="command_column" width="100"/>
+									<mx:DataGridColumn headerText="コメント" dataField="comment_column"/>
+								</mx:columns>
+							</mx:DataGrid>
+						</mx:VDividedBox>
+					</mx:Canvas>
+					<mx:Canvas label="オススメ" width="100%" height="100%" >
+						<mx:ComboBox left="0" top="0" width="120" 
+									 dataProvider="{relationSortComboboxDataProvider}" 
+									 id="combobox_relationSort" 
+									 change="relationSortComboboxChange(event)"
+									 creationComplete="comboboxRelationSortCreationCompleteHandler(event)">
+						</mx:ComboBox>
+						<mx:ComboBox left="128" top="0" width="120" 
+									 dataProvider="{relationOrderComboboxDataProvider}" 
+									 id="combobox_relationOrder" 
+									 change="relationOrderComboboxChange(event)"
+									 creationComplete="comboboxRelationOrderCreationCompleteHandler(event)">
+						</mx:ComboBox>
+						<mx:DataGrid left="0" top="30" bottom="0" right="0" dataProvider="{relationDataProvider}" doubleClickEnabled="true"
+									 id="datagrid_relation" showHeaders="false" itemDoubleClick="relationItemDoubleClickHandler(event)" 
+									 rowHeight="70" contentBackgroundAlpha="0.3">
+							<mx:columns>
+								<mx:DataGridColumn dataField="col_image" width="80">
+									<mx:itemRenderer>
+										<fx:Component><mx:Image width="80" height="70" /></fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								<mx:DataGridColumn dataField="col_info"/>
+							</mx:columns>
+						</mx:DataGrid>
 					</mx:Canvas>
 				</mx:TabNavigator>
 			</mx:Canvas>
-		</mx:Canvas>
-	</mx:ViewStack>
+			<mx:Canvas width="100%" height="100%" label="接続情報" creationComplete="canvas1_creationCompleteHandler(event)">
+				<mx:Label left="10" top="10" text="動画種別："/>
+				<mx:Label id="videoTypeText" left="140" right="5" top="10" text="{videoType}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="30" text="接続種別："/>
+				<mx:Label id="connectionTypeText" left="140" right="5" top="30" text="{connectionType}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="50" text="動画サーバー："/>
+				<mx:Label id="videoServerUrlText" left="140" right="5" top="50" text="{videoServerUrl}"  toolTip="{videoServerUrl}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="70" text="メッセージサーバー："/>
+				<mx:Label id="messageServerUrlText" left="140" right="5" top="70" text="{messageServerUrl}" toolTip="{messageServerUrl}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="90" text="エコノミーモード："/>
+				<mx:Label id="economyModeText" left="140" right="6" top="90" text="{economyMode}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="110" text="ニックネーム："/>
+				<mx:Label id="nickNameText" left="140" right="6" top="110" text="{nickName}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="130" text="プレミアム："/>
+				<mx:Label id="premiumText" left="140" right="6" top="130" text="{isPremium}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="150" text="デフォルトのサイズ："/>
+				<mx:Label id="formatText" left="140" right="6" top="150" text="{format}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="170" text="現在のサイズ："/>
+				<mx:Label id="currentWindowSizeText" left="140" right="6" top="170" text="{currentWindowSize}" truncateToFit="true" selectable="true"/>
+				
+				<mx:Label left="10" top="190" text="動画の容量："/>
+				<mx:Label id="videoSizeText" left="140" right="6" top="190" text="{videoSize}" truncateToFit="true" selectable="true"/>
+				
+				
+			</mx:Canvas>
+			<mx:Canvas label="設定" width="100%" height="100%">
+				<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0">
+					<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config"
+									 backgroundAlpha="0.3">
+						<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1">
+							
+							<mx:CheckBox label="Playerの大きさを再生ごとにリサイズ" id="checkbox_resizePlayerEachPlay" 
+										 change="checkboxResizePlayerEachPlay(event)" left="10" top="10"
+										 creationComplete="configCanvas1CreationCompleteHandler(event)"/>
+							
+							<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
+							<mx:RadioButton label="ニコ動のサイズに合わせる" id="radioButton_resizeNicoDou" 
+											groupName="radioGroup_resizeType" value="1" left="35" top="30" 
+											change="radioButtonResizeTypeChanged(event)" 
+											toolTip="再生のたびに、ウィンドウのサイズをニコニコ動画の動画のサイズに合わせます"/>
+							<mx:CheckBox label="16:9モードを有効にする" id="checkbox_enableWideMode" selected="true" 
+										 left="68" top="50" change="checkboxEnableWideModeChanged(event)" 
+										 toolTip="アスペクト比が16:9の動画を再生する際に、自動的にPlayerの大きさを16:9に調整します。"/>
+							<mx:CheckBox label="古いバージョンの動画サイズを使う" id="checkbox_useOldVersionVideoSize" selected="false" 
+										 left="68" top="70" change="checkboxUseOldVersionVideoSizeChanged(event)" 
+										 toolTip="ニコニコ動画(原宿)以前の動画サイズである640×368をデフォルトの動画サイズに使います。"/>
+							<mx:RadioButton label="動画のサイズに合わせる" id="radioButton_resizeVideo" 
+											groupName="radioGroup_resizeType" value="2" left="35" top="90" 
+											change="radioButtonResizeTypeChanged(event)" 
+											toolTip="再生のたびに、ウィンドウのサイズを動画の大きさに合わせます"/>
+							
+							<mx:CheckBox label="常にエコノミーモードでストリーミングする" id="checkBox_isAlwaysEconomyForStreaming" 
+										 left="10" top="120" change="checkBoxAlwaysEconomyChanged(event)" 
+										 toolTip="ストリーミング再生を常にエコノミーモードで行います。ローカルのファイルを再生する際は無視されます。"/>
+							
+							<mx:CheckBox left="10" top="150" 
+										 label="再生時に動画をスムージングする" 
+										 toolTip="FLV/MP4の再生時にスムージングを有効にします。"
+										 id="checkBox_isSmoothing" 
+										 change="checkBoxSmoothingChanged(event)" 
+										 selected="true"/>
+							<mx:CheckBox left="35" top="170" 
+										 label="ピクセル等倍の場合はスムージングしない" 
+										 toolTip="FLV/MP4の再生時、動画の表示がピクセル等倍になっている場合はスムージングを行いません。"
+										 id="checkBox_isSmoothingOnlyNotPixelIdenticalDimensions"
+										 change="checkBoxSmoothingOnlyNotPixelIdenticalDimensionsChanged(event)" 
+										 selected="true"/>
+							
+							<mx:Label x="10" top="200" text="再生品質:"/>
+							<mx:HSlider minimum="2" maximum="3" snapInterval="1" value="2" left="143" top="200" 
+										change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="10" 
+										toolTip="Playerの再生品質を設定します。デフォルトでは「高」です。"
+										dataTipFormatFunction="showQualitySliderDataTipFunction"/>
+							<mx:Label text="高" left="143" top="225"/>
+							<mx:Label right="10" top="225" text="最高"/>
+							
+						</mx:Canvas>
+						<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">
+							
+							
+							<mx:CheckBox left="10" top="10" label="「世界の新着」コメントを表示しない" 
+										 toolTip="「世界の新着動画」で投稿されたコメントを表示しないようにします。" 
+										 id="checkBox_hideSekaShinComment" click="checkBoxHideSekaShinComment(event)"/>
+							<mx:CheckBox label="コメントを太字にする" top="30" left="10" id="checkBox_commentBold" 
+										 change="checkBoxCommentBoldChanged(event)"
+										 creationComplete="configCanvas2CreationCompleteHandler(event)"/>
+							<mx:CheckBox left="10" top="50" label="投稿者フィルターを有効にする" 
+										 toolTip="動画の投稿者によって設定されたコメントに対するフィルタリングを有効にします。" 
+										 id="checkBox_isNgUpEnable" change="checkBoxNgUpChanged(event)"/>
+							<mx:CheckBox left="10" top="70" label="コメントを縦方向に優先して表示する" selected="true"
+										 toolTip="流れるコメントを表示する際、縦方向に最大12個まで優先して表示されます。この設定がオフの場合、同一行に最大5個まで優先して表示します。" 
+										 id="checkBox_isLengthwisePreferred" change="checkBoxIsLengthwisePreferredChanged(event)"/>
+							
+							<mx:Label left="10" top="95" text="表示する通常コメント："
+									  toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+							<mx:NumericStepper left="167" top="92" maximum="100000" stepSize="50"
+											   value="50" id="commentNumStepper"
+											   change="commentCountNumStepperChanged(event)"
+											   toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+							<mx:Label left="260" top="95" text="コメント/分"/>
+							
+							<mx:Label left="10" top="125" text="表示する投稿者コメント："
+									  toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+							<mx:NumericStepper left="167" top="122" maximum="100000" value="50" 
+											   stepSize="50" id="ownerCommentNumStepper"
+											   change="ownerCommentCountNumStepperChanged(event)"
+											   toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+							<mx:Label left="260" top="125" text="コメント/分"/>
+							
+							<mx:Label text="コメントの大きさ：" left="10" top="147"/>
+							<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
+							<mx:Label text="0.5倍" left="143" top="173"/>
+							<mx:Label right="10" top="173" text="1.5倍"/>
+							<mx:Label text="コメントのFPS：" left="10" top="199" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
+							<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
+							<mx:Label text="7.5fps" left="143" top="225"/>
+							<mx:Label right="10" top="225" text="120fps"/>
+							<mx:Label x="10" y="249" text="コメント表示時間："/>
+							<mx:HSlider y="249" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
+							<mx:Label text="1秒" left="143" top="275"/>
+							<mx:Label text="5秒" top="275" right="10"/>
+							<mx:Label x="10" y="301" text="コメントの不透明度：" toolTip="コメントを消す場合はPlayer右下の[Comment]ボタンで表示/非表示を切り替えてください。"/>
+							<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください。"/>
+							<mx:Label text="1%" left="143" top="327"/>
+							<mx:Label text="100%" top="327" right="10"/>
+							
+						</mx:Canvas>
+						<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3">
+							
+							<mx:CheckBox label="Playerを常に最前面に表示する" id="checkbox_PlayerAlwaysFront" 
+										 change="checkBoxPlayerAlwaysFrontChanged(event)" 
+										 minHeight="20" left="10" top="10"
+										 creationComplete="configCanvas3CreationCompleteHandler(event)"/>
+							<mx:CheckBox label="InfoViewを常に最前面に表示する" id="checkbox_InfoViewAlwaysFront" 
+										 change="checkBoxInfoViewAlwaysFrontChanged(event)" minHeight="20" left="10" top="30"/>
+							<mx:CheckBox label="InfoViewをPlayerに追従させる" id="checkbox_playerFollow" 
+										 change="checkboxPlayerFollowChanged(event)" left="10" top="50"/>
+							<mx:CheckBox label="InfoViewの高さをPlayerにあわせる" id="checkbox_followInfoViewHeight" 
+										 change="checkboxFollowInfoViewHeight(event)" left="10" top="70"
+										 toolTip="InfoViewの大きさをPlayerの大きさに合わせて変更します。"/>
+							<mx:CheckBox label="Playerで暗い配色を使う" left="10" top="90" 
+										 id="checkBox_useDarkColor" click="checkBox_useDarkColorChanged(event)" 
+										 toolTip="Playerの配色を暗い色に変更します"
+										 selected="false"/>
+							
+							<mx:HRule left="10" right="10" top="115" height="5"/>
+							
+							<mx:CheckBox label="ユーザーニコ割を再生しない" left="10" top="130" id="checkBox_isNotPlayNicowari" 
+										 change="checkBoxIsNotPlayNicowariChanged(event)" 
+										 toolTip="動画の投稿者が設定したニコ割を再生しないようにします。"/>
+							<mx:CheckBox label="Playerのニコ割領域を常に表示" left="10" top="150" id="checkBox_showAlwaysNicowariArea" 
+										 change="checkBoxShowAlwaysNicowariAreaChanged(event)" 
+										 toolTip="Player上部のニコ割領域を常に表示します。無効にしてもニコ割が存在する場合はニコ割が再生されます。" 
+										 enabled="{!checkBox_isNotPlayNicowari.selected}"/>
+							<mx:CheckBox label="Playerのタグ領域を表示しない" left="10" top="170" id="checkbox_hideTagArea" 
+										 change="checkboxHideTagAreaChanged(event)" toolTip="Player上部のタグ表示領域を常に隠します。"/>
+							<mx:CheckBox id="checkbox_hideUnderController" left="10" top="190" height="22"
+										 label="Player下のコントローラを表示しない"
+										 change="checkboxHideUnderControllerChanged(event)" fontWeight="normal"
+										 rollOut="videoPlayer.videoController.rollOut(event)"
+										 rollOver="videoPlayer.videoController.rollOver(event)"
+										 toolTip="Player下のコントローラを隠します。動画再生画面に半透明のコントローラが表示されます。"/>
+							<mx:CheckBox label="Playerを開いたときに「動画を開く」ダイアログも一緒に開く" left="10" top="210" 
+										 id="checkBox_openFileDialogWhenOpenPlayer" click="checkBox_openFileDialogWhenOpenPlayer_clickHandler(event)"
+										 creationComplete="checkBox_openFileDialogWhenOpenPlayer_creationCompleteHandler(event)"
+										 toolTip="Playerがあたらし開いた場合、動画が再生されていないときに、「動画を開く」ダイアログも同時に開きます。"/>
+							
+							<mx:HRule left="10" right="10" top="235" height="5"/>
+							
+							<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="250" 
+										 id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" 
+										 toolTip="再生のたびにニコニコ動画にアクセスし、コメントを最新に更新します"/>
+							<mx:CheckBox label="動画以外をすべて更新する" left="36" top="270"
+										 id="checkBox_renewTagAndNicowari" click="checkBoxRenewTagNicowariChanged()" 
+										 toolTip="コメント以外の、ニコ割や市場情報等も同時に更新します"/>
+							<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記する" 
+										 left="36" top="290" id="checkBox_isAppendComment" 
+										 change="checkBoxAppendCommentChanged(event)" 
+										 toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外します。"/>
+							
+							<mx:CheckBox label="ジャンプ命令を有効にする" left="10" top="320" 
+										 id="checkBox_enableJump" click="checkBoxIsEnableJump(event)" 
+										 toolTip="一部の動画に設定されているジャンプ命令を有効にします"/>
+							<mx:CheckBox label="別な動画にジャンプするかどうか確認する" left="36" top="340"
+										 id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" 
+										 toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
+							
+							<mx:HRule left="10" right="10" top="365" height="5"/>
+							
+							<mx:CheckBox label="コメントを匿名で投稿(184)" left="10" top="380" 
+										 id="checkBox_is184" click="checkBoxIs184(event)" 
+										 toolTip="コメントを匿名(184)で投稿します"
+										 selected="true"/>
+							
+							
+						</mx:Canvas>
+					</mx:TabNavigator>
+				</mx:Canvas>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:VDividedBox>
+	
 	<mx:ToggleButtonBar dataProvider="{viewstack1}" left="5" bottom="5" fontWeight="normal" height="20">
 	</mx:ToggleButtonBar>
 	<mx:Button id="button_videoOpen" right="5" bottom="5" width="87" height="20" label="動画を開く..."
