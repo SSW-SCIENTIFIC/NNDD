@@ -1040,8 +1040,10 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					var xml:XML = MyListManager.instance.readLocalMyList(myListId, type);
 					if(xml != null){
 						myListItemProvider = myListBuilder.getMyListArrayCollection(myListId, xml);
-						var name:String = tree_myList.selectedItem.label;;
-						myListRenewForName(name);
+						if (tree_myList.selectedItem != null) {
+							var name:String = tree_myList.selectedItem.label;
+							myListRenewForName(name);
+						}
 					}
 				}else{
 					if(tree_myList.selectedItem != null){
@@ -6443,6 +6445,12 @@ public function renewMyList(myListId:String):void{
 	}
 	
 	function renewMyListInner(event:FlexEvent):void{
+		
+		if (MyListManager.instance.getMyList(myListId) == null)
+		{
+			tree_myList.selectedIndex = -1;
+		}
+		
 		textinput_mylist.text = myListId;
 		
 		myListRenewButtonClicked(new MouseEvent(MouseEvent.CLICK));
