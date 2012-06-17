@@ -310,9 +310,12 @@
 	<mx:Label top="75" left="5" right="5" id="label_deletedInfo" visible="false" color="0xff0000"/>
 	
 	<mx:VDividedBox left="5" top="75" right="5" bottom="30" id="ownertext_comment_dividedbox" >
-		<mx:Canvas width="100%" height="20%" horizontalScrollPolicy="off" verticalScrollPolicy="off" resize="canvas2_resizeHandler(event)" creationComplete="canvas2_creationCompleteHandler(event)" show="canvas2_creationCompleteHandler(event)">
+		<mx:Canvas width="100%" height="20%" horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+				   resize="canvas2_resizeHandler(event)" creationComplete="canvas2_creationCompleteHandler(event)"
+				   minHeight="50">
 	
-			<mx:TextArea htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)" editable="false" width="100%" height="100%" />
+			<mx:TextArea htmlText="{owner_text_nico}" id="textArea_upperOwnerText" link="ownerTextLinkClicked(event)" 
+						 minHeight="45" editable="false" width="100%" height="100%" />
 			<mx:CheckBox label="HTML" right="20" id="checkbox_showHtml" alpha="0.3" enabled="true" selected="true" rollOver="checkbox_showHtml_rollOverHandler(event)"
 						 rollOut="checkbox_showHtml_rollOutHandler(event)" change="checkbox_showHtml_changeHandler(event)" bottom="5" creationComplete="checkbox_showHtml_creationCompleteHandler(event)"
 						 toolTip="HTML形式の投稿者説明文が表示できない場合、このチェックを外してプレーンテキストの投稿者説明文を表示させてください。" fontWeight="bold"/>
@@ -576,7 +579,7 @@
 				
 			</mx:Canvas>
 			<mx:Canvas label="設定" width="100%" height="100%">
-				<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" left="0" top="0" bottom="0" right="0">
+				<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" horizontalScrollPolicy="off" left="0" top="0" bottom="0" right="0">
 					<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config"
 									 backgroundAlpha="0.3">
 						<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1">
@@ -620,11 +623,11 @@
 							
 							<mx:Label x="10" top="200" text="再生品質:"/>
 							<mx:HSlider minimum="2" maximum="3" snapInterval="1" value="2" left="143" top="200" 
-										change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="10" 
+										change="playerQualitySliderChanged(event)" id="slider_playerQuality" right="20" 
 										toolTip="Playerの再生品質を設定します。デフォルトでは「高」です。"
 										dataTipFormatFunction="showQualitySliderDataTipFunction"/>
 							<mx:Label text="高" left="143" top="225"/>
-							<mx:Label right="10" top="225" text="最高"/>
+							<mx:Label right="20" top="225" text="最高"/>
 							
 						</mx:Canvas>
 						<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">
@@ -660,21 +663,21 @@
 							<mx:Label left="260" top="125" text="コメント/分"/>
 							
 							<mx:Label text="コメントの大きさ：" left="10" top="147"/>
-							<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="10"/>
+							<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="20"/>
 							<mx:Label text="0.5倍" left="143" top="173"/>
-							<mx:Label right="10" top="173" text="1.5倍"/>
+							<mx:Label right="20" top="173" text="1.5倍"/>
 							<mx:Label text="コメントのFPS：" left="10" top="199" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
-							<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="10" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
+							<mx:HSlider minimum="1" maximum="5" value="2" left="143" top="199" snapInterval="1" dataTipFormatFunction="fpsDataTipFormatFunction" id="slider_fps" change="sliderFpsChanged(event)" right="20" toolTip="動作が重い場合はFPSを低い値に設定すると改善する事があります。"/>
 							<mx:Label text="7.5fps" left="143" top="225"/>
-							<mx:Label right="10" top="225" text="120fps"/>
+							<mx:Label right="20" top="225" text="120fps"/>
 							<mx:Label x="10" y="249" text="コメント表示時間："/>
-							<mx:HSlider y="249" left="143" minimum="1" maximum="5" snapInterval="1" right="10" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
+							<mx:HSlider y="249" left="143" minimum="1" maximum="5" snapInterval="1" right="20" showDataTip="true" value="3" id="slider_showCommentTime" change="sliderShowCommentTimeChanged(event)"/>
 							<mx:Label text="1秒" left="143" top="275"/>
-							<mx:Label text="5秒" top="275" right="10"/>
+							<mx:Label text="5秒" top="275" right="20"/>
 							<mx:Label x="10" y="301" text="コメントの不透明度：" toolTip="コメントを消す場合はPlayer右下の[Comment]ボタンで表示/非表示を切り替えてください。"/>
-							<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="10" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください。"/>
+							<mx:HSlider y="301" left="143" minimum="1" maximum="100" snapInterval="1" right="20" showDataTip="true" value="100" id="slider_commentAlpha" change="sliderCommentAlphaChanged(event)" toolTip="コメントを消す場合は[コメントを表示]のチェックを外してください。"/>
 							<mx:Label text="1%" left="143" top="327"/>
-							<mx:Label text="100%" top="327" right="10"/>
+							<mx:Label text="100%" top="327" right="20"/>
 							
 						</mx:Canvas>
 						<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3">
@@ -695,7 +698,7 @@
 										 toolTip="Playerの配色を暗い色に変更します"
 										 selected="false"/>
 							
-							<mx:HRule left="10" right="10" top="115" height="5"/>
+							<mx:HRule left="10" right="20" top="115" height="5"/>
 							
 							<mx:CheckBox label="ユーザーニコ割を再生しない" left="10" top="130" id="checkBox_isNotPlayNicowari" 
 										 change="checkBoxIsNotPlayNicowariChanged(event)" 
@@ -717,7 +720,7 @@
 										 creationComplete="checkBox_openFileDialogWhenOpenPlayer_creationCompleteHandler(event)"
 										 toolTip="Playerがあたらし開いた場合、動画が再生されていないときに、「動画を開く」ダイアログも同時に開きます。"/>
 							
-							<mx:HRule left="10" right="10" top="235" height="5"/>
+							<mx:HRule left="10" right="20" top="235" height="5"/>
 							
 							<mx:CheckBox label="コメントを再生のたびに更新する" left="10" top="250" 
 										 id="checkBox_renewComment" click="checkBoxRenewCommentChanged()" 
@@ -737,7 +740,7 @@
 										 id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" 
 										 toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
 							
-							<mx:HRule left="10" right="10" top="365" height="5"/>
+							<mx:HRule left="10" right="20" top="365" height="5"/>
 							
 							<mx:CheckBox label="コメントを匿名で投稿(184)" left="10" top="380" 
 										 id="checkBox_is184" click="checkBoxIs184(event)" 
