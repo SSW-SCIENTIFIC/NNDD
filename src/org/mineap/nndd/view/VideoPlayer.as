@@ -326,11 +326,11 @@ private function windowResized(event:NativeWindowBoundsEvent):void{
 		event.preventDefault();
 		
 		// Playerウィンドウの大きさがディスプレイの最大値を超えているとき
-		this.nativeWindow.x = 0;
-		this.nativeWindow.y = 0;
+//		this.nativeWindow.x = 0;
+//		this.nativeWindow.y = 0;
 		this.nativeWindow.width = Capabilities.screenResolutionX;
 		this.nativeWindow.height = Capabilities.screenResolutionY;
-		lastRect = new Rectangle(0, 0, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+		lastRect = new Rectangle(this.nativeWindow.x, this.nativeWindow.y, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
 	}
 	else
 	{
