@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="384" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="384" verticalScrollPolicy="off" horizontalScrollPolicy="off" xmlns:s="library://ns.adobe.com/flex/spark">
 
 	<mx:Script>
 		<![CDATA[
@@ -302,46 +302,72 @@
 		]]>
 	</mx:Script>
 
-	<mx:Label text="ログインサーバー" left="10" top="10"/>
-	<mx:Label text="動画API" left="10" top="160"/>
-	<mx:Label text="BGMAPI" left="10" top="186"/>
+	<s:HGroup left="10" top="10">
+		<mx:Label text="ログインサーバー：" />
+		<mx:Label text="未実施" id="label_loginStatus" fontWeight="normal"/>
+	</s:HGroup>
 	
-	<mx:Label text="メッセージサーバー" left="10" top="212"/>
-	<mx:Label text="動画サーバー" left="10" top="238"/>
-	<mx:Label text="サムネイル画像サーバー" left="10" top="264"/>
-	<mx:Label text="サムネイル情報API" left="10" top="290"/>
-	<mx:Label text="市場情報サーバー" left="10" top="316"/>
-	<mx:Label text="ランキングサーバー" left="10" top="46"/>
-	<mx:Label text="単語検索サーバー" left="10" top="72"/>
-	<mx:Label text="マイリストサーバー" left="10" top="124"/>
-	<mx:Label text="タグ検索サーバー" left="10" top="98"/>
-	<mx:Label text="未実施" left="160" top="238" id="label_video" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="212" id="label_message" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="186" id="label_getBgm" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="160" id="label_getFlv" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="124" id="label_mylist" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="98" id="label_tagSearch" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="72" id="label_search" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="46" id="label_ranking" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="10" id="label_loginStatus" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="264" id="label_thumbImg" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="290" id="label_thumbInfo" fontWeight="normal"/>
-	<mx:Label text="未実施" left="160" top="316" id="label_ichiba" fontWeight="normal"/>
 	<mx:HRule left="10" top="36" right="10"/>
+	
+	<s:HGroup  left="10" top="46">
+		<mx:Label text="ランキングサーバー："/>
+		<mx:Label text="未実施" id="label_ranking" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup  left="10" top="72">
+		<mx:Label text="単語検索サーバー："/>
+		<mx:Label text="未実施" id="label_search" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="98">
+		<mx:Label text="タグ検索サーバー：" />
+		<mx:Label text="未実施" id="label_tagSearch" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup  left="10" top="124">
+		<mx:Label text="マイリストサーバー："/>
+		<mx:Label text="未実施" id="label_mylist" fontWeight="normal"/>
+	</s:HGroup>
+	
 	<mx:HRule left="10" top="150" right="10"/>
+	
+	<s:HGroup left="10" top="160">
+		<mx:Label text="動画API：" />
+		<mx:Label text="未実施" id="label_getFlv" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="186">
+		<mx:Label text="BGMAPI：" />
+		<mx:Label text="未実施" id="label_getBgm" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="212">
+		<mx:Label text="メッセージサーバー：" />
+		<mx:Label text="未実施" id="label_message" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="238">
+		<mx:Label text="動画サーバー：" />
+		<mx:Label text="未実施" id="label_video" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="264">
+		<mx:Label text="サムネイル画像サーバー：" />
+		<mx:Label text="未実施" id="label_thumbImg" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="290">
+		<mx:Label text="サムネイル情報API：" />
+		<mx:Label text="未実施" id="label_thumbInfo" fontWeight="normal"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="316">
+		<mx:Label text="市場情報サーバー：" />
+		<mx:Label text="未実施" id="label_ichiba" fontWeight="normal"/>
+	</s:HGroup>
+	
 	<mx:HRule left="10" top="342" right="10"/>
-	<mx:Label text="：" left="133" top="124"/>
-	<mx:Label text="：" left="133" top="160"/>
-	<mx:Label text="：" left="133" top="186"/>
-	<mx:Label text="：" left="133" top="212"/>
-	<mx:Label text="：" left="133" top="238"/>
-	<mx:Label text="：" left="133" top="264"/>
-	<mx:Label text="：" left="133" top="290"/>
-	<mx:Label text="：" left="133" top="316"/>
-	<mx:Label text="：" left="133" top="10"/>
-	<mx:Label text="：" left="133" top="46"/>
-	<mx:Label text="：" left="133" top="72"/>
-	<mx:Label text="：" left="133" top="98"/>
+	
 	<mx:Button label="サーバーの状況を診断" right="10" top="352" click="startButton_clickHandler(event)" id="button_start"/>
 	
 </mx:Canvas>

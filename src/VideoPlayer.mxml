@@ -220,15 +220,18 @@
 				<mx:Label id="label_economyStatus" rollOut="rollOut(event)" rollOver="rollOver(event)" color="#FFFFFF" initialize="label_economyStatusInit(event)"  fontWeight="bold" right="10" top="30"/>
 				<mx:Text color="#FFFFFF" fontWeight="bold" id="label_downloadStatus" left="10" top="10"/>
 				
-				<mx:HBox left="10" bottom="5" backgroundColor="#FFFFFF" cornerRadius="5" alpha="1.0" right="10" backgroundAlpha="0.0" id="hbox_displayButtons" initialize="hbox_displayLabelsInit(event)">
-					<mx:LinkButton label="x1.0" color="#FFFFFF" height="17" toolTip="標準サイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x1" click="changeWindowSizeRatio(1.0, true)"/>
-					<mx:LinkButton label="x1.5" color="#FFFFFF" height="17" toolTip="1.5倍のサイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x1_5" click="changeWindowSizeRatio(1.5, true)"/>
-					<mx:LinkButton label="x2.0" color="#FFFFFF" height="17" toolTip="２倍のサイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x2" click="changeWindowSizeRatio(2.0, true)"/>
-					<mx:LinkButton id="button_ChangeFullScreen" rollOut="rollOut(event)" rollOver="rollOver(event)" label="FULL" click="changeFullButtonClicked(event)" toolTip="フルスクリーン表示" color="#FFFFFF" height="17"/>
-					<mx:LinkButton id="button_ChangeShowInfoView" rollOut="rollOut(event)" rollOver="rollOver(event)" label="INFO" click="changeShowInfoViewButtonClicked(event)" toolTip="Info表示" color="#FFFFFF" height="17"/>
+				<mx:HBox left="10" bottom="5" backgroundColor="#FFFFFF" cornerRadius="5" 
+						 alpha="1.0" right="10" backgroundAlpha="0.0" id="hbox_displayButtons" 
+						 initialize="hbox_displayLabelsInit(event)"
+						 height="20">
+					<mx:LinkButton label="x1.0" color="#FFFFFF" toolTip="標準サイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x1" click="changeWindowSizeRatio(1.0, true)"/>
+					<mx:LinkButton label="x1.5" color="#FFFFFF" toolTip="1.5倍のサイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x1_5" click="changeWindowSizeRatio(1.5, true)"/>
+					<mx:LinkButton label="x2.0" color="#FFFFFF" toolTip="２倍のサイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x2" click="changeWindowSizeRatio(2.0, true)"/>
+					<mx:LinkButton id="button_ChangeFullScreen" rollOut="rollOut(event)" rollOver="rollOver(event)" label="FULL" click="changeFullButtonClicked(event)" toolTip="フルスクリーン表示" color="#FFFFFF" />
+					<mx:LinkButton id="button_ChangeShowInfoView" rollOut="rollOut(event)" rollOver="rollOver(event)" label="INFO" click="changeShowInfoViewButtonClicked(event)" toolTip="Info表示" color="#FFFFFF" />
 					<mx:Label width="100%"/>
-					<mx:LinkButton id="button_ChangeRepeat" rollOut="rollOut(event)" rollOver="rollOver(event)" label="Repeat" click="changeRepateButtonClicked(event)" toolTip="リピートの有無を切り替え" color="#FFFFFF" height="17" creationComplete="changeRepeatCreationComplete(event)"/>
-					<mx:LinkButton id="button_ChangeShowComment" rollOut="rollOut(event)" rollOver="rollOver(event)" label="Comment" click="changeShowCommentButtonClicked(event)" toolTip="コメントの表示/非表示を切り替え" height="17" creationComplete="changeShowCommentCreationComplete(event)" color="#FFFFFF"/>
+					<mx:LinkButton id="button_ChangeRepeat" rollOut="rollOut(event)" rollOver="rollOver(event)" label="Repeat" click="changeRepateButtonClicked(event)" toolTip="リピートの有無を切り替え" color="#FFFFFF" creationComplete="changeRepeatCreationComplete(event)"/>
+					<mx:LinkButton id="button_ChangeShowComment" rollOut="rollOut(event)" rollOver="rollOver(event)" label="Comment" click="changeShowCommentButtonClicked(event)" toolTip="コメントの表示/非表示を切り替え" creationComplete="changeShowCommentCreationComplete(event)" color="#FFFFFF"/>
 				</mx:HBox>
 				
 			</mx:Canvas>

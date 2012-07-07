@@ -1453,16 +1453,21 @@
 				
 				<mx:Canvas height="100%" width="100%" minWidth="630">
 					
-					<mx:ComboBox id="combobox_pageCounter_ranking" left="43" top="0" width="65"
-								 height="21" change="rankingPageCountChanged()"
-								 dataProvider="{rankingPageCountProvider}"></mx:ComboBox>
-					<mx:Button id="button_back" left="0" top="0" width="35" label="&lt;"
-							   click="backButtonClicked()"/>
-					<mx:Button id="button_next" left="116" top="0" width="35" label="&gt;"
-							   click="nextButtonClicked()"/>
-					
-					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このランキングをブラウザで表示します" click="showRankingOnNico(event)"/>
-					<mx:Button label="更新" width="80" click="rankingRenewButtonClicked()" id="rankingRenewButton" enabled="true" top="0" right="94"/>
+					<s:HGroup left="0" top="0">
+						<mx:Button id="button_back" left="0" top="0" width="35" label="&lt;"
+								   click="backButtonClicked()"/>
+						<mx:ComboBox id="combobox_pageCounter_ranking" left="43" top="0" width="65"
+									 change="rankingPageCountChanged()"
+									 dataProvider="{rankingPageCountProvider}"
+									 height="{button_back.height}"></mx:ComboBox>
+						<mx:Button id="button_next" left="116" top="0" width="35" label="&gt;"
+								   click="nextButtonClicked()"/>
+					</s:HGroup>
+						
+					<s:HGroup right="0" top="0">
+						<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このランキングをブラウザで表示します" click="showRankingOnNico(event)"/>
+						<mx:Button label="更新" width="80" click="rankingRenewButtonClicked()" id="rankingRenewButton" enabled="true" top="0" right="94"/>
+					</s:HGroup>
 					
 					<mx:DataGrid editable="false" rowHeight="55" sortableColumns="true" id="dataGrid_ranking" dataProvider="{rankingProvider}" 
 						top="25" left="0" right="0" bottom="0" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
@@ -1486,11 +1491,18 @@
 				</mx:Canvas>
 			</mx:HDividedBox>
 			
-			<mx:Button label="DLリストに追加" width="103" id="downloadStartButton" click="addDownloadListButtonClicked()" left="10" bottom="5" enabled="true" toolTip="選択中の項目をダウンロードリストに追加します"/>
-			<mx:Button label="ストリーミング" width="103" id="playStartButton" left="121" bottom="5" enabled="true" click="rankingStreamingPlayButtonClicked(event)" toolTip="選択中の項目をストリーミング再生します"/>
+			<s:HGroup left="10" bottom="5">
+				<mx:Button id="downloadStartButton" bottom="5" label="DLリストに追加"
+						   click="addDownloadListButtonClicked()" enabled="true"
+						   toolTip="選択中の項目をダウンロードリストに追加します"/>
+				<mx:Button id="playStartButton" bottom="5" label="ストリーミング"
+						   click="rankingStreamingPlayButtonClicked(event)" enabled="true"
+						   toolTip="選択中の項目をストリーミング再生します"/>
+			</s:HGroup>
 			
-			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChanged(event)" id="slider_thumbImageSize" toolTip="サムネイル画像の大きさを変更します"/>
-			
+			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" 
+						right="10" bottom="5" liveDragging="true" change="thumbSizeChanged(event)" 
+						id="slider_thumbImageSize" toolTip="サムネイル画像の大きさを変更します"/>
 			
 		</mx:Canvas>
 		<mx:Canvas label="検索" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_search"
@@ -1509,28 +1521,38 @@
 			
 			<mx:HDividedBox left="10" top="40" bottom="0" right="10">
 				
-				<mx:Canvas width="150" height="100%" minWidth="150" id="canvas_searchItemList">
-					<mx:Button left="0" bottom="5" width="35" label="+" click="addSearchItem(event)"
-							   enabled="true" toolTip="検索条件を追加します"/>
-					<mx:Button left="38" bottom="5" width="35" label="-"
-							   click="removeSearchItem(event)" enabled="true"
-							   toolTip="選択中の検索条件を削除します"/>
-					<mx:Button label="編集" id="button_searchItemEdit" left="75" bottom="5" click="editSearchItem(event)" toolTip="選択中の検索条件を編集します"/>
+				<mx:Canvas width="150" height="100%" minWidth="150" id="canvas_searchItemList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					
 					<mx:Tree dataProvider="{searchListProvider}" dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"
-						itemClick="searchItemClicked(event)" itemDoubleClick="searchItemDoubleClicked(event)" doubleClickEnabled="true" right="0" allowMultipleSelection="true"
-						left="0" top="0" bottom="30" id="tree_SearchItem" horizontalScrollPolicy="on"
-						creationComplete="tree_SearchItem_creationCompleteHandler(event)"></mx:Tree>
+							 itemClick="searchItemClicked(event)" itemDoubleClick="searchItemDoubleClicked(event)" doubleClickEnabled="true" right="0" allowMultipleSelection="true"
+							 left="0" top="0" bottom="30" id="tree_SearchItem" horizontalScrollPolicy="on"
+							 creationComplete="tree_SearchItem_creationCompleteHandler(event)"></mx:Tree>
+					
+					<s:HGroup bottom="5">
+						<mx:Button bottom="5" width="35" label="+" click="addSearchItem(event)"
+								   enabled="true" toolTip="検索条件を追加します"/>
+						<mx:Button bottom="5" width="35" label="-"
+								   click="removeSearchItem(event)" enabled="true"
+								   toolTip="選択中の検索条件を削除します"/>
+						<mx:Button label="編集" id="button_searchItemEdit" bottom="5" 
+								   click="editSearchItem(event)" toolTip="選択中の検索条件を編集します"/>
+					</s:HGroup>
+						
 				</mx:Canvas>
 				
 				<mx:Canvas height="100%" width="100%" minWidth="630">
 					
-					<mx:ComboBox id="combobox_pageCounter_search" left="43" top="0" width="65"
-								 height="21" change="searchPageCountChanged()"
-								 dataProvider="{searchPageCountProvider}"></mx:ComboBox>
-					<mx:Button id="button_back_search" left="0" top="0" width="35" label="&lt;"
-							   click="searchBackButtonClicked()"/>
-					<mx:Button id="button_next_search" left="116" top="0" width="35" label="&gt;"
-							   click="searchNextButtonClicked()"/>
+					<s:HGroup left="0" top="0">
+						<mx:Button id="button_back_search" width="35" label="&lt;"
+								   click="searchBackButtonClicked()"/>
+						<mx:ComboBox id="combobox_pageCounter_search" 
+									 width="65" change="searchPageCountChanged()"
+									 dataProvider="{searchPageCountProvider}"
+									 height="{button_back.height}"></mx:ComboBox>
+						<mx:Button id="button_next_search" width="35" label="&gt;"
+								   click="searchNextButtonClicked()"/>
+						<mx:Label id="label_totalCount"/>
+					</s:HGroup>
 					
 					<mx:DataGrid editable="false" rowHeight="55" sortableColumns="true" id="dataGrid_search" dataProvider="{searchProvider}"
 								 top="25" left="0" right="0" bottom="30" enabled="true" doubleClickEnabled="true" resizableColumns="true" 
@@ -1551,12 +1573,19 @@
 						</mx:columns>
 					</mx:DataGrid>
 					
-					<mx:Button label="DLリストに追加" width="103" click="addDownloadListButtonClickedForSearch()" enabled="true" left="0" bottom="5" toolTip="選択中の項目をダウンロードリストに追加します"/>
-					<mx:Button label="ストリーミング" width="103" enabled="true" click="videoStreamingPlayButtonClickedForSearch()" left="111" bottom="5" toolTip="選択中の項目をストリーミング再生します"/>
+					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="この検索結果をブラウザで表示します" click="showSearchResultOnNico(event)"/>
+
+					<s:HGroup left="0" bottom="5">
+						<mx:Button label="DLリストに追加"
+								   click="addDownloadListButtonClickedForSearch()" enabled="true"
+								   toolTip="選択中の項目をダウンロードリストに追加します"/>
+						<mx:Button label="ストリーミング"
+								   click="videoStreamingPlayButtonClickedForSearch()" enabled="true"
+								   toolTip="選択中の項目をストリーミング再生します"/>
+					</s:HGroup>					
 					<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" liveDragging="true" change="thumbSizeChangedForSearch(event)" id="slider_thumbImageSize_search" right="0" bottom="5"
 						toolTip="サムネイル画像の大きさを変更します"/>
-					<mx:Label left="159" top="2" id="label_totalCount"/>
-					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="この検索結果をブラウザで表示します" click="showSearchResultOnNico(event)"/>
+					
 				</mx:Canvas>
 			</mx:HDividedBox>
 				
@@ -1564,24 +1593,37 @@
 		<mx:Canvas label="マイリスト" width="100%" height="100%" id="canvas_myList"
 			toolTip="ニコニコ動画の公開マイリストと自分のマイリストを閲覧できます">
 			<mx:HDividedBox left="10" top="0" bottom="0" right="10">
-				<mx:Canvas width="150" height="100%" minWidth="150" id="canvas_myListSummary" creationComplete="canvas_myListSummary_creationCompleteHandler(event)">
+				<mx:Canvas width="150" height="100%" minWidth="150" id="canvas_myListSummary" 
+						   creationComplete="canvas_myListSummary_creationCompleteHandler(event)"
+						   horizontalScrollPolicy="off" verticalScrollPolicy="off">
 					<mx:Tree left="0" top="0" bottom="30" right="0" id="tree_myList" dragMoveEnabled="true" dataProvider="{myListProvider}" dragEnabled="true" dropEnabled="true"
 							 doubleClickEnabled="true" allowMultipleSelection="true" itemClick="myListClicked(event)" itemDoubleClick="myListDoubleClicked(event)" horizontalScrollPolicy="on"
 							 initialize="treeMyListInitializer()" creationComplete="tree_myList_creationCompleteHandler(event)" show="tree_myList_showHandler(event)" change="tree_myList_changeHandler(event)"></mx:Tree>
-					<mx:Button x="0" bottom="5" width="35" label="+" click="addPublicMyList(event)"
-							   enabled="true" toolTip="マイリストを追加します"/>
-					<mx:Button x="39" bottom="5" width="35" label="-"
-							   click="removePublicMyList(event)" enabled="true"
-							   toolTip="選択中のマイリストを削除します"/>
-					<mx:Button label="編集" id="button_playListNameEdit0" left="77" bottom="5" click="editPublicMyList(event)" toolTip="選択中のマイリストを編集します"/>
 					
+					<s:HGroup left="0" right="0" bottom="5">
+						<mx:Button width="35" label="+" click="addPublicMyList(event)"
+								   enabled="true" toolTip="マイリストを追加します"/>
+						<mx:Button width="35" label="-"
+								   click="removePublicMyList(event)" enabled="true"
+								   toolTip="選択中のマイリストを削除します"/>
+						<mx:Button label="編集" id="button_playListNameEdit0" 
+								   click="editPublicMyList(event)" toolTip="選択中のマイリストを編集します"/>
+					</s:HGroup>
+						
 				</mx:Canvas>
 				<mx:Canvas height="100%" width="100%" minWidth="350">
-					<mx:TextInput left="0" top="0" right="182" text="マイリストURLかID、もしくはチャンネルのURLを入力" id="textinput_mylist" enter="myListRenewButtonClicked(event)" change="myListUrlChanged(event)"
-						focusIn="textInputForcusEventHandler(event)" toolTip="マイリストのURL、IDか、チャンネルのURLを入力して「更新」ボタンを押すと、一覧に表示されます"/>
-					<mx:Button label="更新" click="myListRenewButtonClicked(event)" right="94" top="0" width="80" id="button_myListRenew"/>
-					<mx:Button label="ニコ動で見る" right="0" top="0" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
 					
+					
+					<s:HGroup right="0" top="0" left="0">
+						<mx:TextInput id="textinput_mylist" left="0" top="0" width="100%"
+									  change="myListUrlChanged(event)"
+									  enter="myListRenewButtonClicked(event)"
+									  focusIn="textInputForcusEventHandler(event)"
+									  text="マイリストURLかID、もしくはチャンネルのURLを入力"
+									  toolTip="マイリストのURL、IDか、チャンネルのURLを入力して「更新」ボタンを押すと、一覧に表示されます"/>
+						<mx:Button label="更新" click="myListRenewButtonClicked(event)" id="button_myListRenew"/>
+						<mx:Button label="ニコ動で見る" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
+					</s:HGroup>
 					
 					<mx:VDividedBox left="0" right="0" top="29" bottom="30" id="vdevidedbox_myList">
 						<mx:TextArea left="0" top="25" right="0" bottom="480" id="textArea_myList" width="100%" height="50" 
@@ -1611,17 +1653,43 @@
 						</mx:Canvas>
 					</mx:VDividedBox>
 					
-					<mx:Button label="DLリストに追加" width="103" id="downloadStartButton0" click="addDownloadListButtonClickedForMyList()" left="0" bottom="5" enabled="true" toolTip="選択中の項目をダウンロードリストに追加します"/>
-					<mx:Button label="ストリーミング" width="103" id="playStartButton0" left="111" bottom="5" enabled="true" click="videoStreamingPlayButtonClickedForMyList()" toolTip="選択中の項目をストリーミング再生します"/>
+					<s:HGroup left="0" bottom="5" verticalAlign="middle">
+						<mx:Button label="DLリストに追加" width="103" id="downloadStartButton0" 
+								   click="addDownloadListButtonClickedForMyList()" 
+								   enabled="true" toolTip="選択中の項目をダウンロードリストに追加します"/>
+						<mx:Button label="ストリーミング" width="103" id="playStartButton0" 
+								   enabled="true" click="videoStreamingPlayButtonClickedForMyList()" 
+								   toolTip="選択中の項目をストリーミング再生します"/>
+						<mx:Label  id="label_myListStatus" text="{myListStatusProvider}" toolTip="{myListStatsToolTip}"/>
+					</s:HGroup>
+					
 					<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="0" bottom="5" liveDragging="true" change="thumbSizeChangedForMyList(event)" id="slider_thumbImageSizeForMyList"
-						toolTip="サムネイル画像の大きさを変更します"/>
-					<mx:Label left="222" bottom="7" id="label_myListStatus" right="118" text="{myListStatusProvider}" toolTip="{myListStatsToolTip}"/>
+								toolTip="サムネイル画像の大きさを変更します"/>
+					
 					
 				</mx:Canvas>
 			</mx:HDividedBox>
 		</mx:Canvas>
 		<mx:Canvas label="DLリスト" width="100%" height="100%" id="canvas_queue"
 				   toolTip="ニコニコ動画から動画をダウンロードする際のキューです">
+			
+			<s:HGroup left="10" top="0">
+				<mx:Button id="button_downloadStart" label="DL開始"
+						   click="downloadManager.next(true)"/>
+				<mx:Button id="button_downloadCancel" label="DL中止"
+						   click="downloadManager.stop()"/>
+				<mx:VRule width="15" height="20"/>
+				<mx:Button label="スケジュール" click="button_schedule_clickHandler(event)"/>
+				<mx:VRule width="15" height="20" />
+				<mx:Button label="すべてクリア" id="button_EmptyDownloadList" click="downloadManager.emptyList()"/>
+				<mx:Button label="DL済みをクリア" id="button_downloadedItemRemove" click="downloadManager.removeDownloadedVideo()"/>
+			</s:HGroup>
+			
+			<s:HGroup right="10" top="5">
+				<mx:Label text="次のダウンロード開始:" />
+				<mx:Label width="100" id="label_nextDownloadTime"/>
+			</s:HGroup>
+			
 			<mx:DataGrid left="10" top="28" right="10" bottom="30" rowHeight="55" 
 						 sortableColumns="false" dataProvider="{downloadProvider}" 
 						 id="dataGrid_downloadList" allowMultipleSelection="true"
@@ -1651,34 +1719,26 @@
 									   draggable="false"/>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:Button id="button_downloadStart" left="10" top="0" width="65" label="DL開始"
-					   click="downloadManager.next(true)"/>
-			<mx:Button id="button_downloadCancel" left="79" top="0" width="65" label="DL中止"
-					   click="downloadManager.stop()"/>
-			<mx:VRule width="20" height="22" left="148" top="0"/>
-			<mx:Button label="スケジュール" left="176" top="0" click="button_schedule_clickHandler(event)"/>
-			<mx:VRule width="20" height="22" left="270" top="0"/>
-			<mx:Button label="すべてクリア" id="button_EmptyDownloadList" click="downloadManager.emptyList()" left="298" top="0"/>
-			<mx:Button label="DL済みをクリア" id="button_downloadedItemRemove" click="downloadManager.removeDownloadedVideo()" left="392" top="0"/>
 			
-			<mx:Label text="次のダウンロード開始:" right="118" top="2"/>
-			<mx:Label width="100" right="10" top="2" id="label_nextDownloadTime"/>
+			<s:HGroup left="10" bottom="5" verticalAlign="middle">
+				<mx:Label text="動画のURL:"/>
+				<mx:TextInput id="textInput_url" width="400" 
+							  text="特定の動画をダウンロードするときはここにURLか動画IDを入力します" 
+							  focusIn="textInput_url_focusInHandler(event)"
+							  nativeDragEnter="textInput_url_nativeDragEnterHandler(event)" 
+							  nativeDragDrop="textInput_url_nativeDragDropHandler(event)"
+							  focusOut="textInput_url_focusOutHandler(event)"/>
+				
+				<mx:Button label="+" click="addDLListButtonClicked(event)" toolTip="リストに追加します。ここにURLをドロップしてもリストに追加できます。"
+						   id="button_addDlList" nativeDragEnter="button_addDlList_nativeDragEnterHandler(event)"
+						   nativeDragDrop="button_addDlList_nativeDragDropHandler(event)"  width="80"/>
+				<mx:Button width="35" label="-"
+						   click="deleteDLListButtonClicked(event)" toolTip="選択中の項目をリストから削除します。"/>
+			</s:HGroup>
 			
-			<mx:TextInput id="textInput_url" left="80" bottom="5" width="400" 
-						  text="特定の動画をダウンロードするときはここにURLか動画IDを入力します" 
-						  focusIn="textInput_url_focusInHandler(event)"
-						  nativeDragEnter="textInput_url_nativeDragEnterHandler(event)" 
-						  nativeDragDrop="textInput_url_nativeDragDropHandler(event)"
-						  focusOut="textInput_url_focusOutHandler(event)"/>
-			
-			<mx:Button label="+" bottom="5" left="488" click="addDLListButtonClicked(event)" toolTip="リストに追加します。ここにURLをドロップしてもリストに追加できます。"
-					   id="button_addDlList" nativeDragEnter="button_addDlList_nativeDragEnterHandler(event)"
-					   nativeDragDrop="button_addDlList_nativeDragDropHandler(event)"  width="80"/>
-			<mx:Button left="576" bottom="5" width="35" label="-"
-					   click="deleteDLListButtonClicked(event)" toolTip="選択中の項目をリストから削除します。"/>
-			<mx:Label text="動画のURL:" left="10" bottom="7"/>
-			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForDLList(event)" id="slider_thumbImageSizeForDLList" toolTip="DLリストの行の高さを変更します"/>
-			
+			<mx:HSlider width="110" minimum="0.5" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" 
+						liveDragging="true" change="thumbSizeChangedForDLList(event)" 
+						id="slider_thumbImageSizeForDLList" toolTip="DLリストの行の高さを変更します"/>
 			
 		</mx:Canvas>
 		<mx:Canvas label="ライブラリ" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_library"
@@ -1687,7 +1747,7 @@
 			<mx:HDividedBox left="0" top="0" bottom="0" right="0">
 				<mx:Canvas height="100%" width="160" minWidth="160" id="canvas_libAndPList">
 					<mx:Canvas left="10" top="0" bottom="0" right="0">
-						<mx:Tree left="0" top="0" bottom="45" right="0" id="tree_library" 
+						<mx:Tree left="0" top="0" bottom="50" right="0" id="tree_library" 
 								 dragDrop="tree_library_dragDropHandler(event)"
 								 dragEnter="tree_library_dragEnterAndOverHandler(event)"
 								 dragOver="tree_library_dragEnterAndOverHandler(event)"
@@ -1700,31 +1760,44 @@
 								 creationComplete="tree_library_creationCompleteHandler(event)" 
 								 itemOpening="tree_library_itemOpeningHandler(event)"
 								 horizontalScrollPolicy="on"></mx:Tree>
-						<mx:CheckBox label="動画を全て表示" left="5" bottom="26" toolTip="選択したフォルダ下の全ての動画を表示します。" 
-									 id="checkBox_showAll" click="checkBoxShowAllChanged(event)"
-									 creationComplete="checkBox_showAll_creationCompleteHandler(event)"/>
-						<mx:Button id="button_addDir" left="5" bottom="5" width="35" label="+"
-								   click="button_addDir_clickHandler(event)" enabled="true"
-								   toolTip="ライブラリにフォルダを追加します"/>
-						<mx:Button id="button_delDir" left="44" bottom="5" width="35" label="-"
-								   click="button_delDir_clickHandler(event)" enabled="true"
-								   toolTip="ライブラリからフォルダを削除します"/>
-						<mx:Button id="button_fileNameEdit" left="87" bottom="5" width="50"
-								   label="編集" click="button_fileNameEdit_clickHandler(event)"
-								   toolTip="ライブラリのフォルダを編集します"/>
+						
+						<s:VGroup left="0" bottom="5">
+							<mx:CheckBox label="動画を全て表示" toolTip="選択したフォルダ下の全ての動画を表示します。" 
+										 id="checkBox_showAll" click="checkBoxShowAllChanged(event)"
+										 creationComplete="checkBox_showAll_creationCompleteHandler(event)"/>
+							<s:HGroup>
+								<mx:Button id="button_addDir" width="35" label="+"
+										   click="button_addDir_clickHandler(event)" enabled="true"
+										   toolTip="ライブラリにフォルダを追加します"/>
+								<mx:Button id="button_delDir" width="35" label="-"
+										   click="button_delDir_clickHandler(event)" enabled="true"
+										   toolTip="ライブラリからフォルダを削除します"/>
+								<mx:Button id="button_fileNameEdit" width="50"
+										   label="編集" click="button_fileNameEdit_clickHandler(event)"
+										   toolTip="ライブラリのフォルダを編集します"/>
+							</s:HGroup>
+						</s:VGroup>
+						
+						
 					</mx:Canvas>
 				</mx:Canvas>
 				
 				<mx:Canvas height="100%" width="100%" minWidth="600" id="canvas_libraryItems">
 					<mx:VDividedBox left="0" top="0" bottom="30" right="10">
 						<mx:Canvas id="canvas_tagTileList" width="100%" height="50%">
+							
+							<s:HGroup left="0" bottom="0" verticalAlign="middle">
+								<mx:Button label="表示" click="tagShow()"/>
+								<mx:Button label="隠す" click="tagHide()"/>
+								<mx:Label text="※ダブルクリックでタグ検索" />
+							</s:HGroup>
 							<mx:TextInput id="textInput_searchInTagList" right="0" bottom="0"
 										  focusIn="textInput_focusInHandler(event)"
 										  width="120" change="searchTagListTextInputChange()"
 										  enabled="true" enter="searchTagListTextInputChange()"
 										  text="タグを検索" textInput="searchTagListTextInputChange()"
 										  focusOut="textInput_searchInTagList_focusOutHandler(event)"/>
-							<mx:Label text="※ダブルクリックでタグ検索" left="152" bottom="0"/>
+							
 							<mx:TabNavigator left="0" top="0" bottom="25" right="0" id="tag_tabNavigator">
 								<mx:Canvas label="タグ一覧" width="100%" height="100%" id="canvas_tagList">
 									<mx:TileList dataProvider="{tagProvider}"
@@ -1752,8 +1825,7 @@
 												 itemRenderer="TagTileListRenderer"></mx:TileList>
 								</mx:Canvas>
 							</mx:TabNavigator>
-							<mx:Button label="表示" left="0" bottom="0" click="tagShow()"/>
-							<mx:Button label="隠す" left="74" bottom="0" click="tagHide()"/>
+							
 						</mx:Canvas>
 						<mx:Canvas height="100%" width="100%" id="canvas_libraryDataGrid">
 							<mx:DataGrid right="0" top="0" bottom="0" left="0" 
@@ -1887,29 +1959,29 @@
 						</mx:Canvas>
 					</mx:VDividedBox>
 					
-					<mx:Label left="0" bottom="5" width="40" text="更新:"/>
+					<s:HGroup left="0" bottom="5" verticalAlign="middle">
+						<mx:Label text="更新:"/>
+						<mx:Button label="コメント" id="newCommentOnlyDownloadButton" 
+								   click="newCommentDownloadButtonClicked(true)" enabled="true"/>					
+						<mx:Button label="動画以外" id="newCommentDownloadButton" 
+								   click="newCommentDownloadButtonClicked()" enabled="true"/>
+						<mx:Button label="すべて" id="addDownloadListButton"
+								   click="addDownloadListForDownloadedList(event)"/>
+					</s:HGroup>
 					
-					<mx:Button label="コメント" id="newCommentOnlyDownloadButton" left="48" bottom="5" 
-							   click="newCommentDownloadButtonClicked(true)" enabled="true"/>					
-					<mx:Button label="動画以外" id="newCommentDownloadButton" 
-							   click="newCommentDownloadButtonClicked()" left="127" bottom="5" enabled="true"/>
-					<mx:Button label="すべて" left="205" bottom="5" id="addDownloadListButton"
-							   click="addDownloadListForDownloadedList(event)"/>
-					
-					
-					<mx:TextInput id="textInput_searchInDLList" right="120" bottom="5" width="120"
-								  change="searchDLListTextInputChange()" enabled="true"
-								  enter="searchDLListTextInputChange()" text="リスト内を検索"
-								  focusIn="textInput_focusInHandler(event)"
-								  focusOut="textInput_searchInDLList_focusOutHandler(event)"/>
-					
-					<mx:HSlider width="110" minimum="1.0" maximum="5.0" 
-								snapInterval="0.1" value="1" right="10" bottom="5" 
-								liveDragging="true" change="thumbSizeChangedForLibrary(event)" 
-								id="slider_thumbImageSizeForLibrary"
-								toolTip="サムネイル画像の大きさを変更します"/>
-					
-					
+					<s:HGroup right="10" bottom="5" verticalAlign="middle">
+						<mx:TextInput id="textInput_searchInDLList" width="120"
+									  change="searchDLListTextInputChange()" enabled="true"
+									  enter="searchDLListTextInputChange()" text="リスト内を検索"
+									  focusIn="textInput_focusInHandler(event)"
+									  focusOut="textInput_searchInDLList_focusOutHandler(event)"/>
+						
+						<mx:HSlider width="110" minimum="1.0" maximum="5.0" 
+									snapInterval="0.1" value="1" 
+									liveDragging="true" change="thumbSizeChangedForLibrary(event)" 
+									id="slider_thumbImageSizeForLibrary"
+									toolTip="サムネイル画像の大きさを変更します"/>
+					</s:HGroup>
 				</mx:Canvas>
 				
 			</mx:HDividedBox>
@@ -1937,51 +2009,77 @@
 					<mx:DataGridColumn headerText="URL" dataField="dataGridColumn_url" width="60" showDataTips="true"/>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:Button left="191" bottom="5" width="35" label="-"
-					   click="removeHistoryItem(dataGrid_history.selectedItems)"/>
-			<mx:Button label="リストをクリア" left="239" bottom="5" click="removeHistory()"/>
-			<mx:Button left="10" bottom="5" width="50" label="再生" click="historyItemPlay(event)"/>
-			<mx:Button label="DLリストに追加" click="historyItemDownload(event)" left="64" bottom="5"/>
-			<mx:VRule height="22" width="10" left="173" bottom="5"/>
-			<mx:HSlider width="110" minimum="1.0" maximum="2.0" snapInterval="0.1" value="1" right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForHistory(event)" id="slider_thumbImageSizeForHistory" toolTip="履歴の行の高さを変更します"/>
+			
+			<s:HGroup bottom="5" left="10">
+				<mx:Button label="再生" click="historyItemPlay(event)"/>
+				<mx:Button label="DLリストに追加" click="historyItemDownload(event)" />
+				<mx:VRule height="22" width="10" />
+				
+				<mx:Button width="35" label="-"
+						   click="removeHistoryItem(dataGrid_history.selectedItems)"/>
+				<mx:Button label="リストをクリア" click="removeHistory()"/>
+				
+			</s:HGroup>
+			
+			<mx:HSlider width="110" minimum="1.0" maximum="2.0" snapInterval="0.1" value="1" 
+						right="10" bottom="5" liveDragging="true" change="thumbSizeChangedForHistory(event)" 
+						id="slider_thumbImageSizeForHistory" toolTip="履歴の行の高さを変更します"/>
 		</mx:Canvas>
 		
 		<mx:Canvas label="設定" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" id="canvas_option" 
 			toolTip="NNDDの設定を変更できます">
 			<mx:TabNavigator backgroundAlpha="0.0" left="10" top="0" bottom="38" right="10" change="confTabChange(event)">
 				<mx:Canvas label="全般" width="100%" height="100%" id="canvas_all_config" creationComplete="allConfigCanvasCreationComplete(event)" show="allConfigCanvasShow(event)">
-					<mx:Label text="全般" top="0" left="10" fontWeight="bold"/>
 					
-					<mx:Label text="動画の保存先：" width="95" left="30" top="20"/>
-					<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="358" left="133" top="18" editable="false"/>
-					<mx:Button label="参照..." click="folderSelectButtonClicked(event)" left="499" top="18" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定した後、ライブラリを更新しなおせば、NNDDのライブラリタブから再生できます。"/>
-					<mx:Button label="開く" click="openLibraryDir(event)" left="577" top="18" toolTip="NNDDの保存先フォルダを開きます。"/>
+					<s:HGroup top="0" left="10" right="10">
+						<mx:Label text="全般"  fontWeight="bold"/>
+						<mx:HRule width="100%" height="21"/>
+					</s:HGroup>
+					
+					<s:HGroup left="30" top="20">
+						<mx:Label text="動画の保存先："/>
+						<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="300" editable="false"/>
+						<mx:Button label="参照..." click="folderSelectButtonClicked(event)" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定した後、ライブラリを更新しなおせば、NNDDのライブラリタブから再生できます。"/>
+						<mx:Button label="開く" click="openLibraryDir(event)" toolTip="NNDDの保存先フォルダを開きます。"/>
+					</s:HGroup>
+						
 					<mx:CheckBox label="新しくダウンロードした動画を&quot;Downloads&quot;フォルダに保存する" selected="true" id="checkBox_useDownloadDir" click="useDownloadDirCheckBoxChenged()" left="49" top="42" toolTip="新しくダウンロードした動画を、ライブラリの直下ではなく、ライブラリの直下のDownloadsフォルダに保存します。"/>
 					<mx:CheckBox label="動画の保存先にNNDDのシステム情報を保存する(NNDDの再起動後有効)" selected="true" id="checkBox_useLibraryDirForSystemDir" 
 								 click="useAppSystemDirChanged(event)" left="49" top="64" 
 								 toolTip="NNDDのシステム情報(systemフォルダ下に保存される情報)を、動画のDL先に指定されたフォルダの直下に保存します。このチェックボックスをはずすと、システム情報はOSが提供する専用のフォルダに保存します。"/>
 					
-					<mx:Button label="ライブラリを更新" left="472" top="84" click="renewLibraryButtonClicked()" toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
-					<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" left="30" top="86"/>
+					<s:HGroup left="30" top="86">
+						<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" />
+						<mx:Button label="ライブラリを更新" click="renewLibraryButtonClicked()" 
+								   toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
+					</s:HGroup>
 					<mx:Label text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)" left="48" top="109"/>
 					
 					<mx:HRule left="29" right="11" top="135" height="10"/>
 					
-					<mx:Label text="NNDDのライブラリ情報をインポートする" left="29" top="150"
-							  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
-					<mx:Button label="読み込み..." left="278" top="148" click="importButtonChecked()" 
-							   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
+					<s:HGroup left="29" top="150">
+						<mx:Label text="NNDDのライブラリ情報をインポートする" 
+								  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
+						<mx:Button label="読み込み..." click="importButtonChecked()" 
+								   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
+					</s:HGroup>
+					
 					<mx:CheckBox label="現在のNNDDのライブラリ情報を削除してからインポート" selected="false" id="checkBox_initalize"
 								 left="48" top="172" 
 								 toolTip="現在のNNDDのライブラリ情報を一度削除したあと、ライブラリ情報を読み込みます。このチェックを外してインポートした場合は、現在のNNDDのライブラリ情報に上書きされます。"/>
 					
 					<mx:HRule left="29" right="11" top="195" height="10"/>
 					
-					<mx:Label text="ウィンドウの大きさ・位置をリセットする" left="29" top="212"/>
-					<mx:Button label="リセット" left="278" top="210" id="button_windowPositionReset" click="windowPositionReset()"/>
+					<s:HGroup left="29" top="212">
+						<mx:Label text="ウィンドウの大きさ・位置をリセットする" />
+						<mx:Button label="リセット" id="button_windowPositionReset" click="windowPositionReset()"/>
+					</s:HGroup>
 					
-					<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()" left="29" top="240"/>
-					<mx:Button label="今すぐバージョンチェック" click="versionCheck()" left="258" top="239"/>
+					<s:HGroup left="29" top="240">
+						<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()"/>
+						<mx:Button label="今すぐバージョンチェック" click="versionCheck()"/>
+					</s:HGroup>
+					
 					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" 
 								 toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" 
 								 id="checkBox_DisEnableAutoExit" 
@@ -1991,122 +2089,157 @@
 								 click="checkBox_CloseNNDDWindowWhenLogin_clickHandler(event)" 
 								 toolTip="ログインが完了したらこのウィンドウを最小化するか、閉じます。"
 								 left="29" top="297"/>
-					<mx:HRule left="47" right="10" top="0" height="21"/>
+					
 					<mx:HRule left="29" right="11" top="320" height="8"/>
 					
-					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
-					<!--
-					<mx:CheckBox label="選択中のディレクトリおよびプレイリストに含まれるタグ以外表示しない" left="173" id="checkbox_showOnlyNowLibraryTag" click="showOnlyNowLibraryTagCheckboxChanged(event)" selected="true" top="279"/>
-					-->
-					<mx:Label text="アプリケーションで使用するフォント：" left="29" top="335"/>
-					<mx:ComboBox left="259" top="335" id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-					<mx:Button label="デフォルト" left="472" top="333" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					<s:HGroup left="29" top="335">
+						<mx:Label text="アプリケーションで使用するフォント：" />
+						<mx:ComboBox id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+						<mx:Button label="デフォルト" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+					</s:HGroup>
 					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="358"/>
 					
-					<mx:Label left="29" top="387" text="フォントのサイズ："/>
-					<mx:ComboBox left="151" top="387" id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
-					
+					<s:HGroup left="29" top="387">
+						<mx:Label text="フォントのサイズ："/>
+						<mx:ComboBox id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" 
+									 width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
+					</s:HGroup>
 					
 					<mx:HRule left="30" right="10" top="414" height="8"/>
-					<mx:Label text="アプリケーションの設定情報フォルダ：" left="30" top="428"/>
-					<mx:LinkButton left="239" top="426" height="21"
-								   click="openApplicationSettingInfoDir(event)" color="#0000FF"
-								   creationComplete="linkbutton1_creationCompleteHandler(event)"
-								   textAlign="left" textDecoration="underline"
-								   toolTip="アプリケーションの設定情報フォルダを開きます。"/>
+					
+					<s:HGroup left="30" top="428">
+						<mx:Label text="アプリケーションの設定情報フォルダ：" />
+						<mx:LinkButton height="21"
+									   click="openApplicationSettingInfoDir(event)" color="#0000FF"
+									   creationComplete="linkbutton1_creationCompleteHandler(event)"
+									   textAlign="left" textDecoration="underline"
+									   toolTip="アプリケーションの設定情報フォルダを開きます。"/>
+					</s:HGroup>
+					
+					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					
 				</mx:Canvas>
 				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" creationComplete="nicoConfigCanvasCreationComplete(event)">
-					<mx:HRule left="191" top="0" right="10" height="21"/>
-					<mx:Label text="ランキング・検索・マイリスト" top="0" left="10" fontWeight="bold"/>
-					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="17" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" 
+					
+					<s:HGroup top="0" left="10" right="10">
+						<mx:Label text="ランキング・検索・マイリスト" fontWeight="bold"/>
+						<mx:HRule width="100%" height="21"/>
+					</s:HGroup>
+					
+					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="21" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" 
 								 toolTip="起動時に前回の起動の設定でランキングを更新します。これを有効にすると前回終了時に選択されていたタブに移動しません。"/>
-					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="42" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" 
+					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="46" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" 
 								 toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
-					<mx:CheckBox id="checkBox_isDoubleClickOnVideoPlay" left="30" top="67"
+					<mx:CheckBox id="checkBox_isDoubleClickOnVideoPlay" left="30" top="71"
 								 label="ダブルクリックで動画を再生する"
 								 change="checkBoxDoubleClickOnVideoPlayChanged(event)"
 								 selected="true"
 								 toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、動画を再生します。"/>
-					<mx:CheckBox id="checkBox_isPrecedenceDownloadedVideo" left="49" top="90"
+					<mx:CheckBox id="checkBox_isPrecedenceDownloadedVideo" left="49" top="94"
 								 label="ダウンロード済みの動画を優先して再生する"
 								 change="checkBoxPrecedenceDownloadedVideoChanged(event)"
 								 selected="true"
 								 enabled="{checkBox_isDoubleClickOnVideoPlay.selected}"
 								 toolTip="動画を再生する際、DL済の動画があれば優先して再生します。DL済みでない場合はストリーミング再生します。"/>
 					
-					<mx:CheckBox label="検索履歴を保存する" left="30" top="118" 
-								 id="checkbox_saveSearchHistory" selected="true" 
-								 toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" 
-								 change="checkBoxSaveSearchHistoryChanged(event)"/>
-					<mx:Button label="履歴を消去" left="159" top="117" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
+					<s:HGroup left="30" top="122" verticalAlign="middle">
+						<mx:CheckBox label="検索履歴を保存する" 
+									 id="checkbox_saveSearchHistory" selected="true" 
+									 toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" 
+									 change="checkBoxSaveSearchHistoryChanged(event)"/>
+						<mx:Button label="履歴を消去" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
+					</s:HGroup>
 					
-					<mx:CheckBox label="マイリスト更新をスケジュール実行する：" 
-								 id="checkBox_myListRenewOnSchedule" 
-								 click="checkBoxMylistRenewOnScheduleChanged(event)" 
-								 selected="true" left="30" top="143" height="22" 
-								 toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"
-								 enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
-					<mx:ComboBox left="266" dataProvider="{myListRenewScheduleTimeProvider}" 
-								 selectedIndex="1" width="100" 
-								 change="myListRenewScheduleTimeChange(event)" 
-								 top="146" id="combobox_myListRenewTime" 
-								 toolTip="マイリスト情報取得の間隔を分で指定します。"
-								 enabled="{!checkBox_myListRenewOnBootTime.selected}"></mx:ComboBox>
-					<mx:Label text="分おき" left="374" top="146"
-							  enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
-					<mx:VRule width="7" height="22" left="420" top="144"/>
-					<mx:Button label="今すぐ更新" left="435" click="myListRenewNow()" top="144"/>
+					<s:HGroup left="30" top="147" verticalAlign="middle">
+						<mx:CheckBox label="マイリスト更新をスケジュール実行する:" id="checkBox_myListRenewOnSchedule" 
+									 click="checkBoxMylistRenewOnScheduleChanged(event)" 
+									 selected="true" height="22" 
+									 toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"
+									 enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
+						<mx:ComboBox dataProvider="{myListRenewScheduleTimeProvider}" 
+									 selectedIndex="1" width="100" 
+									 change="myListRenewScheduleTimeChange(event)" 
+									 id="combobox_myListRenewTime" 
+									 toolTip="マイリスト情報取得の間隔を分で指定します。"
+									 enabled="{!checkBox_myListRenewOnBootTime.selected}"></mx:ComboBox>
+						<mx:Label text="分おき" 
+								  enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
+						<mx:VRule width="7" height="22" />
+						<mx:Button label="今すぐ更新" click="myListRenewNow()" />
+						
+					</s:HGroup>
 					
-					<mx:Label left="49" top="173" text="マイリストごとの更新間隔"/>
-					<s:NumericStepper left="193" top="169" maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
-									  change="numStepperDelayOfMylistChanged(event)"
-									  toolTip="マイリストが複数ある場合の、マイリストの更新が完了してから次のマイリストの更新を開始するまでの間隔を指定できます。"/>
-					<mx:Label left="263" top="173" text="秒"/>
+					<s:HGroup left="49" top="177" verticalAlign="middle">
+						<mx:Label  text="マイリストごとの更新間隔"/>
+						<s:NumericStepper maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
+										  change="numStepperDelayOfMylistChanged(event)"
+										  toolTip="マイリストが複数ある場合の、マイリストの更新が完了してから次のマイリストの更新を開始するまでの間隔を指定できます。"/>
+						<mx:Label text="秒"/>
+						
+					</s:HGroup>
 					
 					<mx:CheckBox label="マイリスト更新を起動時のみ実行する" 
 								 id="checkBox_myListRenewOnBootTime" 
 								 click="checkBoxMyListRenewOnBootTimeChanged(event)"
-								 selected="false" left="30" top="200" height="22" 
+								 selected="false" left="30" top="204" height="22" 
 								 toolTip="ニコニコ動画から最新のマイリストの情報をNNDDの起動時のみ取得します。"/>
 					
-					<mx:HRule left="30" top="226" right="10" height="10"/>
-					<mx:Label text="検索項目にデフォルトの検索項目を追加する" left="30" top="245"/>
-					<mx:Button label="追加" id="button_addDefSearchItem" left="271" top="243" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					<mx:HRule left="30" top="230" right="10" height="10"/>
 					
-					<mx:Label x="30" y="272" text="自分のマイリストをマイリスト一覧に追加"/>
-					<mx:Button label="追加" click="getMyListIds(event)" left="271" top="271"/>
+					<s:HGroup left="30" top="249" verticalAlign="middle">
+						<mx:Label text="検索項目にデフォルトの検索項目を追加する" />
+						<mx:Button label="追加" id="button_addDefSearchItem" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+					</s:HGroup>
+					
+					<s:HGroup left="30" top="276" verticalAlign="middle">
+						<mx:Label text="自分のマイリストをマイリスト一覧に追加"/>
+						<mx:Button label="追加" click="getMyListIds(event)" />
+					</s:HGroup>
 					
 				</mx:Canvas>
 				<mx:Canvas label="DLリスト・ライブラリ" width="100%" height="100%" id="canvas_library_config"  creationComplete="libraryConfigCanvasCreationComplete(event)">
-					<mx:Label text="ダウンロードリスト" top="0" left="10" fontWeight="bold"/>
-					<mx:HRule left="132" right="10" top="0" height="19"/>
 					
-					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="16" selected="true" id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
-					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="30" top="41" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
-					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode" click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="30" top="66"/>
-					<mx:CheckBox id="checkBox_useNewCommentGet" left="29" top="114"
+					<s:HGroup top="0" left="10" right="10">
+						<mx:Label text="ダウンロードリスト" fontWeight="bold"/>
+						<mx:HRule width="100%" height="19"/>
+					</s:HGroup>
+					
+					<mx:CheckBox label="自動的にダウンロードを開始する" left="30" top="18" selected="true" 
+								 id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
+					<mx:CheckBox label="エコノミーモードのときダウンロードするか確認する" left="30" 
+								 top="43" selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
+					<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode"
+								 click="checkBoxAlwaysEcoChanged(event)" toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはInfoViewで設定できます。" left="30" top="68"/>
+					<mx:CheckBox id="checkBox_useNewCommentGet" left="29" top="116"
 								 label="新しいコメントのダウンロード方式を使う" click="checkBoxUseNewCommentGet(event)"
 								 selected="true"
 								 toolTip="2011/2/3から有効な、新しいコメントのダウンロード方式を使います。再生時間が10分より長い動画で、1000件以上のコメントが取得できるようになります。"/>
 					
-					<mx:Label left="30" top="91" text="ダウンロード失敗時の最大リトライ回数"/>
-					<s:NumericStepper left="241" top="87" maximum="5" minimum="0" stepSize="1" value="2" id="numStepper_downloadRetryMaxCount"
-									  change="numStepper_downloadRetryMaxCountChanged(event)"
-									  toolTip="ダウンロードに失敗した場合の最大リトライ回数を指定します。あまり大きい数字にすると、ニコニコ動画からアクセス制限を受ける場合があります。"/>
-					<mx:Label left="289" top="91" text="回"/>
+					<s:HGroup left="30" top="93" verticalAlign="middle">
+						<mx:Label text="ダウンロード失敗時の最大リトライ回数"/>
+						<s:NumericStepper maximum="5" minimum="0" stepSize="1" value="2" id="numStepper_downloadRetryMaxCount"
+										  change="numStepper_downloadRetryMaxCountChanged(event)"
+										  toolTip="ダウンロードに失敗した場合の最大リトライ回数を指定します。あまり大きい数字にすると、ニコニコ動画からアクセス制限を受ける場合があります。"/>
+						<mx:Label text="回"/>
+					</s:HGroup>
 					
-					<mx:Label text="ライブラリ" left="10" top="139" fontWeight="bold"/>
-					<mx:HRule left="83" right="10" top="140" height="18"/>
+					<s:HGroup left="10" top="141" right="10">
+						<mx:Label text="ライブラリ"  fontWeight="bold"/>
+						<mx:HRule width="100%" height="18"/>
+					</s:HGroup>
 					
 					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="166" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
+					
 					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="191" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
-					<mx:Label text="保存するコメントの最大数：" left="49" top="216"/>
-					<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100" left="205" top="212" 
-									   id="numericStepper_saveCommentMaxCount" enabled="{checkBox_isAppendComment.selected}"
-									   change="numericStepperSaveCommentMaxCountChanged(event)" 
-									   toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
-					<mx:Label text="件/動画" left="305" top="216"/>
+					
+					<s:HGroup left="49" top="216">
+						<mx:Label text="保存するコメントの最大数：" />
+						<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100"
+										   id="numericStepper_saveCommentMaxCount" enabled="{checkBox_isAppendComment.selected}"
+										   change="numericStepperSaveCommentMaxCountChanged(event)" 
+										   toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
+						<mx:Label text="件/動画" />
+					</s:HGroup>
 					
 				</mx:Canvas>
 				<mx:Canvas label="ログ" width="100%" height="100%" id="canvas_innerConfing_log">
@@ -2116,29 +2249,37 @@
 					<mx:Button label="更新" right="5" bottom="5" click="logAreaRenewButtonClicked(event)"/>
 				</mx:Canvas>
 				<mx:Canvas width="100%" height="100%" label="Player" creationComplete="nativePlayer_creationCompleteHandler(event)">
-					<mx:Label text="Player" top="0" left="10" fontWeight="bold"/>
-					<mx:HRule left="62" right="10" top="0" height="21"/>
 					
-					<mx:CheckBox left="30" top="27" label="起動時にPlayerを開く"
-								 toolTip="NNDDの起動時にPlayerを開きます。"
-								 enabled="{!isEnableNativePlayer}"
-								 id="checkbox_openPlayerOnBoot" change="checkbox_openPlayerOnBootChanged(event)"/>
-					<mx:Text left="171" top="28"
-							 text="※外部Playerを利用する場合、この機能は利用できません。"/>
+					<s:HGroup top="0" left="10" right="10">
+						<mx:Label text="Player" fontWeight="bold"/>
+						<mx:HRule width="100%" height="21"/>
+					</s:HGroup>
+					
+					<s:HGroup left="30" top="27" verticalAlign="middle">
+						<mx:CheckBox label="起動時にPlayerを開く"
+									 toolTip="NNDDの起動時にPlayerを開きます。"
+									 enabled="{!isEnableNativePlayer}"
+									 id="checkbox_openPlayerOnBoot" change="checkbox_openPlayerOnBootChanged(event)"/>
+						<mx:Text text="※外部Playerを利用する場合、この機能は利用できません。"/>
+					</s:HGroup>
+					
 					<mx:HRule left="30" right="10" top="52" height="10"/>
 					
-					<mx:CheckBox left="30" top="70" label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
-								 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
-								 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
+					<s:HGroup left="30" top="70" verticalAlign="middle">
+						<mx:CheckBox label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
+									 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
+									 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
+						<mx:Text visible="{!NativeProcess.isSupported}"
+								 text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
+					</s:HGroup>
 					
-					<mx:Text left="160" top="71" visible="{!NativeProcess.isSupported}"
-							 text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
-					
-					<mx:Label left="49" top="97" text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
-					<mx:TextInput id="playerPath_textinput" left="134" top="95" width="321" enabled="{NativeProcess.isSupported}"
-								  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
-					<mx:Button x="463" y="96" label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
-							   click="button_searchNativeProcess_clickHandler(event)"/>
+					<s:HGroup left="49" top="97" verticalAlign="middle">
+						<mx:Label text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
+						<mx:TextInput id="playerPath_textinput" width="321" enabled="{NativeProcess.isSupported}"
+									  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
+						<mx:Button label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
+								   click="button_searchNativeProcess_clickHandler(event)"/>
+					</s:HGroup>
 					<mx:Text left="49" right="10" top="124" bottom="31"
 							 enabled="{NativeProcess.isSupported}"
 							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
@@ -2152,13 +2293,16 @@
 				</mx:Canvas>
 			</mx:TabNavigator>
 			
-			<mx:LinkButton left="148" bottom="10" label="寄付ページを開く" click="donate_clickHandler(event)"
-						   toolTip="PayPalでMineAppProject(MineAP)に寄付を行います。既定のブラウザでPayPalのページを開きます。"
-						   color="#0000FF" textDecoration="underline"/>
+			<s:HGroup left="10" bottom="10" verticalAlign="middle">
+				<mx:Label text="PayPalでMineAPに寄付:"/>
+				<mx:LinkButton label="寄付ページを開く" click="donate_clickHandler(event)"
+							   toolTip="PayPalでMineAppProject(MineAP)に寄付を行います。既定のブラウザでPayPalのページを開きます。"
+							   color="#0000FF" textDecoration="underline"/>
+				
+			</s:HGroup>
 			
 			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" 
 						   click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>
-			<mx:Label left="9" bottom="10" height="19" text="PayPalでMineAPに寄付:"/>
 			
 			
 		</mx:Canvas>

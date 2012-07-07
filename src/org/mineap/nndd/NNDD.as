@@ -335,7 +335,7 @@ private var fontDataProvider:Array = new Array();
 [Bindable]
 private var searchHistoryProvider:Array = new Array();
 [Bindable]
-private var fontSizeDataProvider:Array = new Array("小","中","大");
+private var fontSizeDataProvider:Array = new Array("小","中","大","特大");
 
 /**
  * イニシャライザです。<br>
@@ -3019,12 +3019,17 @@ private function allConfigCanvasShow(event:Event):void{
 
 private function fontSizeListRenew():void{
 	var fontSize:String = ConfigManager.getInstance().getItem("fontSize");
+	
+	var fontSize_int:int = int(fontSize);
+	
 	if(fontSize == "10"){
 		comboBox_fontsize.selectedIndex = 0;
 	}else if(fontSize == "11"){
 		comboBox_fontsize.selectedIndex = 1;
 	}else if(fontSize == "12"){
 		comboBox_fontsize.selectedIndex = 2;
+	}else if(fontSize_int >= 15){
+		comboBox_fontsize.selectedIndex = 3;
 	}else{
 		comboBox_fontsize.selectedIndex = 1;
 	}
@@ -7748,6 +7753,8 @@ protected function fontSizeComboboxChanged(event:ListEvent):void{
 		size = 11;
 	}else if(comboBox_fontsize.selectedIndex == 2){
 		size = 12;
+	}else if(comboBox_fontsize.selectedIndex == 3){
+		size = 15;
 	}
 	FontUtil.setSize(size);
 	ConfigManager.getInstance().setItem("fontSize", size);

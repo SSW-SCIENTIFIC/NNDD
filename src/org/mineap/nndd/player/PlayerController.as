@@ -4607,6 +4607,7 @@ package org.mineap.nndd.player
 		 */
 		public function setFontSize(size:int):void{
 			if(this.videoInfoView != null){
+				this.videoInfoView.setChangeFontSize(size);
 				this.videoInfoView.setStyle("fontSize", size);
 			}
 			if(this.videoPlayer != null){

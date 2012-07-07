@@ -178,6 +178,8 @@
 			{
 				resetOldCommentDate();
 				DataGridColumnWidthUtil.loadAndSet(dataGrid_oldComment, new Vector.<String>("mail_column"));
+				var fontSize:int = Number(ConfigManager.getInstance().getItem("fontSize"));
+				this.setChangeFontSize(fontSize);
 			}
 
 			protected function tabNavigator_comment_changeHandler(event:IndexChangedEvent):void
@@ -285,6 +287,12 @@
 				(event.currentTarget as Canvas).height = ownerCommentTextSize;
 			}
 			
+			protected function dataGrid_ownerComment_creationCompleteHandler(event:FlexEvent):void
+			{
+				var fontSize:int = Number(ConfigManager.getInstance().getItem("fontSize"));
+				this.setChangeFontSize(fontSize);
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -309,7 +317,7 @@
 	
 	<mx:Label top="75" left="5" right="5" id="label_deletedInfo" visible="false" color="0xff0000"/>
 	
-	<mx:VDividedBox left="5" top="75" right="5" bottom="30" id="ownertext_comment_dividedbox" >
+	<mx:VDividedBox left="5" top="75" right="5" bottom="32" id="ownertext_comment_dividedbox" >
 		<mx:Canvas width="100%" height="20%" horizontalScrollPolicy="off" verticalScrollPolicy="off" 
 				   resize="canvas2_resizeHandler(event)" creationComplete="canvas2_creationCompleteHandler(event)"
 				   minHeight="50">
@@ -393,13 +401,26 @@
 								
 							</mx:Canvas>
 						</mx:TabNavigator>
-						<mx:Button label="IDをNG" bottom="23" left="5" enabled="true" id="button_addNgList_ID" click="addNGListIdButtonClicked()" toolTip="選択中のコメントのIDをNGに設定します"/>
-						<mx:Button label="コメントをNG" left="80" bottom="23" id="button_addNgList_Word" click="addNGListWordButtonClicked()" toolTip="選択中のコメント(文字)をNGに設定します"/>
-						<mx:Button label="IDを許可" left="180" bottom="23" click="addPermissionIdButtonClicked()" toolTip="選択中のコメントのIDを許可IDに設定します"/>
-						<mx:CheckBox label="コメントを再生と同期" left="5" bottom="2" id="checkbox_SyncComment" click="checkboxSyncCommentChanged()" toolTip="コメントリストを再生に同期させてスクロールします。動作が重い場合はチェックを外すと改善することがあります"/>
-						<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" click="checkBoxIsSOPCChanged(event)" left="160" bottom="2" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
+						<s:HGroup bottom="23" left="5">
+							<mx:Button label="IDをNG"  enabled="true" id="button_addNgList_ID" 
+									   click="addNGListIdButtonClicked()" toolTip="選択中のコメントのIDをNGに設定します"/>
+							<mx:Button label="コメントをNG" id="button_addNgList_Word" 
+									   click="addNGListWordButtonClicked()" toolTip="選択中のコメント(文字)をNGに設定します"/>
+							<mx:Button label="IDを許可" click="addPermissionIdButtonClicked()"
+									   toolTip="選択中のコメントのIDを許可IDに設定します"/>
+						</s:HGroup>
+						<s:HGroup left="5" bottom="2">
+							<mx:CheckBox label="コメントを再生と同期"  id="checkbox_SyncComment" 
+										 click="checkboxSyncCommentChanged()" toolTip="コメントリストを再生に同期させてスクロールします。動作が重い場合はチェックを外すと改善することがあります"/>
+							<mx:CheckBox label="許可IDのみ表示" id="checkBox_isShowOnlyPermissionComment" 
+										 click="checkBoxIsSOPCChanged(event)" toolTip="許可IDに登録されているIDのコメントのみを表示します"/>
+						</s:HGroup>
+						
 					</mx:Canvas>
 					<mx:Canvas label="プレイリスト" width="100%" height="100%" id="canvas_playList" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+						
+						<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
+						
 						<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true"
 							dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
 							itemDoubleClick="playListDoubleClicked()" showHeaders="false" 
@@ -410,24 +431,33 @@
 								</mx:DataGridColumn>
 							</mx:columns>
 						</mx:DataGrid>
+						
+						<s:VGroup left="2" bottom="2">
+							<s:HGroup>
+								<mx:Button width="50" label="-"
+										   click="playListItemDeleteButtonClicked(event)"
+										   toolTip="選択中の項目をプレイリストから削除します"/>
+								<mx:Button id="button_reverse" width="50" label="↓↑"
+										   click="playListReverseButtonClicked(event)"
+										   toolTip="このプレイリストの順番を逆順にします"/>
+								<mx:Button id="button_shuffle" label="シャッフル"
+										   click="playListShuffleButtonClicked(event)"
+										   toolTip="このプレイリストをシャッフルします"/>
+							</s:HGroup>
+							<s:HGroup>
+								<mx:Button label="保存"
+										   click="playListSaveButtonClicked(event)" 
+										   toolTip="このプレイリストの内容を保存します"/>
+								<mx:Button label="クリア"
+										   click="playListClearButtonClicked(event)" 
+										   toolTip="このプレイリストを空にします"/>
+							</s:HGroup>
+						</s:VGroup>
+						
 						<mx:CheckBox id="checkBox_repeatAll" right="5" bottom="5" label="すべてリピート"
 									 change="checkboxRepeatAllChanged()" creationComplete="checkBox_repeatAllCompleteHandler(event)" 
 									 toolTip="プレイリストの項目が最後まで再生されたら最初から再生し直します"/>
-						<mx:Button left="10" bottom="28" width="50" label="-"
-								   click="playListItemDeleteButtonClicked(event)"
-								   toolTip="選択中の項目をプレイリストから削除します"/>
-						<mx:Button id="button_reverse" left="68" bottom="28" width="50" label="↓↑"
-								   click="playListReverseButtonClicked(event)"
-								   toolTip="このプレイリストの順番を逆順にします"/>
-						<mx:Button id="button_shuffle" left="126" bottom="28" width="80" label="シャッフル"
-								   click="playListShuffleButtonClicked(event)"
-								   toolTip="このプレイリストをシャッフルします"/>
 						
-						<mx:Button left="10" bottom="3" label="保存"
-								   click="playListSaveButtonClicked(event)" toolTip="このプレイリストの内容を保存します"/>
-						<mx:Button left="89" bottom="3" label="クリア"
-								   click="playListClearButtonClicked(event)" toolTip="このプレイリストを空にします"/>
-						<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
 					</mx:Canvas>
 					<mx:Canvas label="タグ" width="100%" height="100%" id="canvas_Tag">
 						<mx:TabNavigator left="0" top="0" bottom="0" right="0"
@@ -508,6 +538,7 @@
 							<mx:DataGrid width="100%" height="50%" id="dataGrid_ownerComment" 
 										 dataProvider="{ownerCommentProvider}" doubleClickEnabled="true" 
 										 itemDoubleClick="commentListDoubleClicked(event)" rowHeight="22"
+										 creationComplete="dataGrid_ownerComment_creationCompleteHandler(event)"
 										 contentBackgroundAlpha="0.3">
 								<mx:columns>
 									<mx:DataGridColumn headerText="時間" dataField="vpos_column" width="50"/>
@@ -646,21 +677,26 @@
 										 toolTip="流れるコメントを表示する際、縦方向に最大12個まで優先して表示されます。この設定がオフの場合、同一行に最大5個まで優先して表示します。" 
 										 id="checkBox_isLengthwisePreferred" change="checkBoxIsLengthwisePreferredChanged(event)"/>
 							
-							<mx:Label left="10" top="95" text="表示する通常コメント："
-									  toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-							<mx:NumericStepper left="167" top="92" maximum="100000" stepSize="50"
-											   value="50" id="commentNumStepper"
-											   change="commentCountNumStepperChanged(event)"
-											   toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-							<mx:Label left="260" top="95" text="コメント/分"/>
+							<s:HGroup left="10" top="95" verticalAlign="middle">
+								<mx:Label text="表示する通常コメント："
+										  toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+								<mx:NumericStepper maximum="100000" stepSize="50"
+												   value="50" id="commentNumStepper"
+												   change="commentCountNumStepperChanged(event)"
+												   toolTip="1分間に表示するコメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+								<mx:Label text="コメント/分"/>
+							</s:HGroup>
 							
-							<mx:Label left="10" top="125" text="表示する投稿者コメント："
-									  toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-							<mx:NumericStepper left="167" top="122" maximum="100000" value="50" 
-											   stepSize="50" id="ownerCommentNumStepper"
-											   change="ownerCommentCountNumStepperChanged(event)"
-											   toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
-							<mx:Label left="260" top="125" text="コメント/分"/>
+							<s:HGroup left="10" top="125" verticalAlign="middle">
+								<mx:Label text="表示する投稿者コメント："
+										  toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+								<mx:NumericStepper maximum="100000" value="50" 
+												   stepSize="50" id="ownerCommentNumStepper"
+												   change="ownerCommentCountNumStepperChanged(event)"
+												   toolTip="1分間に表示する投稿者コメントの数を指定します(動画中での平均)。DL済みのコメント数以上の数を指定しても表示されません。"/>
+								<mx:Label text="コメント/分"/>
+									
+							</s:HGroup>
 							
 							<mx:Label text="コメントの大きさ：" left="10" top="147"/>
 							<mx:HSlider minimum="0.5" maximum="1.5" snapInterval="0.1" value="1" left="143" top="147" change="commentScaleSliderChanged(event)" id="slider_commentScale" right="20"/>
@@ -747,7 +783,6 @@
 										 toolTip="コメントを匿名(184)で投稿します"
 										 selected="true"/>
 							
-							
 						</mx:Canvas>
 					</mx:TabNavigator>
 				</mx:Canvas>
@@ -755,10 +790,9 @@
 		</mx:ViewStack>
 	</mx:VDividedBox>
 	
-	<mx:ToggleButtonBar dataProvider="{viewstack1}" left="5" bottom="5" fontWeight="normal" height="20">
+	<mx:ToggleButtonBar dataProvider="{viewstack1}" left="5" bottom="5" fontWeight="normal" height="22">
 	</mx:ToggleButtonBar>
-	<mx:Button id="button_videoOpen" right="5" bottom="5" width="87" height="20" label="動画を開く..."
+	<mx:Button id="button_videoOpen" right="5" bottom="5" height="22" label="動画を開く..."
 			   click="button_videoOpen_clickHandler(event)"/>
 
-	
 </s:Window>

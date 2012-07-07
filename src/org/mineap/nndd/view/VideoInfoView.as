@@ -776,8 +776,13 @@ private function windowCompleteHandler():void{
 	videoPlayer.showUnderController(!isHideUnderController, true);
 	videoPlayer.showTagArea(!isHideTagArea, true);
 	
+	
+	var fontSize:int = Number(ConfigManager.getInstance().getItem("fontSize"));
+	this.setChangeFontSize(fontSize);
+	
 	this.setStyle("fontFamily", ConfigManager.getInstance().getItem("fontFamily"));
-	this.setStyle("fontSize", Number(ConfigManager.getInstance().getItem("fontSize")));
+	this.setStyle("fontSize", fontSize);
+	
 }
 
 private function comboboxRelationOrderCreationCompleteHandler(event:FlexEvent):void
@@ -2016,3 +2021,38 @@ public function get playList():PlayList{
 	
 	return playList;
 }
+
+public function setChangeFontSize(fontsize:int):void
+{
+	if (fontsize == 10)
+	{
+		setRowHeight(22);
+	}else if (fontsize == 11)
+	{
+		setRowHeight(22);
+	}else if (fontsize == 12)
+	{
+		setRowHeight(24);
+	}else if (fontsize >= 15)
+	{
+		setRowHeight(26);
+	}
+}
+
+private function setRowHeight(size:int):void
+{
+	if (dataGrid_comment != null)
+	{
+		dataGrid_comment.rowHeight = size;
+	}
+	if (dataGrid_oldComment != null)
+	{
+		dataGrid_oldComment.rowHeight = size; 
+	}
+	if (dataGrid_ownerComment != null)
+	{
+		dataGrid_ownerComment.rowHeight = size;
+	}
+}
+
+
