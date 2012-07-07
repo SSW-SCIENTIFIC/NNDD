@@ -7756,8 +7756,12 @@ protected function fontSizeComboboxChanged(event:ListEvent):void{
 	}else if(comboBox_fontsize.selectedIndex == 3){
 		size = 15;
 	}
-	FontUtil.setSize(size);
+	
 	ConfigManager.getInstance().setItem("fontSize", size);
+	ConfigManager.getInstance().save();
+	
+	FontUtil.setSize(size);
+	
 	fontSizeListRenew();
 }
 

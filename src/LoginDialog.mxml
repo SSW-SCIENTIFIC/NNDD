@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="218" title="ニコニコ動画へログイン" layout="absolute" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="218" title="ニコニコ動画へログイン" layout="absolute" horizontalScrollPolicy="off" verticalScrollPolicy="off" xmlns:s="library://ns.adobe.com/flex/spark">
     <mx:Metadata>
         [Event("onFirstTimeLoginSuccess")]
     </mx:Metadata>
@@ -24,20 +24,28 @@
     
     <mx:Label left="4" top="4" fontSize="10" fontWeight="bold" text="メールアドレスとパスワードを入力してログインしてください。"/>
     
-	<mx:Label text="メールアドレス" left="10" top="32"/>
-	<mx:Label text="パスワード" left="30" top="62"/>
 	
-	<mx:TextInput id="textInput_userName" enter="enterHandler(event)" left="107" top="30" width="183"/>
-    <mx:TextInput id="textInput_password" displayAsPassword="true" enter="enterHandler(event)" left="107" top="60" width="183"/>
-    
+	<s:HGroup top="32" right="10">
+		<mx:Label text="メールアドレス" />
+		<mx:TextInput id="textInput_userName" enter="enterHandler(event)" width="183"/>
+	</s:HGroup>
+	
+	<s:HGroup top="62" right="10">
+		<mx:Label text="パスワード" />
+		<mx:TextInput id="textInput_password" displayAsPassword="true" enter="enterHandler(event)" width="183"/>
+	</s:HGroup>
+		
+	
 	<!--
 		<mx:CheckBox label="パスワードを表示する" left="10" bottom="98" change="checkbox1_changeHandler(event)"/>
 	-->
 	<mx:CheckBox label="ユーザ名とパスワードを記憶する" id="checkBox_storeUserNameAndPassword"  left="10" bottom="68"/>
 	<mx:CheckBox label="次回以降自動的にログインする" left="10" id="checkbox_autoLogin" bottom="38"/>
 	
-	<mx:Button label="今はログインしない" click="notLogin()" id="noLoginButton" keyUp="buttonKeyUp(event)" right="98" bottom="8"/>
-	<mx:Button label="ログイン" click="login()" id="loginButton" keyUp="buttonKeyUp(event)" right="10" width="80" bottom="8"/>
+	<s:HGroup bottom="10" right="10">
+		<mx:Button label="今はログインしない" click="notLogin()" id="noLoginButton" keyUp="buttonKeyUp(event)" />
+		<mx:Button label="ログイン" click="login()" id="loginButton" keyUp="buttonKeyUp(event)" />
+	</s:HGroup>
 	
 	
 </mx:TitleWindow>

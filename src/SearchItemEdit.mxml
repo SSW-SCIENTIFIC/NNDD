@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="300" height="214" layout="absolute" title="検索条件を編集">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="300" height="214" layout="absolute" title="検索条件を編集" xmlns:s="library://ns.adobe.com/flex/spark">
 
 	<mx:Script>
 		<![CDATA[
@@ -132,17 +132,34 @@
 		]]>
 	</mx:Script>
 
-	<mx:Label text="名前:" left="10" top="10"/>
-	<mx:TextInput left="48" top="8" right="10" id="textInput_name" enter="button_edit_clickHandler(event)" focusIn="textInputfocusInHandler(event)"/>
-	<mx:Label text="順序:" left="10" top="36"/>
-	<mx:ComboBox left="48" top="34" id="comboBox_sortType" dataProvider="{SearchSortString.NICO_SEARCH_SORT_TEXT_ARRAY}" width="150"></mx:ComboBox>
-	<mx:Label text="種別:" left="10" top="62"/>
-	<mx:ComboBox left="48" top="60" id="comboBox_searchType" dataProvider="{SearchTypeString.NICO_SEARCH_TYPE_TEXT}" width="150"></mx:ComboBox>
-	<mx:Label text="単語:" left="10" top="88"/>
-	<mx:TextInput left="48" top="86" right="10" id="textInput_word" enter="button_edit_clickHandler(event)" focusIn="textInputfocusInHandler(event)"/>
-	<mx:Label text="フォルダ：" left="10" top="116" id="label_folder"/>
-	<mx:ComboBox x="73" y="114" id="comboBox_isFolder" selectedIndex="1" change="comboBox_isFolder_changeHandler(event)" dataProvider="{dataProvider}"></mx:ComboBox>
-	<mx:Button label="キャンセル" right="64" width="76" click="button_cancel_clickHandler(event)" bottom="10"/>
-	<mx:Button label="編集" right="10" width="46" id="button_edit" click="button_edit_clickHandler(event)" bottom="10" height="22"/>
+	<s:HGroup left="10" top="10" right="10">
+		<mx:Label text="名前:" />
+		<mx:TextInput width="100%" id="textInput_name" enter="button_edit_clickHandler(event)" focusIn="textInputfocusInHandler(event)"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="36" right="10">
+		<mx:Label text="順序:" />
+		<mx:ComboBox id="comboBox_sortType" dataProvider="{SearchSortString.NICO_SEARCH_SORT_TEXT_ARRAY}" width="150"></mx:ComboBox>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="62" right="10">
+		<mx:Label text="種別:" />
+		<mx:ComboBox id="comboBox_searchType" dataProvider="{SearchTypeString.NICO_SEARCH_TYPE_TEXT}" width="150"></mx:ComboBox>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="88" right="10">
+		<mx:Label text="単語:" />
+		<mx:TextInput width="100%" id="textInput_word" enter="button_edit_clickHandler(event)" focusIn="textInputfocusInHandler(event)"/>
+	</s:HGroup>
+	
+	<s:HGroup left="10" top="116" right="10" >
+		<mx:Label text="フォルダ：" id="label_folder"/>
+		<mx:ComboBox id="comboBox_isFolder" selectedIndex="1" change="comboBox_isFolder_changeHandler(event)" dataProvider="{dataProvider}"></mx:ComboBox>
+	</s:HGroup>
+	
+	<s:HGroup bottom="10" right="10">
+		<mx:Button label="キャンセル" width="76" click="button_cancel_clickHandler(event)"/>
+		<mx:Button label="編集" width="46" id="button_edit" click="button_edit_clickHandler(event)" />
+	</s:HGroup>
 	
 </mx:TitleWindow>

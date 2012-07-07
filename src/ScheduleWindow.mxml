@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="170" layout="absolute" showCloseButton="false" horizontalScrollPolicy="off" verticalScrollPolicy="off" title="スケジュールを設定">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="170" layout="absolute" showCloseButton="false" horizontalScrollPolicy="off" verticalScrollPolicy="off" title="スケジュールを設定" xmlns:s="library://ns.adobe.com/flex/spark">
 
 	<mx:Script>
 		<![CDATA[
@@ -80,25 +80,32 @@
 	
 	<mx:CheckBox label="ダウンロードをスケジュールする" left="10" top="10" id="checkBox_isEnableSchedule" change="checkBox_isEnableSchedule_changeHandler(event)"/>
 	
-	<mx:ComboBox width="65" left="10" top="40" id="comboBox_Interval" dataProvider="{intervalArray}" change="comboBox_Interval_changeHandler(event)"
-		selectedIndex="0">
-	</mx:ComboBox>
-	<mx:Label text="、" left="83" top="42"/>
+	<s:HGroup left="10" top="40" verticalAlign="middle">
+		<mx:ComboBox width="65"  id="comboBox_Interval" dataProvider="{intervalArray}" change="comboBox_Interval_changeHandler(event)"
+					 selectedIndex="0">
+		</mx:ComboBox>
+		<mx:Label text="、" />
+		
+		<mx:ComboBox width="100" id="comboBox_dayOfTheWeek" dataProvider="{dayOfTheWeekArray}">
+		</mx:ComboBox>
+		<mx:Label text="の、" />
+		
+	</s:HGroup>
 	
-	<mx:ComboBox width="100" left="110" top="40" id="comboBox_dayOfTheWeek" dataProvider="{dayOfTheWeekArray}">
-	</mx:ComboBox>
-	<mx:Label text="の、" left="218" top="42"/>
+	<s:HGroup left="10" top="68" verticalAlign="middle">
+		<mx:NumericStepper  id="stepper_houre" minimum="0" maximum="23"/>
+		<mx:Label text="時"/>
+		
+		<mx:NumericStepper id="stepper_minutes" minimum="0" maximum="59"/>
+		<mx:Label text="分"/>
+		
+		<mx:Label text="にダウンロードを開始する。" />
+	</s:HGroup>
 	
-	<mx:NumericStepper left="10" top="68" id="stepper_houre" minimum="0" maximum="23"/>
-	<mx:Label text="時" left="76" top="70"/>
-	
-	<mx:NumericStepper left="103" top="68" id="stepper_minutes" minimum="0" maximum="59"/>
-	<mx:Label text="分" left="169" top="70"/>
-	
-	<mx:Label text="にダウンロードを開始する。" left="196" top="70"/>
-	
-	<mx:Button label="キャンセル" width="87" right="93" top="96" id="button_cancel" click="button_cancel_clickHandler(event)"/>
-	<mx:Button id="button_save" right="10" top="96" width="75" label="設定"
-			   click="button_save_clickHandler(event)"/>
+	<s:HGroup bottom="10" right="10">
+		<mx:Button label="キャンセル" id="button_cancel" click="button_cancel_clickHandler(event)"/>
+		<mx:Button id="button_save" label="設定"
+				   click="button_save_clickHandler(event)"/>
+	</s:HGroup>
 	
 </mx:TitleWindow>

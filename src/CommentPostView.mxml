@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="350" height="25" cornerRadius="5">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="350" height="25" cornerRadius="5" xmlns:s="library://ns.adobe.com/flex/spark">
 
 	<mx:Script source="org/mineap/nndd/view/CommentPostView.as" />
 	
-	<mx:TextInput id="textinput_command" left="54" top="2" bottom="1" width="60" enter="postButtonClicked(event)"/>
-	<mx:TextInput top="2" bottom="1" right="50" left="118" id="textInput_comment" enter="postButtonClicked(event)"/>
-	<mx:Button right="1" top="1" bottom="1" width="45" label="投稿" click="postButtonClicked(event)"
-			   focusEnabled="false" fontSize="10"/>
-	<mx:Label left="2" top="3" bottom="4" width="50" fontSize="10" text="コマンド:"/>
+	<s:HGroup left="0" right="0" top="0" bottom="0" verticalAlign="middle">
+		<mx:Label fontSize="10" text="コマンド:"/>
+		<mx:TextInput id="textinput_command" width="20%" enter="postButtonClicked(event)"/>
+		<mx:TextInput id="textInput_comment" width="100%" enter="postButtonClicked(event)"/>
+		<mx:Button label="投稿" click="postButtonClicked(event)"
+				   focusEnabled="false" fontSize="10" width="50"/>
+	</s:HGroup>
 	
 </mx:Canvas>

@@ -2,7 +2,7 @@
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
 		   width="400" height="100" backgroundColor="#FFFFFF" closing="window1_closeHandler(event)"
 		   creationComplete="window1_creationCompleteHandler(event)" layout="absolute"
-		   maximizable="false" resizable="false" title="動画を開く">
+		   maximizable="false" resizable="false" title="動画を開く" xmlns:s="library://ns.adobe.com/flex/spark">
 	<mx:Script>
 		<![CDATA[
 			import mx.core.Application;
@@ -166,8 +166,11 @@
 				  focusOut="textInput_source_focusOutHandler(event)"
 				  nativeDragEnter="textInput_source_nativeDragEnterHandler(event)"
 				  nativeDragDrop="textInput_source_nativeDragDropHandler(event)"/>
-	<mx:Button label="参照..." right="64" bottom="10" id="button_open" click="button_open_clickHandler(event)"/>
-	<mx:Button id="button_play" right="10" bottom="10" width="50" label="再生"
-			   click="button_play_clickHandler(event)"/>
+	
+	<s:HGroup bottom="10" right="10">
+		<mx:Button label="参照..." id="button_open" click="button_open_clickHandler(event)"/>
+		<mx:Button id="button_play" label="再生"
+				   click="button_play_clickHandler(event)"/>
+	</s:HGroup>
 	
 </mx:Window>
