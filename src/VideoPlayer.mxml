@@ -193,7 +193,7 @@
 	<fx:Script source="org/mineap/nndd/view/VideoPlayer.as" />
 	
 	<mx:Canvas width="100%" x="0" height="100%" y="0" id="canvas_videoPlayer" creationComplete="canvas_videoPlayer_creationCompleteHandler(event)" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-		<mx:TextArea id="textArea_tag" minHeight="10" height="50" htmlText="{textAreaTagProvider}" link="tagTextAreaLinkClikced(event)" fontSize="11" left="5" top="5" right="5" 
+		<mx:TextArea id="textArea_tag" minHeight="10" height="50" htmlText="{textAreaTagProvider}" link="tagTextAreaLinkClikced(event)" left="5" top="5" right="5" 
 				editable="false" focusEnabled="false" keyDown="textArea_tag_keyDownHandler(event)"/>
 		<mx:VBox left="5" top="58" bottom="5" right="5" resize="resizeNow(event)" id="vbox_videoPlayer" >
 			<mx:Canvas width="100%" height="15%" backgroundColor="#969696" id="canvas_nicowari" horizontalScrollPolicy="off" verticalScrollPolicy="off" mouseMove="mouseMove(event)">
