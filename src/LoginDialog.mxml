@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="218" title="ニコニコ動画へログイン" layout="absolute" horizontalScrollPolicy="off" verticalScrollPolicy="off" xmlns:s="library://ns.adobe.com/flex/spark">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="350" height="218" title="ニコニコ動画へログイン" layout="absolute" horizontalScrollPolicy="off" verticalScrollPolicy="off" xmlns:s="library://ns.adobe.com/flex/spark">
     <mx:Metadata>
         [Event("onFirstTimeLoginSuccess")]
     </mx:Metadata>
@@ -22,7 +22,7 @@
     
     <mx:Script source="org/mineap/nndd/view/LoginDialog.as"/>
     
-    <mx:Label left="4" top="4" fontSize="10" fontWeight="bold" text="メールアドレスとパスワードを入力してログインしてください。"/>
+    <mx:Label left="2" right="2" top="4" fontWeight="bold" text="メールアドレスとパスワードを入力してログインしてください。"/>
     
 	
 	<s:HGroup top="32" right="10">

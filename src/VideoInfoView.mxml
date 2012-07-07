@@ -355,15 +355,27 @@
 									</mx:columns>
 								</mx:DataGrid>
 							</mx:Canvas>
-							<mx:Canvas label="過去コメント" width="100%" height="100%" toolTip="過去コメントを表示します。過去コメントが動画に表示されるのは、このタブを開いている間だけです。">
-								<mx:DateField left="5" top="5" id="dateField_oldComment"/>
-								<mx:NumericStepper left="103" top="5" minimum="0" maximum="23" id="numericStepper_hour_oldComment"/>
-								<mx:Label text="時" left="169" top="7"/>
-								<mx:NumericStepper left="196" top="5" minimum="0" maximum="59" id="numericStepper_min_oldComment"/>
-								<mx:Label text="分" left="262" top="7"/>
-								<mx:Button label="リセット" right="5" top="5" click="oldCommentTimeResetButton_clickHandler(event)" toolTip="現在の時刻にリセットします。"/>
-								<mx:Button label="更新(ニコニコ動画)" right="109" top="30" id="button_oldComment_reloadFromNico" click="button_oldComment_reloadFromNico_clickHandler(event)" toolTip="指定した時刻以前のコメントをニコニコ動画から読み込みます。(この機能はプレミアムアカウントでのみ利用可能です。)"/>
-								<mx:Button label="更新(ローカル)" top="30" right="5" id="button_oldComment_reload" click="button_oldComment_reload_clickHandler(event)" toolTip="指定した時刻以前のコメントをローカルのファイルから読み込みます。"/>
+							<mx:Canvas label="過去コメント" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off"
+									   toolTip="過去コメントを表示します。過去コメントが動画に表示されるのは、このタブを開いている間だけです。">
+								<s:HGroup left="5" top="5" right="5">
+									<mx:DateField  id="dateField_oldComment"/>
+									<mx:NumericStepper minimum="0" maximum="23" id="numericStepper_hour_oldComment"/>
+									<mx:Label text="時" />
+									<mx:NumericStepper minimum="0" maximum="59" id="numericStepper_min_oldComment"/>
+									<mx:Label text="分" />
+									<s:Spacer width="100%" />
+									<mx:Button label="リセット" click="oldCommentTimeResetButton_clickHandler(event)" toolTip="現在の時刻にリセットします。"/>
+								</s:HGroup>
+								
+								<s:HGroup right="5" top="30">
+									<mx:Button label="更新(ニコニコ動画)" id="button_oldComment_reloadFromNico" 
+											   click="button_oldComment_reloadFromNico_clickHandler(event)" 
+											   toolTip="指定した時刻以前のコメントをニコニコ動画から読み込みます。(この機能はプレミアムアカウントでのみ利用可能です。)"/>
+									<mx:Button label="更新(ローカル)" id="button_oldComment_reload" 
+											   click="button_oldComment_reload_clickHandler(event)" 
+											   toolTip="指定した時刻以前のコメントをローカルのファイルから読み込みます。"/>
+								</s:HGroup>
+								
 								<mx:DataGrid left="0" right="0" top="55" bottom="0" dataProvider="{commentListProvider}" resizableColumns="true"
 										id="dataGrid_oldComment" editable="false" rowHeight="22" horizontalScrollPolicy="on" headerRelease="headerReleaseHandler(event)"
 										creationComplete="dataGrid_oldComment_creationCompleteHandler(event)" doubleClickEnabled="true"
@@ -380,16 +392,18 @@
 								</mx:DataGrid>
 							</mx:Canvas>
 							<mx:Canvas label="NG設定" width="100%" height="100%" toolTip="コメントに対するNG設定を管理します。">
-								<mx:ComboBox id="combobox_ngKind" left="5" top="5" width="85" height="22"
-											 dataProvider="{Comments.NG_KIND_ARRAY}" selectedIndex="0"></mx:ComboBox>
-								<mx:TextInput left="97" enabled="true" id="textInput_ng" enter="ngTextInputEnter(event)" right="97" top="5"/>
 								
-								<mx:Button right="50" top="5" width="40" label="+"
-										   click="addItemToNgList()" enabled="true"
-										   toolTip="NGリストに項目を追加します"/>
-								<mx:Button id="button_removeNgList" right="5" top="5" width="40"
-										   label="-" click="removeItemFromNgList()"
-										   toolTip="NGリストから項目を削除します"/>
+								<s:HGroup top="5" right="5" left="5">
+									<mx:ComboBox id="combobox_ngKind" width="85" 
+												 dataProvider="{Comments.NG_KIND_ARRAY}" selectedIndex="0"></mx:ComboBox>
+									<mx:TextInput enabled="true" id="textInput_ng" enter="ngTextInputEnter(event)" width="100%" />
+									<mx:Button width="40" label="+"
+											   click="addItemToNgList()" enabled="true"
+											   toolTip="NGリストに項目を追加します"/>
+									<mx:Button id="button_removeNgList"  width="40"
+											   label="-" click="removeItemFromNgList()"
+											   toolTip="NGリストから項目を削除します"/>
+								</s:HGroup>
 								<mx:DataGrid id="dataGrid_NG" dataProvider="{ngListProvider}" 
 											 itemClick="ngListItemClicked(event)" left="0" bottom="0" right="0" top="35"
 											 contentBackgroundAlpha="0.3">
@@ -421,7 +435,7 @@
 						
 						<mx:Label left="0" top="0" right="0" id="label_playListTitle" text="{label_playListTitle_dataProvider}"/>
 						
-						<mx:DataGrid left="0" right="0" top="20" bottom="53" dataProvider="{playListProvider}" doubleClickEnabled="true"
+						<mx:DataGrid left="0" right="0" top="20" bottom="55" dataProvider="{playListProvider}" doubleClickEnabled="true"
 							dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragDrop="playListDragDropHandler(event)" id="dataGrid_playList" 
 							itemDoubleClick="playListDoubleClicked()" showHeaders="false" 
 							creationComplete="dataGrid_playList_creationCompleteHandler(event)"
