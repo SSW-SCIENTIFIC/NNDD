@@ -98,6 +98,7 @@ package org.mineap.nndd
 		private var _isVideoNotDownload:Boolean = false;
 		private var _isCommentOnlyDownload:Boolean = false;
 		private var _isAskToDownloadAtEco:Boolean = true;
+		private var _isSkipDownloadAtEco:Boolean = false;
 		private var _watchVideoOnly:Boolean = false;
 		private var _isAlwaysEconomy:Boolean = false;
 		private var _isAppendComment:Boolean = false;
@@ -290,6 +291,12 @@ package org.mineap.nndd
 		public static const DOWNLOAD_PROCESS_ERROR:String = "DownloadProccessError";
 		
 		/**
+		 * _isSkipDownloadAtEcoがtrueに指定されている状態で動画をダウンロードしようとした際に発行されます。
+		 */
+		public static const DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP:String = "DownloadProccessEconomyModeSkip";
+		
+		
+		/**
 		 * コンストラクタです。
 		 * 
 		 */
@@ -322,11 +329,12 @@ package org.mineap.nndd
 		 * @param saveVideoName 保存するときの動画の名前。未指定の場合は動画ページのタイトルを使う。
 		 * @param saveDir 保存先ディレクトリ
 		 * @param isStart すぐにダウンロードを開始するかどうか。trueの場合は即時実行。
-		 * @param isAskToDownloadAtEco エコノミーの際にユーザー問い合わせをするかどうか。
+		 * @param isAskToDownloadAtEco エコノミーの際にユーザー問い合わせをするかどうか。trueの場合は問い合わせを行うダイアログを表示します。
 		 * @param isAlwaysEconomy 常にエコノミーモードでダウンロードするかどうか
 		 * @param isAppendComment 古いコメントファイルに今回ダウンロードしたコメントを追記するかどうか
 		 * @param maxCommentCount 古いコメントファイルにコメントを追加する際、保存するコメントの最大数
 		 * @param useOldType 旧形式でコメントを取得するかどうかです。これは通常コメントの取得でのみ有効で、過去コメント、投稿者コメントでは無視されます。
+		 * @param isSkipDownloadAtEco エコノミーの際に動画をスキップするかどうか この設定はisAskToDownloadAtEcoがfalseの場合にのみ有効です。
 		 */
 		public function requestDownload(user:String, 
 										password:String, 
@@ -338,7 +346,8 @@ package org.mineap.nndd
 										isAlwaysEconomy:Boolean, 
 										isAppendComment:Boolean, 
 										maxCommentCount:Number, 
-										useOldType:Boolean):void{
+										useOldType:Boolean, 
+										isSkipDownloadAtEco:Boolean):void{
 			
 			trace("start - requestDownload(" + user + ", ****, " + videoId + ", " + saveDir.nativePath + ")");
 			
@@ -350,6 +359,7 @@ package org.mineap.nndd
 			this._isAppendComment = isAppendComment;
 			this._maxCommentCount = maxCommentCount;
 			this._useOldType = useOldType;
+			this._isSkipDownloadAtEco = isSkipDownloadAtEco;
 			
 			//ストリーミング再生の時のファイル名は「nndd」。それ以外のときは「ファイル名+[動画ID]」
 			if(saveVideoName != null && saveVideoName != "" && saveVideoName != "nndd"){
@@ -404,7 +414,7 @@ package org.mineap.nndd
 			this._isCommentOnlyDownload = false;
 			this._isVideoNotDownload = true;
 			
-			this.requestDownload(user, password, videoId, "nndd", saveDir, true, false, isAlwaysEconomy, false, 2000, useOldType);
+			this.requestDownload(user, password, videoId, "nndd", saveDir, true, false, isAlwaysEconomy, false, 2000, useOldType, false);
 			
 		}
 		
@@ -434,7 +444,7 @@ package org.mineap.nndd
 			this._isVideoNotDownload = true;
 			this._when = when;
 			
-			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount, useOldType);
+			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount, useOldType, false);
 		}
 		
 		/**
@@ -463,7 +473,7 @@ package org.mineap.nndd
 			this._isVideoNotDownload = true;
 			this._when = when;
 			
-			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount, useOldType);
+			this.requestDownload(user, password, videoId, videoName, saveDir, true, false, isAlwaysEconomy, isAppendComment, maxCommentCount, useOldType, false);
 			
 		}
 		
@@ -482,7 +492,7 @@ package org.mineap.nndd
 			this._isVideoNotDownload = true;
 			this._watchVideoOnly = true;
 			
-			this.requestDownload(user, password, videoId, videoName, File.documentsDirectory, true, false, false, false, 2000, useOldType);
+			this.requestDownload(user, password, videoId, videoName, File.documentsDirectory, true, false, false, false, 2000, useOldType, false);
 			
 		}
 		
@@ -1003,16 +1013,30 @@ package org.mineap.nndd
 		 */
 		private function commentGetSuccess(event:Event):void{
 			
-			if(this._commentLoader.economyMode && saveVideoName != "nndd" && this._isAskToDownloadAtEco){
-				Alert.show("現在エコノミーモードです。ダウンロードしますか？", Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(closeEvent:CloseEvent):void{
-					if(closeEvent.detail == Alert.YES){
-						ownerCommentGetStart(event.currentTarget as CommentLoader);
-					}else{
-						trace(DOWNLOAD_PROCESS_CANCELD + ":" + event);
-						dispatchEvent(new Event(DOWNLOAD_PROCESS_CANCELD));
-						close(true, false, null);
-					}
-				});
+			var economyMode:Boolean = this._commentLoader.economyMode;
+			
+			if(economyMode && saveVideoName != "nndd"){
+				
+				if (this._isAskToDownloadAtEco) {
+					Alert.show("現在エコノミーモードです。ダウンロードしますか？", Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function(closeEvent:CloseEvent):void{
+						if(closeEvent.detail == Alert.YES){
+							ownerCommentGetStart(event.currentTarget as CommentLoader);
+						}else{
+							trace(DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP + ":" + event);
+							dispatchEvent(new Event(DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP));
+							close(false, false, null);
+						}
+					});
+				} else if (this._isAskToDownloadAtEco == false && this._isSkipDownloadAtEco)
+				{
+					trace(DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP + ":" + event);
+					dispatchEvent(new Event(DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP));
+					close(false, false, null);
+				} else
+				{
+					ownerCommentGetStart(event.currentTarget as CommentLoader);
+				}
+
 			}else{
 				ownerCommentGetStart(event.currentTarget as CommentLoader);
 			}

@@ -78,6 +78,8 @@ package org.mineap.nndd.download
 		
 		public var isUseDownloadDir:Boolean = false;
 		
+		public var isSkipEconomy:Boolean = false;
+		
 		private var lastStatusUpdateTime:Date = new Date();
 		
 		private var loadedBytes:Number = 0.0;
@@ -231,7 +233,8 @@ package org.mineap.nndd.download
 					
 					for(var i:int = 0; downloadProvider.length > i; i++){
 
-						if(downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER){
+						var type:Object = downloadProvider[i].col_statusType;
+						if(DownloadStatusType.RETRY_OVER == type || DownloadStatusType.ECONOMY_SKIP == type){
 							if(ignoreSkipFlag){
 								// スキップしない
 							}else{
@@ -244,8 +247,10 @@ package org.mineap.nndd.download
 							downloadProvider[i].col_statusType = DownloadStatusType.NOT_START;
 						}
 						
+						// DL処理開始
 						if(downloadProvider[i].col_statusType == DownloadStatusType.NOT_START
-							|| downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER){
+							|| downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER
+							|| downloadProvider[i].col_statusType == DownloadStatusType.ECONOMY_SKIP){
 							
 							this.queueId = downloadProvider[i].col_id;
 							this.queueVideoName = downloadProvider[i].col_videoName;
@@ -385,6 +390,7 @@ package org.mineap.nndd.download
 				this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_DOWNLOAD_PROGRESS, downloadProgressHandler, false, 0, true);
 				
 				//完了系ハンドラ登録
+				this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP, downlaodFailListener);
 				this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
 				this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, downlaodFailListener);
 				this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
@@ -598,11 +604,12 @@ package org.mineap.nndd.download
 				null, 
 				myLibrary, 
 				false, 
-				isContactTheUser, 
+				this.isContactTheUser, 
 				this.isAlwaysEconomy, 
 				this.isAppendComment, 
 				FlexGlobals.topLevelApplication.getSaveCommentMaxCount(), 
-				FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
+				FlexGlobals.topLevelApplication.getUseOldTypeCommentGet(),
+				this.isSkipEconomy);
 			
 			return nnddDownloader;
 		}
@@ -921,6 +928,24 @@ package org.mineap.nndd.download
 					// 自動リトライ
 					next(false);
 				}
+			}else if(event.type == NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP) {
+				status = "スキップ(エコノミーモード)";
+				logManager.addLog("スキップ(エコノミーモード):" + (event.target as NNDDDownloader).saveVideoName);
+				logManager.addLog("***動画取得スキップ(エコノミーモード)***");
+				if(isDownloading){
+					isRetry = false;
+					retryCount = 0;
+					if(timer != null){
+						timer.stop();
+					}
+					isDownloading = false;
+					showCountRest();
+					var index:int = searchQueueIndexByQueueId(queueId);
+					setStatus("スキップ\n" + status, DownloadStatusType.ECONOMY_SKIP, queueVideoName, index);
+					
+					// 自動リトライ
+					next(false);
+				}
 			}
 			this._nnddDownloader = null;
 			
@@ -1062,6 +1087,8 @@ package org.mineap.nndd.download
 			this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
 			this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
 			this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, downlaodFailListener);
+			this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP, downlaodFailListener);
+			
 		}
 		
 		/**
@@ -1162,10 +1189,12 @@ package org.mineap.nndd.download
 							status = "動画保存済\n右クリックから再生できます。";
 						}else if("1" == xmlList[i].statusType 
 								|| "2" == xmlList[i].statusType 
-								|| "3" == xmlList[i].statusType){
+								|| "3" == xmlList[i].statusType
+								|| "4" == xmlList[i].statusType){
 							statusType = DownloadStatusType.NOT_START;
 							status = "待機中";
 						}
+							
 						
 						downloadProvider.addItem({
 							col_preview:PathMaker.getThumbImgUrl(decodeURIComponent(xmlList[i].videoUrl)),

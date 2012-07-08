@@ -218,6 +218,8 @@ private var isRankingWatching:Boolean = true;
 
 private var isEnableEcoCheck:Boolean = true;
 
+private var isSkipEconomy:Boolean = false;
+
 private var isShowOnlyNowLibraryTag:Boolean = true;
 
 private var isOutStreamingPlayerUse:Boolean = false;
@@ -2384,6 +2386,16 @@ private function readStore(isLogout:Boolean = false):void{
 			this.isCloseNNDDWindowWhenLogin = false;
 		}
 		
+		errorName = "isSkipEconomy";
+		confValue = ConfigManager.getInstance().getItem("isSkipEconomy");
+		if (confValue != null)
+		{
+			this.isSkipEconomy = ConfUtil.parseBoolean(confValue);
+		}
+		else
+		{
+			this.isSkipEconomy = false;
+		}
 		
 	}catch(error:Error){
 		/* ストアをリセット */
@@ -2471,6 +2483,7 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 	
 	downloadManager.setMailAndPass(UserManager.instance.user, UserManager.instance.password);
 	downloadManager.isContactTheUser = isEnableEcoCheck;
+	downloadManager.isSkipEconomy = isSkipEconomy;
 	downloadManager.retryMaxCount = this.downloadRetryMaxCount;
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
 	
@@ -3101,6 +3114,7 @@ private function libraryConfigCanvasCreationComplete(event:FlexEvent):void{
 	numericStepper_saveCommentMaxCount.enabled = this.isAppendComment;
 	numStepper_downloadRetryMaxCount.value = this.downloadRetryMaxCount;
 	checkBox_useNewCommentGet.selected = !this.useOldTypeCommentGet;
+	checkbox_ecoDLSkip.selected = this.isSkipEconomy;
 }
 
 private function libraryWidthChanged(event:ResizeEvent):void{
@@ -4707,6 +4721,9 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("isCloseNNDDWindowWhenLogin");
 		ConfigManager.getInstance().setItem("isCloseNNDDWindowWhenLogin", this.isCloseNNDDWindowWhenLogin);
 		
+		ConfigManager.getInstance().removeItem("isSkipEconomy");
+		ConfigManager.getInstance().setItem("isSkipEconomy", this.isSkipEconomy);
+		
 		ConfigManager.getInstance().save();
 		
 	}catch(error:Error){
@@ -5907,6 +5924,12 @@ private function checkBoxAutoDLChanged(event:Event):void{
 private function checkBoxEcoCheckChanged(event:Event):void{
 	isEnableEcoCheck = (event.currentTarget as CheckBox).selected;
 	this.downloadManager.isContactTheUser = isEnableEcoCheck;
+}
+
+private function checkBoxEcoSkipChanged(event:Event):void
+{
+	isSkipEconomy = (event.currentTarget as CheckBox).selected;
+	this.downloadManager.isSkipEconomy = isSkipEconomy;
 }
 
 private function downloadListDoubleClicked(event:ListEvent):void{

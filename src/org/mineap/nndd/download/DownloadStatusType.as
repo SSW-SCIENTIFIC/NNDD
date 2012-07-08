@@ -23,6 +23,10 @@ package org.mineap.nndd.download
 		 */
 		public static const NOT_START:DownloadStatusType = new DownloadStatusType(3);
 		
+		/**
+		 * エコノミーモードなのでスキップしました(4)
+		 */
+		public static const ECONOMY_SKIP:DownloadStatusType = new DownloadStatusType(4);
 		
 		private var _value:int = 0;
 		
