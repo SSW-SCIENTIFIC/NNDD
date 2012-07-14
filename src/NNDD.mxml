@@ -99,8 +99,47 @@
 			protected function windowedapplication1_activateHandler(event:Event):void
 			{
 				Mouse.show();
+				
+				if (viewStack.selectedIndex == DOWNLOAD_LIST_TAB_NUM)
+				{
+					copyFromClipboradToDlUrl();
+				}
 			}
-
+			
+			protected function copyFromClipboradToDlUrl():void{
+				
+				var url:String = null;
+				
+				if (textInput_url != null)
+				{
+					var obj:Object = Clipboard.generalClipboard.getData(ClipboardFormats.URL_FORMAT);
+					if (obj != null)
+					{
+						// url
+						if (obj.toString().indexOf("http://www.nicovideo.jp/watch/") != -1)
+						{
+							url = obj.toString();
+						}
+					}
+					
+					obj = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT);
+					if (obj != null && obj is String)
+					{
+						// テキスト
+						if ((obj as String).indexOf("http://www.nicovideo.jp/watch/") != -1)
+						{
+							url = (obj as String);
+						}
+					}
+					
+					if (url != null && !downloadManager.isExists(new NNDDVideo(url)))
+					{
+						textInput_url.text = url
+					}
+					
+				}
+				
+			}
 
 			protected function tree_FileSystem_dragEnterHandler(event:DragEvent):void
 			{

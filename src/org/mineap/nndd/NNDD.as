@@ -2760,6 +2760,8 @@ private function tabChanged():void{
 			
 			updateDownloadStatusBar();
 			
+			copyFromClipboradToDlUrl();
+			
 			break;
 		case LIBRARY_LIST_TAB_NUM:
 			
