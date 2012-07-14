@@ -6011,7 +6011,8 @@ private function addDLListButtonClicked(event:MouseEvent):void{
 private function addDLList(url:String):void{
 	
 	var auto:Boolean = isAutoDownload;
-	if(UserManager.instance.user != "" && UserManager.instance.password != ""){
+	if(UserManager.instance.user == null || UserManager.instance.password == null ||
+		UserManager.instance.user == "" || UserManager.instance.password == ""){
 		// ログインしていないなら自動ダウンロードしない
 		auto = false;
 	}		

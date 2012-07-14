@@ -1003,10 +1003,15 @@
 						
 					}
 					
+					if( this.tree_library.selectedIndex == -1 ) 
+					{ 
+						this.tree_library.selectedIndex = 0; 	//選択されていないときは強制的に0(=ルート)を設定
+					} 
+					
 					var item:ITreeItem = (this.tree_library.selectedItem as ITreeItem);
 					if(item != null && item.file != null){
 						// ライブラリを更新する
-						updateLibraryTree(item);
+//						updateLibraryTree(item);
 						updateLibrary(this.tree_library.selectedIndex);
 					}else if(item != null && item.file == null){
 						// プレイリストを更新する
