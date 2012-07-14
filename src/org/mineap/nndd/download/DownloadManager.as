@@ -823,8 +823,9 @@ package org.mineap.nndd.download
 			nnddVideo.modificationDate = new Date();
 			//ライブラリに同じ物があれば削除
 			var videoId:String = LibraryUtil.getVideoKey(nnddVideo.getDecodeUrl());
+			var oldVideo:NNDDVideo = null;
 			if(videoId != null){
-				var oldVideo:NNDDVideo = libraryManager.remove(videoId, false);
+				oldVideo = libraryManager.remove(videoId, false);
 				if(oldVideo != null && nnddVideo.getDecodeUrl() != oldVideo.getDecodeUrl()){
 					nnddVideo.creationDate = oldVideo.creationDate;
 					if(nnddVideo.creationDate != null){
@@ -857,7 +858,13 @@ package org.mineap.nndd.download
 			video.creationDate = nnddVideo.creationDate;
 			video.modificationDate = nnddVideo.modificationDate;
 			video.isEconomy = nnddVideo.isEconomy;
-			video.playCount = nnddVideo.playCount;
+			if (oldVideo != null)
+			{
+				video.playCount = oldVideo.playCount;
+			}
+			else{
+				video.playCount = nnddVideo.playCount;
+			}
 			
 //			libraryManager.update(video, true);
 			libraryManager.add(video, false, true);
