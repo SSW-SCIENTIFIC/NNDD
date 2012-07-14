@@ -2833,7 +2833,7 @@ private function tabChanged():void{
 public function updateDownloadStatusBar():void
 {
 	// ギガバイト単位
-	var space:Number = this.libraryManager.libraryDir.spaceAvailable / (1000*1000*1000);
+	var space:Number = this.libraryManager.libraryDir.spaceAvailable / (1024*1024*1024);
 	var formatter:NumberFormatter = new NumberFormatter(LocaleID.DEFAULT);
 	formatter.fractionalDigits = 2;
 	

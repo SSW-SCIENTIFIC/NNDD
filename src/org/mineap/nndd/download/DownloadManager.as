@@ -784,8 +784,8 @@ package org.mineap.nndd.download
 					this.lastStatusUpdateTime = date;
 					this.loadedBytes = event.bytesLoaded;
 					
-					var loadedValue:Number = new Number(event.bytesLoaded/1000000);
-					var totalValue:Number = new Number(event.bytesTotal/1000000);
+					var loadedValue:Number = new Number(event.bytesLoaded/1048576);
+					var totalValue:Number = new Number(event.bytesTotal/1048576);
 					var formatter:NumberFormatter = new NumberFormatter();
 					formatter.precision = 1;
 					
@@ -800,7 +800,7 @@ package org.mineap.nndd.download
 					var value:Number = loadBytes / sec;
 					
 					// MB/秒に変換
-					value = value / 1000000;
+					value = value / 1048576;
 					trace(value);
 					
 					var index:int = searchQueueIndexByQueueId(queueId);

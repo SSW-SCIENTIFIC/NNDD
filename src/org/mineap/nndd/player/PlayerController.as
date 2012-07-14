@@ -1868,7 +1868,7 @@ package org.mineap.nndd.player
 				trace(value);
 				
 				//MBに直す
-				value = value / 1000000;
+				value = value / 1048576;
 				
 				// MB/sに直す
 				value = value / 1;
