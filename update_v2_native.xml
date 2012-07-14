@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.2.4</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/56129/NNDDv2_2_4.dmg</url>
+	<version>2.2.5</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/56207/NNDDv2_2_5.dmg</url>
 	<description><![CDATA[
+v2.2.5
+・Windowsで、Playerの大きさがディスプレイの解像度を超えないようにした
+・InfoViewで投稿者説明文の表示領域の大きさを調整できるようにした
+・【バグフィックス】フォントサイズが指定されている投稿者説明文のHTMLが小さくつぶれてしまう問題を修正
+
 v2.2.4
 ・Playerに暗い配色オプションを追加
 ・システム情報の保存先の切り替え(動画保存先⇔OS提供フォルダ)を設定画面から行えるようにした
@@ -37,9 +42,14 @@ v2.2.0
 </dmg>
 
 <exe>
-	<version>2.2.4</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/56129/NNDDv2_2_4.exe</url>
+	<version>2.2.5</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/56207/NNDDv2_2_5.exe</url>
 	<description><![CDATA[
+v2.2.5
+・Windowsで、Playerの大きさがディスプレイの解像度を超えないようにした
+・InfoViewで投稿者説明文の表示領域の大きさを調整できるようにした
+・【バグフィックス】フォントサイズが指定されている投稿者説明文のHTMLが小さくつぶれてしまう問題を修正
+
 v2.2.4
 ・Playerに暗い配色オプションを追加
 ・システム情報の保存先の切り替え(動画保存先⇔OS提供フォルダ)を設定画面から行えるようにした
