@@ -3392,7 +3392,7 @@ private function addDownloadListForDownloadedList(event:Event):void{
  */
 private function scrollToLastAddedDownloadItem():void{
 	if(dataGrid_downloadList != null){
-		dataGrid_downloadList.verticalScrollPosition = downloadProvider.length;
+		dataGrid_downloadList.verticalScrollPosition = downloadProvider.length-1;
 	}else{
 		canvas_queue.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:Event):void{
 			dataGrid_downloadList.verticalScrollPosition = downloadProvider.length;
