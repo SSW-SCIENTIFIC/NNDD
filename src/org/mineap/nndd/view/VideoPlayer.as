@@ -248,6 +248,7 @@ protected function changeShowVideoInfoView(event:Event):void{
 		if((videoInfoView as Window).visible){
 			hideVideoInfoView();
 		}else{
+			videoInfoView.visible = true;
 			showVideoPlayerAndVideoInfoView();
 		}
 	}
