@@ -35,6 +35,7 @@
 			private var videoDisplayMenuItem14:ContextMenuItem;
 			private var nextPlayListMenuItem:ContextMenuItem;
 			private var downnloadNicoSoundMenuItem:ContextMenuItem;
+			private var addDListMenuItem:ContextMenuItem;
 			
 			private var _contextMenuShowing:Boolean = false;
 			
@@ -86,6 +87,10 @@
 				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
 				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
 				
+				// DLリストに追加
+				addDListMenuItem = new ContextMenuItem(Message.L_ADD_DL_LIST, true);
+				addDListMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, addDlListFromContextMenu);
+				
 				videoDisplayMenuItem2 = new ContextMenuItem(Message.L_TWEET, true);
 				videoDisplayMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, tweet);
 				
@@ -130,10 +135,14 @@
 				
 				videoDisplayMenuItem14 = new ContextMenuItem(Message.L_RELOAD_VIDEO, true);
 				videoDisplayMenuItem14.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, videoReload);
-
-				videoDisplayMenu.customItems.push(videoDisplayMenuItem10, nextPlayListMenuItem, videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem, 
-					videoDisplayMenuItem2, videoDisplayMenuItem3, downnloadNicoSoundMenuItem, videoDisplayMenuItem4, videoDisplayMenuItem7, videoDisplayMenuItem5, 
-					videoDisplayMenuItem6, videoDisplayMenuItem9 ,videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13, videoDisplayMenuItem14);
+				
+				videoDisplayMenu.customItems.push(videoDisplayMenuItem10, nextPlayListMenuItem, 
+					videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem, 
+					addDListMenuItem ,videoDisplayMenuItem2, videoDisplayMenuItem3, 
+					downnloadNicoSoundMenuItem, videoDisplayMenuItem4, videoDisplayMenuItem7, 
+					videoDisplayMenuItem5, videoDisplayMenuItem6, videoDisplayMenuItem9, 
+					videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13, 
+					videoDisplayMenuItem14);
 				
 				canvas_video_back.contextMenu = videoDisplayMenu;
 				
@@ -185,6 +194,11 @@
 			}
 
 			
+			
+			protected function addDlListFromContextMenu(event:ContextMenuEvent):void
+			{
+				playerController.addDlList();
+			}
 			
 		]]>
 	</fx:Script>
