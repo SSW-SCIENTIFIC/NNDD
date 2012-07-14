@@ -4371,22 +4371,24 @@ private function deleteDirectory():void{
 	var tempFile:File = selectedItem.file;
 	
 	if(tempFile != null && tree_library.selectedIndex > -1 && !(tempFile.url == libraryManager.libraryDir.url)){
-		try{
-			Alert.show("フォルダ内のすべての項目も同時に削除されます。よろしいですか？", "警告", Alert.YES | Alert.NO, null, function(event:CloseEvent):void{
-				if(event.detail == Alert.YES){
+		Alert.show("フォルダ内のすべての項目も同時に削除されます。よろしいですか？", "警告", Alert.YES | Alert.NO, null, function(event:CloseEvent):void{
+			if(event.detail == Alert.YES){
+				try{
+					
 					var url:String = decodeURIComponent(tempFile.url);
 					var file:File = new File(url);
 					file.moveToTrash();
 					if(selectedItem != null){
 						updateLibraryTree(selectedItem.parent);
 					}
+				}catch(e:Error){
+					Alert.show("フォルダの削除に失敗しました。" + e, "エラー");
+					logManager.addLog("フォルダの削除に失敗しました:" + e.getStackTrace());
 				}
-			}, null, Alert.NO);
-			
-		}catch(e:Error){
-			Alert.show("フォルダの削除に失敗しました。" + e, "エラー");
-			logManager.addLog("フォルダの削除に失敗しました:" + e.getStackTrace());
-		}
+				
+			}
+		}, null, Alert.NO);
+		
 	}else if(tempFile.nativePath == libraryManager.libraryDir.nativePath){
 		Alert.show("ライブラリフォルダそのものを消す事は出来ません。", Message.M_MESSAGE, Alert.OK);
 	}
@@ -5414,9 +5416,11 @@ public function updatePlayList(index:int):void{
 	if(index > -1){
 	
 		var playList:PlayList = playListManager.getPlayList(playListManager.selectedPlayListIndex);
-		var builder:PlayListDataGridBuilder = new PlayListDataGridBuilder();
-		for each(var object:Object in builder.build(playList.items)){
-			downloadedProvider.addItem(object);
+		if (playList != null) {
+			var builder:PlayListDataGridBuilder = new PlayListDataGridBuilder();
+			for each(var object:Object in builder.build(playList.items)){
+				downloadedProvider.addItem(object);
+			}
 		}
 	
 	}
@@ -5515,6 +5519,7 @@ private function addPlayList():void{
  */
 private function deletePlayList():void{
 	if(tree_library.selectedIndex > 0){
+		var treeIndex:int = tree_library.selectedIndex;
 		var index:int = playListManager.getPlayListIndexByName(tree_library.selectedItem.label);
 		
 		if(index != -1){
@@ -5526,6 +5531,14 @@ private function deletePlayList():void{
 					try{
 						playListManager.removePlayListByIndex(index);
 						updatePlayListSummery();
+						
+						if (treeIndex - 1 >= 0) {
+							tree_library.selectedIndex = treeIndex - 1;
+						} else {
+							tree_library.selectedIndex = 0;
+						}
+						
+						updatePlayList(tree_library.selectedIndex);
 					}catch (error:IOError){
 						Alert.show("削除できませんでした。\nファイルが開かれていない状態で再度実行してください。\n"+error, "エラー");
 						logManager.addLog("プレイリストの削除に失敗:" + error);

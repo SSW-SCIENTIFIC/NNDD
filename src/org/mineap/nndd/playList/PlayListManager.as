@@ -353,7 +353,7 @@ package org.mineap.nndd.playList
 		 */
 		public function getNNDDVideoListByIndex(index:int):Vector.<NNDDVideo>{
 			
-			if (index == -1)
+			if (index == -1 || index >= playLists.length)
 			{
 				return new Vector.<NNDDVideo>();
 			}
