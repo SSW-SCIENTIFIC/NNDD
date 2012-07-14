@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.2.6</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/56207/NNDDv2_2_6.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/56426/NNDDv2_2_6.dmg</url>
 	<description><![CDATA[
 v2.2.6
 ・フォントサイズに“特大”を追加
@@ -60,7 +60,7 @@ v2.2.0
 
 <exe>
 	<version>2.2.6</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/56207/NNDDv2_2_6.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/56426/NNDDv2_2_6.exe</url>
 	<description><![CDATA[
 v2.2.6
 ・フォントサイズに“特大”を追加
