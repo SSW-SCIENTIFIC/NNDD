@@ -107,6 +107,11 @@ public var isMouseHide:Boolean = false;
 
 private var videoSourceSelectWindow:VideoSourceSelectWindow = null;
 
+private var windowPosition_x:Number;
+private var windowPosition_y:Number;
+
+private var isWindowPositionSetupCompleted:Boolean = false;
+
 [Bindable]
 public var textAreaTagProvider:String = "";
 
@@ -322,22 +327,12 @@ private function mouseMove(event:MouseEvent):void{
 
 private function windowResized(event:NativeWindowBoundsEvent):void{
 	
-//	if (Capabilities.screenResolutionX < event.afterBounds.width || Capabilities.screenResolutionY < event.afterBounds.height)
-//	{
-//		event.preventDefault();
-//		
-//		// Playerウィンドウの大きさがディスプレイの最大値を超えているとき
-////		this.nativeWindow.x = 0;
-////		this.nativeWindow.y = 0;
-//		this.nativeWindow.width = Capabilities.screenResolutionX;
-//		this.nativeWindow.height = Capabilities.screenResolutionY;
-//		lastRect = new Rectangle(this.nativeWindow.x, this.nativeWindow.y, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
-//	}
-//	else
-//	{
-		// Playerウィンドウの大きさがディスプレイの最大値を超えていないとき
-		lastRect = event.afterBounds;
-//	}
+	lastRect = event.afterBounds;
+	
+	if (this.nativeWindow.x == windowPosition_x && this.nativeWindow.y == windowPosition_y)
+	{
+		isWindowPositionSetupCompleted = true;
+	}
 	
 	followInfoView(lastRect);
 	resizeInfoView();
@@ -379,7 +374,7 @@ private function windowMove(event:NativeWindowBoundsEvent):void{
 
 public function resizeInfoView():void
 {
-	if(this.videoInfoView != null
+	if(isWindowPositionSetupCompleted && this.videoInfoView != null
 		&& this.nativeWindow != null
 		&& this.videoInfoView.nativeWindow != null
 		&& this.videoInfoView.visible 
@@ -396,7 +391,7 @@ public function resizeInfoView():void
 }
 
 public function followInfoView(lastRect:Rectangle):void{
-	if(lastRect != null && this.videoInfoView != null 
+	if(isWindowPositionSetupCompleted && lastRect != null && this.videoInfoView != null 
 			&& this.nativeWindow != null
 			&& !this.closed	// playerが閉じられたあとではない
 			&& this.visible
@@ -800,7 +795,7 @@ private function readStore():void{
 		//x,y,w,h
 	
 		confValue = ConfigManager.getInstance().getItem("playerWindowPosition_x");
-		var windowPosition_x:Number = 0;
+		windowPosition_x = 0;
 		if (confValue == null) {
 			//何もしない
 		} else {
@@ -811,7 +806,7 @@ private function readStore():void{
 		}
 		
 		confValue = ConfigManager.getInstance().getItem("playerWindowPosition_y");
-		var windowPosition_y:Number = 0;
+		windowPosition_y = 0;
 		if (confValue == null) {
 			//何もしない
 		} else {

@@ -1605,15 +1605,7 @@ public function getNameList():Array{
  */
 public function resetPlayList():void{
 	this.playListName = "";
-	if(label_playListTitle != null){
-		label_playListTitle.text = playListName;
-	}else{
-		canvas_videoInfo.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:FlexEvent):void{
-			canvas_playList.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:FlexEvent):void{
-				label_playListTitle.text = playListName;
-			});
-		});
-	}
+	this.label_playListTitle_dataProvider = playListName;
 	
 	videoUrlMap = new Object();
 	
