@@ -163,7 +163,7 @@ package org.mineap.nndd.player
 		public static const NICO_WARI_HEIGHT:int = 56;
 		public static const NICO_WARI_WIDTH:int = 544;
 		
-		public static const NICO_SWF_HEIGHT:int = 368;
+		public static const NICO_SWF_HEIGHT:int = 384;
 		public static const NICO_SWF_WIDTH:int = 512;
 		
 		// 640×368
