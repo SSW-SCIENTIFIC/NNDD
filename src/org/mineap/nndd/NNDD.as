@@ -981,14 +981,9 @@ private function myListItemHandler(event:ContextMenuEvent):void{
 					videoStreamingPlayStart(videoUrl);
 				}
 			}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST){
-				var itemIndices:Array = dataGrid.selectedIndices;
-				itemIndices.reverse();
-				for each(var index:int in itemIndices){
-					
-					var video:NNDDVideo = new NNDDVideo(myListItemProvider[index].dataGridColumn_videoUrl, myListItemProvider[index].dataGridColumn_videoName);
-					addDownloadListForMyList(video, itemIndices[index]);
-					
-				}
+				
+				addDownloadListButtonClickedForMyList();
+				
 			}else if((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED
 					|| (event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY){
 				
