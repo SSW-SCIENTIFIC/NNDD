@@ -25,6 +25,7 @@
 			import mx.controls.listClasses.IListItemRenderer;
 			import mx.core.FlexGlobals;
 			import mx.core.UITextField;
+			import mx.events.DropdownEvent;
 			import mx.events.ToolTipEvent;
 			import mx.messaging.SubscriptionInfo;
 			
@@ -32,6 +33,7 @@
 			import org.mineap.nndd.model.NNDDVideo;
 			import org.mineap.nndd.model.tree.ITreeItem;
 			import org.mineap.nndd.model.tree.TreeFileItem;
+			import org.mineap.nndd.myList.MyListHistoryManager;
 			import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
 			import org.mineap.util.config.ConfigIO;
 			
@@ -1446,6 +1448,21 @@
 				NativeDragManager.dropAction = NativeDragActions.NONE;
 			}
 			
+			protected function refreshMyListHistoryComboBox():void{
+				var array:Array = new Array();
+				
+				for each (var myList:MyList in MyListHistoryManager.instace.getHistory())
+				{
+					if (myList.id != null) {
+//						var str:String = myList.myListName + " - " + myList.idWithPrefix;
+						var str:String = myList.myListUrl;
+						array.push(str);
+					}
+				}
+				
+				textinput_mylist.dataProvider = array;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -1503,7 +1520,7 @@
 						<mx:ComboBox id="combobox_pageCounter_ranking" left="43" top="0" width="65"
 									 change="rankingPageCountChanged()"
 									 dataProvider="{rankingPageCountProvider}"
-									 height="{button_back.height}"></mx:ComboBox>
+									 height="100%"></mx:ComboBox>
 						<mx:Button id="button_next" left="116" top="0" width="35" label="&gt;"
 								   click="nextButtonClicked()"/>
 					</s:HGroup>
@@ -1558,7 +1575,9 @@
 				<mx:Label text="[種別]:"/>
 				<mx:ComboBox dataProvider="{serchTypeProvider}" id="combobox_serchType" width="120" change="nicoSearchComboboxClosed(event)"></mx:ComboBox>
 				<mx:Label text="[単語]:"/>
-				<mx:ComboBox editable="true" id="combobox_NicoSearch" enter="searchNicoButtonClicked()" width="150" dataProvider="{searchHistoryProvider}" fontWeight="normal"></mx:ComboBox>
+				<mx:ComboBox id="combobox_NicoSearch" width="150" height="100%"
+							 dataProvider="{searchHistoryProvider}" editable="true"
+							 enter="searchNicoButtonClicked()" fontWeight="normal"></mx:ComboBox>
 				<mx:Button label="検索" id="button_SearchNico" click="searchNicoButtonClicked()" width="80"/>
 				
 			</mx:ApplicationControlBar>
@@ -1592,7 +1611,7 @@
 						<mx:ComboBox id="combobox_pageCounter_search" 
 									 width="65" change="searchPageCountChanged()"
 									 dataProvider="{searchPageCountProvider}"
-									 height="{button_back.height}"></mx:ComboBox>
+									 height="100%"></mx:ComboBox>
 						<mx:Button id="button_next_search" width="35" label="&gt;"
 								   click="searchNextButtonClicked()"/>
 						<mx:Label id="label_totalCount"/>
@@ -1659,12 +1678,14 @@
 					
 					
 					<s:HGroup right="0" top="0" left="0">
-						<mx:TextInput id="textinput_mylist" left="0" top="0" width="100%"
-									  change="myListUrlChanged(event)"
-									  enter="myListRenewButtonClicked(event)"
-									  focusIn="textInputForcusEventHandler(event)"
-									  text="マイリストURLかID、もしくはチャンネルのURLを入力"
-									  toolTip="マイリストのURL、IDか、チャンネルのURLを入力して「更新」ボタンを押すと、一覧に表示されます"/>
+						<mx:ComboBox id="textinput_mylist" left="0" top="0" 
+									 width="100%" height="100%"
+									 change="myListUrlChanged(event)" editable="true"
+									 enter="myListRenewButtonClicked(event)"
+									 selectedIndex="-1"
+									 focusIn="textInputForcusEventHandler(event)"
+									 text="マイリストURLかID、もしくはチャンネルのURLを入力"
+									 toolTip="マイリストのURL、IDか、チャンネルのURLを入力して「更新」ボタンを押すと、一覧に表示されます"/>
 						<mx:Button label="更新" click="myListRenewButtonClicked(event)" id="button_myListRenew"/>
 						<mx:Button label="ニコ動で見る" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
 					</s:HGroup>
@@ -2194,26 +2215,18 @@
 						<mx:Button label="履歴を消去" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
 					</s:HGroup>
 					
-					<s:HGroup left="30" top="147" verticalAlign="middle">
-						<mx:CheckBox label="マイリスト更新をスケジュール実行する:" id="checkBox_myListRenewOnSchedule" 
-									 click="checkBoxMylistRenewOnScheduleChanged(event)" 
-									 selected="true" height="22" 
-									 toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"
-									 enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
-						<mx:ComboBox dataProvider="{myListRenewScheduleTimeProvider}" 
-									 selectedIndex="1" width="100" 
-									 change="myListRenewScheduleTimeChange(event)" 
-									 id="combobox_myListRenewTime" 
-									 toolTip="マイリスト情報取得の間隔を分で指定します。"
-									 enabled="{!checkBox_myListRenewOnBootTime.selected}"></mx:ComboBox>
-						<mx:Label text="分おき" 
-								  enabled="{!checkBox_myListRenewOnBootTime.selected}"/>
-						<mx:VRule width="7" height="22" />
-						<mx:Button label="今すぐ更新" click="myListRenewNow()" />
-						
+					<s:HGroup left="30" top="151" verticalAlign="middle">
+						<mx:CheckBox label="マイリストの閲覧履歴を保存する" 
+									 id="checkbox_saveMyListHistory" selected="true" 
+									 toolTip="閲覧したマイリストページの履歴を保存し、次回起動時にも選択できるようにします。" 
+									 change="checkBoxSaveMyListHistoryChanged(event)"/>
+						<mx:Button label="履歴を消去" id="button_myListHistoryClear" click="myListHistoryClearButtonClicked(event)"/>
 					</s:HGroup>
 					
-					<s:HGroup left="49" top="177" verticalAlign="middle">
+					<s:HGroup left="30" top="147" verticalAlign="middle">
+					</s:HGroup>
+					
+					<s:HGroup left="49" top="209" verticalAlign="middle">
 						<mx:Label  text="マイリストごとの更新間隔"/>
 						<s:NumericStepper maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
 										  change="numStepperDelayOfMylistChanged(event)"
@@ -2225,20 +2238,35 @@
 					<mx:CheckBox label="マイリスト更新を起動時のみ実行する" 
 								 id="checkBox_myListRenewOnBootTime" 
 								 click="checkBoxMyListRenewOnBootTimeChanged(event)"
-								 selected="false" left="30" top="204" height="22" 
+								 selected="false" left="30" top="236" height="22" 
 								 toolTip="ニコニコ動画から最新のマイリストの情報をNNDDの起動時のみ取得します。"/>
 					
-					<mx:HRule left="30" top="230" right="10" height="10"/>
+					<mx:HRule left="30" top="262" right="10" height="10"/>
 					
-					<s:HGroup left="30" top="249" verticalAlign="middle">
+					<s:HGroup left="30" top="281" verticalAlign="middle">
 						<mx:Label text="検索項目にデフォルトの検索項目を追加する" />
 						<mx:Button label="追加" id="button_addDefSearchItem" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
 					</s:HGroup>
 					
-					<s:HGroup left="30" top="276" verticalAlign="middle">
+					<s:HGroup left="30" top="308" verticalAlign="middle">
 						<mx:Label text="自分のマイリストをマイリスト一覧に追加"/>
 						<mx:Button label="追加" click="getMyListIds(event)" />
 					</s:HGroup>
+					<mx:CheckBox id="checkBox_myListRenewOnSchedule" x="30" y="179" height="22"
+								 label="マイリスト更新をスケジュール実行する:"
+								 click="checkBoxMylistRenewOnScheduleChanged(event)"
+								 enabled="{!checkBox_myListRenewOnBootTime.selected}"
+								 selected="true" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
+					<mx:ComboBox id="combobox_myListRenewTime" x="256" y="181" width="100"
+								 change="myListRenewScheduleTimeChange(event)"
+								 dataProvider="{myListRenewScheduleTimeProvider}"
+								 enabled="{!checkBox_myListRenewOnBootTime.selected}"
+								 selectedIndex="1" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
+					<mx:Label x="362" y="181" enabled="{!checkBox_myListRenewOnBootTime.selected}"
+							  text="分おき"/>
+					<mx:VRule x="406" y="179" width="7" height="22"/>
+					<mx:Button x="419" y="180" label="今すぐ更新" click="myListRenewNow()"/>
+					
 					
 				</mx:Canvas>
 				<mx:Canvas label="DLリスト・ライブラリ" width="100%" height="100%" id="canvas_library_config"  creationComplete="libraryConfigCanvasCreationComplete(event)">

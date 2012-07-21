@@ -124,6 +124,7 @@ import org.mineap.nndd.model.tree.TreeFileItem;
 import org.mineap.nndd.model.tree.TreeFolderItem;
 import org.mineap.nndd.myList.MyList;
 import org.mineap.nndd.myList.MyListBuilder;
+import org.mineap.nndd.myList.MyListHistoryManager;
 import org.mineap.nndd.myList.MyListManager;
 import org.mineap.nndd.myList.MyListRenewScheduler;
 import org.mineap.nndd.myList.MyListTreeItemRenderer;
@@ -257,6 +258,8 @@ private var isCloseNNDDWindowWhenLogin:Boolean = false;
 private var selectedMyListFolder:Boolean = false;
 
 private var isSaveSearchHistory:Boolean = true;
+
+private var isSaveMyListHistory:Boolean = true;
 
 private var saveCommentMaxCount:Number = 10000;
 
@@ -864,20 +867,37 @@ private function getVideoIdDataGridContextEvent(event:ContextMenuEvent):String{
 	var videoId:String = null;
 	var dataGrid:DataGrid = DataGrid(event.contextMenuOwner);
 	if(dataGrid != null && dataGrid.dataProvider.length > 0){
+		var object:Object = null;
 		if(event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null){
-			var url:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_nicoVideoUrl;
-			if(url == null || url == "" || url == "undefined"){
-				url = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoUrl;
-			}
-			if(url == null || url == "" || url == "undefined"){
-				url = (event.mouseTarget as DataGridItemRenderer).data.col_videoUrl;
-			}
-			if(url == null || url == "" || url == "undefined"){
-				url = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoName;
-			}
 			
-			videoId = PathMaker.getVideoID(url);
+			object = (event.mouseTarget as DataGridItemRenderer).data;
+			
+		} else if (event.mouseTarget is FlexLoader) {
+			var newSelectedIndex:int = -1;
+			var flexLoader:FlexLoader = (event.mouseTarget as FlexLoader);
+			if (flexLoader.parent.hasOwnProperty("listData")) {
+				var obj:Object = flexLoader.parent;
+				newSelectedIndex = (obj.listData as DataGridListData).rowIndex;
+			}
+			if (newSelectedIndex != -1) {
+				object = dataGrid.dataProvider[newSelectedIndex];
+			}
 		}
+		
+		var url:String = object.dataGridColumn_nicoVideoUrl;
+		if(url == null || url == "" || url == "undefined"){
+			url = object.dataGridColumn_videoUrl;
+		}
+		if(url == null || url == "" || url == "undefined"){
+			url = object.col_videoUrl;
+		}
+		if(url == null || url == "" || url == "undefined"){
+			url = object.dataGridColumn_videoName;
+		}
+		videoId = PathMaker.getVideoID(url);
+		
+		
+		
 	}
 	return videoId;
 }
@@ -891,31 +911,30 @@ private function getVideoIdDataGridContextEvent(event:ContextMenuEvent):String{
 private function rankingItemHandler(event:ContextMenuEvent):void{
 	var dataGrid:DataGrid = DataGrid(event.contextMenuOwner);
 	if(dataGrid != null && dataGrid.dataProvider.length > 0){
-		if(event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null){
-			var videoPath:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoPath;
-			if(videoPath == null || videoPath == ""){
-				videoPath = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_nicoVideoUrl;
-			}
-			if(videoPath != null && videoPath != ""){
-				if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_PLAY){
-					this.playingVideoPath = videoPath;
-					playMovie(this.playingVideoPath, -1);
-				}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY){
-					this.playingVideoPath = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_nicoVideoUrl;
-					this.videoStreamingPlayStart(this.playingVideoPath);
-				}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST){
+		var obj:Object = dataGrid.selectedItem;
+		var videoPath:String = obj.dataGridColumn_videoPath;
+		if(videoPath == null || videoPath == ""){
+			videoPath = obj.dataGridColumn_nicoVideoUrl;
+		}
+		if(videoPath != null && videoPath != ""){
+			if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_PLAY){
+				this.playingVideoPath = videoPath;
+				playMovie(this.playingVideoPath, -1);
+			}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY){
+				this.playingVideoPath = obj.dataGridColumn_nicoVideoUrl;
+				this.videoStreamingPlayStart(this.playingVideoPath);
+			}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST){
+				
+				var itemIndices:Array = dataGrid.selectedIndices;
+				itemIndices.reverse();
+				
+				var i:int = 0;
+				for each(var index:int in itemIndices){
 					
-					var itemIndices:Array = dataGrid.selectedIndices;
-					itemIndices.reverse();
+					var video:NNDDVideo = new NNDDVideo(rankingProvider[index].dataGridColumn_nicoVideoUrl, rankingProvider[index].dataGridColumn_videoName);
+					addDownloadList(video, itemIndices[i]);
 					
-					var i:int = 0;
-					for each(var index:int in itemIndices){
-						
-						var video:NNDDVideo = new NNDDVideo(rankingProvider[index].dataGridColumn_nicoVideoUrl, rankingProvider[index].dataGridColumn_videoName);
-						addDownloadList(video, itemIndices[i]);
-						
-						i++;
-					}
+					i++;
 				}
 			}
 		}
@@ -930,17 +949,18 @@ private function rankingItemHandler(event:ContextMenuEvent):void{
 private function searchItemHandler(event:ContextMenuEvent):void{
 	var dataGrid:DataGrid = DataGrid(event.contextMenuOwner);
 	if(dataGrid != null && dataGrid.dataProvider.length > 0){
-		if(event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null && (event.mouseTarget as DataGridItemRenderer).data.hasOwnProperty("dataGridColumn_nicoVideoUrl")){
-			var videoPath:String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoPath;
+		var obj:Object = dataGrid.selectedItem;
+		if (obj != null) {
+			var videoPath:String = obj.dataGridColumn_videoPath;
 			if(videoPath == null || videoPath == ""){
-				videoPath = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_nicoVideoUrl;
+				videoPath = obj.dataGridColumn_nicoVideoUrl;
 			}
 			if(videoPath != null && videoPath != ""){
 				if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_PLAY){
 					this.playingVideoPath = videoPath;
 					playMovie(this.playingVideoPath, -1);
 				}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY){
-					this.playingVideoPath = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_nicoVideoUrl;
+					this.playingVideoPath = obj.dataGridColumn_nicoVideoUrl;
 					this.videoStreamingPlayStart(this.playingVideoPath);
 				}else if((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST){
 					
@@ -2432,6 +2452,14 @@ private function readStore(isLogout:Boolean = false):void{
 			this.isSkipEconomy = false;
 		}
 		
+		errorName = "isSaveMyListHistory";
+		confValue = ConfigManager.getInstance().getItem("isSaveMyListHistory");
+		if (confValue != null)
+		{
+			this.isSaveMyListHistory = ConfUtil.parseBoolean(confValue);
+		}
+		
+		
 	}catch(error:Error){
 		/* ストアをリセット */
 //		EncryptedLocalStore.reset();
@@ -2762,6 +2790,8 @@ private function tabChanged():void{
 					});
 				}
 			}
+			
+			refreshMyListHistoryComboBox();
 			
 			(tree_myList.dataProvider as ArrayCollection).refresh();
 			tree_myList.invalidateList();
@@ -3126,6 +3156,7 @@ private function nicoConfigCanvasCreationComplete(event:FlexEvent):void{
 	checkBox_myListRenewOnSchedule.selected = this.mylistRenewOnScheduleEnable;
 	
 	checkbox_saveSearchHistory.selected = this.isSaveSearchHistory;
+	checkbox_saveMyListHistory.selected = this.isSaveMyListHistory;
 	
 	var index:int = 0;
 	for each(var str:String in MyListRenewScheduler.MyListRenewScheduleTimeArray){
@@ -4763,6 +4794,9 @@ private function saveStore():void{
 		ConfigManager.getInstance().removeItem("isSkipEconomy");
 		ConfigManager.getInstance().setItem("isSkipEconomy", this.isSkipEconomy);
 		
+		ConfigManager.getInstance().removeItem("isSaveMyListHistory");
+		ConfigManager.getInstance().setItem("isSaveMyListHistory", this.isSaveMyListHistory);
+		
 		ConfigManager.getInstance().save();
 		
 	}catch(error:Error){
@@ -4908,6 +4942,11 @@ private function exitingEventHandler(event:Event):void{
 		
 	}
 	
+}
+
+protected function myListHistoryClearButtonClicked(event:Event):void{
+	MyListHistoryManager.instace.clearHistory();
+	MyListHistoryManager.instace.saveHistory();
 }
 
 protected function searchHistoryClearButtonClicked(event:Event):void{
@@ -6278,6 +6317,10 @@ private function checkBoxSaveSearchHistoryChanged(event:Event):void{
 	this.isSaveSearchHistory = (event.currentTarget as CheckBox).selected;
 }
 
+private function checkBoxSaveMyListHistoryChanged(event:Event):void{
+	this.isSaveMyListHistory = (event.currentTarget as CheckBox).selected;
+}
+
 
 private function error(event:ErrorEvent):void{
 	if(logManager != null){
@@ -6604,6 +6647,11 @@ private function myListRenewButtonClicked(event:Event, addMode:Boolean = false):
 					var text:String = myListBuilder.title + " [" + myListBuilder.creator + "]\n" + myListBuilder.description;
 					var title:String = myListBuilder.title + " [" + myListBuilder.creator + "]";
 					
+					if (isSaveMyListHistory) {
+						MyListHistoryManager.instace.addHistory(new MyList(url, title, false));
+						refreshMyListHistoryComboBox();
+					}
+					
 					textArea_myList.text = HtmlUtil.convertSpecialCharacterNotIncludedString(text);
 					_myListManager.lastTitle = HtmlUtil.convertSpecialCharacterNotIncludedString(title);
 					
@@ -6734,6 +6782,11 @@ private function myListRenewButtonClicked(event:Event, addMode:Boolean = false):
 				
 				var type:RssType = RssType.MY_LIST;
 				type = MyListManager.checkType(url);
+				
+				if (isSaveMyListHistory) {
+					MyListHistoryManager.instace.addHistory(new MyList(url, "不明", false));
+					refreshMyListHistoryComboBox();
+				}
 				
 				var myListId:String = null;
 				if (type == RssType.MY_LIST)
@@ -7328,10 +7381,17 @@ private function searchItemDoubleClicked(event:ListEvent):void{
  * 
  */
 private function textInputForcusEventHandler(event:FocusEvent):void{
-	var textInput:TextInput = TextInput(event.currentTarget);
-	textInput.selectionBeginIndex = 0;
-	textInput.selectionEndIndex = textInput.text.length;
+	
+	if (event.currentTarget is TextInput) {
+		var textInput:TextInput = TextInput(event.currentTarget);
+		textInput.selectionBeginIndex = 0;
+		textInput.selectionEndIndex = textInput.text.length;
+	} else if (event.currentTarget is ComboBox) {
+		
+	}
+	
 }
+
 
 /**
  * 

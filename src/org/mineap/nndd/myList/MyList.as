@@ -96,7 +96,8 @@ package org.mineap.nndd.myList
 		}
 		
 		/**
-		 * 
+		 * MyList#idが返す結果の先頭に種別を示すプレフィックスを負荷して返します。
+		 * 例えば、"myList/xxxxxxx"のような文字列を返します。
 		 */
 		public function get idWithPrefix():String
 		{

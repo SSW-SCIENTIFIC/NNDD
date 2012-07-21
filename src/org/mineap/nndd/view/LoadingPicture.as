@@ -135,7 +135,9 @@ package org.mineap.nndd.view
 
         public function remove():void{
             this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-            parent.removeChild(this);
+			if (parent != null) {
+            	parent.removeChild(this);
+			}
         }
 
         private function onEnterFrame(event:Event):void{
