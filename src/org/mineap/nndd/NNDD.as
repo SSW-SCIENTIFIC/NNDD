@@ -2192,9 +2192,7 @@ private function readStore(isLogout:Boolean = false):void{
 		
 		errorName = "lastMyListSummaryWidth";
 		confValue = ConfigManager.getInstance().getItem("lastMyListSummaryWidth");
-		if (confValue == null) {
-			//何もしない
-		}else{
+		if (confValue != null) {
 			this.lastMyListSummaryWidth = int(confValue);
 		}
 		
