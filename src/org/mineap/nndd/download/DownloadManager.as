@@ -427,24 +427,24 @@ package org.mineap.nndd.download
 					isDownloading = false;
 					showCountRest();
 				}
-				
-				// 完了以外のステータスを Not_start に更新
-				for(var i:int = 0; downloadProvider.length < index; index++){
-					if(DownloadStatusType.COMPLETE == downloadProvider[i].col_status){
-						continue;
-					}
-					downloadProvider.setItemAt({
-						col_preview:downloadProvider[i].col_preview,
-						col_videoName:downloadProvider[i].col_videoName,
-						col_videoUrl:downloadProvider[i].col_videoUrl,
-						col_status:downloadProvider[i].col_status,
-						col_id:downloadProvider[i].col_id,
-						col_downloadedPath: downloadProvider[i].col_downloadedPath,
-						col_statusType: DownloadStatusType.NOT_START
-					}, i);
-				}
-				
 			}
+				
+			// 完了以外のステータスを Not_start に更新
+			for(var i:int = 0; downloadProvider.length > i; i++){
+				if(DownloadStatusType.COMPLETE == downloadProvider[i].col_statusType){
+					continue;
+				}
+				downloadProvider.setItemAt({
+					col_preview:downloadProvider[i].col_preview,
+					col_videoName:downloadProvider[i].col_videoName,
+					col_videoUrl:downloadProvider[i].col_videoUrl,
+					col_status:downloadProvider[i].col_status,
+					col_id:downloadProvider[i].col_id,
+					col_downloadedPath: downloadProvider[i].col_downloadedPath,
+					col_statusType: DownloadStatusType.NOT_START
+				}, i);
+			}
+				
 		}
 		
 		/**
