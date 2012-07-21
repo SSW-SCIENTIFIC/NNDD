@@ -168,7 +168,7 @@ package org.mineap.nndd.download
 			var url:String = "http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl());
 			
 			downloadProvider.addItem({
-				col_preview:PathMaker.getThumbImgUrl(url),
+				col_preview:video.thumbUrl,
 				col_videoName:video.videoName,
 				col_videoUrl:url,
 				col_status:"待機中",

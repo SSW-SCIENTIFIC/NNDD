@@ -4534,9 +4534,14 @@ package org.mineap.nndd.player
 		 */
 		public function addDlList():void{
 			var videoId:String = PathMaker.getVideoID(this.videoPlayer.title);
+			var thumbUrl:String = (videoInfoView.image_thumbImg.source as String);
 			
 			if(videoId != null){
 				var video:NNDDVideo = new NNDDVideo(WatchVideoPage.WATCH_VIDEO_PAGE_URL + videoId, this.videoPlayer.title);
+				if (thumbUrl != null)
+				{
+					video.thumbUrl = thumbUrl;
+				}
 				(FlexGlobals.topLevelApplication as NNDD).addDownloadListForInfoView(video);
 				logManager.addLog("InfoViewからDLリストへ追加:" + video.getDecodeUrl());
 			}else{
