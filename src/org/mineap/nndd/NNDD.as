@@ -67,12 +67,14 @@ import mx.controls.TileList;
 import mx.controls.Tree;
 import mx.controls.dataGridClasses.DataGridColumn;
 import mx.controls.dataGridClasses.DataGridItemRenderer;
+import mx.controls.dataGridClasses.DataGridListData;
 import mx.controls.listClasses.IListItemRenderer;
 import mx.controls.sliderClasses.Slider;
 import mx.controls.treeClasses.TreeItemRenderer;
 import mx.core.Application;
 import mx.core.ClassFactory;
 import mx.core.FlexGlobals;
+import mx.core.FlexLoader;
 import mx.core.IUIComponent;
 import mx.core.UITextField;
 import mx.core.Window;
@@ -720,34 +722,74 @@ private function dataGridContextMenuSelectHandler(event:ContextMenuEvent):void{
 	var dataGrid:DataGrid = DataGrid(event.contextMenuOwner);
 	if(dataGrid != null && dataGrid.dataProvider.length > 0){
 		if(event.mouseTarget is DataGridItemRenderer){
+			var newSelectedItem:Object = null;
 			if((event.mouseTarget as DataGridItemRenderer).data != null){
-				var newSelectedItem:Object = (event.mouseTarget as DataGridItemRenderer).data;
-				if(newSelectedItem is DataGridColumn){
-					return;
-				}
-				if(dataGrid.selectedIndices.length > 1){
-					//複数選択中
-					var selectedItems:Array = dataGrid.selectedItems;
-					
-					var isExist:Boolean = false;
-					for each(var item:Object in selectedItems){
-						if(item == newSelectedItem){
-							isExist = true;
-							break;
-						}
+				newSelectedItem = (event.mouseTarget as DataGridItemRenderer).data;
+			}
+			if (newSelectedItem == null)
+			{
+				return;
+			}
+			if(dataGrid.selectedIndices.length > 1){
+				//複数選択中
+				var selectedItems:Array = dataGrid.selectedItems;
+				
+				var isExist:Boolean = false;
+				for each(var item:Object in selectedItems){
+					if(item == newSelectedItem){
+						isExist = true;
+						break;
 					}
-					
-					if(!isExist){
-						selectedItems.push(newSelectedItem);
-					}
-					dataGrid.selectedItems = selectedItems;
-				}else{
-					//選択の変更
-					dataGrid.selectedItem = newSelectedItem;
 				}
+				
+				if(!isExist){
+					selectedItems.push(newSelectedItem);
+				}
+				dataGrid.selectedItems = selectedItems;
+			}else{
+				//選択の変更
+				dataGrid.selectedItem = newSelectedItem;
+			}
+			
+			
+		} else if (event.mouseTarget is FlexLoader)
+		{
+			var newSelectedIndex:int = -1;
+			var flexLoader:FlexLoader = (event.mouseTarget as FlexLoader);
+			if (flexLoader.parent.hasOwnProperty("listData")) {
+				var object:Object = flexLoader.parent;
+				newSelectedIndex = (object.listData as DataGridListData).rowIndex;
+			}
+			
+			if (newSelectedIndex == -1)
+			{
+				return;
+			}
+			
+			if(dataGrid.selectedIndices.length > 1){
+				//複数選択中
+				var selectedIndices:Array = dataGrid.selectedIndices;
+				
+				var isExist:Boolean = false;
+				for each(var index:int in selectedIndices){
+					if(index == newSelectedIndex){
+						isExist = true;
+						break;
+					}
+				}
+				
+				if(!isExist){
+					selectedIndices.push(newSelectedIndex);
+				}
+				dataGrid.selectedIndices = selectedIndices;
+			}else{
+				//選択の変更
+				dataGrid.selectedIndex = newSelectedIndex;
 			}
 			
 		}
+		
+		
 	}
 }
 
@@ -2149,7 +2191,7 @@ private function readStore(isLogout:Boolean = false):void{
 		}
 		
 		errorName = "lastMyListSummaryWidth";
-		confValue = ConfigManager.getInstance().getItem("lastCategoryListWidth");
+		confValue = ConfigManager.getInstance().getItem("lastMyListSummaryWidth");
 		if (confValue == null) {
 			//何もしない
 		}else{
@@ -6258,10 +6300,12 @@ private function addDownloadListButtonClickedForMyList():void{
 			
 			var videoUrl:String = dataGrid_myList.dataProvider[index].dataGridColumn_videoUrl;
 			var videoName:String = dataGrid_myList.dataProvider[index].dataGridColumn_videoName;
+			var thumbUrl:String = dataGrid_myList.dataProvider[index].dataGridColumn_preview;
 			
 			if(videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1){
 				//ダウンロード
 				var video:NNDDVideo = new NNDDVideo(videoUrl, videoName);
+				video.thumbUrl = thumbUrl;
 				addDownloadListForMyList(video, index);
 			}
 			
@@ -6281,10 +6325,12 @@ private function addDownloadListButtonClickedForSearch():void{
 			
 			var videoUrl:String = dataGrid_search.dataProvider[index].dataGridColumn_nicoVideoUrl;
 			var videoName:String = dataGrid_search.dataProvider[index].dataGridColumn_videoName;
+			var thumbUrl:String = dataGrid_search.dataProvider[index].dataGridColumn_preview;
 			
 			if(videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1){
 				//ダウンロード
 				var video:NNDDVideo = new NNDDVideo(videoUrl, videoName);
+				video.thumbUrl = thumbUrl;
 				addDownloadListForSearch(video, index);
 			}
 			
@@ -7607,6 +7653,7 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 	var myDataGrid:DataGrid = (event.currentTarget as DataGrid);
 	
 	var mUrl:String = myDataGrid.dataProvider[myDataGrid.selectedIndex].dataGridColumn_url;
+	var thumbUrl:String = myDataGrid.dataProvider[myDataGrid.selectedIndex].dataGridColumn_thumbImage;
 	
 	if(mUrl != null){
 		
@@ -7627,6 +7674,11 @@ private function historyItemDoubleClickEventHandler(event:ListEvent):void{
 			}
 		}else{
 			var video:NNDDVideo = new NNDDVideo(mUrl);
+			if (video.thumbUrl != null)
+			{
+				video.thumbUrl = thumbUrl;
+			}
+			
 			
 			var isExistsInDLList:Boolean = downloadManager.isExists(video);
 			
