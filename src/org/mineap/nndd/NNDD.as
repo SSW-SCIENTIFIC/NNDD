@@ -135,6 +135,7 @@ import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.player.PlayerManager;
 import org.mineap.nndd.ranking.RankingListBuilder;
 import org.mineap.nndd.search.SearchItemManager;
+import org.mineap.nndd.server.ServerManager;
 import org.mineap.nndd.tag.NgTagManager;
 import org.mineap.nndd.tag.TagManager;
 import org.mineap.nndd.user.UserManager;
@@ -608,6 +609,18 @@ public function initNNDD(nndd:NNDD):void
 		playerOpen();
 	}
 	
+	var serverEnable:Boolean = ConfUtil.parseBoolean(ConfigManager.getInstance().getItem("serverEnable"));
+	var localPort:String = ConfigManager.getInstance().getItem("localport");
+	if (serverEnable)
+	{
+		var port:int = 12300;
+		if (localPort != null && int(localPort) <= 65535)
+		{
+			port = int(localPort);
+		}
+		
+		ServerManager.instance.startServer(12300);
+	}
 }
 
 public function myListStatusRenew(loaded:Number, total:Number, myListId:String):void{

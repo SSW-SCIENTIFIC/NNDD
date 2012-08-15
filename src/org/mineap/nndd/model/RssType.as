@@ -20,5 +20,23 @@ package org.mineap.nndd.model
 		{
 			return value;
 		}
+		
+		public static function convertStrToRssType(typeStr:String):RssType
+		{
+			if (MY_LIST.value == typeStr)
+			{
+				return MY_LIST;
+			}
+			else if (CHANNEL.value == typeStr)
+			{
+				return CHANNEL;
+			}
+			else if (USER_UPLOAD_VIDEO.value == typeStr)
+			{
+				return USER_UPLOAD_VIDEO;
+			}
+			return null;
+		}
+		
 	}
 }

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.2.6</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/56426/NNDDv2_2_6.dmg</url>
+	<version>2.2.7</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/56494/NNDDv2_2_7.dmg</url>
 	<description><![CDATA[
+v2.2.7
+・マイリスト閲覧履歴を実装
+・【バグフィックス】「スキップ(エコノミー)」状態の動画が二つ以上ある状態でDLを開始すると、二つ目以降の「スキップ(エコノミー)」状態の動画に対してDLを試行しない問題を修正
+・【バグフィックス】NNDDの各タブのデータグリッドでサムネイル画像を右クリックしても、当該行が選択されない問題を修正
+
 v2.2.6
 ・フォントサイズに“特大”を追加
 ・エコノミーモードの動画のDLをスキップして次の動画をDLするオプションを追加
@@ -59,9 +64,14 @@ v2.2.0
 </dmg>
 
 <exe>
-	<version>2.2.6</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/56426/NNDDv2_2_6.exe</url>
+	<version>2.2.7</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/56494/NNDDv2_2_7.exe</url>
 	<description><![CDATA[
+v2.2.7
+・マイリスト閲覧履歴を実装
+・【バグフィックス】「スキップ(エコノミー)」状態の動画が二つ以上ある状態でDLを開始すると、二つ目以降の「スキップ(エコノミー)」状態の動画に対してDLを試行しない問題を修正
+・【バグフィックス】NNDDの各タブのデータグリッドでサムネイル画像を右クリックしても、当該行が選択されない問題を修正
+
 v2.2.6
 ・フォントサイズに“特大”を追加
 ・エコノミーモードの動画のDLをスキップして次の動画をDLするオプションを追加

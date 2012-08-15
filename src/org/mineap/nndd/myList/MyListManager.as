@@ -46,11 +46,6 @@ package org.mineap.nndd.myList
 		private var _videoId_myListIds_map:Object = new Object();
 		
 		/**
-		 * マイリストIDとマイリスト名のMapです
-		 */
-		private var _myListId_myListName_map:Object = new Object();
-		
-		/**
 		 * 
 		 */
 		private var _libraryManager:ILibraryManager;
@@ -148,7 +143,6 @@ package org.mineap.nndd.myList
 			}
 			
 			this._myListName_MyList_Map[myListName] = myList;
-			this._myListId_myListName_map[myList.id] = myList.myListName;
 			
 			if(isSave){
 				this.saveMyListSummary(this._libraryManager.systemFileDir);
@@ -261,7 +255,6 @@ package org.mineap.nndd.myList
 						this._tree_MyList.splice(index, 0, file);
 					}
 					this._myListName_MyList_Map[myListName] = myList;
-					this._myListId_myListName_map[myList.id] = myList.myListName;
 					
 					addedTreeObject = file;
 					
@@ -1435,6 +1428,13 @@ package org.mineap.nndd.myList
 			return vector;
 		}
 		
+		/**
+		 * 指定されたURLのRSS種別を調べて返します。
+		 * 
+		 * @param url
+		 * @return 
+		 * 
+		 */
 		public static function checkType(url:String):RssType
 		{
 			if (url != null && url.indexOf("channel/") != -1)
@@ -1449,5 +1449,24 @@ package org.mineap.nndd.myList
 			return RssType.MY_LIST;
 		}
 		
+		/**
+		 * マイリストIDの一覧を返します。
+		 * @return 
+		 * 
+		 */
+		public function getAllMyList():Vector.<MyList>
+		{
+			var myLists:Vector.<MyList> = new Vector.<MyList>();
+			for each(var myList:MyList in _myListName_MyList_Map)
+			{
+				if (!myList.isDir) 
+				{
+					myLists.push(myList);
+				}
+			}
+			
+			return myLists;
+		}
+			
 	}
 }
