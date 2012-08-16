@@ -31,12 +31,6 @@ package org.mineap.nndd.server.process
 			var libraryManager:ILibraryManager = LibraryManagerBuilder.instance.libraryManager;
 			
 			var videoId:String = requestXml.video.@id;
-			var isTest:Boolean = false;
-			
-			if ("true" == requestXml.video.@isTest)
-			{
-				isTest = true;
-			}
 			
 			if (videoId == null)
 			{
@@ -60,70 +54,22 @@ package org.mineap.nndd.server.process
 				return;
 			}
 			
-			if (isTest)
+			var videoUrl:String = "http://" + httpResponse.httpRequest.host + "/" + video.key;
+			
+			var resXML:XML = <nnddResponse />;
+
+			resXML.video.@id = video.id;
+			resXML.video.@isEconomy = video.isEconomy;
+			resXML.video.@videoUrl = videoUrl;
+			if (videoFile.extension != null) 
 			{
-				var resXML:XML = <nnddResponse />;
-				
-				resXML.video.@id = video.id;
-				resXML.video.@isEconomy = video.isEconomy;
-				if (videoFile.extension != null) 
-				{
-					resXML.video.@extension = videoFile.extension;
-				}
-				resXML.video.appendChild(video.videoName);
-				
-				httpResponse.body = resXML.toXMLString();
-				httpResponse.statusCode = 200;
-				return;
-				
+				resXML.video.@extension = videoFile.extension;
 			}
+			resXML.video.appendChild(video.videoName);
 			
-			var extension:String = videoFile.extension;
-			if (extension != null) 
-			{
-				if (extension.toUpperCase() == "FLV")
-				{
-					httpResponse.contentType = "video/flv";
-				}else if (extension.toUpperCase() == "MP4")
-				{
-					httpResponse.contentType = "video/mp4";
-				}else if (extension.toUpperCase() == "SWF")
-				{
-					httpResponse.contentType = "application/x-shockwave-flash";
-				}
-			}
-			
-			var time:Number = new Date().time;
-			
-			var byteArray:ByteArray = new ByteArray();
-			var fileStream:FileStream = new FileStream();
-			try 
-			{
-				// TODO でかい動画(50MBとか)を同期で読み込むとGUIスレッドが止まるのでなんとかしたい
-				// でもこのprocess()がreturnするとレスポンスが返っちゃうので要検討。
-				fileStream.open(videoFile, FileMode.READ);
-				fileStream.readBytes(byteArray);
-				fileStream.close();
-			}catch (error:Error)
-			{
-				try 
-				{
-					fileStream.close();	
-				}
-				catch (error:Error)
-				{
-					// nothing
-				}
-				trace(error.getStackTrace());
-				httpResponse.statusCode = 500;
-				return;
-			}
-			
-			time = new Date().time - time;
-			trace("送信にかかった時間:" + time + " ms");
-			
-			httpResponse.body = byteArray;
+			httpResponse.body = resXML.toXMLString();
 			httpResponse.statusCode = 200;
+			return;
 			
 		}
 	}

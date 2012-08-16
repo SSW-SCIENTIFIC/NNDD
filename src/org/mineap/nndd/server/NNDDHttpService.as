@@ -21,32 +21,52 @@ package org.mineap.nndd.server
 		public function doService(request:HttpRequest, response:HttpResponse):void
 		{
 			
-			if (request.path != "/NNDDServer" && request.path != "/NNDDServer/")
-			{
-				response.statusCode = 404;
-				return;
-			}
-			
 			try {
 				
-				var byteArray:ByteArray = request.requestBody;
-				
-				var reqBody:String = String(byteArray);
-				
-				var nnddRequest:XML = new XML(reqBody);
-				
-				var process:IRequestProcess = RequestProcessFactory.createProcess(nnddRequest);
-				
-				if (process != null)
+				if (request.path == "/NNDDServer" || request.path == "/NNDDServer/")
 				{
-					process.process(nnddRequest, response);
+					
+					var byteArray:ByteArray = request.requestBody;
+					
+					var reqBody:String = String(byteArray);
+					
+					var nnddRequest:XML = new XML(reqBody);
+					
+					var process:IRequestProcess = RequestProcessFactory.createProcess(nnddRequest);
+					
+					if (process != null)
+					{
+						process.process(nnddRequest, response);
+					}
+					else
+					{
+						// リクエストエンティティ(=XML)の内容が妥当ではない
+						response.statusCode = 422;
+					}
+					
+				}
+				else if (request.path.indexOf("/NNDDServer/") == 0 && request.path.length > 13)
+				{
+					var getVideoData:GetVideoDataProcess = new GetVideoDataProcess();
+					
+					var lastIndex:int = request.path.lastIndexOf("/");
+					
+					if (lastIndex < 12) 
+					{
+						response.statusCode = 404;
+						return;
+					}
+					
+					var videoId:String = request.path.substring(lastIndex);
+					
+					getVideoData.process(videoId, response);
+				
 				}
 				else
 				{
-					// リクエストエンティティ(=XML)の内容が妥当ではない
-					response.statusCode = 422;
+					response.statusCode = 404;
+					return;
 				}
-				
 			}
 			catch(error:Error)
 			{
