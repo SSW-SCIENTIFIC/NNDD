@@ -1466,8 +1466,10 @@
 			
 			protected function navigatorContent_share_setting_creationCompleteHandler(event:FlexEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				checkbox_allowOtherNNDDConnection.selected = allowOtherNNDDConnection;
+				checkbox_enableShareVideoInfo.selected = enableShareVideoInfo;
+				checkbox_enableShareMyListInfo.selected = enableShareMyListInfo;
+				checkbox_allowGetOtherNNDDInfo.selected = allowGetOtherNNDDInfo;
 			}
 			
 			protected function checkbox_allowOtherNNDDConnection_changeHandler(event:Event):void
@@ -1483,7 +1485,10 @@
 					if (!ServerManager.instance.startServer(localPort))
 					{
 						ServerManager.instance.stopServer();
-						event.preventDefault();
+						
+						allowOtherNNDDConnection = false;
+						checkbox_allowOtherNNDDConnection.selected = false;
+						
 						Alert.show("通信待ち受け開始に失敗しました。ポート番号を見直してください。", Message.M_ERROR);
 					}
 				}
@@ -2447,10 +2452,10 @@
 					
 					
 				</mx:Canvas>
-				<s:NavigatorContent width="100%" height="100%" label="共有" id="navigatorContent_share_setting" 
-									creationComplete="navigatorContent_share_setting_creationCompleteHandler(event)">
+				<s:NavigatorContent width="100%" height="100%" label="共有" id="navigatorContent_share_setting" >
 					<s:HGroup top="0" left="10" right="10">
-						<mx:Label text="共有" fontWeight="bold"/>
+						<mx:Label text="共有" fontWeight="bold"
+								  creationComplete="navigatorContent_share_setting_creationCompleteHandler(event)" />
 						<mx:HRule width="100%" height="21"/>
 					</s:HGroup>
 					

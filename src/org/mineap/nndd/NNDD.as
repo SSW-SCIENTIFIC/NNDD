@@ -554,17 +554,15 @@ public function initNNDD(nndd:NNDD):void
 		playerOpen();
 	}
 	
-	var serverEnable:Boolean = ConfUtil.parseBoolean(ConfigManager.getInstance().getItem("serverEnable"));
-	var localPort:String = ConfigManager.getInstance().getItem("localport");
-	if (serverEnable)
+	if (allowOtherNNDDConnection)
 	{
 		var port:int = 12300;
-		if (localPort != null && int(localPort) <= 65535)
+		if (string_localPort != null && int(string_localPort) <= 65535)
 		{
-			port = int(localPort);
+			port = int(string_localPort);
 		}
 		
-		ServerManager.instance.startServer(12300);
+		ServerManager.instance.startServer(port);
 	}
 }
 
@@ -2416,6 +2414,52 @@ private function readStore(isLogout:Boolean = false):void{
 		{
 			this.isSaveMyListHistory = ConfUtil.parseBoolean(confValue);
 		}
+		
+		errorName = "allowOtherNNDDConnection";
+		confValue = ConfigManager.getInstance().getItem("allowOtherNNDDConnection");
+		if (confValue != null)
+		{
+			this.allowOtherNNDDConnection = ConfUtil.parseBoolean(confValue);
+		}
+		errorName = "enableShareVideoInfo";
+		confValue = ConfigManager.getInstance().getItem("enableShareVideoInfo");
+		if (confValue != null)
+		{
+			this.enableShareVideoInfo = ConfUtil.parseBoolean(confValue);
+		}
+		errorName = "enableShareMyListInfo";
+		confValue = ConfigManager.getInstance().getItem("enableShareMyListInfo");
+		if (confValue != null)
+		{
+			this.enableShareMyListInfo = ConfUtil.parseBoolean(confValue);
+		}
+		errorName = "allowGetOtherNNDDInfo";
+		confValue = ConfigManager.getInstance().getItem("allowGetOtherNNDDInfo");
+		if (confValue != null)
+		{
+			this.allowGetOtherNNDDInfo = ConfUtil.parseBoolean(confValue);
+		}
+		
+		errorName = "localPort";
+		confValue = ConfigManager.getInstance().getItem("localPort");
+		if (confValue != null)
+		{
+			this.string_localPort = String(confValue);
+		}
+		errorName = "remoteNNDDPort";
+		confValue = ConfigManager.getInstance().getItem("remoteNNDDPort");
+		if (confValue != null)
+		{
+			this.string_remoteNNDDPort = String(confValue);
+		}
+		errorName = "remoteNNDDAddress";
+		confValue = ConfigManager.getInstance().getItem("remoteNNDDAddress");
+		if (confValue != null)
+		{
+			this.string_remoteNNDDAddress = String(confValue);
+		}
+		
+		
 		
 		
 	}catch(error:Error){
@@ -4754,6 +4798,39 @@ private function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("isSaveMyListHistory");
 		ConfigManager.getInstance().setItem("isSaveMyListHistory", this.isSaveMyListHistory);
+		
+		
+		
+		ConfigManager.getInstance().removeItem("allowOtherNNDDConnection");
+		ConfigManager.getInstance().setItem("allowOtherNNDDConnection", this.allowOtherNNDDConnection);
+		
+		ConfigManager.getInstance().removeItem("enableShareVideoInfo");
+		ConfigManager.getInstance().setItem("enableShareVideoInfo", this.enableShareVideoInfo);
+		
+		ConfigManager.getInstance().removeItem("enableShareMyListInfo");
+		ConfigManager.getInstance().setItem("enableShareMyListInfo", this.enableShareMyListInfo);
+		
+		ConfigManager.getInstance().removeItem("allowGetOtherNNDDInfo");
+		ConfigManager.getInstance().setItem("allowGetOtherNNDDInfo", this.allowGetOtherNNDDInfo);
+		
+		ConfigManager.getInstance().removeItem("localPort");
+		if (this.string_localPort != null) 
+		{
+			ConfigManager.getInstance().setItem("localPort", this.string_localPort);
+		}
+		
+		ConfigManager.getInstance().removeItem("remoteNNDDAddress");
+		if (this.string_remoteNNDDAddress != null)
+		{
+			ConfigManager.getInstance().setItem("remoteNNDDAddress", this.string_remoteNNDDAddress);
+		}
+		
+		ConfigManager.getInstance().removeItem("remoteNNDDPort");
+		if (this.string_remoteNNDDPort != null)
+		{
+			ConfigManager.getInstance().setItem("remoteNNDDPort", this.string_remoteNNDDPort);
+		}		
+		
 		
 		ConfigManager.getInstance().save();
 		
