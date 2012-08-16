@@ -51,13 +51,13 @@ package org.mineap.nndd.server
 					
 					var lastIndex:int = request.path.lastIndexOf("/");
 					
-					if (lastIndex < 12) 
+					if (lastIndex < 10) 
 					{
 						response.statusCode = 404;
 						return;
 					}
 					
-					var videoId:String = request.path.substring(lastIndex);
+					var videoId:String = request.path.substring(lastIndex+1);
 					
 					getVideoData.process(videoId, response);
 				

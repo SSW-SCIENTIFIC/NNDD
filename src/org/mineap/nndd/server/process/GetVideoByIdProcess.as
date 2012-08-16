@@ -54,7 +54,7 @@ package org.mineap.nndd.server.process
 				return;
 			}
 			
-			var videoUrl:String = "http://" + httpResponse.httpRequest.host + "/" + video.key;
+			var videoUrl:String = "http://" + httpResponse.httpRequest.host + "/NNDDServer/" + video.key;
 			
 			var resXML:XML = <nnddResponse />;
 
