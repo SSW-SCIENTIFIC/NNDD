@@ -7,44 +7,19 @@
  */
 
 import flash.data.EncryptedLocalStore;
+import flash.desktop.*;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
-import flash.desktop.NativeApplication;
-import flash.desktop.NativeDragActions;
-import flash.desktop.NativeDragManager;
-import flash.display.NativeMenu;
-import flash.display.NativeMenuItem;
-import flash.display.NativeWindowDisplayState;
-import flash.errors.EOFError;
-import flash.events.ContextMenuEvent;
-import flash.events.ErrorEvent;
-import flash.events.Event;
-import flash.events.FileListEvent;
-import flash.events.FocusEvent;
-import flash.events.HTTPStatusEvent;
-import flash.events.IOErrorEvent;
-import flash.events.InvokeEvent;
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.events.NativeDragEvent;
-import flash.events.ProgressEvent;
-import flash.events.TimerEvent;
+import flash.errors.*;
 import flash.filesystem.File;
 import flash.geom.Rectangle;
 import flash.globalization.LocaleID;
 import flash.globalization.NumberFormatter;
+import flash.net.*;
 import flash.net.FileFilter;
-import flash.net.URLLoader;
-import flash.net.URLRequest;
-import flash.net.URLRequestDefaults;
-import flash.net.URLVariables;
-import flash.net.navigateToURL;
 import flash.system.Capabilities;
 import flash.text.Font;
-import flash.ui.ContextMenu;
-import flash.ui.ContextMenuItem;
-import flash.ui.Keyboard;
-import flash.ui.Mouse;
+import flash.ui.*;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
@@ -53,44 +28,14 @@ import mx.collections.ICollectionView;
 import mx.collections.Sort;
 import mx.collections.SortField;
 import mx.containers.Canvas;
-import mx.controls.Alert;
-import mx.controls.Button;
-import mx.controls.CheckBox;
-import mx.controls.ComboBox;
-import mx.controls.DataGrid;
-import mx.controls.FileSystemComboBox;
-import mx.controls.FileSystemEnumerationMode;
-import mx.controls.Label;
-import mx.controls.Text;
-import mx.controls.TextInput;
-import mx.controls.TileList;
-import mx.controls.Tree;
-import mx.controls.dataGridClasses.DataGridColumn;
-import mx.controls.dataGridClasses.DataGridItemRenderer;
-import mx.controls.dataGridClasses.DataGridListData;
+import mx.controls.*;
+import mx.controls.dataGridClasses.*;
 import mx.controls.listClasses.IListItemRenderer;
 import mx.controls.sliderClasses.Slider;
 import mx.controls.treeClasses.TreeItemRenderer;
-import mx.core.Application;
-import mx.core.ClassFactory;
-import mx.core.FlexGlobals;
-import mx.core.FlexLoader;
-import mx.core.IUIComponent;
-import mx.core.UITextField;
-import mx.core.Window;
+import mx.core.*;
 import mx.core.windowClasses.StatusBar;
-import mx.events.AIREvent;
-import mx.events.CloseEvent;
-import mx.events.DragEvent;
-import mx.events.FlexEvent;
-import mx.events.FlexNativeWindowBoundsEvent;
-import mx.events.IndexChangedEvent;
-import mx.events.ListEvent;
-import mx.events.ResizeEvent;
-import mx.events.SliderEvent;
-import mx.events.TreeEvent;
-import mx.managers.DragManager;
-import mx.managers.FocusManager;
+import mx.events.*;
 import mx.managers.PopUpManager;
 
 import org.mineap.nicovideo4as.*;
@@ -106,33 +51,19 @@ import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.RenewDownloadManager;
 import org.mineap.nndd.SystemTrayIconManager;
-import org.mineap.nndd.download.DownloadManager;
-import org.mineap.nndd.download.ScheduleManager;
+import org.mineap.nndd.download.*;
 import org.mineap.nndd.downloadedList.DownloadedListManager;
-import org.mineap.nndd.event.LibraryLoadEvent;
-import org.mineap.nndd.event.MyListRenewProgressEvent;
+import org.mineap.nndd.event.*;
 import org.mineap.nndd.history.HistoryManager;
-import org.mineap.nndd.library.ILibraryManager;
-import org.mineap.nndd.library.LibraryManagerBuilder;
-import org.mineap.nndd.library.LibraryTreeBuilder;
-import org.mineap.nndd.library.LocalVideoInfoLoader;
+import org.mineap.nndd.library.*;
 import org.mineap.nndd.library.namedarray.NamedArrayLibraryManager;
 import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
 import org.mineap.nndd.model.*;
-import org.mineap.nndd.model.tree.ITreeItem;
-import org.mineap.nndd.model.tree.TreeFileItem;
-import org.mineap.nndd.model.tree.TreeFolderItem;
-import org.mineap.nndd.myList.MyList;
-import org.mineap.nndd.myList.MyListBuilder;
-import org.mineap.nndd.myList.MyListHistoryManager;
-import org.mineap.nndd.myList.MyListManager;
-import org.mineap.nndd.myList.MyListRenewScheduler;
-import org.mineap.nndd.myList.MyListTreeItemRenderer;
+import org.mineap.nndd.model.tree.*;
+import org.mineap.nndd.myList.*;
 import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
-import org.mineap.nndd.playList.PlayListDataGridBuilder;
-import org.mineap.nndd.playList.PlayListManager;
-import org.mineap.nndd.player.PlayerController;
-import org.mineap.nndd.player.PlayerManager;
+import org.mineap.nndd.playList.*;
+import org.mineap.nndd.player.*;
 import org.mineap.nndd.ranking.RankingListBuilder;
 import org.mineap.nndd.search.SearchItemManager;
 import org.mineap.nndd.server.ServerManager;
@@ -140,9 +71,7 @@ import org.mineap.nndd.tag.NgTagManager;
 import org.mineap.nndd.tag.TagManager;
 import org.mineap.nndd.user.UserManager;
 import org.mineap.nndd.util.*;
-import org.mineap.nndd.versionCheck.VersionChecker;
-import org.mineap.nndd.versionCheck.VersionCheckerFactory;
-import org.mineap.nndd.versionCheck.VersionUtil;
+import org.mineap.nndd.versionCheck.*;
 import org.mineap.nndd.view.LoadingPicture;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
@@ -280,6 +209,14 @@ private var useOldTypeCommentGet:Boolean = true;
 
 private var useAppDirSystemFile:Boolean = false;
 
+private var allowOtherNNDDConnection:Boolean = false;
+
+private var enableShareVideoInfo:Boolean = false;
+
+private var enableShareMyListInfo:Boolean = false;
+
+private var allowGetOtherNNDDInfo:Boolean = false;
+
 private var period:int = 0;
 private var target:int = 0;
 
@@ -344,6 +281,14 @@ private var fontDataProvider:Array = new Array();
 private var searchHistoryProvider:Array = new Array();
 [Bindable]
 private var fontSizeDataProvider:Array = new Array("小","中","大","特大");
+[Bindable]
+private var string_localPort:String = "12300";
+[Bindable]
+private var string_remoteNNDDAddress:String = "";
+[Bindable]
+private var string_remoteNNDDPort:String = "12300";
+
+
 
 /**
  * イニシャライザです。<br>

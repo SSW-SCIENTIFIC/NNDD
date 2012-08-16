@@ -31,6 +31,12 @@ package org.mineap.nndd.server.process
 			var libraryManager:ILibraryManager = LibraryManagerBuilder.instance.libraryManager;
 			
 			var videoId:String = requestXml.video.@id;
+			var isTest:Boolean = false;
+			
+			if ("true" == requestXml.video.@isTest)
+			{
+				isTest = true;
+			}
 			
 			if (videoId == null)
 			{
@@ -52,6 +58,24 @@ package org.mineap.nndd.server.process
 			{
 				httpResponse.statusCode = 404;
 				return;
+			}
+			
+			if (isTest)
+			{
+				var resXML:XML = <nnddResponse />;
+				
+				resXML.video.@id = video.id;
+				resXML.video.@isEconomy = video.isEconomy;
+				if (videoFile.extension != null) 
+				{
+					resXML.video.@extension = videoFile.extension;
+				}
+				resXML.video.appendChild(video.videoName);
+				
+				httpResponse.body = resXML.toXMLString();
+				httpResponse.statusCode = 200;
+				return;
+				
 			}
 			
 			var extension:String = videoFile.extension;

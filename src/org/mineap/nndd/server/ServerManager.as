@@ -57,7 +57,7 @@ package org.mineap.nndd.server
 		 * @param localPort
 		 * 
 		 */
-		public function startServer(localPort:int):void
+		public function startServer(localPort:int):Boolean
 		{
 			
 			stopServer();
@@ -72,6 +72,8 @@ package org.mineap.nndd.server
 				
 				LogManager.instance.addLog("他のNNDDからの通信待ち受けを開始しました:localPort=" + localPort);
 			
+				return true;
+				
 			}
 			catch(error:Error)
 			{
@@ -79,6 +81,7 @@ package org.mineap.nndd.server
 				trace(error.getStackTrace());
 			}
 			
+			return false;
 		}
 		
 		/**

@@ -9,8 +9,10 @@ package org.mineap.nndd
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
 	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
+	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	
@@ -37,6 +39,7 @@ package org.mineap.nndd
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.player.comment.Command;
+	import org.mineap.nndd.server.RequestType;
 	import org.mineap.nndd.util.LibraryUtil;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;
@@ -75,6 +78,8 @@ package org.mineap.nndd
 		private var _videoLoader:VideoLoader;
 		private var _videoStream:VideoStream;
 		
+		private var _otherNNDDInfoLoader:URLLoader;
+		
 		private var _flvResultAnalyzer:GetFlvResultAnalyzer;
 		
 		private var _videoId:String;
@@ -104,6 +109,11 @@ package org.mineap.nndd
 		private var _isAppendComment:Boolean = false;
 		private var _useOldType:Boolean = false;
 		private var _isRedirected:Boolean = false;
+		
+		private var _isEnableGetVideoFromOtherNNDDServer:Boolean = false;
+		private var _otherNNDDServerAddress:String = null;
+		private var _otherNNDDServerPort:int = -1;
+		private var _isNNDDServerReady:Boolean = false;
 		
 		/**
 		 * ログイン処理を開始したときに、typeプロパティがこの定数に設定されたEventが発行されます。 
@@ -315,6 +325,8 @@ package org.mineap.nndd
 			this._ichibaInfoLoader = new IchibaInfoLoader();
 			this._videoLoader = new VideoLoader();
 			this._videoStream = new VideoStream();
+			
+			this._otherNNDDInfoLoader = new URLLoader();
 			
 			this._nicowariVideoIds = new Array();
 			this._nicowariVideoUrls = new Array();
@@ -1416,11 +1428,7 @@ package org.mineap.nndd
 			
 			try{
 				
-				if(!this._isVideoNotDownload){
-					getVideoForDownload();
-				}else{
-					getVideoForStreaming();	
-				}
+				getVideo();
 				
 			}
 			catch(error:Error)
@@ -1430,6 +1438,86 @@ package org.mineap.nndd
 				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
 				dispatchEvent(myEvent);
 				close(true, true, myEvent);
+			}
+			
+		}
+		
+		private function createNNDDServerRequest(isTest:Boolean = false):URLRequest
+		{
+			var request:URLRequest = new URLRequest("http://" + this._otherNNDDServerAddress + ":" + this._otherNNDDServerPort + "/NNDDServer") ;
+			request.method = "POST";
+			
+			var reqXML:XML = <nnddRequest />;
+			reqXML.@type = RequestType.GET_VIDEO_BY_ID;
+			reqXML.video.@id = this._videoId;
+			reqXML.video.@isTest = isTest;
+			
+			
+			request.data = reqXML.toXMLString();
+			
+			return request;
+		}
+		
+		
+		private function getVideo():void
+		{
+		
+			// 他のNNDDからの取得が許可されているなら、他のNNDDが持っていないかチェックしにいく(ただし強制エコノミーの時は見に行かない)
+			if (this._isEnableGetVideoFromOtherNNDDServer && !this._isAlwaysEconomy)
+			{
+				
+				var request:URLRequest = createNNDDServerRequest(true);
+				
+				this._otherNNDDInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
+				{
+					trace(event);
+					LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+				});
+				this._otherNNDDInfoLoader.addEventListener(Event.COMPLETE, function(event:Event):void
+				{
+					_otherNNDDInfoLoader.close();
+					
+					var resXML:XML = new XML(_otherNNDDInfoLoader.data);
+					
+					trace(resXML);
+					
+					if (resXML.video != null)
+					{
+						// サーバが動画を持っている
+						_isNNDDServerReady = true;
+					}
+					
+					LogManager.instance.addLog("\t" + "REMOTE_NNDD_SERVER_ACCESS_SUCCESS" + ":" + request.url);
+					trace("REMOTE_NNDD_SERVER_ACCESS_SUCCESS" + ":" + event + "\n" + request.url);
+					
+					startInnner();
+					
+				});
+				this._otherNNDDInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+				{
+					(event.target as URLLoader).close();
+					LogManager.instance.addLog("REMOTE_NNDD_SERVER_ACCESS_FAIL" + request.url);
+					trace("REMOTE_NNDD_SERVER_ACCESS_FAIL" + ":" + event + ":" + event.target +  ":" + event.text);
+					
+					startInnner();
+					
+				});
+				
+				this._otherNNDDInfoLoader.load(request);
+				
+			}
+			else
+			{
+				startInnner();
+			}
+			
+			function startInnner():void
+			{
+				if(!this._isVideoNotDownload){
+					getVideoForDownload();
+				}else{
+					getVideoForStreaming();	
+				}
 			}
 			
 		}
@@ -1509,13 +1597,21 @@ package org.mineap.nndd
 				oldFile.moveToTrash();
 			}
 			
-			LogManager.instance.addLog("動画のDLを開始:DL先=" + analyzer.url);
+			var videoGetReq:URLRequest = new URLRequest(analyzer.url);
+			
+			if (this._isNNDDServerReady)
+			{
+				videoGetReq = createNNDDServerRequest();
+			}
+			
+			LogManager.instance.addLog("動画のDLを開始:DL先=" + videoGetReq.url);
 			
 			trace(VIDEO_GET_START + ":" + this._videoId);
 			LogManager.instance.addLog(VIDEO_GET_START + ":" + this._videoId);
 			dispatchEvent(new Event(VIDEO_GET_START));
 			
-			this._videoStream.getVideoStart(analyzer.url);
+//			this._videoStream.getVideoStart(videoURL);
+			this._videoStream.getVideoStartByRequest(videoGetReq);
 		}
 		
 		/**

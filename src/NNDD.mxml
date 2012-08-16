@@ -27,6 +27,7 @@
 			import mx.core.UITextField;
 			import mx.events.DropdownEvent;
 			import mx.events.ToolTipEvent;
+			import mx.managers.DragManager;
 			import mx.messaging.SubscriptionInfo;
 			
 			import org.mineap.nndd.library.LibraryTreeBuilder;
@@ -1463,6 +1464,76 @@
 				textinput_mylist.dataProvider = array;
 			}
 			
+			protected function navigatorContent_share_setting_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function checkbox_allowOtherNNDDConnection_changeHandler(event:Event):void
+			{
+				
+				allowOtherNNDDConnection = checkbox_allowOtherNNDDConnection.selected;
+				
+				var localPort:int = int(string_localPort);
+				
+				if (allowOtherNNDDConnection)
+				{
+					// サーバを起動
+					if (!ServerManager.instance.startServer(localPort))
+					{
+						ServerManager.instance.stopServer();
+						event.preventDefault();
+						Alert.show("通信待ち受け開始に失敗しました。ポート番号を見直してください。", Message.M_ERROR);
+					}
+				}
+				else
+				{
+					//サーバを停止
+					ServerManager.instance.stopServer();
+				}
+				
+			}
+			
+			protected function checkbox_enableShareVideoInfo_changeHandler(event:Event):void
+			{
+				enableShareVideoInfo = checkbox_enableShareVideoInfo.selected;
+			}
+			
+			protected function checkbox_enableShareMyListInfo_changeHandler(event:Event):void
+			{
+				enableShareMyListInfo = checkbox_enableShareMyListInfo.selected;
+			}
+			
+			protected function checkbox_allowGetOtherNNDDInfo_changeHandler(event:Event):void
+			{
+				allowGetOtherNNDDInfo = checkbox_allowGetOtherNNDDInfo.selected;
+				
+				if (allowGetOtherNNDDInfo)
+				{
+					var address:String = string_remoteNNDDAddress;
+					var port:int = int(string_remoteNNDDPort);
+					
+					var loader:URLLoader = new URLLoader();
+					loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
+					{
+						trace("誰か居る:" + event);
+					});
+					loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+					{
+						Alert.show("指定されたアドレスのNNDDに接続できません。よろしいですか？", Message.M_MESSAGE, Alert.OK | Alert.CANCEL, null, function(event:CloseEvent):void
+						{
+							if (event.detail == Alert.CANCEL)
+							{
+								allowGetOtherNNDDInfo = false;
+								checkbox_allowGetOtherNNDDInfo.selected = false;
+							}
+						});
+					});
+					loader.load(new URLRequest("http://" + address + ":" + port + "/NNDDServer"));
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -2223,9 +2294,6 @@
 						<mx:Button label="履歴を消去" id="button_myListHistoryClear" click="myListHistoryClearButtonClicked(event)"/>
 					</s:HGroup>
 					
-					<s:HGroup left="30" top="147" verticalAlign="middle">
-					</s:HGroup>
-					
 					<s:HGroup left="49" top="209" verticalAlign="middle">
 						<mx:Label  text="マイリストごとの更新間隔"/>
 						<s:NumericStepper maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
@@ -2379,6 +2447,59 @@
 					
 					
 				</mx:Canvas>
+				<s:NavigatorContent width="100%" height="100%" label="共有" id="navigatorContent_share_setting" 
+									creationComplete="navigatorContent_share_setting_creationCompleteHandler(event)">
+					<s:HGroup top="0" left="10" right="10">
+						<mx:Label text="共有" fontWeight="bold"/>
+						<mx:HRule width="100%" height="21"/>
+					</s:HGroup>
+					
+					<s:VGroup left="30" right="10" top="29">
+						<s:VGroup>
+								
+							<mx:CheckBox id="checkbox_allowOtherNNDDConnection"
+										 label="他のNNDDからの通信を受け付ける"
+										 change="checkbox_allowOtherNNDDConnection_changeHandler(event)"
+										 toolTip="他のNNDDからの保存済み動画取得要求およびマイリスト取得要求を受け付けます。"/>
+							
+							<s:HGroup paddingLeft="20">
+								<mx:Label text="待ち受けポート番号:" />
+								<mx:TextInput id="textInput_localPort" text="{string_localPort}" />
+							</s:HGroup>
+							
+							<mx:CheckBox id="checkbox_enableShareVideoInfo" label="保存済み動画一覧と動画を配信する"
+										 enabled="{checkbox_allowOtherNNDDConnection.selected}"
+										 paddingLeft="20" selected="false"
+										 change="checkbox_enableShareVideoInfo_changeHandler(event)"
+										 toolTip="他のNNDDに対してこのNNDDでDL済み動画の一覧情報と、DL済み動画そのもののを提供します。"/>
+							<mx:CheckBox id="checkbox_enableShareMyListInfo"
+										 label="マイリスト一覧とマイリストの視聴済み情報を配信する"
+										 enabled="{checkbox_allowOtherNNDDConnection.selected}"
+										 paddingLeft="20" selected="false"
+										 change="checkbox_enableShareMyListInfo_changeHandler(event)"
+										 toolTip="他のNNDDに対してこのNNDDのマイリスト一覧とマイリスト視聴済み情報を提供します。"/>
+							
+						</s:VGroup>
+						<mx:HRule width="100%" height="20" />
+						<s:VGroup>
+							<mx:CheckBox id="checkbox_allowGetOtherNNDDInfo"
+										 label="他のNNDDからの動画情報／マイリスト情報を取得する"
+										 toolTip="NNDDの起動時にPlayerを開きます。"
+										 change="checkbox_allowGetOtherNNDDInfo_changeHandler(event)" 
+										 />
+							<s:HGroup paddingLeft="20">
+								<mx:Label text="取得先NNDDのIPアドレス:" toolTip="情報の取得先NNDDが動作するコンピュータのIPアドレスかホスト名を入力します。" />
+								<mx:TextInput id="textInput_remoteNNDDAddress" text="{string_remoteNNDDAddress}" />
+							</s:HGroup>
+							<s:HGroup columnWidth="50" paddingLeft="20">
+								<mx:Label text="取得先NNDDのポート番号:" toolTip="情報の取得先NNDDが待ち受けるポート番号を入力します。"/>
+								<mx:TextInput id="textInput_remoteNNDDPort" width="70"
+											  text="{string_remoteNNDDPort}"/>
+							</s:HGroup>
+						</s:VGroup>
+					</s:VGroup>
+						
+				</s:NavigatorContent>
 				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
 					<ns1:ConnectionStatusView id="connectionStatusView" left="0" top="0" bottom="0" right="0" creationComplete="connectionStatusViewCreationCompleteHandler(event)">
 					</ns1:ConnectionStatusView>
