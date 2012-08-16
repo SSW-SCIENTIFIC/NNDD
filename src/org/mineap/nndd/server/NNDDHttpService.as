@@ -35,61 +35,16 @@ package org.mineap.nndd.server
 				
 				var nnddRequest:XML = new XML(reqBody);
 				
-				var type:String = nnddRequest.@type;
+				var process:IRequestProcess = RequestProcessFactory.createProcess(nnddRequest);
 				
-				var nnddResponse:XML = new XML("<nnddResponse></nnddResponse>");
-				
-				if (type.indexOf(RequestType.GET_MYLIST_LIST.typeStr) != -1)
+				if (process != null)
 				{
-					// マイリスト一覧情報取得
-					var myLists:Vector.<MyList> = MyListManager.instance.getAllMyList();
-					
-					for each (var myList:MyList in myLists) 
-					{
-						var rss:XML = new XML("<rss></rss>");
-						rss.@id = myList.id;
-						rss.@rssType = myList.type.toString();
-						(nnddResponse as XML).appendChild(rss);
-					}
-					
-				}
-				else if (type.indexOf(RequestType.GET_MYLIST_BY_ID.typeStr) != -1)
-				{
-					// ID指定マイリスト取得
-					
-					var rssTypeStr:String = nnddRequest.rss.@rssType;
-					var rssId:String = nnddRequest.rss.@id;
-					
-					var rssType:RssType = RssType.convertStrToRssType(rssTypeStr);
-					var xml:XML = MyListManager.instance.readLocalMyList(rssId, rssType);
-					
-					if (xml != null) 
-					{
-						nnddResponse = xml;
-					}
-					
-				}
-				else if (type.indexOf(RequestType.GET_VIDEO_ID_LIST.typeStr) != -1)
-				{
-					// 動画一覧取得
-				}
-				else if (type.indexOf(RequestType.GET_VIDEO_BY_ID.typeStr) != -1)
-				{
-					// 動画取得
+					process.process(nnddRequest, response);
 				}
 				else
 				{
-					// NOT_FOUND
-				}
-				
-				if (nnddResponse != null)
-				{
-					response.statusCode = 200;
-					response.body = nnddResponse.toXMLString();
-				}
-				else
-				{
-					response.statusCode = 404;
+					// リクエストエンティティ(=XML)の内容が妥当ではない
+					response.statusCode = 422;
 				}
 				
 			}
