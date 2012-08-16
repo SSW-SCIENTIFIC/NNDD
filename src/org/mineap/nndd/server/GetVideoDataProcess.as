@@ -121,7 +121,7 @@ package org.mineap.nndd.server
 			
 			fileStream.readBytes(buffer, buffer.length);
 			
-			if (buffer.length > 100000)
+			if (buffer.length > 1000000)
 			{
 				trace(event);
 				httpResponse.httpConnection.socket.writeBytes(buffer, 0, buffer.length);

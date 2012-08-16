@@ -22,7 +22,7 @@ package org.mineap.nndd.server
 		public function doService(request:HttpRequest, response:HttpResponse):void
 		{
 			
-			LogManager.instance.addLog("通信を受付:path=" + request.path);
+			LogManager.instance.addLog("通信を受付:path=" + request.path + ", remoteAddress=" + response.httpConnection.socket.remoteAddress);
 			
 			try {
 				
