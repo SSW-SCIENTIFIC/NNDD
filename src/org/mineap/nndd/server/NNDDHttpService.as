@@ -6,6 +6,7 @@ package org.mineap.nndd.server
 	
 	import flash.utils.ByteArray;
 	
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.myList.MyList;
 	import org.mineap.nndd.myList.MyListManager;
@@ -20,6 +21,8 @@ package org.mineap.nndd.server
 		
 		public function doService(request:HttpRequest, response:HttpResponse):void
 		{
+			
+			LogManager.instance.addLog("通信を受付:path=" + request.path);
 			
 			try {
 				
@@ -41,7 +44,8 @@ package org.mineap.nndd.server
 					else
 					{
 						// リクエストエンティティ(=XML)の内容が妥当ではない
-						response.statusCode = 422;
+						response.statusCode = 404;
+						return;
 					}
 					
 				}
@@ -65,6 +69,7 @@ package org.mineap.nndd.server
 				else
 				{
 					response.statusCode = 404;
+					LogManager.instance.addLog("リクエスト解析不可:resCode=" + response.statusCode);
 					return;
 				}
 			}
@@ -72,6 +77,7 @@ package org.mineap.nndd.server
 			{
 				trace(error.getStackTrace());
 				response.statusCode = 500;
+				LogManager.instance.addLog("エラー発生:error=" + error + ", resCode=" + response.statusCode);
 			}
 			
 		}

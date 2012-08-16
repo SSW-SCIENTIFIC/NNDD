@@ -1,9 +1,10 @@
 package org.mineap.nndd.server
 {
-	import org.mineap.nndd.server.process.GetMyListProcess;
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.server.process.GetMyListByIdProcess;
-	import org.mineap.nndd.server.process.GetVideoIdListProcess;
+	import org.mineap.nndd.server.process.GetMyListProcess;
 	import org.mineap.nndd.server.process.GetVideoByIdProcess;
+	import org.mineap.nndd.server.process.GetVideoIdListProcess;
 
 	/**
 	 * 
@@ -38,6 +39,7 @@ package org.mineap.nndd.server
 			}
 			
 			var type:String = request.@type;
+			LogManager.instance.addLog("通信のリクエスト種別:" + type);
 			
 			if (type.indexOf(RequestType.GET_MYLIST_LIST.typeStr) != -1)
 			{

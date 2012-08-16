@@ -2,6 +2,7 @@ package org.mineap.nndd.server.process
 {
 	import com.tilfin.airthttpd.server.HttpResponse;
 	
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
@@ -52,6 +53,8 @@ package org.mineap.nndd.server.process
 			
 			httpResponse.body = nnddResponse.toXMLString();
 			httpResponse.statusCode = 200;
+			
+			LogManager.instance.addLog("動画リスト取得要求:list.len=" + videoList.length + ", resCode=" + httpResponse.statusCode);
 		}
 	}
 }

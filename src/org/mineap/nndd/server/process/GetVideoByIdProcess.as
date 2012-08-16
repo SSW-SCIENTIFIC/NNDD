@@ -8,6 +8,7 @@ package org.mineap.nndd.server.process
 	import flash.utils.ByteArray;
 	
 	import org.mineap.nndd.FileIO;
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
@@ -35,6 +36,7 @@ package org.mineap.nndd.server.process
 			if (videoId == null)
 			{
 				httpResponse.statusCode = 404;
+				LogManager.instance.addLog("ID指定動画取得要求:id=" + videoId + ", resCode=" + httpResponse.statusCode);
 				return;
 			}
 			
@@ -43,6 +45,7 @@ package org.mineap.nndd.server.process
 			if (video == null)
 			{
 				httpResponse.statusCode = 404;
+				LogManager.instance.addLog("ID指定動画取得要求:id=" + videoId + ", resCode=" + httpResponse.statusCode);
 				return;
 			}
 			
@@ -51,6 +54,7 @@ package org.mineap.nndd.server.process
 			if (videoFile == null || !videoFile.exists)
 			{
 				httpResponse.statusCode = 404;
+				LogManager.instance.addLog("ID指定動画取得要求:id=" + videoId + ", resCode=" + httpResponse.statusCode);
 				return;
 			}
 			
@@ -69,7 +73,8 @@ package org.mineap.nndd.server.process
 			
 			httpResponse.body = resXML.toXMLString();
 			httpResponse.statusCode = 200;
-			return;
+			
+			LogManager.instance.addLog("ID指定動画取得要求:id=" + videoId + ", videoUrl:" + videoUrl + ", resCode=" + httpResponse.statusCode);
 			
 		}
 	}

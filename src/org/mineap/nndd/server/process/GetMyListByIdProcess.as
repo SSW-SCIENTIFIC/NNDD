@@ -2,6 +2,7 @@ package org.mineap.nndd.server.process
 {
 	import com.tilfin.airthttpd.server.HttpResponse;
 	
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.myList.MyListManager;
 	import org.mineap.nndd.server.IRequestProcess;
@@ -22,7 +23,6 @@ package org.mineap.nndd.server.process
 		{
 			
 			// ID指定マイリスト取得
-			
 			var rssTypeStr:String = requestXml.rss.@rssType;
 			var rssId:String = requestXml.rss.@id;
 			
@@ -40,6 +40,8 @@ package org.mineap.nndd.server.process
 				// NOT_FOUND
 				httpResponse.statusCode = 404;
 			}
+			
+			LogManager.instance.addLog("ID指定マイリスト取得要求:type=" + rssType + ", id=" + rssId + ", resCode=" + httpResponse.statusCode);
 			
 		}
 	}
