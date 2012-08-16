@@ -237,6 +237,16 @@ package org.mineap.nndd
 		public static const THUMB_INFO_GET_SUCCESS:String = "ThumbInfoGetSuccess";
 		
 		/**
+		 * NNDDServer上で同じ動画IDの動画が発見されました
+		 */
+		public static const REMOTE_NNDD_SERVER_ACCESS_SUCCESS:String = "RemoteNnddServerAccessSuccess";
+		
+		/**
+		 * 
+		 */
+		public static const REMOTE_NNDD_SERVER_ACCESS_FAIL:String = "RemoteNnddServerAccessFail";
+		
+		/**
 		 * 
 		 */
 		public static const THUMB_IMG_GET_START:String = "ThumbImgGetStart";
@@ -1487,8 +1497,10 @@ package org.mineap.nndd
 						_nnddServerVideoUrl = resXML.video.@videoUrl;
 					}
 					
-					LogManager.instance.addLog("\t" + "REMOTE_NNDD_SERVER_ACCESS_SUCCESS" + ":" + request.url);
-					trace("REMOTE_NNDD_SERVER_ACCESS_SUCCESS" + ":" + event + "\n" + request.url);
+					LogManager.instance.addLog("\t" + REMOTE_NNDD_SERVER_ACCESS_SUCCESS + ":" + request.url);
+					trace(REMOTE_NNDD_SERVER_ACCESS_SUCCESS + ":" + event + "\n" + request.url);
+					
+					dispatchEvent(new Event(REMOTE_NNDD_SERVER_ACCESS_SUCCESS));
 					
 					startInnner();
 					
@@ -2154,6 +2166,17 @@ package org.mineap.nndd
 		 */
 		public function get getFlvResultAnalyzer():GetFlvResultAnalyzer{
 			return this._flvResultAnalyzer;
+		}
+		
+		/**
+		 * NNDDServer上の動画のURLを返します。この値はnullの場合があります。
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get nnddServerVideoUrl():String
+		{
+			return new String(this._nnddServerVideoUrl);
 		}
 		
 		/**
