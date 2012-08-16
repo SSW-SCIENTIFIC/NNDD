@@ -4128,6 +4128,7 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_START, getProgressListener);
+						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS, getProgressListener);
 						
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
@@ -4224,7 +4225,7 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		public function getProgressListener(event:Event):void{
-			var status:String = "";
+			var status:String = null;
 			if(event.type == NNDDDownloader.LOGIN_SUCCESS){
 				status = "成功";
 			}else if(event.type == NNDDDownloader.WATCH_SUCCESS){
@@ -4268,6 +4269,11 @@ package org.mineap.nndd.player
 			}else if(event.type == NNDDDownloader.VIDEO_GET_START){
 				status = "動画を取得しています...";
 			}
+			
+			if (event.type == NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS)
+			{
+				status = "代替URLを使用(" + (event.currentTarget as NNDDDownloader).nnddServerVideoUrl + ")";
+			} 
 			
 			trace(status);
 			if ("成功" == status)
@@ -4366,6 +4372,7 @@ package org.mineap.nndd.player
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_START, getProgressListener);
+			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS, getProgressListener);
 		}
 		
 		/**
