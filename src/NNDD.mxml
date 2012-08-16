@@ -1470,6 +1470,12 @@
 				checkbox_enableShareVideoInfo.selected = enableShareVideoInfo;
 				checkbox_enableShareMyListInfo.selected = enableShareMyListInfo;
 				checkbox_allowGetOtherNNDDInfo.selected = allowGetOtherNNDDInfo;
+				
+				textInput_localPort.text = string_localPort;
+				textInput_remoteNNDDAddress.text = string_remoteNNDDAddress;
+				textInput_remoteNNDDPort.text = string_remoteNNDDPort;
+				
+				
 			}
 			
 			protected function checkbox_allowOtherNNDDConnection_changeHandler(event:Event):void
@@ -1513,6 +1519,7 @@
 			protected function checkbox_allowGetOtherNNDDInfo_changeHandler(event:Event):void
 			{
 				allowGetOtherNNDDInfo = checkbox_allowGetOtherNNDDInfo.selected;
+				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 				
 				if (allowGetOtherNNDDInfo)
 				{
@@ -1532,11 +1539,30 @@
 							{
 								allowGetOtherNNDDInfo = false;
 								checkbox_allowGetOtherNNDDInfo.selected = false;
+								PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 							}
 						});
 					});
 					loader.load(new URLRequest("http://" + address + ":" + port + "/NNDDServer"));
 				}
+			}
+			
+			protected function textInput_localPort_changeHandler(event:Event):void
+			{
+				string_localPort = textInput_localPort.text;
+				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+			}
+			
+			protected function textInput_remoteNNDDAddress_changeHandler(event:Event):void
+			{
+				string_remoteNNDDAddress = textInput_remoteNNDDAddress.text;
+				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+			}
+			
+			protected function textInput_remoteNNDDPort_changeHandler(event:Event):void
+			{
+				string_remoteNNDDPort = textInput_remoteNNDDPort.text;
+				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 			}
 			
 		]]>
@@ -2469,7 +2495,7 @@
 							
 							<s:HGroup paddingLeft="20">
 								<mx:Label text="待ち受けポート番号:" />
-								<mx:TextInput id="textInput_localPort" text="{string_localPort}" />
+								<mx:TextInput id="textInput_localPort" text="{string_localPort}" change="textInput_localPort_changeHandler(event)" />
 							</s:HGroup>
 							
 							<mx:CheckBox id="checkbox_enableShareVideoInfo" label="保存済み動画一覧と動画を配信する"
@@ -2494,12 +2520,12 @@
 										 />
 							<s:HGroup paddingLeft="20">
 								<mx:Label text="取得先NNDDのIPアドレス:" toolTip="情報の取得先NNDDが動作するコンピュータのIPアドレスかホスト名を入力します。" />
-								<mx:TextInput id="textInput_remoteNNDDAddress" text="{string_remoteNNDDAddress}" />
+								<mx:TextInput id="textInput_remoteNNDDAddress" text="{string_remoteNNDDAddress}" change="textInput_remoteNNDDAddress_changeHandler(event)" />
 							</s:HGroup>
 							<s:HGroup columnWidth="50" paddingLeft="20">
 								<mx:Label text="取得先NNDDのポート番号:" toolTip="情報の取得先NNDDが待ち受けるポート番号を入力します。"/>
 								<mx:TextInput id="textInput_remoteNNDDPort" width="70"
-											  text="{string_remoteNNDDPort}"/>
+											  text="{string_remoteNNDDPort}" change="textInput_remoteNNDDPort_changeHandler(event)"/>
 							</s:HGroup>
 						</s:VGroup>
 					</s:VGroup>

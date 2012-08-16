@@ -12,6 +12,9 @@ package org.mineap.nndd.player
 		private var players:Vector.<PlayerController> = new Vector.<PlayerController>();
 		
 		private static const _playerManager:PlayerManager = new PlayerManager();
+		private var searchNNDDServerVideo:Boolean;
+		private var nnddServerAddress:String;
+		private var nnddServerPortNum:int;
 		
 		
 		public function PlayerManager()
@@ -70,6 +73,7 @@ package org.mineap.nndd.player
 				playerController.open();
 				
 				players.push(playerController);
+				updateNNDDServerSetting(searchNNDDServerVideo, nnddServerAddress, nnddServerPortNum);
 			}
 			else
 			{
@@ -79,6 +83,7 @@ package org.mineap.nndd.player
 					playerController.open();
 					
 					players.push(playerController);
+					updateNNDDServerSetting(searchNNDDServerVideo, nnddServerAddress, nnddServerPortNum);
 				}
 			}
 			
@@ -124,6 +129,7 @@ package org.mineap.nndd.player
 				player.open();
 				
 				players.push(player);
+				updateNNDDServerSetting(searchNNDDServerVideo, nnddServerAddress, nnddServerPortNum);
 			}
 			return player;
 		}
@@ -267,6 +273,28 @@ package org.mineap.nndd.player
 				}
 			}
 			return false;
+		}
+		
+		/**
+		 * 
+		 * @param enable
+		 * @param address
+		 * @param port
+		 * @return 
+		 * 
+		 */
+		public function updateNNDDServerSetting(enable:Boolean, address:String, port:int):void
+		{
+			this.searchNNDDServerVideo = enable;
+			this.nnddServerAddress = address;
+			this.nnddServerPortNum = port;
+			
+			for each(var player:PlayerController in players)
+			{
+				player.searchNNDDServerVideo = enable;
+				player.nnddServerAddress = address;
+				player.nnddServerPortNum = port;
+			}
 		}
 	}
 }

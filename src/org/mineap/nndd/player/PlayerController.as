@@ -154,7 +154,11 @@ package org.mineap.nndd.player
 		public var _isEconomyMode:Boolean = false;
 		
 		public var videoPlaying:Boolean = false;
-		
+
+		public var searchNNDDServerVideo:Boolean = false;
+		public var nnddServerAddress:String = null;
+		public var nnddServerPortNum:int = -1;
+
 		private var renewDownloadManager:RenewDownloadManager;
 		private var nnddDownloaderForStreaming:NNDDDownloader;
 		private var playerHistoryManager:PlayerHistoryManager;
@@ -3994,7 +3998,7 @@ package org.mineap.nndd.player
 							this.init(url, PlayerController.WINDOW_TYPE_FLV, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
 						}
 					}
-				}else if(url.match(new RegExp("http://smile")) != null){
+				}else if(url.match(new RegExp("http://smile")) != null || url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null){
 					
 					/* ストリーミング再生(接続先動画サーバがわかっている時) */
 					
@@ -4091,6 +4095,9 @@ package org.mineap.nndd.player
 						}
 						
 						nnddDownloaderForStreaming = new NNDDDownloader();
+						nnddDownloaderForStreaming._isEnableGetVideoFromOtherNNDDServer = searchNNDDServerVideo;
+						nnddDownloaderForStreaming._otherNNDDServerAddress = nnddServerAddress;
+						nnddDownloaderForStreaming._otherNNDDServerPort = nnddServerPortNum;
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function(event:Event):void{
 							playMovie((event.target as NNDDDownloader).streamingUrl, playList, playListIndex, (event.target as NNDDDownloader).nicoVideoName, nnddDownloaderForStreaming.isEconomyMode);
 							removeStreamingPlayHandler(event);

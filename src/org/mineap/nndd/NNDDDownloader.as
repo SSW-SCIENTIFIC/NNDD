@@ -110,10 +110,11 @@ package org.mineap.nndd
 		private var _useOldType:Boolean = false;
 		private var _isRedirected:Boolean = false;
 		
-		private var _isEnableGetVideoFromOtherNNDDServer:Boolean = false;
-		private var _otherNNDDServerAddress:String = null;
-		private var _otherNNDDServerPort:int = -1;
+		public var _isEnableGetVideoFromOtherNNDDServer:Boolean = false;
+		public var _otherNNDDServerAddress:String = null;
+		public var _otherNNDDServerPort:int = -1;
 		private var _isNNDDServerReady:Boolean = false;
+		private var _nnddServerVideoUrl:String = null;
 		
 		/**
 		 * ログイン処理を開始したときに、typeプロパティがこの定数に設定されたEventが発行されます。 
@@ -1442,16 +1443,14 @@ package org.mineap.nndd
 			
 		}
 		
-		private function createNNDDServerRequest(isTest:Boolean = false):URLRequest
+		private function createNNDDServerRequest():URLRequest
 		{
 			var request:URLRequest = new URLRequest("http://" + this._otherNNDDServerAddress + ":" + this._otherNNDDServerPort + "/NNDDServer") ;
 			request.method = "POST";
 			
 			var reqXML:XML = <nnddRequest />;
-			reqXML.@type = RequestType.GET_VIDEO_BY_ID;
+			reqXML.@type = RequestType.GET_VIDEO_BY_ID.typeStr;
 			reqXML.video.@id = this._videoId;
-			reqXML.video.@isTest = isTest;
-			
 			
 			request.data = reqXML.toXMLString();
 			
@@ -1466,7 +1465,7 @@ package org.mineap.nndd
 			if (this._isEnableGetVideoFromOtherNNDDServer && !this._isAlwaysEconomy)
 			{
 				
-				var request:URLRequest = createNNDDServerRequest(true);
+				var request:URLRequest = createNNDDServerRequest();
 				
 				this._otherNNDDInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
 				{
@@ -1481,10 +1480,11 @@ package org.mineap.nndd
 					
 					trace(resXML);
 					
-					if (resXML.video != null)
+					if (resXML.video.@videoUrl != null && resXML.video.@videoUrl != undefined)
 					{
 						// サーバが動画を持っている
 						_isNNDDServerReady = true;
+						_nnddServerVideoUrl = resXML.video.@videoUrl;
 					}
 					
 					LogManager.instance.addLog("\t" + "REMOTE_NNDD_SERVER_ACCESS_SUCCESS" + ":" + request.url);
@@ -1513,7 +1513,7 @@ package org.mineap.nndd
 			
 			function startInnner():void
 			{
-				if(!this._isVideoNotDownload){
+				if(!_isVideoNotDownload){
 					getVideoForDownload();
 				}else{
 					getVideoForStreaming();	
@@ -1597,21 +1597,20 @@ package org.mineap.nndd
 				oldFile.moveToTrash();
 			}
 			
-			var videoGetReq:URLRequest = new URLRequest(analyzer.url);
+			var videoUrl:String = analyzer.url;
 			
 			if (this._isNNDDServerReady)
 			{
-				videoGetReq = createNNDDServerRequest();
+				videoUrl = _nnddServerVideoUrl;
 			}
 			
-			LogManager.instance.addLog("動画のDLを開始:DL先=" + videoGetReq.url);
+			LogManager.instance.addLog("動画のDLを開始:DL先=" + videoUrl);
 			
 			trace(VIDEO_GET_START + ":" + this._videoId);
 			LogManager.instance.addLog(VIDEO_GET_START + ":" + this._videoId);
 			dispatchEvent(new Event(VIDEO_GET_START));
 			
-//			this._videoStream.getVideoStart(videoURL);
-			this._videoStream.getVideoStartByRequest(videoGetReq);
+			this._videoStream.getVideoStart(videoUrl);
 		}
 		
 		/**
@@ -1645,6 +1644,11 @@ package org.mineap.nndd
 				
 				trace(VideoLoader.VIDEO_URL_GET_SUCCESS + ":" + event);
 				_streamingUrl = (event.target as VideoLoader).videoUrl;
+				
+				if (_isNNDDServerReady)
+				{
+					_streamingUrl = _nnddServerVideoUrl;
+				}
 				
 				LogManager.instance.addLog("ストリーム再生用のURL:" + _streamingUrl);
 				

@@ -548,6 +548,7 @@ public function initNNDD(nndd:NNDD):void
 	this.addElement(thumbImageView);
 	
 	
+	PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 	if(this.isOpenPlayerOnBoot && !this.isEnableNativePlayer)
 	{
 //		PlayerManager.instance.getLastPlayerController();
@@ -564,6 +565,7 @@ public function initNNDD(nndd:NNDD):void
 		
 		ServerManager.instance.startServer(port);
 	}
+	
 }
 
 public function myListStatusRenew(loaded:Number, total:Number, myListId:String):void{
