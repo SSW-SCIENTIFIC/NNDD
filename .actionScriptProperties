@@ -10,6 +10,7 @@
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
       <libraryPathEntry kind="3" linkType="1" path="/nicovideo4as/bin/nicovideo4as.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/airhttpd/bin/airhttpd.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
