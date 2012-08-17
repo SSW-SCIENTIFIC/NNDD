@@ -1075,12 +1075,12 @@ package org.mineap.nndd.myList
 				
 				if (!updatePlayed(videoIds, xml, isPlayed))
 				{
-					_logManager.addLog(videoId + "は isPlayed = " + isPlayed + " に設定済(" + type.toString() + ":" + myListId + ")" );
+					_logManager.addLog(str + "は isPlayed = " + isPlayed + " に設定済(" + type.toString() + ":" + myListId + ")" );
 					return;
 				}
 				saveMyList(myListId, type, xml, false);
 				
-				_logManager.addLog(videoId + "を isPlayed = " + isPlayed + " に設定(" + type.toString() + ":" + myListId + ")" );
+				_logManager.addLog(str + "を isPlayed = " + isPlayed + " に設定(" + type.toString() + ":" + myListId + ")" );
 				
 			}
 			

@@ -6661,6 +6661,9 @@ private function myListRenewButtonClicked(event:Event, addMode:Boolean = false):
 				loading.start(360/12);
 				
 				this._nnddMyListLoader = new NNDDMyListLoader();
+				this._nnddMyListLoader.enableNNDDServer = allowGetOtherNNDDInfo;
+				this._nnddMyListLoader.nnddServerAddress = string_remoteNNDDAddress;
+				this._nnddMyListLoader.nnddServerPort = int(string_remoteNNDDPort);
 				this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, function(myevent:Event):void{
 		
 					var type:RssType = RssType.MY_LIST;
