@@ -18,6 +18,7 @@ package org.mineap.nndd
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.myList.MyListManager;
+	import org.mineap.nndd.server.RequestType;
 	import org.mineap.nndd.util.LibraryUtil;
 
 	[Event(name="loginSuccess", type="NNDDMyListLoader")]
@@ -255,6 +256,7 @@ package org.mineap.nndd
 				});
 				
 				var reqXml:XML = <nnddRequest />;
+				reqXml.@type = RequestType.GET_MYLIST_BY_ID.typeStr;
 				reqXml.rss.@rssType = type.toString();
 				reqXml.rss.@id = id;
 				
