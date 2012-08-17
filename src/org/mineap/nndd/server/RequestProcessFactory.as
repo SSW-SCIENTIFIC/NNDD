@@ -43,19 +43,31 @@ package org.mineap.nndd.server
 			
 			if (type.indexOf(RequestType.GET_MYLIST_LIST.typeStr) != -1)
 			{
-				return new GetMyListProcess();
+				if (ServerManager.instance.allowMyList)
+				{
+					return new GetMyListProcess();
+				}
 			}
 			else if (type.indexOf(RequestType.GET_MYLIST_BY_ID.typeStr) != -1)
 			{
-				return new GetMyListByIdProcess();
+				if (ServerManager.instance.allowMyList)
+				{
+					return new GetMyListByIdProcess();
+				}
 			}
 			else if (type.indexOf(RequestType.GET_VIDEO_ID_LIST.typeStr) != -1)
 			{
-				return new GetVideoIdListProcess();
+				if (ServerManager.instance.allowVideo)
+				{
+					return new GetVideoIdListProcess();
+				}
 			}
 			else if (type.indexOf(RequestType.GET_VIDEO_BY_ID.typeStr) != -1)
 			{
-				return new GetVideoByIdProcess();
+				if (ServerManager.instance.allowVideo)
+				{
+					return new GetVideoByIdProcess();
+				}
 			}
 			else
 			{

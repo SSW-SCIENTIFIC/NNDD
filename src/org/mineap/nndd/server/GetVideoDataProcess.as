@@ -16,6 +16,11 @@ package org.mineap.nndd.server
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.NNDDVideo;
 	
+	/**
+	 * 
+	 * @author shiraminekeisuke
+	 * 
+	 */
 	public class GetVideoDataProcess 
 	{
 		
@@ -73,8 +78,6 @@ package org.mineap.nndd.server
 			var fileStream:FileStream = new FileStream();
 			try 
 			{
-				// TODO でかい動画(50MBとか)を同期で読み込むとGUIスレッドが止まるのでなんとかしたい
-				// でもこのprocess()がreturnするとレスポンスが返っちゃうので要検討。
 				
 				fileStream.addEventListener(Event.COMPLETE, fileInputCompleteHandler);
 				fileStream.addEventListener(IOErrorEvent.IO_ERROR, fileInputIOErrorHandler);
@@ -160,7 +163,7 @@ package org.mineap.nndd.server
 		protected function fileInputCompleteHandler(event:Event):void
 		{
 			trace(event);
-			LogManager.instance.addLog("動画の配信を完了");
+			LogManager.instance.addLog("動画の配信を完了:" + httpResponse.httpRequest.path);
 			
 			var fileStream:FileStream = (event.currentTarget as FileStream);
 			

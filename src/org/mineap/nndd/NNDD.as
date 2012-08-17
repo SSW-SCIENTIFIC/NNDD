@@ -217,6 +217,8 @@ private var enableShareMyListInfo:Boolean = false;
 
 private var allowGetOtherNNDDInfo:Boolean = false;
 
+private var enableSyncMyListYetPlay:Boolean = false;
+
 private var period:int = 0;
 private var target:int = 0;
 
@@ -465,6 +467,7 @@ public function initNNDD(nndd:NNDD):void
 		renewMyListUnPlayCount();
 	}
 	
+	MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 	MyListRenewScheduler.instance.addEventListener(Event.COMPLETE, function(event:Event):void{
 		renewMyListUnPlayCount();
 		var date:Date = new Date();
@@ -563,7 +566,7 @@ public function initNNDD(nndd:NNDD):void
 			port = int(string_localPort);
 		}
 		
-		ServerManager.instance.startServer(port);
+		ServerManager.instance.startServer(port, enableShareVideoInfo, enableShareMyListInfo, enableSyncMyListYetPlay);
 	}
 	
 }
@@ -2440,6 +2443,12 @@ private function readStore(isLogout:Boolean = false):void{
 		if (confValue != null)
 		{
 			this.allowGetOtherNNDDInfo = ConfUtil.parseBoolean(confValue);
+		}
+		errorName = "enableSyncMyListYetPlay";
+		confValue = ConfigManager.getInstance().getItem("enableSyncMyListYetPlay");
+		if (confValue != null)
+		{
+			this.enableSyncMyListYetPlay = ConfUtil.parseBoolean(confValue);
 		}
 		
 		errorName = "localPort";
@@ -4814,6 +4823,9 @@ private function saveStore():void{
 		
 		ConfigManager.getInstance().removeItem("allowGetOtherNNDDInfo");
 		ConfigManager.getInstance().setItem("allowGetOtherNNDDInfo", this.allowGetOtherNNDDInfo);
+		
+		ConfigManager.getInstance().removeItem("enableSyncMyListYetPlay");
+		ConfigManager.getInstance().setItem("enableSyncMyListYetPlay", this.enableSyncMyListYetPlay);
 		
 		ConfigManager.getInstance().removeItem("localPort");
 		if (this.string_localPort != null) 

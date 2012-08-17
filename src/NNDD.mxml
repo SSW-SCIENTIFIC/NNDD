@@ -1470,6 +1470,7 @@
 				checkbox_enableShareVideoInfo.selected = enableShareVideoInfo;
 				checkbox_enableShareMyListInfo.selected = enableShareMyListInfo;
 				checkbox_allowGetOtherNNDDInfo.selected = allowGetOtherNNDDInfo;
+				checkbox_enableSyncMyListYetPlay.selected = enableSyncMyListYetPlay;
 				
 				textInput_localPort.text = string_localPort;
 				textInput_remoteNNDDAddress.text = string_remoteNNDDAddress;
@@ -1488,7 +1489,7 @@
 				if (allowOtherNNDDConnection)
 				{
 					// サーバを起動
-					if (!ServerManager.instance.startServer(localPort))
+					if (!ServerManager.instance.startServer(localPort, enableShareVideoInfo, enableShareMyListInfo, enableSyncMyListYetPlay))
 					{
 						ServerManager.instance.stopServer();
 						
@@ -1509,17 +1510,26 @@
 			protected function checkbox_enableShareVideoInfo_changeHandler(event:Event):void
 			{
 				enableShareVideoInfo = checkbox_enableShareVideoInfo.selected;
+				ServerManager.instance.allowVideo = enableShareVideoInfo;
 			}
 			
 			protected function checkbox_enableShareMyListInfo_changeHandler(event:Event):void
 			{
 				enableShareMyListInfo = checkbox_enableShareMyListInfo.selected;
+				ServerManager.instance.allowMyList = enableShareMyListInfo;
+			}
+			
+			protected function checkbox_enableSyncMyListYetPlay_changeHandler(event:Event):void
+			{
+				enableSyncMyListYetPlay = checkbox_enableSyncMyListYetPlay.selected;
+				ServerManager.instance.allowSyncMyListYetPlay = enableSyncMyListYetPlay;
 			}
 			
 			protected function checkbox_allowGetOtherNNDDInfo_changeHandler(event:Event):void
 			{
 				allowGetOtherNNDDInfo = checkbox_allowGetOtherNNDDInfo.selected;
 				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+				MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 				
 				if (allowGetOtherNNDDInfo)
 				{
@@ -1533,6 +1543,7 @@
 					});
 					loader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
 					{
+						trace("IOエラー:" + event);
 						Alert.show("指定されたアドレスのNNDDに接続できません。よろしいですか？", Message.M_MESSAGE, Alert.OK | Alert.CANCEL, null, function(event:CloseEvent):void
 						{
 							if (event.detail == Alert.CANCEL)
@@ -1540,6 +1551,7 @@
 								allowGetOtherNNDDInfo = false;
 								checkbox_allowGetOtherNNDDInfo.selected = false;
 								PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+								MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 							}
 						});
 					});
@@ -1551,18 +1563,21 @@
 			{
 				string_localPort = textInput_localPort.text;
 				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+				MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 			}
 			
 			protected function textInput_remoteNNDDAddress_changeHandler(event:Event):void
 			{
 				string_remoteNNDDAddress = textInput_remoteNNDDAddress.text;
 				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+				MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 			}
 			
 			protected function textInput_remoteNNDDPort_changeHandler(event:Event):void
 			{
 				string_remoteNNDDPort = textInput_remoteNNDDPort.text;
 				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+				MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 			}
 			
 		]]>
@@ -2509,6 +2524,12 @@
 										 paddingLeft="20" selected="false"
 										 change="checkbox_enableShareMyListInfo_changeHandler(event)"
 										 toolTip="他のNNDDに対してこのNNDDのマイリスト一覧とマイリスト視聴済み情報を提供します。"/>
+							<mx:CheckBox id="checkbox_enableSyncMyListYetPlay"
+										 label="マイリストの視聴済み判定を同期する"
+										 enabled="{checkbox_enableShareMyListInfo.selected}"
+										 paddingLeft="40" selected="false"
+										 change="checkbox_enableSyncMyListYetPlay_changeHandler(event)"
+										 toolTip="他のNNDDの視聴済み判定をこのNNDDに同期します"/>
 							
 						</s:VGroup>
 						<mx:HRule width="100%" height="20" />

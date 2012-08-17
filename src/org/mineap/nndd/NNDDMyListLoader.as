@@ -7,6 +7,7 @@ package org.mineap.nndd
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	import org.mineap.nicovideo4as.Login;
 	import org.mineap.nicovideo4as.loader.ChannelLoader;
@@ -14,6 +15,10 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.loader.UserVideoListLoader;
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
+	import org.mineap.nndd.model.NNDDVideo;
+	import org.mineap.nndd.model.RssType;
+	import org.mineap.nndd.myList.MyListManager;
+	import org.mineap.nndd.util.LibraryUtil;
 
 	[Event(name="loginSuccess", type="NNDDMyListLoader")]
 	[Event(name="loginFail", type="NNDDMyListLoader")]
@@ -38,11 +43,17 @@ package org.mineap.nndd
 		private var _publicMyListLoader:PublicMyListLoader;
 		private var _userVideoListLoader:UserVideoListLoader;
 		
+		private var _nnddServerUrlLoader:URLLoader;
+		
 		private var _libraryManager:ILibraryManager;
 		
 		private var _myListId:String;
 		private var _channelId:String;
 		private var _uploadUserId:String;
+		
+		public var enableNNDDServer:Boolean = false;
+		public var nnddServerAddress:String = null;
+		public var nnddServerPort:int = -1;
 		
 		private var _xml:XML;
 		
@@ -177,8 +188,107 @@ package org.mineap.nndd
 			trace(LOGIN_SUCCESS + ":" + event);
 			dispatchEvent(new Event(LOGIN_SUCCESS));
 			
+			if (enableNNDDServer)
+			{
+				
+				var type:RssType = null;
+				var id:String = null;
+				if (this._myListId != null)
+				{
+					id = this._myListId;
+					type = RssType.MY_LIST;	
+				}
+				else if (this._channelId != null)
+				{
+					id = this._channelId;
+					type = RssType.CHANNEL;
+				}
+				else if (this._uploadUserId != null)
+				{
+					id = this._uploadUserId;
+					type = RssType.USER_UPLOAD_VIDEO;
+				}
+				
+				_nnddServerUrlLoader = new URLLoader();
+				
+				_nnddServerUrlLoader.addEventListener(Event.COMPLETE, function(event:Event):void
+				{
+					_nnddServerUrlLoader.close();
+					
+					try {
+						if (_nnddServerUrlLoader.data != null) {
+							
+							var resXml:XML = new XML(_nnddServerUrlLoader.data);
+							
+							var videoIds:Vector.<String> = new Vector.<String>();
+							for each(var item:XML in resXml.channel.item)
+							{
+								if ("true" == item.played.text())
+								{
+									var videoId:String = LibraryUtil.getVideoKey(item.link.text());
+									if (videoId != null)
+									{
+										videoIds.push(videoId);
+									}
+								}
+							}
+							
+							LogManager.instance.addLog("NNDDServerから取得したマイリスト情報をもとに、" + videoIds.length + "件の動画を視聴済みに設定(id:" + id + ", type:" + type);
+							MyListManager.instance.updatePlayedAndSave(id, type, videoIds, true);
+							
+						}
+					} catch (error:Error)
+					{
+						trace(error.getStackTrace());	
+					}
+					
+					loadRss();
+				});
+				_nnddServerUrlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void
+				{
+					_nnddServerUrlLoader.close();
+					
+					trace(event);
+					LogManager.instance.addLog("NNDDServerからマイリスト情報を取得しようとしましたが失敗しました:" + event);
+					
+					loadRss();
+				});
+				
+				var reqXml:XML = <nnddRequest />;
+				reqXml.rss.@rssType = type.toString();
+				reqXml.rss.@id = id;
+				
+				var videos:Vector.<NNDDVideo> = MyListManager.instance.readLocalMyListByNNDDVideo(id, type);
+				for each(var video:NNDDVideo in videos)
+				{
+					if (video.yetReading)
+					{
+						var videoXml:XML = <video />;
+						videoXml.@id = video.key;
+						videoXml.@played = video.yetReading;
+						reqXml.rss.appendChild(videoXml);
+					}
+				}
+				
+				var urlRequest:URLRequest = new URLRequest("http://" + nnddServerAddress + ":" + nnddServerPort + "/NNDDServer");
+				urlRequest.method = "POST";
+				urlRequest.data = reqXml.toXMLString();
+				
+				LogManager.instance.addLog("NNDDServerからマイリスト情報を取得します:" + urlRequest.url);
+				
+				_nnddServerUrlLoader.load(urlRequest);
+				
+			}
+			else
+			{
+				loadRss();
+			}
 			
-			if (_myListId != null)
+		}
+		
+		protected function loadRss():void
+		{
+			if (this._myListId != null)
 			{
 				this._publicMyListLoader = new PublicMyListLoader();
 				this._publicMyListLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
@@ -187,7 +297,7 @@ package org.mineap.nndd
 				
 				this._publicMyListLoader.getMyList(this._myListId);
 			}
-			else if (_channelId != null)
+			else if (this._channelId != null)
 			{
 				this._channelLoader = new ChannelLoader();
 				this._channelLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
@@ -196,7 +306,7 @@ package org.mineap.nndd
 				
 				this._channelLoader.getChannel(this._channelId);
 			}
-			else if (_uploadUserId != null)
+			else if (this._uploadUserId != null)
 			{
 				this._userVideoListLoader = new UserVideoListLoader();
 				this._userVideoListLoader.addEventListener(Event.COMPLETE, getXMLSuccess);

@@ -6,6 +6,7 @@ package org.mineap.nndd.server.process
 	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.myList.MyListManager;
 	import org.mineap.nndd.server.IRequestProcess;
+	import org.mineap.nndd.server.ServerManager;
 	
 	/**
 	 * ID指定のマイリスト取得処理が呼ばれたときの処理
@@ -26,9 +27,24 @@ package org.mineap.nndd.server.process
 			var rssTypeStr:String = requestXml.rss.@rssType;
 			var rssId:String = requestXml.rss.@id;
 			
-			var rssType:RssType = RssType.convertStrToRssType(rssTypeStr);
-			var xml:XML = MyListManager.instance.readLocalMyList(rssId, rssType);
+			// 再生済みにセットされた動画があれば取得
+			var playedVideoIds:Vector.<String> = new Vector.<String>();
+			for each (var videoXML:XML in requestXml.rss.video)
+			{
+				if ("true" == videoXML.@played)
+				{
+					playedVideoIds.push(videoXML.@id);
+				}
+			}
 			
+			var rssType:RssType = RssType.convertStrToRssType(rssTypeStr);
+			
+			if (playedVideoIds.length > 0 && ServerManager.instance.allowSyncMyListYetPlay)
+			{
+				MyListManager.instance.updatePlayedAndSave(rssId, rssType, playedVideoIds, true);
+			}
+			
+			var xml:XML = MyListManager.instance.readLocalMyList(rssId, rssType);
 			
 			if (xml != null)
 			{

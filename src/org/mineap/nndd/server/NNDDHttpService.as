@@ -51,20 +51,28 @@ package org.mineap.nndd.server
 				}
 				else if (request.path.indexOf("/NNDDServer/") == 0 && request.path.length > 13)
 				{
-					var getVideoData:GetVideoDataProcess = new GetVideoDataProcess();
 					
-					var lastIndex:int = request.path.lastIndexOf("/");
-					
-					if (lastIndex < 10) 
+					if (ServerManager.instance.allowVideo)
+					{
+						var getVideoData:GetVideoDataProcess = new GetVideoDataProcess();
+						
+						var lastIndex:int = request.path.lastIndexOf("/");
+						
+						if (lastIndex < 10) 
+						{
+							response.statusCode = 404;
+							return;
+						}
+						
+						var videoId:String = request.path.substring(lastIndex+1);
+						
+						getVideoData.process(videoId, response);
+					}
+					else
 					{
 						response.statusCode = 404;
 						return;
 					}
-					
-					var videoId:String = request.path.substring(lastIndex+1);
-					
-					getVideoData.process(videoId, response);
-				
 				}
 				else
 				{

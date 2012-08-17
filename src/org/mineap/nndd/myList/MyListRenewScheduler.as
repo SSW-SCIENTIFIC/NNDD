@@ -80,6 +80,10 @@ package org.mineap.nndd.myList
 		 */
 		private var _delayOfMylist:int = 1000;
 		
+		private var enableNNDDServerAccess:Boolean = false;
+		private var nnddServerAddress:String;
+		private var nnddServerPort:int;
+		
 		/**
 		 * 
 		 * @param mailAddress
@@ -296,6 +300,10 @@ package org.mineap.nndd.myList
 				
 				dispatchEvent(new MyListRenewProgressEvent(MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS, false, false, this._index+1, this._myLists.length, myListStr));
 				
+				nnddMyListLoader.enableNNDDServer = enableNNDDServerAccess;
+				nnddMyListLoader.nnddServerAddress = nnddServerAddress;
+				nnddMyListLoader.nnddServerPort = nnddServerPort;
+				
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, myListGetComplete);
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
 				nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
@@ -380,6 +388,19 @@ package org.mineap.nndd.myList
 			_delayOfMylist = value;
 		}
 
+		/**
+		 * 
+		 * @param enableNNDDServerAccess
+		 * @param nnddServerAddress
+		 * @param nnddServerPort
+		 * 
+		 */
+		public function updateNNDDServerAccessSetting(enableNNDDServerAccess:Boolean, nnddServerAddress:String, nnddServerPort:int):void
+		{
+			this.enableNNDDServerAccess = enableNNDDServerAccess;
+			this.nnddServerAddress = nnddServerAddress;
+			this.nnddServerPort = nnddServerPort;
+		}
 		
 	}
 	

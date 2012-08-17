@@ -24,10 +24,12 @@ package org.mineap.nndd.server
 	{
 		
 		private static const manager:ServerManager = new ServerManager();
-		
 
 		private var httpListener:HttpListener = null;
 		
+		private var _allowVideo:Boolean = false;
+		private var _allowMyList:Boolean = false;
+		private var _allowSyncMyListYetPlay:Boolean = false;
 		
 		/**
 		 * 唯一の ServerManager のインスタンスを変えす。
@@ -55,12 +57,18 @@ package org.mineap.nndd.server
 		 * 指定されたポート番号で通信の待ち受けを開始します。
 		 * 
 		 * @param localPort
+		 * @param allowVideo
+		 * @param allowMyList
+		 * @return 
 		 * 
 		 */
-		public function startServer(localPort:int):Boolean
+		public function startServer(localPort:int, allowVideo:Boolean, allowMyList:Boolean, allowSyncMyListYetPlay:Boolean):Boolean
 		{
-			
 			stopServer();
+			
+			this.allowMyList = allowMyList;
+			this.allowVideo = allowVideo;
+			this.allowSyncMyListYetPlay = allowSyncMyListYetPlay;
 			
 			try
 			{
@@ -120,6 +128,37 @@ package org.mineap.nndd.server
 			LogManager.instance.addLog("他のNNDDからの通信待ち受けを停止");
 			
 		}
+
+		public function get allowVideo():Boolean
+		{
+			return _allowVideo;
+		}
+
+		public function set allowVideo(value:Boolean):void
+		{
+			_allowVideo = value;
+		}
+
+		public function get allowMyList():Boolean
+		{
+			return _allowMyList;
+		}
+
+		public function set allowMyList(value:Boolean):void
+		{
+			_allowMyList = value;
+		}
+
+		public function get allowSyncMyListYetPlay():Boolean
+		{
+			return _allowSyncMyListYetPlay;
+		}
+
+		public function set allowSyncMyListYetPlay(value:Boolean):void
+		{
+			_allowSyncMyListYetPlay = value;
+		}
+
 		
 	}
 }
