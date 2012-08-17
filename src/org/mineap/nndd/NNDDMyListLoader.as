@@ -224,7 +224,7 @@ package org.mineap.nndd
 							var videoIds:Vector.<String> = new Vector.<String>();
 							for each(var item:XML in resXml.channel.item)
 							{
-								if ("true" == item.played.text())
+								if ("true" == String(item.played.text()))
 								{
 									var videoId:String = LibraryUtil.getVideoKey(item.link.text());
 									if (videoId != null)
@@ -234,7 +234,7 @@ package org.mineap.nndd
 								}
 							}
 							
-							LogManager.instance.addLog("NNDDServerから取得したマイリスト情報をもとに、" + videoIds.length + "件の動画を視聴済みに設定(id:" + id + ", type:" + type);
+							LogManager.instance.addLog("NNDDServerから取得したマイリスト情報をもとに、" + videoIds.length + "件の動画を視聴済みに設定(id:" + id + ", type:" + type + ")");
 							MyListManager.instance.updatePlayedAndSave(id, type, videoIds, true);
 							
 						}
