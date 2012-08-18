@@ -2562,6 +2562,10 @@ private function onFirstTimeLoginSuccess(event:HTTPStatusEvent):void
 	downloadManager.isSkipEconomy = isSkipEconomy;
 	downloadManager.retryMaxCount = this.downloadRetryMaxCount;
 	scheduleManager = new ScheduleManager(logManager, downloadManager);
+	if (scheduleManager.isScheduleEnable)
+	{
+		scheduleManager.timerStart();
+	}
 	
 	trace("ログインに成功"+event);
 	logManager.addLog("ログイン:" + event);
