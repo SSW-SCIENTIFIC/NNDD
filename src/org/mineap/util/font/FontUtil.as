@@ -69,6 +69,10 @@ package org.mineap.util.font
 			return FlexGlobals.topLevelApplication.getStyle("fontFamily");
 		}
 		
+		public static function get applicationFontSize():int{
+			return FlexGlobals.topLevelApplication.getStyle("fontSize");
+		}
+		
 		/**
 		 * 指定された文字列をFont.fontNameプロパティに持つFontを探して返します。
 		 * 存在しない場合はnullを返します。

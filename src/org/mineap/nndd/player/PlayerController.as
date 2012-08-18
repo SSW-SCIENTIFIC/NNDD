@@ -76,6 +76,7 @@ package org.mineap.nndd.player
 	import org.mineap.util.config.ConfUtil;
 	import org.mineap.util.config.ConfigIO;
 	import org.mineap.util.config.ConfigManager;
+	import org.mineap.util.font.FontUtil;
 	import org.osmf.events.LoadEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.TimeEvent;
@@ -250,6 +251,8 @@ package org.mineap.nndd.player
 			this.videoPlayer.init(this, videoInfoView, logManager);
 			this.videoInfoView.init(this, videoPlayer, logManager);
 			this.videoPlayer.addEventListener(AIREvent.WINDOW_COMPLETE, function():void{
+				setFont(FontUtil.applicationFont);
+				setFontSize(FontUtil.applicationFontSize);
 				videoInfoView.activate();
 				videoPlayer.activate();
 			});
