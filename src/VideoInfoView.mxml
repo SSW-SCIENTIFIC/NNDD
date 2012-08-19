@@ -298,22 +298,28 @@
 
 	<fx:Script source="org/mineap/nndd/view/VideoInfoView.as" />
 	
-	<mx:Canvas left="5" top="2" width="90" height="70" backgroundColor="#969696"
-			   contentBackgroundColor="#969696" dropShadowVisible="false">
-		<view:SmoothImage id="image_thumbImg" width="88" height="68" click="button_goToWebClicked(event)"
-				  creationComplete="image_thumbImg_creationCompleteHandler(event)" enabled="true"
-				  left="1" top="1" scaleContent="true" toolTip="クリックするとブラウザで動画を再生します"/>
-	</mx:Canvas>
+	<s:HGroup top="2" right="2" left="2">
+		<mx:Canvas width="90" height="70" backgroundColor="#969696" id="canvas_img"
+				   contentBackgroundColor="#969696" dropShadowVisible="false">
+			<view:SmoothImage id="image_thumbImg" width="88" height="68" click="button_goToWebClicked(event)"
+							  creationComplete="image_thumbImg_creationCompleteHandler(event)" enabled="true"
+							  left="1" top="1" scaleContent="true" toolTip="クリックするとブラウザで動画を再生します"/>
+		</mx:Canvas>
+		<s:VGroup>
+			<mx:Text id="text_info" minHeight="50" />
+		</s:VGroup>
+	</s:HGroup>
 	
-	<mx:Text id="text_info" left="100" top="2" height="55"/>
-	
-	<mx:ComboBox left="100" top="53" right="128" id="comboBox_mylist" dataProvider="{myListDataProvider}" close="comboBox_mylist_closeHandler(event)" height="20"></mx:ComboBox>
-	<mx:Button id="button_mylist" right="74" top="53" width="50" height="20" label="追加"
-			   click="myListAddButtonClicked(event)" toolTip="ニコニコ動画のマイリストに動画を追加します"/>
-	<mx:VRule width="12" height="20" top="53" right="58"/>
-	
-	<mx:Button id="button_download" right="5" top="53" width="50" height="20" label="DL"
-			   click="button_addDownloadList(event)" toolTip="ダウンロードリストに動画を追加します"/>
+	<s:HGroup top="{text_info.height + text_info.top + 2}" left="{canvas_img.width + 5}" right="2">
+		<mx:ComboBox id="comboBox_mylist" dataProvider="{myListDataProvider}" 
+					 close="comboBox_mylist_closeHandler(event)" height="20" width="100%">
+		</mx:ComboBox>
+		<mx:Button id="button_mylist" width="50" height="20" label="追加"
+				   click="myListAddButtonClicked(event)" toolTip="ニコニコ動画のマイリストに動画を追加します"/>
+		<mx:VRule width="5" height="20"/>
+		<mx:Button id="button_download" width="50" height="20" label="DL"
+				   click="button_addDownloadList(event)" toolTip="ダウンロードリストに動画を追加します"/>
+	</s:HGroup>
 	
 	<mx:Label top="75" left="5" right="5" id="label_deletedInfo" visible="false" color="0xff0000"/>
 	
