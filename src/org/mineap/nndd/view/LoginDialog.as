@@ -35,8 +35,6 @@ public static var LABEL_CANCEL:String = "キャンセル";
 public static var LABEL_LOGIN:String = "ログイン";
 public static var LABEL_NO_LOGIN:String = "ログインしない";
 
-private var userName:String;
-private var password:String;
 private var isStore:Boolean;
 private var isAutoLogin:Boolean;
 private var isLogout:Boolean;
@@ -46,6 +44,13 @@ private var logManager:LogManager;
 private var _login:Login = null;
 
 private var loading:LoadingPicture = new LoadingPicture();
+
+
+[Bindable]
+private var userName:String;
+[Bindable]
+private var password:String;
+
 
 public function initLoginDialog(topURL:String, loginURL:String, isStore:Boolean, isAutoLogin:Boolean, logManager:LogManager, userName:String = "", password:String = "", isLogout:Boolean = false):void
 {
@@ -67,8 +72,6 @@ public function initLoginDialog(topURL:String, loginURL:String, isStore:Boolean,
 }
 
 public function creationCompleteEventHandler(event:Event):void{
-	textInput_userName.text = this.userName;
-	textInput_password.text = this.password;
 	checkBox_storeUserNameAndPassword.selected = this.isStore;
 	checkbox_autoLogin.selected = this.isAutoLogin;
 	
@@ -80,7 +83,7 @@ public function creationCompleteEventHandler(event:Event):void{
 
 private function enterHandler(event:FlexEvent):void {
 	
-	if(textInput_userName.text.length >= 1 && textInput_password.text.length >= 1){
+	if(this.userName.length >= 1 && this.password.length >= 1){
 		login();
 	}
 	
@@ -93,9 +96,6 @@ private function login():void
 		noLoginButton.enabled = false;
 		loginButton.label = LoginDialog.LABEL_CANCEL;
 	    
-		var mailAddr:String = textInput_userName.text;
-		var pass:String = textInput_password.text;
-		
 		if(_login != null){
 			_login.close();
 		}
@@ -103,7 +103,7 @@ private function login():void
 	    _login = new Login();
 		_login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
 		_login.addEventListener(Login.LOGIN_FAIL, loginFail);
-		_login.login(mailAddr, pass);
+		_login.login(this.userName, this.password);
 		
 	}else if(loginButton.label == LoginDialog.LABEL_CANCEL){
 		noLoginButton.enabled = true;
@@ -133,7 +133,7 @@ private function saveStore():void{
 	
 	if(checkBox_storeUserNameAndPassword.selected){
 		
-		setNameAndPass(textInput_userName.text, textInput_password.text);
+		setNameAndPass(this.userName, this.password);
 		
 		ConfigManager.getInstance().removeItem("storeNameAndPass");
 		ConfigManager.getInstance().setItem("storeNameAndPass", true);

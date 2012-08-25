@@ -27,12 +27,12 @@
 	
 	<s:HGroup top="32" right="10">
 		<mx:Label text="メールアドレス" />
-		<mx:TextInput id="textInput_userName" enter="enterHandler(event)" width="183"/>
+		<mx:TextInput id="textInput_userName" text="{userName}" enter="enterHandler(event)" width="183"/>
 	</s:HGroup>
 	
 	<s:HGroup top="62" right="10">
 		<mx:Label text="パスワード" />
-		<mx:TextInput id="textInput_password" displayAsPassword="true" enter="enterHandler(event)" width="183"/>
+		<mx:TextInput id="textInput_password" text="{password}" displayAsPassword="true" enter="enterHandler(event)" width="183"/>
 	</s:HGroup>
 		
 	
