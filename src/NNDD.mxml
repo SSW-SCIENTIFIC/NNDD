@@ -1341,20 +1341,30 @@
 			
 			protected function donate_clickHandler(event:MouseEvent):void
 			{
+				var url:URLRequest = null;
 				
-				var url:URLRequest = new URLRequest("https://www.paypal.com/cgi-bin/webscr");
-				url.method = URLRequestMethod.POST;
-				
-				var file:File = File.applicationDirectory.resolvePath("donate.txt");
-				var fileStream:FileStream = new FileStream();
-				fileStream.open(file, FileMode.READ);
-				var str:String = fileStream.readUTFBytes(file.size);
-				
-				var v:URLVariables = new URLVariables();
-				v.cmd = "_s-xclick";
-				v.encrypted = str;
-				
-				url.data = v;
+				if (Capabilities.os.toUpperCase().indexOf("WIN") != -1)
+				{
+					url = new URLRequest("http://d.hatena.ne.jp/MineAP/20080730/1217412550");
+				}
+				else
+				{
+					
+					url = new URLRequest("https://www.paypal.com/cgi-bin/webscr");
+					url.method = URLRequestMethod.POST;
+					
+					var file:File = File.applicationDirectory.resolvePath("donate.txt");
+					var fileStream:FileStream = new FileStream();
+					fileStream.open(file, FileMode.READ);
+					var str:String = fileStream.readUTFBytes(file.size);
+					
+					var v:URLVariables = new URLVariables();
+					v.cmd = "_s-xclick";
+					v.encrypted = str;
+					
+					url.data = v;
+					
+				}
 				
 				navigateToURL(url);
 				
@@ -1578,6 +1588,17 @@
 				string_remoteNNDDPort = textInput_remoteNNDDPort.text;
 				PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
 				MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+			}
+			
+			protected function checkBoxIsRowHeightSyncChanged(event:Event):void
+			{
+				isRowHeightSync = checkBox_isRowHeightSync.enabled;
+				
+				if (isRowHeightSync)
+				{
+					setRowHeight(thumbImageSize);
+				}
+				
 			}
 			
 		]]>
@@ -1882,7 +1903,7 @@
 						 nativeDragDrop="dlListDroped(event)">
 						 <!-- dropEnabled="true" dragEnabled="true" horizontalScrollPolicy="on"> -->
 				<mx:columns>
-					<mx:DataGridColumn headerText="サムネイル" width="70" dataField="col_preview" draggable="false">
+					<mx:DataGridColumn headerText="サムネイル" width="70" dataField="col_preview" id="dataGridColumn_thumbDLList" draggable="false">
 						<mx:itemRenderer>
 							<fx:Component><mx:Image width="100%" height="100%" cacheAsBitmap="true" horizontalCenter="0" verticalCenter="0"/></fx:Component>
 						</mx:itemRenderer>
@@ -2337,6 +2358,11 @@
 									 selected="true"
 									 enabled="{checkBox_isDoubleClickOnVideoPlay.selected}"
 									 toolTip="動画を再生する際、DL済の動画があれば優先して再生します。DL済みでない場合はストリーミング再生します。"/>
+						<mx:CheckBox id="checkBox_isRowHeightSync" 
+									 label="各タブで行の高さを同期"
+									 change="checkBoxIsRowHeightSyncChanged(event)"
+									 selected="true"
+									 toolTip="ランキング・検索・マイリストの各画面で、行の高さを共通化します。"/>
 						
 						<mx:HRule width="100%"/>
 						
@@ -2414,7 +2440,7 @@
 					
 					<s:HGroup top="0" left="10" right="10">
 						<mx:Label text="ダウンロードリスト" fontWeight="bold"/>
-						<mx:HRule width="100%" height="19"/>
+						<mx:HRule width="100%" height="20"/>
 					</s:HGroup>
 					
 					<s:VGroup left="30" right="10" top="30">
@@ -2444,8 +2470,8 @@
 									 selected="true"
 									 toolTip="2011/2/3から有効な、新しいコメントのダウンロード方式を使います。再生時間が10分より長い動画で、1000件以上のコメントが取得できるようになります。"/>
 						
-						<s:HGroup left="30" top="115" verticalAlign="middle">
-							<mx:Label paddingLeft="20" text="ダウンロード失敗時の最大リトライ回数"/>
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="ダウンロード失敗時の最大リトライ回数"/>
 							<s:NumericStepper maximum="5" minimum="0" stepSize="1" value="2" id="numStepper_downloadRetryMaxCount"
 											  change="numStepper_downloadRetryMaxCountChanged(event)"
 											  toolTip="ダウンロードに失敗した場合の最大リトライ回数を指定します。あまり大きい数字にすると、ニコニコ動画からアクセス制限を受ける場合があります。"/>

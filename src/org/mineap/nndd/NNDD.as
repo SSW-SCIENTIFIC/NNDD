@@ -219,6 +219,8 @@ private var allowGetOtherNNDDInfo:Boolean = false;
 
 private var enableSyncMyListYetPlay:Boolean = false;
 
+private var isRowHeightSync:Boolean = true;
+
 private var period:int = 0;
 private var target:int = 0;
 
@@ -2470,8 +2472,12 @@ private function readStore(isLogout:Boolean = false):void{
 			this.string_remoteNNDDAddress = String(confValue);
 		}
 		
-		
-		
+		errorName = "isRowHeightSync";
+		confValue = ConfigManager.getInstance().getItem("isRowHeightSync");
+		if (confValue != null)
+		{
+			this.isRowHeightSync = ConfUtil.parseBoolean(confValue);
+		}
 		
 	}catch(error:Error){
 		/* ストアをリセット */
@@ -4849,6 +4855,9 @@ private function saveStore():void{
 			ConfigManager.getInstance().setItem("remoteNNDDPort", this.string_remoteNNDDPort);
 		}		
 		
+		ConfigManager.getInstance().removeItem("isRowHeightSync");
+		ConfigManager.getInstance().setItem("isRowHeightSync", this.isRowHeightSync);
+		
 		
 		ConfigManager.getInstance().save();
 		
@@ -6023,24 +6032,76 @@ private function thumbSizeChanged(event:SliderEvent):void{
 	this.thumbImageSize = event.value;
 	dataGrid_ranking.rowHeight = 55*event.value;
 	dataGridColumn_thumbImage.width = 70*event.value;
+	
+	if (isRowHeightSync)
+	{
+		setRowHeight(thumbImageSize);
+	}
+	
+}
+
+private function setRowHeight(thumbImageSize:Number):void{
+	
+	this.thumbImageSize = thumbImageSize;
+	slider_thumbImageSize.value = thumbImageSize;
+	dataGrid_ranking.rowHeight = 55*thumbImageSize;
+	dataGridColumn_thumbImage.width = 70*thumbImageSize;
+	
+	this.thumbImgSizeForSearch = thumbImageSize;
+	if (dataGrid_search != null) {
+		slider_thumbImageSize_search.value = thumbImageSize;
+		dataGrid_search.rowHeight = 55*thumbImageSize;
+		dataGridColumn_thumbImage_Search.width = 70*thumbImageSize;
+	}
+	
+	this.thumbImgSizeForMyList = thumbImageSize;
+	if (dataGrid_myList != null) {
+		slider_thumbImageSizeForMyList.value = thumbImageSize;
+		dataGrid_myList.rowHeight = 55*thumbImageSize;
+		dataGridColumn_thumbUrl.width = 70*thumbImageSize;
+	}
+	
+	this.thumbImgSizeForDLList = thumbImageSize;
+	if (dataGrid_downloadList != null)
+	{
+		slider_thumbImageSizeForDLList.value = thumbImageSize;
+		dataGrid_downloadList.rowHeight = 55*thumbImageSize;
+		dataGridColumn_thumbDLList.width = 70*thumbImageSize;
+	}
 }
 
 private function thumbSizeChangedForSearch(event:SliderEvent):void{
 	this.thumbImgSizeForSearch = event.value;
 	dataGrid_search.rowHeight = 55*event.value;
 	dataGridColumn_thumbImage_Search.width = 70*event.value;
+	
+	if (isRowHeightSync)
+	{
+		setRowHeight(thumbImgSizeForSearch);
+	}
+	
 }
 
 private function thumbSizeChangedForMyList(event:SliderEvent):void{
 	this.thumbImgSizeForMyList = event.value;
 	dataGrid_myList.rowHeight = 55*event.value;
 	dataGridColumn_thumbUrl.width = 70*event.value;
+	
+	if (isRowHeightSync)
+	{
+		setRowHeight(thumbImgSizeForMyList);
+	}
 }
 
 private function thumbSizeChangedForDLList(event:SliderEvent):void
 {
 	this.thumbImgSizeForDLList = event.value;
 	dataGrid_downloadList.rowHeight = 55*event.value;
+	
+	if (isRowHeightSync)
+	{
+		setRowHeight(thumbImgSizeForDLList);
+	}
 }
 
 private function thumbSizeChangedForLibrary(event:SliderEvent):void{
