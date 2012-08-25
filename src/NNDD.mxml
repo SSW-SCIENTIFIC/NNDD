@@ -2218,168 +2218,195 @@
 						<mx:HRule width="100%" height="21"/>
 					</s:HGroup>
 					
-					<s:HGroup left="30" top="20">
-						<mx:Label text="動画の保存先："/>
-						<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="300" editable="false"/>
-						<mx:Button label="参照..." click="folderSelectButtonClicked(event)" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定した後、ライブラリを更新しなおせば、NNDDのライブラリタブから再生できます。"/>
-						<mx:Button label="開く" click="openLibraryDir(event)" toolTip="NNDDの保存先フォルダを開きます。"/>
-					</s:HGroup>
+					<s:VGroup left="30" right="10" top="30">
 						
-					<mx:CheckBox label="新しくダウンロードした動画を&quot;Downloads&quot;フォルダに保存する" selected="true" id="checkBox_useDownloadDir" click="useDownloadDirCheckBoxChenged()" left="49" top="42" toolTip="新しくダウンロードした動画を、ライブラリの直下ではなく、ライブラリの直下のDownloadsフォルダに保存します。"/>
-					<mx:CheckBox label="動画の保存先にNNDDのシステム情報を保存する(NNDDの再起動後有効)" selected="true" id="checkBox_useLibraryDirForSystemDir" 
-								 click="useAppSystemDirChanged(event)" left="49" top="64" 
-								 toolTip="NNDDのシステム情報(systemフォルダ下に保存される情報)を、動画のDL先に指定されたフォルダの直下に保存します。このチェックボックスをはずすと、システム情報はOSが提供する専用のフォルダに保存します。"/>
-					
-					<s:HGroup left="30" top="86">
-						<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" />
-						<mx:Button label="ライブラリを更新" click="renewLibraryButtonClicked()" 
-								   toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
-					</s:HGroup>
-					<mx:Label text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)" left="48" top="109"/>
-					
-					<mx:HRule left="29" right="11" top="135" height="10"/>
-					
-					<s:HGroup left="29" top="150">
-						<mx:Label text="NNDDのライブラリ情報をインポートする" 
-								  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
-						<mx:Button label="読み込み..." click="importButtonChecked()" 
-								   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
-					</s:HGroup>
-					
-					<mx:CheckBox label="現在のNNDDのライブラリ情報を削除してからインポート" selected="false" id="checkBox_initalize"
-								 left="48" top="172" 
-								 toolTip="現在のNNDDのライブラリ情報を一度削除したあと、ライブラリ情報を読み込みます。このチェックを外してインポートした場合は、現在のNNDDのライブラリ情報に上書きされます。"/>
-					
-					<mx:HRule left="29" right="11" top="195" height="10"/>
-					
-					<s:HGroup left="29" top="212">
-						<mx:Label text="ウィンドウの大きさ・位置をリセットする" />
-						<mx:Button label="リセット" id="button_windowPositionReset" click="windowPositionReset()"/>
-					</s:HGroup>
-					
-					<s:HGroup left="29" top="240">
-						<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()"/>
-						<mx:Button label="今すぐバージョンチェック" click="versionCheck()"/>
-					</s:HGroup>
-					
-					<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" 
-								 toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" 
-								 id="checkBox_DisEnableAutoExit" 
-								 click="disEnableAutoExitCheckBoxChanged(event)" left="29" top="268"/>
-					<mx:CheckBox label="ログインが完了したらこのウィンドウを最小化する" 
-								 id="checkBox_CloseNNDDWindowWhenLogin" 
-								 click="checkBox_CloseNNDDWindowWhenLogin_clickHandler(event)" 
-								 toolTip="ログインが完了したらこのウィンドウを最小化するか、閉じます。"
-								 left="29" top="297"/>
-					
-					<mx:HRule left="29" right="11" top="320" height="8"/>
-					
-					<s:HGroup left="29" top="335">
-						<mx:Label text="アプリケーションで使用するフォント：" />
-						<mx:ComboBox id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
-						<mx:Button label="デフォルト" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
-					</s:HGroup>
-					<mx:Label text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。" left="53" top="358"/>
-					
-					<s:HGroup left="29" top="387">
-						<mx:Label text="フォントのサイズ："/>
-						<mx:ComboBox id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" 
-									 width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
-					</s:HGroup>
-					
-					<mx:HRule left="30" right="10" top="414" height="8"/>
-					
-					<s:HGroup left="30" top="428">
-						<mx:Label text="アプリケーションの設定情報フォルダ：" />
-						<mx:LinkButton height="21"
-									   click="openApplicationSettingInfoDir(event)" color="#0000FF"
-									   creationComplete="linkbutton1_creationCompleteHandler(event)"
-									   textAlign="left" textDecoration="underline"
-									   toolTip="アプリケーションの設定情報フォルダを開きます。"/>
-					</s:HGroup>
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="動画の保存先："/>
+							<mx:TextInput text="NNDD/" id="textInput_saveAdress" width="300" editable="false"/>
+							<mx:Button label="参照..." click="folderSelectButtonClicked(event)" toolTip="ダウンロードした動画の保存先を設定します。既にダウンロード済みの動画がある場合はそのフォルダを指定した後、ライブラリを更新しなおせば、NNDDのライブラリタブから再生できます。"/>
+							<mx:Button label="開く" click="openLibraryDir(event)" toolTip="NNDDの保存先フォルダを開きます。"/>
+						</s:HGroup>
+						
+						<mx:CheckBox id="checkBox_useDownloadDir" 
+									 label="新しくダウンロードした動画を&quot;Downloads&quot;フォルダに保存する"
+									 click="useDownloadDirCheckBoxChenged()" paddingLeft="20"
+									 selected="true"
+									 toolTip="新しくダウンロードした動画を、ライブラリの直下ではなく、ライブラリの直下のDownloadsフォルダに保存します。"/>
+						<mx:CheckBox id="checkBox_useLibraryDirForSystemDir" 
+									 label="動画の保存先にNNDDのシステム情報を保存する(NNDDの再起動後有効)"
+									 click="useAppSystemDirChanged(event)" paddingLeft="20"
+									 selected="true"
+									 toolTip="NNDDのシステム情報(systemフォルダ下に保存される情報)を、動画のDL先に指定されたフォルダの直下に保存します。このチェックボックスをはずすと、システム情報はOSが提供する専用のフォルダに保存します。"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" />
+							<mx:Button label="ライブラリを更新" click="renewLibraryButtonClicked()" 
+									   toolTip="動画の保存先にある項目をスキャンし、NNDDが各動画に関する情報を正しく管理できるようにします(DL済みかどうか、タグ情報、など)。たとえNNDDで管理されていなくても、NNDDで再生すると自動的に管理に追加されます。"/>
+						</s:HGroup>
+						<mx:Label paddingLeft="20"
+								  text="※&quot;ライブラリ&quot;タブのツリーのコンテキスト(右クリック)メニューからもライブラリ更新が出来ます。(こちらはフォルダ単位で更新が可能です。)"/>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup >
+							<mx:Label text="NNDDのライブラリ情報をインポートする" 
+									  toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
+							<mx:Button label="読み込み..." click="importButtonChecked()" 
+									   toolTip="xml形式の古いNNDDのライブラリ情報(library.xml)をインポートします"/>
+						</s:HGroup>
+						
+						<mx:CheckBox id="checkBox_initalize"
+									 label="現在のNNDDのライブラリ情報を削除してからインポート" paddingLeft="20"
+									 selected="false"
+									 toolTip="現在のNNDDのライブラリ情報を一度削除したあと、ライブラリ情報を読み込みます。このチェックを外してインポートした場合は、現在のNNDDのライブラリ情報に上書きされます。"/>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup>
+							<mx:Label text="ウィンドウの大きさ・位置をリセットする" />
+							<mx:Button label="リセット" id="button_windowPositionReset" click="windowPositionReset()"/>
+						</s:HGroup>
+						
+						<s:HGroup>
+							<mx:CheckBox label="起動時にバージョンチェックをする" selected="false" id="checkBox_versionCheck" click="versionCheckCheckBoxChenged()"/>
+							<mx:Button label="今すぐバージョンチェック" click="versionCheck()"/>
+						</s:HGroup>
+						
+						<mx:CheckBox label="このウィンドウを閉じてもNNDDを終了しない" 
+									 toolTip="DockもしくはタスクトレイをサポートするOSで有効です。Macの場合はDockから、Windowsの場合はタスクトレイのアイコンから操作できます" 
+									 id="checkBox_DisEnableAutoExit" 
+									 click="disEnableAutoExitCheckBoxChanged(event)" />
+						<mx:CheckBox label="ログインが完了したらこのウィンドウを最小化する" 
+									 id="checkBox_CloseNNDDWindowWhenLogin" 
+									 click="checkBox_CloseNNDDWindowWhenLogin_clickHandler(event)" 
+									 toolTip="ログインが完了したらこのウィンドウを最小化するか、閉じます。" />
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="アプリケーションで使用するフォント：" />
+							<mx:ComboBox id="comboBox_font" dataProvider="{fontDataProvider}" width="205" toolTip="NNDDが使用するフォントを選択します。" change="fontComboboxChanged(event)"></mx:ComboBox>
+							<mx:Button label="デフォルト" id="button_fontReset" click="fontResetButtonClicked(event)" toolTip="NNDDが使用するフォントをデフォルトのフォントに戻します。"/>
+						</s:HGroup>
+						<mx:Label paddingLeft="20"
+								  text="※フォントによってはPlayerでコメントが表示されない事があります。その場合は別なフォントを使用してください。"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="フォントのサイズ："/>
+							<mx:ComboBox id="comboBox_fontsize" dataProvider="{fontSizeDataProvider}" 
+										 width="78" toolTip="NNDDが使用するフォントのサイズを選択します。" change="fontSizeComboboxChanged(event)"></mx:ComboBox>
+						</s:HGroup>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="アプリケーションの設定情報フォルダ：" />
+							<mx:LinkButton height="21"
+										   click="openApplicationSettingInfoDir(event)" color="#0000FF"
+										   creationComplete="linkbutton1_creationCompleteHandler(event)"
+										   textAlign="left" textDecoration="underline"
+										   toolTip="アプリケーションの設定情報フォルダを開きます。"/>
+						</s:HGroup>
+						
+					</s:VGroup>
 					
 					<mx:Image source="icon128.png" autoLoad="true" scaleContent="false" alpha="0.2" right="0" top="0" width="128" height="128"/>
 					
 				</mx:Canvas>
-				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" creationComplete="nicoConfigCanvasCreationComplete(event)">
+				<mx:Canvas label="ランキング・検索・マイリスト" width="100%" height="100%" id="canvas_nico_config" 
+						   creationComplete="nicoConfigCanvasCreationComplete(event)">
 					
 					<s:HGroup top="0" left="10" right="10">
 						<mx:Label text="ランキング・検索・マイリスト" fontWeight="bold"/>
 						<mx:HRule width="100%" height="21"/>
 					</s:HGroup>
-					
-					<mx:CheckBox label="起動時にランキングを更新する" left="30" top="21" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" 
-								 toolTip="起動時に前回の起動の設定でランキングを更新します。これを有効にすると前回終了時に選択されていたタブに移動しません。"/>
-					<mx:CheckBox label="ブラウザでストリーミング再生する" left="30" top="46" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" 
-								 toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
-					<mx:CheckBox id="checkBox_isDoubleClickOnVideoPlay" left="30" top="71"
-								 label="ダブルクリックで動画を再生する"
-								 change="checkBoxDoubleClickOnVideoPlayChanged(event)"
-								 selected="true"
-								 toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、動画を再生します。"/>
-					<mx:CheckBox id="checkBox_isPrecedenceDownloadedVideo" left="49" top="94"
-								 label="ダウンロード済みの動画を優先して再生する"
-								 change="checkBoxPrecedenceDownloadedVideoChanged(event)"
-								 selected="true"
-								 enabled="{checkBox_isDoubleClickOnVideoPlay.selected}"
-								 toolTip="動画を再生する際、DL済の動画があれば優先して再生します。DL済みでない場合はストリーミング再生します。"/>
-					
-					<s:HGroup left="30" top="122" verticalAlign="middle">
-						<mx:CheckBox label="検索履歴を保存する" 
-									 id="checkbox_saveSearchHistory" selected="true" 
-									 toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" 
-									 change="checkBoxSaveSearchHistoryChanged(event)"/>
-						<mx:Button label="履歴を消去" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
-					</s:HGroup>
-					
-					<s:HGroup left="30" top="151" verticalAlign="middle">
-						<mx:CheckBox label="マイリストの閲覧履歴を保存する" 
-									 id="checkbox_saveMyListHistory" selected="true" 
-									 toolTip="閲覧したマイリストページの履歴を保存し、次回起動時にも選択できるようにします。" 
-									 change="checkBoxSaveMyListHistoryChanged(event)"/>
-						<mx:Button label="履歴を消去" id="button_myListHistoryClear" click="myListHistoryClearButtonClicked(event)"/>
-					</s:HGroup>
-					
-					<s:HGroup left="49" top="209" verticalAlign="middle">
-						<mx:Label  text="マイリストごとの更新間隔"/>
-						<s:NumericStepper maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
-										  change="numStepperDelayOfMylistChanged(event)"
-										  toolTip="マイリストが複数ある場合の、マイリストの更新が完了してから次のマイリストの更新を開始するまでの間隔を指定できます。"/>
-						<mx:Label text="秒"/>
+					<s:VGroup left="30" right="10" top="30">
 						
-					</s:HGroup>
-					
-					<mx:CheckBox label="マイリスト更新を起動時のみ実行する" 
-								 id="checkBox_myListRenewOnBootTime" 
-								 click="checkBoxMyListRenewOnBootTimeChanged(event)"
-								 selected="false" left="30" top="236" height="22" 
-								 toolTip="ニコニコ動画から最新のマイリストの情報をNNDDの起動時のみ取得します。"/>
-					
-					<mx:HRule left="30" top="262" right="10" height="10"/>
-					
-					<s:HGroup left="30" top="281" verticalAlign="middle">
-						<mx:Label text="検索項目にデフォルトの検索項目を追加する" />
-						<mx:Button label="追加" id="button_addDefSearchItem" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
-					</s:HGroup>
-					
-					<s:HGroup left="30" top="308" verticalAlign="middle">
-						<mx:Label text="自分のマイリストをマイリスト一覧に追加"/>
-						<mx:Button label="追加" click="getMyListIds(event)" />
-					</s:HGroup>
-					<mx:CheckBox id="checkBox_myListRenewOnSchedule" x="30" y="179" height="22"
-								 label="マイリスト更新をスケジュール実行する:"
-								 click="checkBoxMylistRenewOnScheduleChanged(event)"
-								 enabled="{!checkBox_myListRenewOnBootTime.selected}"
-								 selected="true" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
-					<mx:ComboBox id="combobox_myListRenewTime" x="256" y="181" width="100"
-								 change="myListRenewScheduleTimeChange(event)"
-								 dataProvider="{myListRenewScheduleTimeProvider}"
-								 enabled="{!checkBox_myListRenewOnBootTime.selected}"
-								 selectedIndex="1" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
-					<mx:Label x="362" y="181" enabled="{!checkBox_myListRenewOnBootTime.selected}"
-							  text="分おき"/>
-					<mx:VRule x="406" y="179" width="7" height="22"/>
-					<mx:Button x="419" y="180" label="今すぐ更新" click="myListRenewNow()"/>
+						<mx:CheckBox label="起動時にランキングを更新する" id="checkbox_isRankingRenewAtStart" click="changeIsRankingRenewAtStart(event)" 
+									 toolTip="起動時に前回の起動の設定でランキングを更新します。これを有効にすると前回終了時に選択されていたタブに移動しません。"/>
+						<mx:CheckBox label="ブラウザでストリーミング再生する" id="checkBox_isUseOutStreamPlayer" change="checkBoxOutStreamingPlayerChanged(event)" 
+									 toolTip="ストリーミング再生時にNNDDのプレーヤを使わず、ニコニコ動画のページを使って動画を再生します。"/>
+						<mx:CheckBox id="checkBox_isDoubleClickOnVideoPlay" 
+									 label="ダブルクリックで動画を再生する"
+									 change="checkBoxDoubleClickOnVideoPlayChanged(event)"
+									 selected="true"
+									 toolTip="ランキング・検索・マイリストタブで、項目をダブルクリックしたときにDLリストに追加せず、動画を再生します。"/>
+						<mx:CheckBox id="checkBox_isPrecedenceDownloadedVideo" 
+									 label="ダウンロード済みの動画を優先して再生する"
+									 change="checkBoxPrecedenceDownloadedVideoChanged(event)"
+									 selected="true"
+									 enabled="{checkBox_isDoubleClickOnVideoPlay.selected}"
+									 toolTip="動画を再生する際、DL済の動画があれば優先して再生します。DL済みでない場合はストリーミング再生します。"/>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:CheckBox label="検索履歴を保存する" 
+										 id="checkbox_saveSearchHistory" selected="true" 
+										 toolTip="検索した単語の履歴を保存し、次回起動時にも選択できるようにします。" 
+										 change="checkBoxSaveSearchHistoryChanged(event)"/>
+							<mx:Button label="履歴を消去" id="button_searchHistoryClear" click="searchHistoryClearButtonClicked(event)"/>
+						</s:HGroup>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:CheckBox label="マイリストの閲覧履歴を保存する" 
+										 id="checkbox_saveMyListHistory" selected="true" 
+										 toolTip="閲覧したマイリストページの履歴を保存し、次回起動時にも選択できるようにします。" 
+										 change="checkBoxSaveMyListHistoryChanged(event)"/>
+							<mx:Button label="履歴を消去" id="button_myListHistoryClear" click="myListHistoryClearButtonClicked(event)"/>
+						</s:HGroup>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:CheckBox id="checkBox_myListRenewOnSchedule" height="22"
+										 label="マイリスト更新をスケジュール実行する:"
+										 click="checkBoxMylistRenewOnScheduleChanged(event)"
+										 enabled="{!checkBox_myListRenewOnBootTime.selected}"
+										 selected="true" toolTip="ニコニコ動画から最新のマイリストの情報を指定時間ごとに取得します。"/>
+							<mx:ComboBox id="combobox_myListRenewTime" width="100"
+										 change="myListRenewScheduleTimeChange(event)"
+										 dataProvider="{myListRenewScheduleTimeProvider}"
+										 enabled="{!checkBox_myListRenewOnBootTime.selected}"
+										 selectedIndex="1" toolTip="マイリスト情報取得の間隔を分で指定します。"></mx:ComboBox>
+							<mx:Label enabled="{!checkBox_myListRenewOnBootTime.selected}"
+									  text="分おき"/>
+							<mx:VRule width="7" height="22"/>
+							<mx:Button label="今すぐ更新" click="myListRenewNow()"/>
+						</s:HGroup>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label left="20" paddingLeft="20" text="マイリストごとの更新間隔"/>
+							<s:NumericStepper maximum="600" minimum="1" stepSize="1" value="1" id="numStepper_delayOfMylist"
+											  change="numStepperDelayOfMylistChanged(event)"
+											  toolTip="マイリストが複数ある場合の、マイリストの更新が完了してから次のマイリストの更新を開始するまでの間隔を指定できます。"/>
+							<mx:Label text="秒"/>
+						</s:HGroup>
+						
+						<mx:CheckBox label="マイリスト更新を起動時のみ実行する" 
+									 id="checkBox_myListRenewOnBootTime" 
+									 click="checkBoxMyListRenewOnBootTimeChanged(event)"
+									 selected="false" 
+									 toolTip="ニコニコ動画から最新のマイリストの情報をNNDDの起動時のみ取得します。"/>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="検索項目にデフォルトの検索項目を追加する" />
+							<mx:Button label="追加" id="button_addDefSearchItem" click="addDefSearchItems()" toolTip="検索項目にデフォルトの検索項目を追加します。"/>
+						</s:HGroup>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label text="自分のマイリストをマイリスト一覧に追加"/>
+							<mx:Button label="追加" click="getMyListIds(event)" />
+						</s:HGroup>
+						
+						
+						
+							
+					</s:VGroup>
 					
 					
 				</mx:Canvas>
@@ -2390,7 +2417,7 @@
 						<mx:HRule width="100%" height="19"/>
 					</s:HGroup>
 					
-					<s:VGroup left="30" top="18">
+					<s:VGroup left="30" right="10" top="30">
 						<mx:CheckBox label="自動的にダウンロードを開始する" selected="true" 
 									 id="checkbox_autoDL" click="checkBoxAutoDLChanged(event)" 
 									 toolTip="ダウンロードリストに項目が追加されると自動的にダウンロードを開始します。"/>
@@ -2398,18 +2425,18 @@
 									 selected="true" id="checkbox_ecoDL" click="checkBoxEcoCheckChanged(event)" 
 									 toolTip="ダウンロードしようとした動画がエコノミーモードのとき、ダイアログを表示して確認を求めます。"/>
 						<s:HGroup>
-							<mx:CheckBox label="エコノミーモードのときダウンロードをスキップする" selected="false" 
-										 id="checkbox_ecoDLSkip" click="checkBoxEcoSkipChanged(event)" 
-										 enabled="{!checkbox_ecoDL.selected}"
+							<mx:CheckBox id="checkbox_ecoDLSkip" label="エコノミーモードのときダウンロードをスキップする"
+										 click="checkBoxEcoSkipChanged(event)"
+										 enabled="{!checkbox_ecoDL.selected}" paddingLeft="20"
+										 selected="false"
 										 toolTip="ダウンロードしようとした動画がエコノミーモードのとき、その動画のDLをスキップして次の動画をDLします。"/>
-							<mx:Label text="※「エコノミーモードのときダウンロードするか確認する」が有効の場合は無効" visible="{checkbox_ecoDL.selected}" />
 						</s:HGroup>
 						<s:HGroup>
-							<mx:CheckBox label="常にエコノミーモードでダウンロードする" id="checkBox_isAlwaysEconomyMode"
-										 click="checkBoxAlwaysEcoChanged(event)" 
-										 enabled="{!checkbox_ecoDL.selected}"
+							<mx:CheckBox id="checkBox_isAlwaysEconomyMode"
+										 label="常にエコノミーモードでダウンロードする"
+										 click="checkBoxAlwaysEcoChanged(event)"
+										 enabled="{!checkbox_ecoDL.selected}" paddingLeft="20"
 										 toolTip="常にエコノミーモードでダウンロードします。ストリーミング再生をエコノミーモードで行うかどうかはPlayerのInfo画面で設定できます。"/>
-							<mx:Label text="※「エコノミーモードのときダウンロードするか確認する」が有効の場合は無効" visible="{checkbox_ecoDL.selected}" />
 						</s:HGroup>
 						
 						<mx:CheckBox id="checkBox_useNewCommentGet"
@@ -2418,7 +2445,7 @@
 									 toolTip="2011/2/3から有効な、新しいコメントのダウンロード方式を使います。再生時間が10分より長い動画で、1000件以上のコメントが取得できるようになります。"/>
 						
 						<s:HGroup left="30" top="115" verticalAlign="middle">
-							<mx:Label text="ダウンロード失敗時の最大リトライ回数"/>
+							<mx:Label paddingLeft="20" text="ダウンロード失敗時の最大リトライ回数"/>
 							<s:NumericStepper maximum="5" minimum="0" stepSize="1" value="2" id="numStepper_downloadRetryMaxCount"
 											  change="numStepper_downloadRetryMaxCountChanged(event)"
 											  toolTip="ダウンロードに失敗した場合の最大リトライ回数を指定します。あまり大きい数字にすると、ニコニコ動画からアクセス制限を受ける場合があります。"/>
@@ -2428,24 +2455,30 @@
 					</s:VGroup>
 					
 					
-					<s:HGroup left="10" top="172" right="10">
+					<s:HGroup left="10" top="180" right="10">
 						<mx:Label fontWeight="bold" text="ライブラリ"/>
 						<mx:HRule width="100%" height="18"/>
 					</s:HGroup>
 					
-					<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" selected="true" id="checkBox_enableLibrary" left="30" top="194" click="checkBoxEnableLibraryChanged(event)" toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
-					
-					<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" left="30" top="218" id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
-					
-					<s:HGroup left="49" top="243">
-						<mx:Label text="保存するコメントの最大数：" />
-						<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100"
-										   id="numericStepper_saveCommentMaxCount" enabled="{checkBox_isAppendComment.selected}"
-										   change="numericStepperSaveCommentMaxCountChanged(event)" 
-										   toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
-						<mx:Label text="件/動画" />
-					</s:HGroup>
-					
+					<s:VGroup left="30" right="10" top="210">
+						<mx:CheckBox label="ライブラリを有効にする（DL済かどうか、再生回数の管理は行いますが、ライブラリタブでライブラリを無効にします。）" 
+									 selected="true" id="checkBox_enableLibrary" 
+									 click="checkBoxEnableLibraryChanged(event)" 
+									 toolTip="ライブラリタブではタグの管理や保存されている項目についての情報表示に多少時間がかかります。ライブラリタブから保存済み動画を確認する必要がない場合はチェックを外すとライブラリタブ表示時の動作が軽くなる事があります。"/>
+						
+						<mx:CheckBox label="コメント更新時にローカルに保存済みのコメントに追記(※Playerと設定を共有)" 
+									 id="checkBox_isAppendComment" change="checkBoxAppendCommentChanged(event)" 
+									 toolTip="コメントを更新する際に、ローカルのコメントに新しいコメントを追記します。ローカルのコメントファイルが大きくなりすぎるとNNDDの動作に支障をきたす可能性があるので、その場合はチェックを外すか、保存するコメントの最大数を少なくします。"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label paddingLeft="20" text="保存するコメントの最大数："/>
+							<mx:NumericStepper width="92" value="10000" maximum="1000000" stepSize="100"
+											   id="numericStepper_saveCommentMaxCount" enabled="{checkBox_isAppendComment.selected}"
+											   change="numericStepperSaveCommentMaxCountChanged(event)" 
+											   toolTip="１動画当たりにローカルに保存するコメントの最大数を指定します。数が多すぎるとメモリが足りなくなったり、動作が不安定になる事があります。" minimum="1000"/>
+							<mx:Label text="件/動画" />
+						</s:HGroup>
+					</s:VGroup>
 					
 				</mx:Canvas>
 				<mx:Canvas label="ログ" width="100%" height="100%" id="canvas_innerConfing_log">
@@ -2461,36 +2494,41 @@
 						<mx:HRule width="100%" height="21"/>
 					</s:HGroup>
 					
-					<s:HGroup left="30" top="27" verticalAlign="middle">
-						<mx:CheckBox label="起動時にPlayerを開く"
-									 toolTip="NNDDの起動時にPlayerを開きます。"
-									 enabled="{!isEnableNativePlayer}"
-									 id="checkbox_openPlayerOnBoot" change="checkbox_openPlayerOnBootChanged(event)"/>
-						<mx:Text text="※外部Playerを利用する場合、この機能は利用できません。"/>
-					</s:HGroup>
+					<s:VGroup left="30" right="10" top="30">
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:CheckBox label="起動時にPlayerを開く"
+										 toolTip="NNDDの起動時にPlayerを開きます。"
+										 enabled="{!isEnableNativePlayer}"
+										 id="checkbox_openPlayerOnBoot" change="checkbox_openPlayerOnBootChanged(event)"/>
+							<mx:Text text="※外部Playerを利用する場合、この機能は利用できません。"/>
+						</s:HGroup>
+						
+						<mx:HRule width="100%"/>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:CheckBox label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
+										 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
+										 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
+							<mx:Text visible="{!NativeProcess.isSupported}"
+									 text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
+						</s:HGroup>
+						
+						<s:HGroup verticalAlign="middle">
+							<mx:Label enabled="{NativeProcess.isSupported}" paddingLeft="20"
+									  text="Playerのパス:"/>
+							<mx:TextInput id="playerPath_textinput" width="321" enabled="{NativeProcess.isSupported}"
+										  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
+							<mx:Button label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
+									   click="button_searchNativeProcess_clickHandler(event)"/>
+						</s:HGroup>
+						<mx:Text width="100%" enabled="{NativeProcess.isSupported}" paddingLeft="20"
+								 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
 					
-					<mx:HRule left="30" right="10" top="52" height="10"/>
+					</s:VGroup>
 					
-					<s:HGroup left="30" top="70" verticalAlign="middle">
-						<mx:CheckBox label="外部のPlayerを使う" enabled="{NativeProcess.isSupported}"
-									 toolTip="外部のPlayerを使用するかどうかの設定を行います。この機能はネイティブインストーラでインストールしたNNDDでのみ有効です。"
-									 id="checkbox_nativePlayer_enable" change="checkbox_nativePlayer_enable_changeHandler(event)"/>
-						<mx:Text visible="{!NativeProcess.isSupported}"
-								 text="※AIRパッケージ(.air)でインストールされた NNDD では、この機能を利用する事ができません。"/>
-					</s:HGroup>
-					
-					<s:HGroup left="49" top="97" verticalAlign="middle">
-						<mx:Label text="Playerのパス:" enabled="{NativeProcess.isSupported}" />
-						<mx:TextInput id="playerPath_textinput" width="321" enabled="{NativeProcess.isSupported}"
-									  change="playerPath_textinput_changeHandler(event)" enter="playerPath_textinput_changeHandler(event)"/>
-						<mx:Button label="参照..." enabled="{NativeProcess.isSupported}" id="button_searchNativeProcess" 
-								   click="button_searchNativeProcess_clickHandler(event)"/>
-					</s:HGroup>
-					<mx:Text left="49" right="10" top="124" bottom="31"
-							 enabled="{NativeProcess.isSupported}"
-							 text="※アプリケーションの第１引数には、動画のパス/URL、もしくはプレイリストのパスが渡されます。&#xd;【実行例】$&quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;&#xd;&#xa;※Mac OS Xでは、Adobe AIRの制約により、「参照...」で開いたダイアログからappパッケージ(拡張子が.appのファイル)が選択できません。&#xd;appパッケージを指定する場合は直接.appのファイルパスを入力してください。(例: /Applications/QuickTime Player.app)&#xd;&#xa;※Mac OS Xでappパッケージを指定した場合は、openコマンドを使ってアプリケーションを起動します。&#xd;【実行例】$open -a &quot;&lt;Playerのパス&gt;&quot; &quot;&lt;動画のパス&gt;&quot;"/>
-					<mx:Label text="※ Playerの設定はInfoViewの「設定」タブで変更できます。" fontWeight="bold" fontStyle="italic" right="10" bottom="5" height="18"/>
-					
+					<mx:Label right="10" bottom="5" fontStyle="italic" fontWeight="bold"
+							  text="※ Playerの設定はInfoViewの「設定」タブで変更できます。"/>
 					
 				</mx:Canvas>
 				<s:NavigatorContent width="100%" height="100%" label="共有" id="navigatorContent_share_setting" >
@@ -2500,15 +2538,15 @@
 						<mx:HRule width="100%" height="21"/>
 					</s:HGroup>
 					
-					<s:VGroup left="30" right="10" top="29">
-						<s:VGroup>
+					<s:VGroup left="30" right="10" top="30">
+						<s:VGroup width="100%">
 								
 							<mx:CheckBox id="checkbox_allowOtherNNDDConnection"
 										 label="他のNNDDからの通信を受け付ける"
 										 change="checkbox_allowOtherNNDDConnection_changeHandler(event)"
 										 toolTip="他のNNDDからの保存済み動画取得要求およびマイリスト取得要求を受け付けます。"/>
 							
-							<s:HGroup paddingLeft="20">
+							<s:HGroup paddingLeft="20" verticalAlign="middle">
 								<mx:Label text="待ち受けポート番号:" />
 								<mx:TextInput id="textInput_localPort" text="{string_localPort}" change="textInput_localPort_changeHandler(event)" />
 							</s:HGroup>
@@ -2533,17 +2571,17 @@
 							
 						</s:VGroup>
 						<mx:HRule width="100%" height="20" />
-						<s:VGroup>
+						<s:VGroup width="100%">
 							<mx:CheckBox id="checkbox_allowGetOtherNNDDInfo"
 										 label="他のNNDDからの動画情報／マイリスト情報を取得する"
 										 toolTip="NNDDの起動時にPlayerを開きます。"
 										 change="checkbox_allowGetOtherNNDDInfo_changeHandler(event)" 
 										 />
-							<s:HGroup paddingLeft="20">
+							<s:HGroup paddingLeft="20" verticalAlign="middle">
 								<mx:Label text="取得先NNDDのIPアドレス:" toolTip="情報の取得先NNDDが動作するコンピュータのIPアドレスかホスト名を入力します。" />
 								<mx:TextInput id="textInput_remoteNNDDAddress" text="{string_remoteNNDDAddress}" change="textInput_remoteNNDDAddress_changeHandler(event)" />
 							</s:HGroup>
-							<s:HGroup columnWidth="50" paddingLeft="20">
+							<s:HGroup columnWidth="50" paddingLeft="20" verticalAlign="middle">
 								<mx:Label text="取得先NNDDのポート番号:" toolTip="情報の取得先NNDDが待ち受けるポート番号を入力します。"/>
 								<mx:TextInput id="textInput_remoteNNDDPort" width="70"
 											  text="{string_remoteNNDDPort}" change="textInput_remoteNNDDPort_changeHandler(event)"/>
@@ -2553,7 +2591,7 @@
 						
 				</s:NavigatorContent>
 				<mx:Canvas label="接続診断" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-					<ns1:ConnectionStatusView id="connectionStatusView" left="0" top="0" bottom="0" right="0" creationComplete="connectionStatusViewCreationCompleteHandler(event)">
+					<ns1:ConnectionStatusView id="connectionStatusView" left="5" top="5" bottom="5" right="5" creationComplete="connectionStatusViewCreationCompleteHandler(event)">
 					</ns1:ConnectionStatusView>
 				</mx:Canvas>
 			</mx:TabNavigator>

@@ -302,72 +302,79 @@
 		]]>
 	</mx:Script>
 
-	<s:HGroup left="10" top="10">
-		<mx:Label text="ログインサーバー：" />
-		<mx:Label text="未実施" id="label_loginStatus" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<mx:HRule left="10" top="36" right="10"/>
-	
-	<s:HGroup  left="10" top="46">
-		<mx:Label text="ランキングサーバー："/>
-		<mx:Label text="未実施" id="label_ranking" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup  left="10" top="72">
-		<mx:Label text="単語検索サーバー："/>
-		<mx:Label text="未実施" id="label_search" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="98">
-		<mx:Label text="タグ検索サーバー：" />
-		<mx:Label text="未実施" id="label_tagSearch" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup  left="10" top="124">
-		<mx:Label text="マイリストサーバー："/>
-		<mx:Label text="未実施" id="label_mylist" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<mx:HRule left="10" top="150" right="10"/>
-	
-	<s:HGroup left="10" top="160">
-		<mx:Label text="動画API：" />
-		<mx:Label text="未実施" id="label_getFlv" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="186">
-		<mx:Label text="BGMAPI：" />
-		<mx:Label text="未実施" id="label_getBgm" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="212">
-		<mx:Label text="メッセージサーバー：" />
-		<mx:Label text="未実施" id="label_message" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="238">
-		<mx:Label text="動画サーバー：" />
-		<mx:Label text="未実施" id="label_video" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="264">
-		<mx:Label text="サムネイル画像サーバー：" />
-		<mx:Label text="未実施" id="label_thumbImg" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="290">
-		<mx:Label text="サムネイル情報API：" />
-		<mx:Label text="未実施" id="label_thumbInfo" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="316">
-		<mx:Label text="市場情報サーバー：" />
-		<mx:Label text="未実施" id="label_ichiba" fontWeight="normal"/>
-	</s:HGroup>
-	
-	<mx:HRule left="10" top="342" right="10"/>
-	
-	<mx:Button label="サーバーの状況を診断" right="10" top="352" click="startButton_clickHandler(event)" id="button_start"/>
-	
+	<s:VGroup width="100%">
+		
+		<s:HGroup >
+			<mx:Label text="ログインサーバー：" />
+			<mx:Label text="未実施" id="label_loginStatus" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<mx:HRule width="100%"/>
+		
+		<s:HGroup>
+			<mx:Label text="ランキングサーバー："/>
+			<mx:Label text="未実施" id="label_ranking" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="単語検索サーバー："/>
+			<mx:Label text="未実施" id="label_search" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="タグ検索サーバー：" />
+			<mx:Label text="未実施" id="label_tagSearch" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="マイリストサーバー："/>
+			<mx:Label text="未実施" id="label_mylist" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<mx:HRule width="100%"/>
+		
+		<s:HGroup>
+			<mx:Label text="動画API：" />
+			<mx:Label text="未実施" id="label_getFlv" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="BGMAPI：" />
+			<mx:Label text="未実施" id="label_getBgm" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="メッセージサーバー：" />
+			<mx:Label text="未実施" id="label_message" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="動画サーバー：" />
+			<mx:Label text="未実施" id="label_video" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="サムネイル画像サーバー：" />
+			<mx:Label text="未実施" id="label_thumbImg" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="サムネイル情報API：" />
+			<mx:Label text="未実施" id="label_thumbInfo" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<s:HGroup>
+			<mx:Label text="市場情報サーバー：" />
+			<mx:Label text="未実施" id="label_ichiba" fontWeight="normal"/>
+		</s:HGroup>
+		
+		<mx:HRule width="100%"/>
+		
+		<s:HGroup width="100%" horizontalAlign="right">
+			<mx:Button id="button_start" label="サーバーの状況を診断" click="startButton_clickHandler(event)"
+					   textAlign="center"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+		
 </mx:Canvas>

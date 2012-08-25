@@ -3307,14 +3307,14 @@ package org.mineap.nndd.player
 				videoInfoView.label_deletedInfo.text = "【注意】この動画はニコニコ動画上では削除されています";
 				videoInfoView.label_deletedInfo.toolTip = "ニコニコ動画上では削除されていますが、ダウンロード済みの動画/情報を使用して再生しています。";
 				videoInfoView.label_deletedInfo.visible = true;
-				videoInfoView.ownertext_comment_dividedbox.top = "92";
+				videoInfoView.ownertext_comment_dividedbox.top = (videoInfoView.hgroup_thumbInfo.height + 24);
 			}
 			else
 			{
 				videoInfoView.label_deletedInfo.text = "";
 				videoInfoView.label_deletedInfo.toolTip = null;
 				videoInfoView.label_deletedInfo.visible = false;
-				videoInfoView.ownertext_comment_dividedbox.top = "75";
+				videoInfoView.ownertext_comment_dividedbox.top = (videoInfoView.hgroup_thumbInfo.height + 4);
 			}
 		}
 		
