@@ -45,10 +45,7 @@ private var _login:Login = null;
 
 private var loading:LoadingPicture = new LoadingPicture();
 
-
-[Bindable]
 private var userName:String;
-[Bindable]
 private var password:String;
 
 
