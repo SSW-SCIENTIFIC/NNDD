@@ -72,6 +72,9 @@ public function creationCompleteEventHandler(event:Event):void{
 	
 	checkBox_storeUserNameAndPassword.selected = this.isStore;
 	checkbox_autoLogin.selected = this.isAutoLogin;
+	
+	execAutoLogin();
+	
 }
 
 private function execAutoLogin():void

@@ -31,13 +31,11 @@
 			protected function textInput_userName_creationCompleteHandler(event:FlexEvent):void
 			{
 				(event.currentTarget as TextInput).text = userName;
-				execAutoLogin();
 			}
 			
 			protected function textInput_password_creationCompleteHandler(event:FlexEvent):void
 			{
 				(event.currentTarget as TextInput).text = password;
-				execAutoLogin();
 			}
 			
 		]]>
