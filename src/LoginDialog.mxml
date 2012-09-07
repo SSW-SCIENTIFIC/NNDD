@@ -28,6 +28,18 @@
 				password = (event.currentTarget as TextInput).text;
 			}
 			
+			protected function textInput_userName_creationCompleteHandler(event:FlexEvent):void
+			{
+				(event.currentTarget as TextInput).text = userName;
+				execAutoLogin();
+			}
+			
+			protected function textInput_password_creationCompleteHandler(event:FlexEvent):void
+			{
+				(event.currentTarget as TextInput).text = password;
+				execAutoLogin();
+			}
+			
 		]]>
 	</mx:Script>
 
@@ -39,12 +51,12 @@
 	
 	<s:HGroup top="32" right="10">
 		<mx:Label text="メールアドレス" />
-		<mx:TextInput id="textInput_userName" change="textInput_userName_changeHandler(event)" enter="enterHandler(event)" width="183"/>
+		<mx:TextInput id="textInput_userName" creationComplete="textInput_userName_creationCompleteHandler(event)" change="textInput_userName_changeHandler(event)" enter="enterHandler(event)" width="183"/>
 	</s:HGroup>
 	
 	<s:HGroup top="62" right="10">
 		<mx:Label text="パスワード" />
-		<mx:TextInput id="textInput_password" change="textInput_password_changeHandler(event)" displayAsPassword="true" enter="enterHandler(event)" width="183"/>
+		<mx:TextInput id="textInput_password" creationComplete="textInput_password_creationCompleteHandler(event)" change="textInput_password_changeHandler(event)" displayAsPassword="true" enter="enterHandler(event)" width="183"/>
 	</s:HGroup>
 		
 	

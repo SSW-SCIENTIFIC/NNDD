@@ -69,13 +69,19 @@ public function initLoginDialog(topURL:String, loginURL:String, isStore:Boolean,
 }
 
 public function creationCompleteEventHandler(event:Event):void{
+	
 	checkBox_storeUserNameAndPassword.selected = this.isStore;
 	checkbox_autoLogin.selected = this.isAutoLogin;
-	
+}
+
+private function execAutoLogin():void
+{
 	if(isAutoLogin && !isLogout){
-		login();
+		
+		if(userName != null && userName.length > 0 && password != null && password.length > 0){
+			login();
+		}
 	}
-	
 }
 
 private function enterHandler(event:FlexEvent):void {
