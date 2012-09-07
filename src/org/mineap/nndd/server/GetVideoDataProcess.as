@@ -132,6 +132,7 @@ package org.mineap.nndd.server
 			{
 				trace(event);
 				httpResponse.httpConnection.socket.writeBytes(buffer, 0, buffer.length);
+				httpResponse.httpConnection.socket.flush();
 				buffer.clear();
 			}
 		}
@@ -166,18 +167,23 @@ package org.mineap.nndd.server
 		 */
 		protected function fileInputCompleteHandler(event:Event):void
 		{
-			trace(event);
-			LogManager.instance.addLog("動画の配信を完了:" + httpResponse.httpRequest.path);
 			
 			var fileStream:FileStream = (event.currentTarget as FileStream);
 			
 			if (fileStream.bytesAvailable > 0)
 			{
 				fileStream.readBytes(buffer, buffer.length);
-				
+			}
+			if (buffer.bytesAvailable > 0)
+			{
 				httpResponse.httpConnection.socket.writeBytes(buffer, 0, buffer.length);
+				httpResponse.httpConnection.socket.flush();
 				buffer.clear();
 			}
+			
+			
+			trace(event);
+			LogManager.instance.addLog("動画の配信を完了:" + httpResponse.httpRequest.path);
 			
 //			httpResponse.statusCode = 200;
 			httpResponse.completeComet();
