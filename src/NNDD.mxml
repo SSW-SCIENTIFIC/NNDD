@@ -1326,7 +1326,14 @@
 			
 			protected function openLibraryDir(event:Event):void
 			{
-				libraryManager.libraryDir.openWithDefaultApplication();
+				if (libraryManager.libraryDir.exists)
+				{
+					libraryManager.libraryDir.openWithDefaultApplication();
+				}
+				else
+				{
+					Alert.show("指定されたディレクトリは存在しません。");
+				}
 			}
 			
 			protected function openApplicationSettingInfoDir(event:Event):void
