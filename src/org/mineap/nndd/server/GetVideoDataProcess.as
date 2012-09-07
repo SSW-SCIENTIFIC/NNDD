@@ -103,7 +103,11 @@ package org.mineap.nndd.server
 			
 			this.httpResponse = httpResponse;
 			
-			httpResponse.comet = true;
+			// 非同期出力モード
+			httpResponse.statusCode = 200;
+			httpResponse.asyncResponse = true;
+			httpResponse.writeHeaderOnAsyncResponse(videoFile.size);
+			
 			throw new BlockResponseSignal();
 			
 		}
@@ -150,7 +154,7 @@ package org.mineap.nndd.server
 				trace(error.getStackTrace());
 			}
 			
-			httpResponse.statusCode = 500;
+//			httpResponse.statusCode = 500;
 			httpResponse.completeComet();
 			
 		}
@@ -175,7 +179,7 @@ package org.mineap.nndd.server
 				buffer.clear();
 			}
 			
-			httpResponse.statusCode = 200;
+//			httpResponse.statusCode = 200;
 			httpResponse.completeComet();
 			
 		}		

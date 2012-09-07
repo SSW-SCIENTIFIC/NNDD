@@ -7,10 +7,6 @@ package org.mineap.nndd.server
 	import flash.utils.ByteArray;
 	
 	import org.mineap.nndd.LogManager;
-	import org.mineap.nndd.model.RssType;
-	import org.mineap.nndd.myList.MyList;
-	import org.mineap.nndd.myList.MyListManager;
-	import org.mineap.nndd.util.MyListUtil;
 	
 	public class NNDDHttpService implements IService
 	{
