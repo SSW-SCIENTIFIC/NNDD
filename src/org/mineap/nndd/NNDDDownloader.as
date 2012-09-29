@@ -724,7 +724,7 @@ package org.mineap.nndd
 					
 					// サムネイル情報を取得したが動画は削除済み？とりあえず次に進む。
 					
-					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title);
+					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title + ", errorCode=" + analyzer.errorCode);
 					trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
 					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
 					close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
