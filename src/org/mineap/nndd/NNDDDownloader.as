@@ -1474,8 +1474,16 @@ package org.mineap.nndd
 			// 他のNNDDからの取得が許可されているなら、他のNNDDが持っていないかチェックしにいく(ただし強制エコノミーの時は見に行かない)
 			if (this._isEnableGetVideoFromOtherNNDDServer && !this._isAlwaysEconomy)
 			{
+				var timeout:int = 1000;
+				
+				var timeoutStr:String = ConfigManager.getInstance().getItem("connectToNnddServerTimeout");
+				if (timeoutStr != null)
+				{
+					timeout = int(timeoutStr);
+				}
 				
 				var request:URLRequest = createNNDDServerRequest();
+				request.idleTimeout = timeout;
 				
 				this._otherNNDDInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void
 				{

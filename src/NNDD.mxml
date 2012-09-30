@@ -1572,7 +1572,10 @@
 							}
 						});
 					});
-					loader.load(new URLRequest("http://" + address + ":" + port + "/NNDDServer"));
+					
+					var urlRequest:URLRequest = new URLRequest("http://" + address + ":" + port + "/NNDDServer");
+					urlRequest.idleTimeout = 1000;
+					loader.load(urlRequest);
 				}
 			}
 			
