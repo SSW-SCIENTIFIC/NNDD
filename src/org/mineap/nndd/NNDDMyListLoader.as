@@ -20,6 +20,7 @@ package org.mineap.nndd
 	import org.mineap.nndd.myList.MyListManager;
 	import org.mineap.nndd.server.RequestType;
 	import org.mineap.nndd.util.LibraryUtil;
+	import org.mineap.util.config.ConfigManager;
 
 	[Event(name="loginSuccess", type="NNDDMyListLoader")]
 	[Event(name="loginFail", type="NNDDMyListLoader")]
@@ -272,9 +273,18 @@ package org.mineap.nndd
 					}
 				}
 				
+				var timeout:int = 1000;
+				
+				var timeoutStr:String = ConfigManager.getInstance().getItem("connectToNnddServerTimeout");
+				if (timeoutStr != null)
+				{
+					timeout = int(timeoutStr);
+				}
+				
 				var urlRequest:URLRequest = new URLRequest("http://" + nnddServerAddress + ":" + nnddServerPort + "/NNDDServer");
 				urlRequest.method = "POST";
 				urlRequest.data = reqXml.toXMLString();
+				urlRequest.idleTimeout = timeout;
 				
 				LogManager.instance.addLog("NNDDServerからマイリスト情報を取得します:" + urlRequest.url);
 				
