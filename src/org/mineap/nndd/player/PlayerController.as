@@ -21,7 +21,6 @@ package org.mineap.nndd.player
 	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
-	import mx.containers.Canvas;
 	import mx.controls.Alert;
 	import mx.controls.DataGrid;
 	import mx.controls.SWFLoader;
@@ -34,6 +33,8 @@ package org.mineap.nndd.player
 	import mx.events.VideoEvent;
 	import mx.formatters.DateFormatter;
 	import mx.formatters.NumberFormatter;
+	
+	import spark.components.VideoDisplay;
 	
 	import org.libspark.utils.ForcibleLoader;
 	import org.mineap.nicovideo4as.CommentPost;
@@ -77,12 +78,13 @@ package org.mineap.nndd.player
 	import org.mineap.util.config.ConfigIO;
 	import org.mineap.util.config.ConfigManager;
 	import org.mineap.util.font.FontUtil;
+	import org.osmf.elements.VideoElement;
 	import org.osmf.events.LoadEvent;
 	import org.osmf.events.MediaPlayerStateChangeEvent;
 	import org.osmf.events.TimeEvent;
 	import org.osmf.media.MediaPlayerState;
-	
-	import spark.components.VideoDisplay;
+	import org.osmf.net.DynamicStreamingItem;
+	import org.osmf.net.DynamicStreamingResource;
 
 	/**
 	 * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
@@ -222,6 +224,8 @@ package org.mineap.nndd.player
 		
 		/** 新サイズ 864×486ピクセル 旧サイズ 640×368ピクセル */
 		private var _useOldVersionVideoSize:Boolean = false;
+		
+		private var _fmsToken:String;
 		
 		[Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play:Class;
@@ -477,9 +481,8 @@ package org.mineap.nndd.player
 				}
 				var file:File = new File(videoPath);
 				if(!file.exists){
-					Alert.show("動画が既に存在しません。\n動画が移動されたか、削除されている可能性があります。", "エラー");
+					Alert.show("動画が既に存在しません。\n動画が移動されたか、削除されている可能性があります。", "エラー", 4, this.videoPlayer);
 					logManager.addLog("動画が既に存在しません。動画が移動されたか、削除されている可能性があります。:" + file.nativePath);
-					FlexGlobals.topLevelApplication.activate();
 					return;
 				}
 				
@@ -635,7 +638,9 @@ package org.mineap.nndd.player
 				if(video != null){
 					HistoryManager.instance.addVideoByNNDDVideo(video);
 				}else{
-					video = new NNDDVideo("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(_videoID), videoPlayer.title, false, null, null, null, PathMaker.getThumbImgUrl(PathMaker.getVideoID(_videoID)));
+					video = new NNDDVideo("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(_videoID), 
+						videoPlayer.title, false, null, null, null, 
+						PathMaker.getThumbImgUrl(PathMaker.getVideoID(_videoID)));
 					
 					HistoryManager.instance.addVideoByNNDDVideo(video, null, false);
 				}
@@ -662,8 +667,8 @@ package org.mineap.nndd.player
 					videoDisplay.setConstraintValue("right", 0);
 					videoDisplay.setConstraintValue("top", 0);
 					
-					if(videoPath.length > 4 && videoPath.substr(0,4) == "http"){
-						// http
+					if(videoPath.length > 4 && (videoPath.substr(0,4) == "http" || videoPath.substr(0,4) == "rtmp") ){
+						// http or rtmp
 						videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
 					}else{
 						// file(ローカル)
@@ -676,7 +681,28 @@ package org.mineap.nndd.player
 					videoInfoView.videoType = "FLV/MP4";
 					
 					videoDisplay.autoPlay = autoPlay;
-					videoDisplay.source = videoPath;
+					
+					if (videoPath.indexOf("rtmp") == 0 && this._fmsToken != null)
+					{
+						
+						// RTMPの時
+						// FIXME: 未実装。だれかやり方教えて・・・。
+						
+//						var resource:DynamicStreamingResource = new DynamicStreamingResource("smile-chefsf.nicovideo.jp");
+//						resource.urlIncludesFMSApplicationInstance = true;
+//						var vector:Vector.<DynamicStreamingItem> = new Vector.<DynamicStreamingItem>(1);
+//						vector[0] = new DynamicStreamingItem(videoPath, 1200);
+//						resource.streamItems = vector;
+//						var element:VideoElement = new VideoElement(resource);
+//						
+//						videoDisplay.source = element;
+						
+//						(videoDisplay.mx_internal::videoPlayer as MediaPlayer).authenticateWithToken(this._fmsToken);
+					}
+					else
+					{
+						videoDisplay.source = videoPath;
+					}
 					videoDisplay.autoRewind = false;
 					videoDisplay.volume = videoPlayer.videoController.slider_volume.value;
 					videoPlayer.videoController_under.slider_volume.value = videoPlayer.videoController.slider_volume.value;
@@ -1012,7 +1038,7 @@ package org.mineap.nndd.player
 					logManager.addLog("過去ログの取得に失敗:" + event);
 					
 					FlexGlobals.topLevelApplication.activate();
-					Alert.show("過去ログの取得に失敗しました。\nご利用のアカウントでは過去ログを取得できない可能性があります。\n(この機能はプレミアムアカウントでのみ利用可能です。)", Message.M_ERROR);
+					Alert.show("過去ログの取得に失敗しました。\nご利用のアカウントでは過去ログを取得できない可能性があります。\n(この機能はプレミアムアカウントでのみ利用可能です。)", Message.M_ERROR, 4, this.videoPlayer);
 				});
 				renewDownloadManagerForOldComment.addEventListener(RenewDownloadManager.PROCCESS_CANCEL, function(event:Event):void{
 					videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
@@ -1038,7 +1064,7 @@ package org.mineap.nndd.player
 					renewDownloadManagerForOldComment = null;
 					
 					FlexGlobals.topLevelApplication.activate();
-					Alert.show("過去ログの取得に失敗しました。", Message.M_ERROR);
+					Alert.show("過去ログの取得に失敗しました。", Message.M_ERROR, 4, this.videoPlayer);
 				});
 				
 				var videoId:String = PathMaker.getVideoID(this._videoID);
@@ -3808,7 +3834,7 @@ package org.mineap.nndd.player
 					trace(event);
 					logManager.addLog("\t" + CommentPost.COMMENT_POST_FAIL + ":" + event);
 					logManager.addLog("コメント投稿失敗");
-					Alert.show("コメントの投稿に失敗\n\n" + event.text, Message.M_ERROR);
+					Alert.show("コメントの投稿に失敗\n\n" + event.text, Message.M_ERROR, 4, this.videoPlayer);
 					commentPost.close();
 				});
 				commentPost.addEventListener(CommentPost.COMMENT_POST_SUCCESS, function(event:Event):void{
@@ -3850,8 +3876,25 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		public function playMovie(url:String, playList:PlayList = null, playListIndex:int = -1, videoTitle:String = "", isEconomy:Boolean = false):void{
+			_playMovie(url, null, playList, playListIndex, videoTitle, isEconomy);
+		}
+		
+		/**
+		 * 渡されたURLで動画を再生します。
+		 * 
+		 * @param url 再生したい動画のURL（ローカルの場合でもURL形式ならば有効）
+		 * @param token Flash Media Serverの認証を行うためのトークン
+		 * @param playList プレイリストの場合はPlayListを指定
+		 * @param playListIndex プレイリスト内でどの項目を再生するか指定
+		 * @param videoTitle ストリーミング再生等で動画のタイトルを取得するのが難しい場合は動画のタイトルを指定します。
+		 * @param isEconomy エコノミーモードで再生するかどうかです。デフォルトではfalseで、エコノミーモードで再生しません。
+		 * 
+		 */
+		public function _playMovie(url:String, token:String = null, playList:PlayList = null, playListIndex:int = -1, videoTitle:String = "", isEconomy:Boolean = false):void{
 			
 			try{
+				
+				this._fmsToken = token;
 				
 				this.videoPlaying = true;
 				
@@ -3905,7 +3948,7 @@ package org.mineap.nndd.player
 				
 				setPlayed(PathMaker.getVideoID(url));
 				
-				if(url.indexOf("http://") == -1){
+				if(url.indexOf("http://") == -1 && url.indexOf("rtmp") == -1){
 					/* ---- ローカルの動画を再生 ---- */
 					
 					videoPlayer.title = url;
@@ -3966,9 +4009,8 @@ package org.mineap.nndd.player
 					}
 					
 					if(!file.exists){
-						Alert.show(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath, Message.M_ERROR);
+						Alert.show(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath, Message.M_ERROR, 4, this.videoPlayer);
 						logManager.addLog(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath);
-						FlexGlobals.topLevelApplication.activate();
 						return;
 					}
 					
@@ -4001,11 +4043,21 @@ package org.mineap.nndd.player
 							this.init(url, PlayerController.WINDOW_TYPE_FLV, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
 						}
 					}
-				}else if(url.match(new RegExp("http://smile")) != null || url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null){
+				}else if((url.match(new RegExp("http://smile.*")) != null)
+					|| (url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null )
+					|| (url.match(new RegExp("rtmp[^:]*://smile.*")) != null)){
 					
 					/* ストリーミング再生(接続先動画サーバがわかっている時) */
 					
 					logManager.addLog("***動画の再生(ストリーミング)***");
+					
+					if (url.indexOf("rtmp") == 0)
+					{
+						Alert.show(videoPlayer.title + " を再生できませんでした。\n\nこの動画はrtmp形式で配信されていますが、NNDDはrtmp形式の動画の再生に対応していません。", "エラー", 4, this.videoPlayer);
+						logManager.addLog("rtmp形式の動画の再生には非対応:" + url);
+						
+						return;
+					}
 					
 					var commentPath:String = libraryManager.tempDir.url + "/nndd.xml";
 					var ownerCommentPath:String = libraryManager.tempDir.url + "/nndd[Owner].xml";
@@ -4102,7 +4154,12 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming._otherNNDDServerAddress = nnddServerAddress;
 						nnddDownloaderForStreaming._otherNNDDServerPort = nnddServerPortNum;
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function(event:Event):void{
-							playMovie((event.target as NNDDDownloader).streamingUrl, playList, playListIndex, (event.target as NNDDDownloader).nicoVideoName, nnddDownloaderForStreaming.isEconomyMode);
+							_playMovie((event.target as NNDDDownloader).streamingUrl, 
+								(event.target as NNDDDownloader).fmsToken, 
+								playList, playListIndex, 
+								(event.target as NNDDDownloader).nicoVideoName, 
+								nnddDownloaderForStreaming.isEconomyMode);
+							
 							removeStreamingPlayHandler(event);
 							nnddDownloaderForStreaming = null;
 							
@@ -4168,9 +4225,8 @@ package org.mineap.nndd.player
 						videoPlayer.label_downloadStatus.text = "";
 						videoPlayer.setControllerEnable(true);
 						
-						Alert.show("ストリーミング再生中に予期せぬ例外が発生しました。\nError:" + e, Message.M_ERROR);
+						Alert.show("ストリーミング再生中に予期せぬ例外が発生しました。\nError:" + e, Message.M_ERROR, 4, this.videoPlayer);
 						logManager.addLog("ストリーミング再生中に予期せぬ例外が発生しました。\nError:" + e + ":" + e.getStackTrace());
-						FlexGlobals.topLevelApplication.activate();
 						nnddDownloaderForStreaming.close(true, true);
 						nnddDownloaderForStreaming = null;
 						
@@ -4183,9 +4239,8 @@ package org.mineap.nndd.player
 			}catch(error:Error){
 				trace(error.getStackTrace());
 				videoPlayer.setControllerEnable(true);
-				Alert.show(url + "を再生できませんでした。\n" + error, Message.M_ERROR);
+				Alert.show(url + "を再生できませんでした。\n" + error, Message.M_ERROR, 4, this.videoPlayer);
 				logManager.addLog("再生できませんでした:url=[" + url + "]\n" + error.getStackTrace());
-				FlexGlobals.topLevelApplication.activate();
 			}
 		}
 		
@@ -4465,7 +4520,7 @@ package org.mineap.nndd.player
 			if(videoId != null){
 				WebServiceAccessUtil.openNiconicoDougaForVideo(videoId);
 			}else{
-				Alert.show("動画IDが見つからないため、URLを特定できませんでした。", Message.M_ERROR);
+				Alert.show("動画IDが見つからないため、URLを特定できませんでした。", Message.M_ERROR, 4, this.videoPlayer);
 				logManager.addLog("ニコ動での閲覧に失敗:動画IDが見つからないため、URLを特定できませんでした。");
 			}
 		}
@@ -4562,7 +4617,7 @@ package org.mineap.nndd.player
 				(FlexGlobals.topLevelApplication as NNDD).addDownloadListForInfoView(video);
 				logManager.addLog("InfoViewからDLリストへ追加:" + video.getDecodeUrl());
 			}else{
-				Alert.show("動画IDが見つからないため、DLリストに追加できませんでした。", Message.M_ERROR);
+				Alert.show("動画IDが見つからないため、DLリストに追加できませんでした。", Message.M_ERROR, 4, this.videoPlayer);
 				logManager.addLog("DLリストへの追加失敗:動画IDが見つからないため、DLリストに動画を追加できませんでした。");
 			}
 		}

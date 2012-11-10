@@ -10,15 +10,14 @@ package org.mineap.nndd
 	import flash.filesystem.File;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestDefaults;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
-	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	
 	import mx.controls.Alert;
 	import mx.events.CloseEvent;
-	import mx.utils.StringUtil;
 	
 	import org.mineap.nicovideo4as.CommentLoader;
 	import org.mineap.nicovideo4as.Login;
@@ -40,7 +39,6 @@ package org.mineap.nndd
 	import org.mineap.nndd.model.NNDDVideo;
 	import org.mineap.nndd.player.comment.Command;
 	import org.mineap.nndd.server.RequestType;
-	import org.mineap.nndd.util.LibraryUtil;
 	import org.mineap.nndd.util.PathMaker;
 	import org.mineap.nndd.util.ThumbInfoAnalyzer;
 	import org.mineap.util.config.ConfigManager;
@@ -94,6 +92,7 @@ package org.mineap.nndd
 		private var _when:Date;
 		private var _waybackkey:String;
 		private var _maxCommentCount:Number;
+		private var _fmsToken:String;
 		
 		private var _nicowariVideoUrl:String;
 		private var _nicowariVideoId:String;
@@ -323,7 +322,6 @@ package org.mineap.nndd
 		 */
 		public function NNDDDownloader()
 		{
-			
 			this._login = new Login();
 			this._watchVideo = new WatchVideoPage();
 			this._getflvAccess = new ApiGetFlvAccess();
@@ -888,6 +886,7 @@ package org.mineap.nndd
 			this._flvResultAnalyzer = new GetFlvResultAnalyzer();
 			this._flvResultAnalyzer.analyze(this._getflvAccess.data);
 			this._threadId = this._flvResultAnalyzer.threadId;
+			this._fmsToken = this._flvResultAnalyzer.fmsToken;
 			
 			if (this._flvResultAnalyzer.url == null)
 			{
@@ -2185,6 +2184,16 @@ package org.mineap.nndd
 		public function get nnddServerVideoUrl():String
 		{
 			return new String(this._nnddServerVideoUrl);
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */
+		public function get fmsToken():String
+		{
+			return this._fmsToken;
 		}
 		
 		/**
