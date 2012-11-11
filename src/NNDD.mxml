@@ -2610,7 +2610,7 @@
 						<s:VGroup width="100%">
 							<mx:CheckBox id="checkbox_allowGetOtherNNDDInfo"
 										 label="他のNNDDからの動画情報／マイリスト情報を取得する"
-										 toolTip="NNDDの起動時にPlayerを開きます。"
+										 toolTip="他のNNDDから動画情報／マイリスト情報を取得します。指定したIPアドレスのNNDDが再生しようとした動画を保持している場合は、ニコニコ動画ではなく、保存済みの動画をストリーミング再生します。また、マイリストの視聴済み判定を他のNNDDに反映します。"
 										 change="checkbox_allowGetOtherNNDDInfo_changeHandler(event)" 
 										 />
 							<s:HGroup paddingLeft="20" verticalAlign="middle">
