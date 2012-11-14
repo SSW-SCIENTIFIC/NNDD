@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.3.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/57383/NNDDv2_3_0.dmg</url>
+	<version>2.3.1</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/57383/NNDDv2_3_1.dmg</url>
 	<description><![CDATA[
+2012-11-14 v2.3.1
+・【バグフィックス】マイリスト更新に失敗する問題を修正
+
 2012-11-10 v2.3.0
 ・ローカルネットワーク上の別なNNDDに対して、動画を配信する機能を実装。(相手もv2.3以降である必要がある)
 ・ランキング、検索、マイリストの各タブで行の高さを同期するオプションを追加
@@ -17,9 +20,12 @@
 </dmg>
 
 <exe>
-	<version>2.3.0</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/57383/NNDDv2_3_0.exe</url>
+	<version>2.3.1</version>
+	<url>http://osdn.dl.sourceforge.jp/nndd/57383/NNDDv2_3_1.exe</url>
 	<description><![CDATA[
+2012-11-14 v2.3.1
+・【バグフィックス】マイリスト更新に失敗する問題を修正
+
 2012-11-10 v2.3.0
 ・ローカルネットワーク上の別なNNDDに対して、動画を配信する機能を実装。(相手もv2.3以降である必要がある)
 ・ランキング、検索、マイリストの各タブで行の高さを同期するオプションを追加

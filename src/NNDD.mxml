@@ -2580,7 +2580,7 @@
 							<mx:CheckBox id="checkbox_allowOtherNNDDConnection"
 										 label="他のNNDDからの通信を受け付ける"
 										 change="checkbox_allowOtherNNDDConnection_changeHandler(event)"
-										 toolTip="他のNNDDからの保存済み動画取得要求およびマイリスト取得要求を受け付けます。"/>
+										 toolTip="他のNNDDからの保存済み動画取得要求およびマイリスト視聴済み情報取得要求を受け付けます。"/>
 							
 							<s:HGroup paddingLeft="20" verticalAlign="middle">
 								<mx:Label text="待ち受けポート番号:" />
@@ -2593,14 +2593,14 @@
 										 change="checkbox_enableShareVideoInfo_changeHandler(event)"
 										 toolTip="他のNNDDに対してこのNNDDでDL済み動画の一覧情報と、DL済み動画そのもののを提供します。"/>
 							<mx:CheckBox id="checkbox_enableShareMyListInfo"
-										 label="マイリスト一覧とマイリストの視聴済み情報を配信する"
+										 label="マイリストの視聴済み情報を配信する"
 										 enabled="{checkbox_allowOtherNNDDConnection.selected}"
 										 paddingLeft="20" selected="false"
 										 change="checkbox_enableShareMyListInfo_changeHandler(event)"
-										 toolTip="他のNNDDに対してこのNNDDのマイリスト一覧とマイリスト視聴済み情報を提供します。"/>
+										 toolTip="他のNNDDに対してこのNNDDのマイリスト視聴済み情報を提供します。"/>
 							<mx:CheckBox id="checkbox_enableSyncMyListYetPlay"
 										 label="マイリストの視聴済み判定を同期する"
-										 enabled="{checkbox_enableShareMyListInfo.selected}"
+										 enabled="{checkbox_enableShareMyListInfo.selected &amp;&amp; checkbox_allowOtherNNDDConnection.selected}"
 										 paddingLeft="40" selected="false"
 										 change="checkbox_enableSyncMyListYetPlay_changeHandler(event)"
 										 toolTip="他のNNDDの視聴済み判定をこのNNDDに同期します"/>
@@ -2609,8 +2609,8 @@
 						<mx:HRule width="100%" height="20" />
 						<s:VGroup width="100%">
 							<mx:CheckBox id="checkbox_allowGetOtherNNDDInfo"
-										 label="他のNNDDからの動画情報／マイリスト情報を取得する"
-										 toolTip="他のNNDDから動画情報／マイリスト情報を取得します。指定したIPアドレスのNNDDが再生しようとした動画を保持している場合は、ニコニコ動画ではなく、保存済みの動画をストリーミング再生します。また、マイリストの視聴済み判定を他のNNDDに反映します。"
+										 label="他のNNDDからの動画／マイリスト視聴済みを取得する"
+										 toolTip="他のNNDDからの動画／マイリスト視聴済みを取得します。指定したIPアドレスのNNDDが再生しようとした動画を保持している場合は、ニコニコ動画ではなく、保存済みの動画をストリーミング再生します。また、マイリストの視聴済み判定を他のNNDDに反映します。"
 										 change="checkbox_allowGetOtherNNDDInfo_changeHandler(event)" 
 										 />
 							<s:HGroup paddingLeft="20" verticalAlign="middle">
