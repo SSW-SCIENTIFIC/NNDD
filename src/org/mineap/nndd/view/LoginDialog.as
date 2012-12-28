@@ -196,7 +196,8 @@ private function removeNameAndPass():void{
 	
 	var temp:Error = null;
 	try{
-		EncryptedLocalStore.removeItem("userName");
+//		EncryptedLocalStore.removeItem("userName");
+		ConfigManager.getInstance().removeItem("userName");
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		temp = error;
@@ -223,9 +224,13 @@ private function setNameAndPass(name:String, pass:String):void{
 	var bytes:ByteArray = new ByteArray();
 	var temp:Error = null;
 	try{
-		EncryptedLocalStore.removeItem("userName");
-		bytes.writeUTFBytes(name);
-		EncryptedLocalStore.setItem("userName", bytes);
+//		EncryptedLocalStore.removeItem("userName");
+//		bytes.writeUTFBytes(name);
+//		EncryptedLocalStore.setItem("userName", bytes);
+		
+		ConfigManager.getInstance().removeItem("userName");
+		ConfigManager.getInstance().setItem("userName", name);
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		temp = error;

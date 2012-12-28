@@ -7,19 +7,24 @@
  */
 
 import flash.data.EncryptedLocalStore;
-import flash.desktop.*;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
-import flash.errors.*;
+import flash.desktop.NativeApplication;
+import flash.desktop.NativeDragManager;
+import flash.errors.IOError;
 import flash.filesystem.File;
 import flash.geom.Rectangle;
 import flash.globalization.LocaleID;
 import flash.globalization.NumberFormatter;
-import flash.net.*;
 import flash.net.FileFilter;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.net.URLRequestDefaults;
+import flash.net.navigateToURL;
 import flash.system.Capabilities;
 import flash.text.Font;
-import flash.ui.*;
+import flash.ui.ContextMenuItem;
+import flash.ui.Keyboard;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
@@ -28,50 +33,99 @@ import mx.collections.ICollectionView;
 import mx.collections.Sort;
 import mx.collections.SortField;
 import mx.containers.Canvas;
-import mx.controls.*;
-import mx.controls.dataGridClasses.*;
+import mx.controls.Alert;
+import mx.controls.CheckBox;
+import mx.controls.ComboBox;
+import mx.controls.DataGrid;
+import mx.controls.TextInput;
+import mx.controls.TileList;
+import mx.controls.dataGridClasses.DataGridItemRenderer;
+import mx.controls.dataGridClasses.DataGridListData;
 import mx.controls.listClasses.IListItemRenderer;
 import mx.controls.sliderClasses.Slider;
 import mx.controls.treeClasses.TreeItemRenderer;
-import mx.core.*;
+import mx.core.Application;
+import mx.core.ClassFactory;
+import mx.core.FlexGlobals;
+import mx.core.FlexLoader;
+import mx.core.UITextField;
 import mx.core.windowClasses.StatusBar;
-import mx.events.*;
+import mx.events.AIREvent;
+import mx.events.CloseEvent;
+import mx.events.FlexEvent;
+import mx.events.FlexNativeWindowBoundsEvent;
+import mx.events.IndexChangedEvent;
+import mx.events.ListEvent;
+import mx.events.ResizeEvent;
+import mx.events.SliderEvent;
 import mx.managers.PopUpManager;
 
-import org.mineap.nicovideo4as.*;
+import org.mineap.nicovideo4as.Login;
+import org.mineap.nicovideo4as.UserAgentManager;
 import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
 import org.mineap.nicovideo4as.loader.MyListLoader;
 import org.mineap.nicovideo4as.loader.RankingLoader;
 import org.mineap.nicovideo4as.loader.api.ApiGetThumbInfoAccess;
-import org.mineap.nicovideo4as.model.*;
+import org.mineap.nicovideo4as.model.SearchType;
 import org.mineap.nicovideo4as.util.HtmlUtil;
-import org.mineap.nndd.*;
 import org.mineap.nndd.Access2Nico;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
+import org.mineap.nndd.NNDDMyListAdder;
+import org.mineap.nndd.NNDDMyListLoader;
 import org.mineap.nndd.RenewDownloadManager;
 import org.mineap.nndd.SystemTrayIconManager;
-import org.mineap.nndd.download.*;
+import org.mineap.nndd.download.DownloadManager;
+import org.mineap.nndd.download.ScheduleManager;
 import org.mineap.nndd.downloadedList.DownloadedListManager;
-import org.mineap.nndd.event.*;
+import org.mineap.nndd.event.LibraryLoadEvent;
+import org.mineap.nndd.event.MyListRenewProgressEvent;
 import org.mineap.nndd.history.HistoryManager;
-import org.mineap.nndd.library.*;
+import org.mineap.nndd.library.ILibraryManager;
+import org.mineap.nndd.library.LibraryManagerBuilder;
+import org.mineap.nndd.library.LibraryTreeBuilder;
+import org.mineap.nndd.library.LocalVideoInfoLoader;
 import org.mineap.nndd.library.namedarray.NamedArrayLibraryManager;
 import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
-import org.mineap.nndd.model.*;
-import org.mineap.nndd.model.tree.*;
-import org.mineap.nndd.myList.*;
+import org.mineap.nndd.model.MyListSortType;
+import org.mineap.nndd.model.NNDDVideo;
+import org.mineap.nndd.model.PlayList;
+import org.mineap.nndd.model.RssType;
+import org.mineap.nndd.model.Schedule;
+import org.mineap.nndd.model.SearchItem;
+import org.mineap.nndd.model.SearchSortString;
+import org.mineap.nndd.model.SearchTypeString;
+import org.mineap.nndd.model.tree.ITreeItem;
+import org.mineap.nndd.model.tree.TreeFileItem;
+import org.mineap.nndd.model.tree.TreeFolderItem;
+import org.mineap.nndd.myList.MyList;
+import org.mineap.nndd.myList.MyListBuilder;
+import org.mineap.nndd.myList.MyListHistoryManager;
+import org.mineap.nndd.myList.MyListManager;
+import org.mineap.nndd.myList.MyListRenewScheduler;
+import org.mineap.nndd.myList.MyListTreeItemRenderer;
 import org.mineap.nndd.nativeProcessPlayer.NativeProcessPlayerManager;
-import org.mineap.nndd.playList.*;
-import org.mineap.nndd.player.*;
+import org.mineap.nndd.playList.PlayListDataGridBuilder;
+import org.mineap.nndd.playList.PlayListManager;
+import org.mineap.nndd.player.PlayerController;
+import org.mineap.nndd.player.PlayerManager;
 import org.mineap.nndd.ranking.RankingListBuilder;
 import org.mineap.nndd.search.SearchItemManager;
 import org.mineap.nndd.server.ServerManager;
 import org.mineap.nndd.tag.NgTagManager;
 import org.mineap.nndd.tag.TagManager;
 import org.mineap.nndd.user.UserManager;
-import org.mineap.nndd.util.*;
-import org.mineap.nndd.versionCheck.*;
+import org.mineap.nndd.util.ConfFileUtil;
+import org.mineap.nndd.util.DataGridColumnWidthUtil;
+import org.mineap.nndd.util.DateUtil;
+import org.mineap.nndd.util.LibraryUtil;
+import org.mineap.nndd.util.MyListUtil;
+import org.mineap.nndd.util.PathMaker;
+import org.mineap.nndd.util.ShortUrlChecker;
+import org.mineap.nndd.util.TreeDataBuilder;
+import org.mineap.nndd.util.WebServiceAccessUtil;
+import org.mineap.nndd.versionCheck.VersionCheckerFactory;
+import org.mineap.nndd.versionCheck.VersionUtil;
 import org.mineap.nndd.view.LoadingPicture;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
@@ -1874,6 +1928,8 @@ private function readStore(isLogout:Boolean = false):void{
 	
 	errorName = "NameAndPass";
 	
+	var confUserName:String = null;
+	
 	/*ローカルストアから値の呼び出し*/
 	try{
 		var confValue:String = ConfigManager.getInstance().getItem("storeNameAndPass");
@@ -1894,12 +1950,22 @@ private function readStore(isLogout:Boolean = false):void{
 				}
 			}
 		}else{
+			// 設定ファイルを使う方
 			isStore = ConfUtil.parseBoolean(confValue);
 			if(isStore){
-				storedValue = EncryptedLocalStore.getItem("userName");
-				if(storedValue != null){
-					name = storedValue.readUTFBytes(storedValue.length);
+				confUserName = ConfigManager.getInstance().getItem("userName");
+				if (confUserName == null)
+				{
+					storedValue = EncryptedLocalStore.getItem("userName");
+					if(storedValue != null){
+						name = storedValue.readUTFBytes(storedValue.length);
+					}
 				}
+				else
+				{
+					name = confUserName;
+				}
+				
 				storedValue = EncryptedLocalStore.getItem("password");
 				if(storedValue != null){
 					pass = storedValue.readUTFBytes(storedValue.length);
@@ -1914,7 +1980,14 @@ private function readStore(isLogout:Boolean = false):void{
 		ConfigManager.getInstance().removeItem("isAutoLogin");
 		ConfigManager.getInstance().setItem("isAutoLogin", false);
 		
-		name = "";
+		if (confUserName != null)
+		{
+			name = confUserName;
+		}
+		else
+		{
+			name = "";
+		}
 		pass = "";
 		
 		/* エラーログ出力 */
