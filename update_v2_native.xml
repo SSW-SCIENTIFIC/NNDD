@@ -2,10 +2,11 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.3.1</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/57383/NNDDv2_3_1.dmg</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/57420/NNDDv2_3_1.dmg</url>
 	<description><![CDATA[
 2012-11-14 v2.3.1
-・【バグフィックス】マイリスト更新に失敗する問題を修正
+・【バグフィックス】マイリスト更新に失敗する問題を修正(Mac版)
+・【バグフィックス】共有設定の文言を修正
 
 2012-11-10 v2.3.0
 ・ローカルネットワーク上の別なNNDDに対して、動画を配信する機能を実装。(相手もv2.3以降である必要がある)
@@ -21,10 +22,11 @@
 
 <exe>
 	<version>2.3.1</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/57383/NNDDv2_3_1.exe</url>
+	<url>http://osdn.dl.sourceforge.jp/nndd/57420/NNDDv2_3_1.exe</url>
 	<description><![CDATA[
 2012-11-14 v2.3.1
-・【バグフィックス】マイリスト更新に失敗する問題を修正
+・【バグフィックス】マイリスト更新に失敗する問題を修正(Mac版)
+・【バグフィックス】共有設定の文言を修正
 
 2012-11-10 v2.3.0
 ・ローカルネットワーク上の別なNNDDに対して、動画を配信する機能を実装。(相手もv2.3以降である必要がある)
