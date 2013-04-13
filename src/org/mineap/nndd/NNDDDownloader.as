@@ -697,7 +697,7 @@ package org.mineap.nndd
 		private function thumbInfoGetSuccess(event:Event):void{
 			
 			// closeが呼ばれていないか？
-			if (this._thumbImgLoader == null)
+			if (this._thumbInfoLoader == null)
 			{
 				return;
 			}
@@ -724,8 +724,8 @@ package org.mineap.nndd
 					
 					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title + ", errorCode=" + analyzer.errorCode);
 					trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
-					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
-					close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
+					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "サムネイル情報の解析に失敗(errorCode=" + analyzer.errorCode + ")"));
+					close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "サムネイル情報の解析に失敗(errorCode=" + analyzer.errorCode + ")"));
 					
 					trace(this._saveVideoName);
 					trace(xml);
@@ -736,10 +736,10 @@ package org.mineap.nndd
 			}catch(error:Error){
 				trace(error.getStackTrace());
 				
-				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title);
+				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title + ", error=" + error);
 				trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
-				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
-				close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed"));
+				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed(" + error +")" ));
+				close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "ThumbInfoAnalyzeFailed(" + error +")" ));
 				
 				trace(this._saveVideoName);
 				trace(xml);
