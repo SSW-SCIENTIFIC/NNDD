@@ -1366,22 +1366,37 @@ private function fileSystemTreeItemHandler(event:ContextMenuEvent):void{
 			}else{
 				if(isEnableLibrary){
 					// ファイルを持っているのはライブラリ
-					playMovieByLibraryDir(itreeItem.file);
+					var videoArray:ArrayCollection = dataGrid_downloaded.dataProvider as ArrayCollection;
+					playMovieByLibraryDir(itreeItem.file.name, convertDataGridItemToNNDDVideo(videoArray));
 				}
 			}
 		}
 		else
 		{
 			// treeが選択されていない時は自分が居るディレクトリから調べる
+			
 			var obj:Object = dataGrid_downloaded.selectedItem;
 			if(obj != null){
+				var videoArray:ArrayCollection = dataGrid_downloaded.dataProvider as ArrayCollection;
+				
 				var file:File = new File(obj.dataGridColumn_videoPath as String);
-				playMovieByLibraryDir(file.parent);
+				playMovieByLibraryDir(file.parent.name,  convertDataGridItemToNNDDVideo(videoArray));
 			}
 		}
 	}
 	
 }
+
+private function convertDataGridItemToNNDDVideo(dataProvider:ArrayCollection):Vector.<NNDDVideo> 
+{
+	var videos:Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
+	for each(var elem:Object in dataProvider)
+	{
+		var video:NNDDVideo = new NNDDVideo(elem.dataGridColumn_videoPath, elem.dataGridColumn_videoName);
+		videos.push(video);
+	}
+	return videos;
+};
 
 /**
  * 
@@ -5699,17 +5714,16 @@ private function playMovieByPlayListIndex(pName:String):void{
  * @param file
  * 
  */
-private function playMovieByLibraryDir(file:File):void{
+private function playMovieByLibraryDir(playListName:String, videos:Vector.<NNDDVideo>):void{
 	
-	var vector:Vector.<NNDDVideo> = libraryManager.getNNDDVideoArray(file, this.showAll);
 	
-	if(vector.length > 0){
+	if(videos != null && videos.length > 0){
 		
 		var playList:PlayList = new PlayList();
-		playList.name = file.name + ".m3u";
-		playList.items = vector;
+		playList.name = playListName + ".m3u";
+		playList.items = videos;
 		
-		playMovie(vector[0].getDecodeUrl(), 0, playList);
+		playMovie(videos[0].getDecodeUrl(), 0, playList);
 		
 	}
 }

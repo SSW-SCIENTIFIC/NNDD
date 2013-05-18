@@ -1082,7 +1082,8 @@
 					}else{
 						if(isEnableLibrary){
 							// ファイルを持っているのはライブラリ
-							playMovieByLibraryDir(itreeItem.file);
+							var vector:Vector.<NNDDVideo> = libraryManager.getNNDDVideoArray(itreeItem.file, this.showAll);
+							playMovieByLibraryDir(itreeItem.file.name, vector);
 						}
 					}
 				}
@@ -2269,7 +2270,7 @@
 									 label="動画の保存先にNNDDのシステム情報を保存する(NNDDの再起動後有効)"
 									 click="useAppSystemDirChanged(event)" paddingLeft="20"
 									 selected="true"
-									 toolTip="NNDDのシステム情報(systemフォルダ下に保存される情報)を、動画のDL先に指定されたフォルダの直下に保存します。このチェックボックスをはずすと、システム情報はOSが提供する専用のフォルダに保存します。"/>
+									 toolTip="NNDDのシステム情報(systemフォルダ下に保存される情報)を、動画のDL先に指定されたフォルダの直下に保存します。このチェックボックスをはずすと、システム情報はOSが提供する専用のフォルダに保存します。設定が保存されない場合、このオプションをオンにすると設定が保存される場合があります。"/>
 						
 						<s:HGroup verticalAlign="middle">
 							<mx:Label text="動画の保存先にあるすべての項目をスキャンし、ライブラリを最新の状態に更新する" />
