@@ -638,7 +638,7 @@
 				<mx:Canvas label="設定" id="canvas_config" verticalScrollPolicy="off" horizontalScrollPolicy="off" left="0" top="0" bottom="0" right="0">
 					<mx:TabNavigator left="0" top="0" bottom="0" right="0" id="tab_config"
 									 backgroundAlpha="0.3">
-						<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1">
+						<mx:Canvas label="動画再生" left="0" top="0" bottom="0" right="0" id="canvas_config_1" verticalScrollPolicy="on">
 							
 							<mx:RadioButtonGroup id="radioGroup_resizeType" selectedValue="1" />
 							
@@ -714,7 +714,7 @@
 							
 								
 						</mx:Canvas>
-						<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2">
+						<mx:Canvas label="コメント表示" left="0" top="0" bottom="0" right="0" id="canvas_config_2" verticalScrollPolicy="on">
 							
 							<s:VGroup left="10" top="10" right="10">
 							
@@ -838,7 +838,7 @@
 								
 							</s:VGroup>
 						</mx:Canvas>
-						<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3">
+						<mx:Canvas label="その他" left="0" top="0" bottom="0" right="0" id="canvas_config_3" verticalScrollPolicy="on">
 							
 							<s:VGroup left="10" top="10" right="10">
 							
