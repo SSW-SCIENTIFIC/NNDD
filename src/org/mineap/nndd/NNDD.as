@@ -5141,9 +5141,9 @@ private function saveSearchHistory(searchHistoryProvider:Array):void{
 		}
 	}
 	
-	if(searchHistoryProvider.length > 0){
+//	if(searchHistoryProvider.length > 0){
 		ConfigManager.getInstance().save();
-	}
+//	}
 }
 
 private function loadSearchHistory():void{

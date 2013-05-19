@@ -51,6 +51,8 @@ package org.mineap.util.config
 		 */
 		public function save():void{
 			
+			this._configIO.clearOnMemory();
+			
 			for(var key:String in this._map){
 				var value:String = this._map[key];
 				if(value != null){

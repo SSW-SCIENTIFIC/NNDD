@@ -150,6 +150,9 @@ package org.mineap.nndd.myList
 				ConfigManager.getInstance().setItem("myListHistoryName" + i, myList.myListName);
 				ConfigManager.getInstance().setItem("myListHistoryUrl" + i, myList.myListUrl);
 			}
+			
+			ConfigManager.getInstance().save();
+			
 		}
 		
 	}

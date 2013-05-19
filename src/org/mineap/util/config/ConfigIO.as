@@ -185,6 +185,14 @@ package org.mineap.util.config
 		}
 		
 		/**
+		 * メモリ上で保持している設定ファイル情報をクリアします
+		 */
+		public function clearOnMemory():void
+		{
+			_confXML = <config/>;
+		}
+		
+		/**
 		 * 
 		 * @param event
 		 * 
