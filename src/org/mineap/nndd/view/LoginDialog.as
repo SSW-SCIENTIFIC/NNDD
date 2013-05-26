@@ -35,21 +35,22 @@ public static var LABEL_CANCEL:String = "キャンセル";
 public static var LABEL_LOGIN:String = "ログイン";
 public static var LABEL_NO_LOGIN:String = "ログインしない";
 
-private var isStore:Boolean;
-private var isAutoLogin:Boolean;
-private var isLogout:Boolean;
-private var logManager:LogManager;
+private var isStoreName:Boolean = false;
+private var isStorePass:Boolean = false;
+private var isAutoLogin:Boolean = false;
+private var isLogout:Boolean = false;
+private var logManager:LogManager= null;
 
 //ログイン用URLローダー
 private var _login:Login = null;
 
 private var loading:LoadingPicture = new LoadingPicture();
 
-private var userName:String;
-private var password:String;
+private var userName:String = null;
+private var password:String = null;
 
 
-public function initLoginDialog(topURL:String, loginURL:String, isStore:Boolean, isAutoLogin:Boolean, logManager:LogManager, userName:String = "", password:String = "", isLogout:Boolean = false):void
+public function initLoginDialog(topURL:String, loginURL:String, logManager:LogManager, isLogout:Boolean = false):void
 {
 	TOP_PAGE_URL = topURL;
 	LOGIN_URL = loginURL;
@@ -57,24 +58,9 @@ public function initLoginDialog(topURL:String, loginURL:String, isStore:Boolean,
 	noLoginButton.enabled = true;
 	
 	this.logManager = logManager;
-	this.isStore = isStore;
-	this.isAutoLogin = isAutoLogin;
 	this.isLogout = isLogout;
-	this.userName = userName;
-	this.password = password;
-	
-	this.addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteEventHandler);
 	
 	textInput_userName.setFocus();
-}
-
-public function creationCompleteEventHandler(event:Event):void{
-	
-	checkBox_storeUserNameAndPassword.selected = this.isStore;
-	checkbox_autoLogin.selected = this.isAutoLogin;
-	
-	execAutoLogin();
-	
 }
 
 private function execAutoLogin():void
@@ -137,21 +123,39 @@ private function notLogin():void
 private function saveStore():void{
 	var bytes:ByteArray = new ByteArray();
 	
-	if(checkBox_storeUserNameAndPassword.selected){
+	if(checkBox_storeUserName.selected){
 		
-		setNameAndPass(this.userName, this.password);
+		ConfigManager.getInstance().removeItem("userName");
+		ConfigManager.getInstance().setItem("userName", this.userName);
 		
-		ConfigManager.getInstance().removeItem("storeNameAndPass");
-		ConfigManager.getInstance().setItem("storeNameAndPass", true);
+		ConfigManager.getInstance().removeItem("storeName");
+		ConfigManager.getInstance().setItem("storeName", true);
 		
 	}else{
 		
-		removeNameAndPass();
+		ConfigManager.getInstance().removeItem("userName");
+		ConfigManager.getInstance().setItem("userName", "");
 		
-		ConfigManager.getInstance().removeItem("storeNameAndPass");
-		ConfigManager.getInstance().setItem("storeNameAndPass", false);
+		ConfigManager.getInstance().removeItem("storeName");
+		ConfigManager.getInstance().setItem("storeName", false);
 		
 	}
+	
+	if(checkBox_storePassword.selected)
+	{
+		savePassword(this.password);
+		
+		ConfigManager.getInstance().removeItem("storePass");
+		ConfigManager.getInstance().setItem("storePass", true);
+	}
+	else
+	{
+		removePass();
+		
+		ConfigManager.getInstance().removeItem("storePass");
+		ConfigManager.getInstance().setItem("storePass", false);
+	}
+	
 	
 	ConfigManager.getInstance().removeItem("isAutoLogin");
 	ConfigManager.getInstance().setItem("isAutoLogin", checkbox_autoLogin.selected);
@@ -192,16 +196,9 @@ private function loginFail(event:ErrorEvent):void
 	return;
 }
 
-private function removeNameAndPass():void{
+private function removePass():void{
 	
 	var temp:Error = null;
-	try{
-//		EncryptedLocalStore.removeItem("userName");
-		ConfigManager.getInstance().removeItem("userName");
-	}catch(error:Error){
-		trace(error.getStackTrace());
-		temp = error;
-	}
 	try{
 		EncryptedLocalStore.removeItem("password");
 	}catch(error:Error){
@@ -210,31 +207,18 @@ private function removeNameAndPass():void{
 	}
 	
 	if(temp != null){
-		var message:String = Message.M_CONF_FILE_CAN_NOT_SAVE + "\n" + temp;
+		var message:String = Message.M_PASSWORD_CAN_NOT_SAVE + "\n" + temp;
 		logManager.addLog(message);
 		Alert.show(message, Message.M_ERROR);
 	}
 	
 	EncryptedLocalStore.reset();
 	
-	
 }
 
-private function setNameAndPass(name:String, pass:String):void{
+private function savePassword(pass:String):void{
 	var bytes:ByteArray = new ByteArray();
 	var temp:Error = null;
-	try{
-//		EncryptedLocalStore.removeItem("userName");
-//		bytes.writeUTFBytes(name);
-//		EncryptedLocalStore.setItem("userName", bytes);
-		
-		ConfigManager.getInstance().removeItem("userName");
-		ConfigManager.getInstance().setItem("userName", name);
-		
-	}catch(error:Error){
-		trace(error.getStackTrace());
-		temp = error;
-	}
 	try{
 		EncryptedLocalStore.removeItem("password");
 		bytes = new ByteArray();
@@ -246,7 +230,7 @@ private function setNameAndPass(name:String, pass:String):void{
 	}
 	
 	if(temp != null){
-		var message:String = Message.M_CONF_FILE_CAN_NOT_SAVE + "\n" + temp;
+		var message:String = Message.M_PASSWORD_CAN_NOT_SAVE + "\n" + temp;
 		logManager.addLog(message);
 		Alert.show(message, Message.M_ERROR);
 	}

@@ -77,6 +77,7 @@ package org.mineap.nndd
 		/*主にメッセージ出力*/
 		public static var M_LOCAL_STORE_IS_BROKEN:String = "ローカルストアが破損している可能性があったため、ローカルストアのデータをリセットしました。";
 		public static var M_CONF_FILE_IS_BROKEN:String = "設定ファイルから正しい設定がロードできませんでした。";
+		public static var M_PASSWORD_CAN_NOT_SAVE:String = "パスワードの保存に失敗しました。";
 		public static var M_CONF_FILE_CAN_NOT_SAVE:String = "設定ファイルを保存できませんでした。";
 		public static var M_FAIL_VIDEO_DELETE:String = "動画の削除に失敗しました。ファイルが開かれていない状態でもう一度試してください。";
 		public static var M_FAIL_OTHER_DELETE:String = "削除できなかった項目があります。";

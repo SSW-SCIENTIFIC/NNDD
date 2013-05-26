@@ -1931,8 +1931,6 @@ private function downloadedKeyUpHandler(event:KeyboardEvent):void{
 private function readStore(isLogout:Boolean = false):void{
 	
 	var errorName:String = "LocalStoreKey";
-	var isStore:Boolean = false;
-	var name:String = "" , pass:String = "";
 	
 	var isLocalStoreErrorOccured:Boolean = false;
 	
@@ -1941,79 +1939,9 @@ private function readStore(isLogout:Boolean = false):void{
 	logManager.addLog("設定情報の読み込み:" + ConfigManager.getInstance().confFileNativePath);
 	trace("設定情報の読み込み:" + ConfigManager.getInstance().confFileNativePath);
 	
-	errorName = "NameAndPass";
+	var confValue:String = null;
 	
-	var confUserName:String = null;
-	
-	/*ローカルストアから値の呼び出し*/
-	try{
-		var confValue:String = ConfigManager.getInstance().getItem("storeNameAndPass");
-		if (confValue == null) {
-			var storedValue:ByteArray = EncryptedLocalStore.getItem("storeNameAndPass");
-			if(storedValue != null){
-				isStore = storedValue.readBoolean();
-				
-				if(isStore){
-					storedValue = EncryptedLocalStore.getItem("userName");
-					if(storedValue != null){
-						name = storedValue.readUTFBytes(storedValue.length);
-					}
-					storedValue = EncryptedLocalStore.getItem("password");
-					if(storedValue != null){
-						pass = storedValue.readUTFBytes(storedValue.length);
-					}
-				}
-			}
-		}else{
-			// 設定ファイルを使う方
-			isStore = ConfUtil.parseBoolean(confValue);
-			if(isStore){
-				confUserName = ConfigManager.getInstance().getItem("userName");
-				if (confUserName == null)
-				{
-					storedValue = EncryptedLocalStore.getItem("userName");
-					if(storedValue != null){
-						name = storedValue.readUTFBytes(storedValue.length);
-					}
-				}
-				else
-				{
-					name = confUserName;
-				}
-				
-				storedValue = EncryptedLocalStore.getItem("password");
-				if(storedValue != null){
-					pass = storedValue.readUTFBytes(storedValue.length);
-				}
-			}
-		}
-	}catch(error:Error){
-		
-		// ローカルストアをリセット
-		EncryptedLocalStore.reset();
-		
-		ConfigManager.getInstance().removeItem("isAutoLogin");
-		ConfigManager.getInstance().setItem("isAutoLogin", false);
-		
-		if (confUserName != null)
-		{
-			name = confUserName;
-		}
-		else
-		{
-			name = "";
-		}
-		pass = "";
-		
-		/* エラーログ出力 */
-//		Alert.show(Message.M_LOCAL_STORE_IS_BROKEN, Message.M_ERROR);
-		isLocalStoreErrorOccured = true;
-		logManager.addLog(Message.M_LOCAL_STORE_IS_BROKEN + ":" + Message.FAIL_LOAD_LOCAL_STORE_FOR_NNDD_MAIN_WINDOW + "[" + errorName + "]:" + error + ":" + error.getStackTrace());
-		trace(error.getStackTrace());
-	}
-	
-	try{
-		
+	try{		
 		errorName = "windowPosition_x";
 		//x,y,w,h
 		confValue = ConfigManager.getInstance().getItem("windowPosition_x");
@@ -2582,14 +2510,14 @@ private function readStore(isLogout:Boolean = false):void{
 	}
 	
 	/* ログイン処理 */
-	createLoginDialog(isStore, isAutoLogin, name, pass, isLogout, isLocalStoreErrorOccured);
+	createLoginDialog(isLogout, isLocalStoreErrorOccured);
 	
 }
 
-private function createLoginDialog(isStore:Boolean, isAutoLogin:Boolean, name:String, pass:String, isLogout:Boolean, isLocalStoreError:Boolean):void{
+private function createLoginDialog(isLogout:Boolean, isLocalStoreError:Boolean):void{
 	// ログインダイアログの作成
 	loginDialog = PopUpManager.createPopUp(this, LoginDialog, true) as LoginDialog;
-	loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, isStore, isAutoLogin, LogManager.instance, name, pass, isLogout);
+	loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, LogManager.instance, isLogout);
 	// ログイン時のイベントリスナを追加
 	loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
 	loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
@@ -4596,7 +4524,7 @@ private function logoutButtonClicked():void{
 			}
 		}
 		
-		createLoginDialog(isStore, false, name, pass, false, false);
+		createLoginDialog(false, false);
 		
 	}else{
 		this.logoutButton.enabled = false;
