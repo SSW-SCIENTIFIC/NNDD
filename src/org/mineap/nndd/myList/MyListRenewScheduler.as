@@ -1,14 +1,18 @@
 package org.mineap.nndd.myList
 {
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.NNDDMyListLoader;
+	import org.mineap.nndd.NNDDMyListsLoader;
 	import org.mineap.nndd.event.MyListRenewProgressEvent;
+	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.MyListRenewResultType;
 	import org.mineap.nndd.model.RssType;
 	import org.mineap.nndd.util.MyListUtil;
@@ -83,6 +87,8 @@ package org.mineap.nndd.myList
 		private var enableNNDDServerAccess:Boolean = false;
 		private var nnddServerAddress:String;
 		private var nnddServerPort:int;
+		
+		private var _nnddMyListsLoader:NNDDMyListsLoader;
 		
 		/**
 		 * 
@@ -198,6 +204,8 @@ package org.mineap.nndd.myList
 			trace("マイリスト更新即時実行");
 			LogManager.instance.addLog("マイリスト更新即時実行");
 			
+			updateMyListsForNNDDServer();
+			
 			if(!this._renewing){	//実行中で無ければ実施
 				next(0);
 			}else{
@@ -254,6 +262,81 @@ package org.mineap.nndd.myList
 			}else{
 				next();
 			}
+		}
+		
+		/**
+		 * マイリストの一覧をNNDDServerから取得します
+		 * 
+		 */
+		private function updateMyListsForNNDDServer():void
+		{
+			
+			if(enableNNDDServerAccess)
+			{
+				if (_nnddMyListsLoader != null)
+				{
+					try
+					{
+						_nnddMyListsLoader.close();
+					}
+					catch(error:Error)
+					{
+					}
+				}
+				
+				LogManager.instance.addLog("NNDDサーバに対してマイリスト一覧を要求します:" + nnddServerAddress + ":" + nnddServerPort);
+				
+				_nnddMyListsLoader = new NNDDMyListsLoader();
+				_nnddMyListsLoader.addEventListener(NNDDMyListsLoader.GET_MYLISTS_COMPLETE, myListsLoadCompleteHandler);
+				_nnddMyListsLoader.addEventListener(IOErrorEvent.IO_ERROR, myListsLoadErrorHandler);
+				_nnddMyListsLoader.getMyLists(nnddServerAddress, nnddServerPort);
+			}
+			else
+			{
+				next(0);
+			}
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		protected function myListsLoadCompleteHandler(event:Event):void
+		{
+			trace(event);
+			LogManager.instance.addLog("NNDDサーバ応答あり:" + event);
+			
+			var myLists:Vector.<MyList> = (event.currentTarget as NNDDMyListsLoader).myLists;
+			
+			for each(var myList:MyList in myLists)
+			{
+				if (!MyListManager.instance.isExistsForId(myList.id, myList.type))
+				{
+					trace("新しいマイリスト:" + myList.idWithPrefix);
+					LogManager.instance.addLog("NNDDServerから新しいマイリストを受信:" + myList.idWithPrefix);
+					MyListManager.instance.addMyList(myList.myListUrl, myList.myListName, false, false);
+				}
+				else
+				{
+					trace("このマイリストはある:" + myList.id + "," + myList.type);
+				}
+			}
+			MyListManager.instance.saveMyListSummary(LibraryManagerBuilder.instance.libraryManager.systemFileDir);
+			
+			next(0);
+		}
+		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
+		protected function myListsLoadErrorHandler(event:ErrorEvent):void
+		{
+			trace(event);
+			LogManager.instance.addLog("NNDDサーバ応答なし:" + event);
+			next(0);
 		}
 		
 		/**

@@ -7098,7 +7098,7 @@ private function editPublicMyList(event:Event):void{
 		myListEditDialog.setDir(_myListManager.getMyListIdDir(name));
 		myListEditDialog.comboBox_isFolder.enabled = false;
 		myListEditDialog.addEventListener(Event.COMPLETE, function(event:Event):void{
-			if(_myListManager.isExsits(myListEditDialog.myListName)){
+			if(_myListManager.isExists(myListEditDialog.myListName)){
 				Alert.show("同名のマイリストかフォルダがすでに存在します。別な名前を設定してください。", Message.M_MESSAGE);
 				return;
 			}

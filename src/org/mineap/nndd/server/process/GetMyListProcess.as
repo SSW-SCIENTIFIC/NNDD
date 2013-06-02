@@ -31,6 +31,7 @@ package org.mineap.nndd.server.process
 				var rss:XML = <rss />
 				rss.@id = myList.id;
 				rss.@rssType = myList.type.toString();
+				rss.@name = myList.myListName;
 				(nnddResponse as XML).appendChild(rss);
 			}
 			

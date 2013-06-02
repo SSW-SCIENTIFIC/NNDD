@@ -281,11 +281,30 @@ package org.mineap.nndd.myList
 		 * @return 
 		 * 
 		 */
-		public function isExsits(myListName:String):Boolean{
+		public function isExists(myListName:String):Boolean{
 			
 			var object:Object = this._myListName_MyList_Map[myListName];
 			if(object != null){
 				return true;
+			}
+			return false;
+		}
+		
+		/**
+		 * 
+		 * @param rssId
+		 * @param rssType
+		 * @return 
+		 * 
+		 */
+		public function isExistsForId(rssId:String, rssType:RssType):Boolean
+		{
+			for each(var myList:MyList in this._myListName_MyList_Map)
+			{
+				if (myList.id == rssId && rssType == myList.type)
+				{
+					return true;
+				}
 			}
 			return false;
 		}
