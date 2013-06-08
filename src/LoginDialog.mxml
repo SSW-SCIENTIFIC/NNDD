@@ -87,7 +87,7 @@
 					isStorePass = false;
 					isAutoLogin = false;
 					
-					saveStore();
+//					saveStore();
 				}
 				
 			}
