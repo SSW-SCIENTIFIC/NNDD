@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="NNDD">
+    <configurations>
+      <configuration name="NNDD" target-platform="Desktop" main-class="NNDD" output-file="NNDD.swf" output-folder="$MODULE_DIR$/bin-debug">
+        <dependencies>
+          <entries>
+            <entry library-id="cdf8b5ca-aadf-4b2f-bbec-2c9fb5a0c969">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="4.6.0" />
+        </dependencies>
+        <compiler-options>
+          <map>
+            <entry key="compiler.locale" value="ja_JP" />
+          </map>
+        </compiler-options>
+        <packaging-air-desktop use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/src/NNDD-app.xml" package-file-name="NNDD">
+          <files-to-package>
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/config" path-in-package="config" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/player" path-in-package="player" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/donate.txt" path-in-package="donate.txt" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon16.png" path-in-package="icon16.png" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon32.png" path-in-package="icon32.png" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon48.png" path-in-package="icon48.png" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon128.png" path-in-package="icon128.png" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/CategoryList.xml" path-in-package="CategoryList.xml" />
+          </files-to-package>
+          <AirSigningOptions keystore-path="$USER_HOME$/Documents/AdobeAIRデジタル証明書.p12" use-temp-certificate="false" />
+        </packaging-air-desktop>
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="4.6.0" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="cdf8b5ca-aadf-4b2f-bbec-2c9fb5a0c969" />
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/libs" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+
