@@ -8,6 +8,8 @@ package org.mineap.nndd.myList
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import mx.core.FlexGlobals;
+	
 	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.NNDDMyListLoader;
 	import org.mineap.nndd.NNDDMyListsLoader;
@@ -315,7 +317,13 @@ package org.mineap.nndd.myList
 				{
 					trace("新しいマイリスト:" + myList.idWithPrefix);
 					LogManager.instance.addLog("NNDDServerから新しいマイリストを受信:" + myList.idWithPrefix);
+					
+					// マイリスト管理に追加
 					MyListManager.instance.addMyList(myList.myListUrl, myList.myListName, false, false);
+					
+					// 更新対象に追加
+					this.addMyList(myList);
+					
 				}
 				else
 				{
@@ -323,6 +331,12 @@ package org.mineap.nndd.myList
 				}
 			}
 			MyListManager.instance.saveMyListSummary(LibraryManagerBuilder.instance.libraryManager.systemFileDir);
+			
+			if (FlexGlobals.topLevelApplication.tree_myList != null)
+			{
+				// 表示の更新
+				FlexGlobals.topLevelApplication.tree_myList.validateNow();
+			}
 			
 			next(0);
 		}
