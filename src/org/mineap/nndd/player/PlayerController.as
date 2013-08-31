@@ -3204,7 +3204,7 @@ package org.mineap.nndd.player
 						}
 						
 						if(!watchVideoPage.onlyOwnerText){
-							var thumbInfo:String = watchVideoPage.thumbInfoLoader.thumbInfo;
+							var thumbInfo:String = watchVideoPage.thumbInfoLoader.data;
 							if(thumbInfo != null){
 								var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(new XML(thumbInfo));
 								var video:NNDDVideo = libraryManager.isExist(videoId);
@@ -3263,6 +3263,7 @@ package org.mineap.nndd.player
 					}catch(error:Error){
 						fail = true;
 						trace(error.getStackTrace());
+						logManager.addLog("エラー発生:" + error);
 					}
 					
 					if(fail){

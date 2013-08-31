@@ -10,7 +10,6 @@ package org.mineap.nndd
 	import flash.filesystem.File;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.net.URLRequestDefaults;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
 	import flash.utils.ByteArray;
@@ -21,14 +20,14 @@ package org.mineap.nndd
 	
 	import org.mineap.nicovideo4as.CommentLoader;
 	import org.mineap.nicovideo4as.Login;
-	import org.mineap.nicovideo4as.ThumbImgLoader;
-	import org.mineap.nicovideo4as.ThumbInfoLoader;
 	import org.mineap.nicovideo4as.VideoLoader;
 	import org.mineap.nicovideo4as.WatchVideoPage;
 	import org.mineap.nicovideo4as.analyzer.GetFlvResultAnalyzer;
 	import org.mineap.nicovideo4as.analyzer.GetWaybackkeyResultAnalyzer;
 	import org.mineap.nicovideo4as.api.ApiGetBgmAccess;
 	import org.mineap.nicovideo4as.loader.IchibaInfoLoader;
+	import org.mineap.nicovideo4as.loader.ThumbImgLoader;
+	import org.mineap.nicovideo4as.loader.ThumbInfoLoader;
 	import org.mineap.nicovideo4as.loader.api.ApiGetFlvAccess;
 	import org.mineap.nicovideo4as.loader.api.ApiGetWaybackkeyAccess;
 	import org.mineap.nicovideo4as.model.NgUp;
@@ -666,7 +665,7 @@ package org.mineap.nndd
 				return;
 			}
 			
-			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, function(event:IOErrorEvent):void{
+			this._thumbInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				(event.target as URLLoader).close();
 				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + videoId + "(" + _videoId + "):" + event + ":" + event.target +  ":" + event.text);
@@ -677,7 +676,7 @@ package org.mineap.nndd
 				trace(event);
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
-			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, thumbInfoGetSuccess);
+			this._thumbInfoLoader.addEventListener(Event.COMPLETE, thumbInfoGetSuccess);
 			
 			trace(THUMB_INFO_GET_START + ":" + this._videoId);
 			LogManager.instance.addLog(THUMB_INFO_GET_START + ":" + this._videoId);
@@ -704,7 +703,7 @@ package org.mineap.nndd
 			
 			try{
 				
-				var xml:XML = new XML((event.currentTarget as ThumbInfoLoader).thumbInfo);
+				var xml:XML = new XML((event.currentTarget as ThumbInfoLoader).data);
 				
 				var analyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(xml);
 				
@@ -760,7 +759,7 @@ package org.mineap.nndd
 					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));
 					close(true, true, event);
 				});
-				var path:String = fileIO.saveComment(new XML((event.currentTarget as ThumbInfoLoader).thumbInfo), this._saveVideoName + "[ThumbInfo].xml", this._saveDir.url, false, 0).nativePath;
+				var path:String = fileIO.saveComment(new XML((event.currentTarget as ThumbInfoLoader).data), this._saveVideoName + "[ThumbInfo].xml", this._saveDir.url, false, 0).nativePath;
 				
 				//サムネイル情報取得完了通知
 				this._thumbInfoLoader.close();
@@ -768,7 +767,9 @@ package org.mineap.nndd
 				LogManager.instance.addLog("\t" + THUMB_INFO_GET_SUCCESS + ":" + path);
 				dispatchEvent(new Event(THUMB_INFO_GET_SUCCESS));
 				
-				var thumbUrl:String = this._thumbImgLoader.getThumbImgUrl(XML((event.currentTarget as ThumbInfoLoader).thumbInfo));
+				var thumbInfoAnalyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(new XML((event.currentTarget as ThumbInfoLoader).data));
+				
+				var thumbUrl:String = thumbInfoAnalyzer.thumbnailUrl;
 				
 				getThumbImg(thumbUrl);
 			
@@ -778,8 +779,8 @@ package org.mineap.nndd
 		
 		private function getThumbImg(thumbUrl:String):void{	
 			
-			this._thumbImgLoader.addThumbImgLoaderListener(Event.COMPLETE, thumbImgGetSuccess);
-			this._thumbImgLoader.addThumbImgLoaderListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
+			this._thumbImgLoader.addEventListener(Event.COMPLETE, thumbImgGetSuccess);
+			this._thumbImgLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
 				//				(event.target as URLLoader).close();
 				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
@@ -787,7 +788,7 @@ package org.mineap.nndd
 //				downloadIchibaInfo();
 				getFlvAccess();
 			});
-			this._thumbImgLoader.addThumbImgLoaderListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+			this._thumbImgLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
@@ -836,7 +837,6 @@ package org.mineap.nndd
 			
 			//サムネイル画像取得完了通知
 			(event.target as URLLoader).close();
-			this._thumbImgLoader.close();
 			LogManager.instance.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
 			trace(THUMB_IMG_GET_SUCCESS + ":" + event + "\n" + (new File(this._thumbPath)).nativePath);
 			dispatchEvent(new Event(THUMB_IMG_GET_SUCCESS));

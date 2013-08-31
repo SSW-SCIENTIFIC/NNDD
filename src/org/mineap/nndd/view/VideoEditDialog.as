@@ -2,12 +2,10 @@
 import flash.events.Event;
 import flash.filesystem.File;
 import flash.net.FileFilter;
-import flash.profiler.showRedrawRegions;
 
 import mx.controls.Alert;
 import mx.events.CloseEvent;
 
-import org.mineap.nicovideo4as.ThumbImgLoader;
 import org.mineap.nndd.FileIO;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;

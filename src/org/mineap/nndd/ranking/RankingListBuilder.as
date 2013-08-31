@@ -1,16 +1,15 @@
 package org.mineap.nndd.ranking
 {
+	import flash.errors.IOError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
-	import flash.net.URLLoader;
 	
 	import mx.collections.ArrayCollection;
 	
-	import org.mineap.nicovideo4as.ThumbInfoLoader;
 	import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
+	import org.mineap.nicovideo4as.loader.ThumbInfoLoader;
 	import org.mineap.nicovideo4as.util.HtmlUtil;
 	import org.mineap.nndd.FileIO;
 	import org.mineap.nndd.Message;
@@ -132,7 +131,7 @@ package org.mineap.nndd.ranking
 		{
 			var thumbInfoLoader:ThumbInfoLoader = new ThumbInfoLoader();
 			
-			thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, function(event:Event):void{
+			thumbInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void{
 				if (arrayCollection == null)
 				{
 					return;
@@ -155,7 +154,7 @@ package org.mineap.nndd.ranking
 				
 			});
 			
-			thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, function(event:Event):void{
+			thumbInfoLoader.addEventListener(Event.COMPLETE, function(event:Event):void{
 				
 				if (arrayCollection == null)
 				{
@@ -165,7 +164,12 @@ package org.mineap.nndd.ranking
 				var loader:ThumbInfoLoader = (event.currentTarget as ThumbInfoLoader);
 				
 				var videoStatus:String = "";
-				var thumbInfoAnalyzer:ThumbInfoAnalyzer = new ThumbInfoAnalyzer(new XML(loader.thumbInfo));
+				var thumbInfoAnalyzer:ThumbInfoAnalyzer = null;
+				try {
+					thumbInfoAnalyzer = new ThumbInfoAnalyzer(new XML(loader.data));
+				} catch (error:Error){
+					trace(error);
+				}
 				
 				if (thumbInfoAnalyzer == null)
 				{
@@ -200,8 +204,6 @@ package org.mineap.nndd.ranking
 			thumbInfoLoader.getThumbInfo(videoId);
 			
 		}
-		
-		
 		
 		/**
 		 * カテゴリの一覧を返します。

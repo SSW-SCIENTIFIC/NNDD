@@ -2,9 +2,9 @@ package org.mineap.nndd.util
 {
 
 	import org.mineap.nicovideo4as.util.HtmlUtil;
+	import org.mineap.nndd.LogManager;
 	import org.mineap.nndd.Message;
 	import org.mineap.nndd.player.model.PlayerTagString;
-	import org.mineap.util.config.ConfUtil;
 	
 	public class ThumbInfoAnalyzer
 	{
@@ -20,6 +20,7 @@ package org.mineap.nndd.util
 		private var _status:String;
 		private var _length:String;
 		private var _errorCode:String;
+		private var _thumbnailUrl:String;
 		private var _tagStrings:Vector.<PlayerTagString>;
 		
 		public static const STATUS_OK:String = "ok";
@@ -90,6 +91,7 @@ package org.mineap.nndd.util
 					this._firstRetrieve = xml.thumb.first_retrieve;
 					this._lastResBody = HtmlUtil.convertSpecialCharacterNotIncludedString(xml.thumb.last_res_body.text());
 					this._length = xml.thumb.length;
+					this._thumbnailUrl = xml.thumb.thumbnail_url;
 					
 					for each(var temptags:XML in xml.thumb.tags){
 						var loc:String = temptags.@domain;
@@ -139,7 +141,7 @@ package org.mineap.nndd.util
 				}
 			}catch(error:Error){
 				trace(error.getStackTrace());
-				this._logManager.addLog("タグ情報の取得に失敗:" + error + error.getStackTrace());
+				LogManager.instance.addLog("タグ情報の取得に失敗:" + error + error.getStackTrace());
 				this._tagArray = new Array();
 				this._tagArray.push("(タグ情報の取得に失敗)");
 			}
@@ -350,6 +352,14 @@ package org.mineap.nndd.util
 		 */
 		public function get errorCode():String{
 			return _errorCode;
+		}
+		
+		/**
+		 * @return 
+		 */
+		public function get thumbnailUrl():String
+		{
+			return _thumbnailUrl;
 		}
 
 	}
