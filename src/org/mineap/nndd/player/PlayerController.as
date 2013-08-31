@@ -3690,9 +3690,10 @@ package org.mineap.nndd.player
 		 */
 		public function seekOperation(vpos:Number):void{
 			if(videoInfoView.isEnableJump){
-				this.seek(vpos/1000);
+//				this.seek(vpos/1000);
+				this.seek(vpos);
 			}else{
-				logManager.addLog("ジャンプ命令を無視(ジャンプ先:" + vpos/1000 + " sec.)");
+				logManager.addLog("ジャンプ命令を無視(ジャンプ先:" + vpos + " sec.)");
 			}
 		}
 		

@@ -15,12 +15,12 @@ package org.mineap.nInterpreter.operation.seek
 		/**
 		 * seek(vpos:時間)
 		 */
-		public static const SEEK_OPERATION_PATTERN_1:RegExp = new RegExp("seek\\(vpos:['\"]([^'\"]*)['\"][\\s]*\\)");
+		public static const SEEK_OPERATION_PATTERN_1:RegExp = new RegExp("seek\\(vpos:'?(\\d+)'?\\)");
 		
 		/**
 		 * seek(vpos:時間,msg:文字列)
 		 */
-		public static const SEEK_OPERATION_PATTERN_2:RegExp = new RegExp("seek\\(vpos:['\"]([^'\"]*)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*\\)");
+		public static const SEEK_OPERATION_PATTERN_2:RegExp = new RegExp("seek\\(vpos:'?(\\d+)'?,msg:([^\"]+)\\)");
 		
 		/**
 		 * 

@@ -666,7 +666,7 @@ package org.mineap.nndd
 			}
 			
 			this._thumbInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-				(event.target as URLLoader).close();
+				(event.currentTarget as URLLoader).close();
 				trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ":" + videoId + "(" + _videoId + "):" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, event.text));

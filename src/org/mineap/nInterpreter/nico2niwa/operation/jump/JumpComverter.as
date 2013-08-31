@@ -53,9 +53,9 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 		/**
 		 * ジャンプ先が動画IDでないとき、時間指定なのかラベル指定なのかを調べるための正規表現です。
 		 */
-		public static const JUMP_TO_TIME_PATTERN:RegExp = new RegExp("#(\\d+):(\\d+)");
+		public static const JUMP_TO_TIME_PATTERN:RegExp = new RegExp("[#|＃](\\d+)[:|：](\\d+)");
 		
-		public static const JUMP_TO_LABEL_PATTERN:RegExp = new RegExp("#([^\\s]+)");
+		public static const JUMP_TO_LABEL_PATTERN:RegExp = new RegExp("[#|＃]([^\\s]+)");
 		
 		/**
 		 * 動画IDを表す正規表現です。
@@ -156,7 +156,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 										//ジャンプ先は指定された時間
 										min = jumpTo[1];
 										sec = jumpTo[2];
-										vpos = String(int(((min*60) + sec)*1000));
+										vpos = String(int(((min*60) + sec)));
 										
 										operation = SEEK_PRE + SEEK_P_VPOS + 
 											SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE + 
@@ -203,7 +203,7 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump
 										//ジャンプ先は指定された時間
 										min = jumpTo[1];
 										sec = jumpTo[2];
-										vpos = String(int(((min*60) + sec)*1000));
+										vpos = String(int(((min*60) + sec)));
 										
 										operation = SEEK_PRE + SEEK_P_VPOS + 
 											SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE + 
