@@ -1,15 +1,17 @@
 package org.mineap.nndd
 {
+	import com.tilfin.airthttpd.server.HttpResponse;
+	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.HTTPStatusEvent;
 	import flash.events.IOErrorEvent;
-	import flash.media.Video;
 	
 	import org.mineap.nicovideo4as.Login;
-	import org.mineap.nicovideo4as.ThumbInfoLoader;
 	import org.mineap.nicovideo4as.WatchVideoPage;
 	import org.mineap.nicovideo4as.loader.IchibaInfoLoader;
+	import org.mineap.nicovideo4as.loader.ThumbInfoLoader;
 	
 	[Event(name="success", type="NNDDVideoPageWatcher")]
 	[Event(name="fail", type="NNDDVideoPageWatcher")]
@@ -67,6 +69,8 @@ package org.mineap.nndd
 		 */
 		public function watch(mailAddr:String, password:String, videoId:String, onlyOwnerText:Boolean):void{
 			
+			LogManager.instance.addLog("次の動画ページにアクセスします:動画ID=" + videoId);
+			
 			this._videoId = videoId;
 			this._onlyOwnerText = onlyOwnerText;
 			
@@ -74,6 +78,8 @@ package org.mineap.nndd
 			
 			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccessEventListener);
 			this._login.addEventListener(Login.LOGIN_FAIL, loginFailEventListener);
+			
+			LogManager.instance.addLog("ログインします");
 			
 			this._login.login(mailAddr, password);
 		}
@@ -85,6 +91,9 @@ package org.mineap.nndd
 		 */
 		private function loginSuccessEventListener(event:Event):void{
 			
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
+			
 			this._watch = new WatchVideoPage();
 			
 			this._watch.addEventListener(WatchVideoPage.WATCH_SUCCESS, pageWatchSuccessListener);
@@ -95,21 +104,14 @@ package org.mineap.nndd
 		}
 		
 		/**
-		 * ログインに失敗した際に呼ばれる
-		 * @param event
-		 * 
-		 */
-		private function loginFailEventListener(event:Event):void{
-			close();
-			dispatchEvent(new ErrorEvent(FAIL));
-		}
-		
-		/**
 		 * ページの閲覧に成功した場合に呼ばれる
 		 * @param event
 		 * 
 		 */
 		private function pageWatchSuccessListener(event:Event):void{
+			
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
 			
 			if((event.currentTarget as WatchVideoPage).checkHarmful())
 			{
@@ -125,10 +127,29 @@ package org.mineap.nndd
 			
 			this._thumbInfoLoader = new ThumbInfoLoader();
 			
-			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.SUCCESS, thumbInfoLoadSuccessEventListener);
-			this._thumbInfoLoader.addEventListener(ThumbInfoLoader.FAIL, thumbInfoLoadFailEventListner);
+			this._thumbInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, thumbInfoLoadFailEventListner);
+			this._thumbInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusHandler);
+			this._thumbInfoLoader.addEventListener(Event.COMPLETE, thumbInfoLoadSuccessEventListener);
+			
 			this._thumbInfoLoader.getThumbInfo(this._videoId);
 			
+		}
+		
+		/**
+		 * 
+		 */
+		private function thumbInfoLoadSuccessEventListener(event:Event):void{
+			
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
+			
+			this._ichibaInfoLoader = new IchibaInfoLoader();
+			
+			this._ichibaInfoLoader.addEventListener(Event.COMPLETE, ichibaInfoLoadSuccssEventListener);
+			this._ichibaInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, ichibaInfoLoadFailEventListener);
+			this._ichibaInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusHandler);
+			
+			this._ichibaInfoLoader.getIchibaInfo(this._videoId);
 		}
 		
 		/**
@@ -141,28 +162,42 @@ package org.mineap.nndd
 			dispatchEvent(new ErrorEvent(FAIL));
 		}
 		
-		private function thumbInfoLoadSuccessEventListener(event:Event):void{
-			
-			this._ichibaInfoLoader = new IchibaInfoLoader();
-			
-			this._ichibaInfoLoader.addEventListener(Event.COMPLETE, ichibaInfoLoadSuccssEventListener);
-			this._ichibaInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, ichibaInfoLoadFailEventListener);
-			this._ichibaInfoLoader.getIchibaInfo(this._videoId);
+		/**
+		 * ログインに失敗した際に呼ばれる
+		 * @param event
+		 * 
+		 */
+		private function loginFailEventListener(event:Event):void{
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
+			close();
+			dispatchEvent(new ErrorEvent(FAIL));
 		}
 		
 		private function thumbInfoLoadFailEventListner(event:Event):void{
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
 			close();
 			dispatchEvent(new ErrorEvent(FAIL));
 		}
 		
 		private function ichibaInfoLoadSuccssEventListener(event:Event):void{
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
 			close();
 			dispatchEvent(new Event(SUCCESS));
 		}
 		
 		private function ichibaInfoLoadFailEventListener(event:Event):void{
+			trace(event);
+			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
 			close();
 			dispatchEvent(new ErrorEvent(FAIL));
+		}
+		
+		private function httpResponseStatusHandler(event:HTTPStatusEvent):void{
+			trace(event);
+			LogManager.instance.addLog("\t\t" + event.type + ":" + event);
 		}
 		
 		/**
