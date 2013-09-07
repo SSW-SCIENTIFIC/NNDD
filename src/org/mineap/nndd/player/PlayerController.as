@@ -949,29 +949,33 @@ package org.mineap.nndd.player
 				
 				initStart(videoPath, thumbInfoPath, autoPlay);
 			});
-			renewDownloadManager.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
+//			
+//			renewDownloadManager.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
+//			renewDownloadManager.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
 			
-			renewDownloadManager.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
-			renewDownloadManager.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
-			
+			renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_STATUS_UPDATE, function(event:Event):void{
+				trace(event);
+				logManager.addLog(RenewDownloadManager.PROCCESS_STATUS_UPDATE + ":" + event);
+			});
 			renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_FAIL, function(event:Event):void{
 				renewDownloadManager = null;
 				videoPlayer.label_downloadStatus.text = Message.FAIL_PLAY_EACH_COMMENT_DOWNLOAD;
