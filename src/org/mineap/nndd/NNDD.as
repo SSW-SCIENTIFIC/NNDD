@@ -2108,7 +2108,7 @@ private function readStore(isLogout:Boolean = false):void{
 		}else{
 			this._libraryDir.url = String(confValue);
 		}
-		logManager.setLogDir(new File(this._libraryDir.url + "/system/"));
+		logManager.setLogDir(libraryManager.systemFileDir);
 		
 		errorName = "isSayHappyNewYear";
 		confValue = ConfigManager.getInstance().getItem("isSayHappyNewYear");
