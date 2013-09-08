@@ -130,6 +130,11 @@ package org.mineap.util.config
 			var fileStream:FileStream = new FileStream();
 			fileStream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			
+			if(!this._confFile.exists){
+				// AIR 3.3とAIR 3.4でMacOSXの場合に保存場所が変わった件の対応
+				ConfUtil.movePrefToAppSupport();
+			}
+			
 			if(this._confFile.exists){
 				
 				try{
