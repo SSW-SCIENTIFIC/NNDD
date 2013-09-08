@@ -3,8 +3,6 @@ package org.mineap.util.config
 	import flash.errors.IOError;
 	import flash.filesystem.File;
 	import flash.system.Capabilities;
-	
-	import mx.core.FlexGlobals;
 
 	public class ConfUtil
 	{
