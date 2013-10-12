@@ -8,7 +8,6 @@
 import flash.data.EncryptedLocalStore;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
-import flash.desktop.NativeApplication;
 import flash.desktop.NativeDragActions;
 import flash.desktop.NativeDragManager;
 import flash.display.NativeMenu;
@@ -52,12 +51,12 @@ import mx.events.ListEvent;
 import mx.events.ResizeEvent;
 import mx.managers.PopUpManager;
 
-import org.mineap.nicovideo4as.model.SearchType;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.model.NNDDVideo;
 import org.mineap.nndd.model.SearchItem;
 import org.mineap.nndd.model.SearchSortString;
+import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.player.model.PlayerTagString;
@@ -65,8 +64,6 @@ import org.mineap.nndd.util.PathMaker;
 import org.mineap.nndd.util.ShortUrlChecker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
-
-import spark.primitives.Rect;
 
 public var isShowComment:Boolean = true;
 
@@ -316,7 +313,7 @@ public function tagListDoubleClickEventHandler(event:ListEvent):void{
 		if(event.itemRenderer.data is String){
 			var word:String = String(event.itemRenderer.data);
 			FlexGlobals.topLevelApplication.search(new SearchItem(word, 
-				SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, word));
+				SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
 		}
 	}
 }
@@ -1283,7 +1280,7 @@ private function infoAreaLinkClicked(event:TextEvent):void{
 private function tagTextAreaLinkClikced(event:TextEvent):void{
 	var word:String = String(event.text);
 	Application.application.search(new SearchItem(word, 
-		SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, word));
+		SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
 }
 
 private function changeShowCommentClickEventHandler(event:Event):void{

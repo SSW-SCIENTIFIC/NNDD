@@ -9,10 +9,9 @@ package org.mineap.nndd.search
 	import org.mineap.nndd.library.ILibraryManager;
 	import org.mineap.nndd.library.LibraryManagerBuilder;
 	import org.mineap.nndd.model.SearchItem;
+	import org.mineap.nndd.model.NNDDSearchType;
 	import org.mineap.nndd.model.SearchSortString;
 	import org.mineap.nndd.util.TreeDataBuilder;
-	import org.mineap.nicovideo4as.model.SearchSortType;
-	import org.mineap.nicovideo4as.model.SearchType;
 
 	/**
 	 * SearchItemManager.as<br>
@@ -30,31 +29,31 @@ package org.mineap.nndd.search
 		 * デフォルトの検索項目です
 		 */
 		public static const DEF_SEARCH_ITEMS:Array = new Array(
-			new SearchItem("#音楽", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "音楽"),
-			new SearchItem("#エンターテイメント", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "エンターテイメント"),
-			new SearchItem("#アニメ", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "アニメ"),
-			new SearchItem("#ゲーム", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "ゲーム"),
-			new SearchItem("#ラジオ", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "ラジオ"),
-			new SearchItem("#スポーツ", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "スポーツ"),
-			new SearchItem("#科学", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "科学"),
-			new SearchItem("#料理", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "料理"),
-			new SearchItem("#政治", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "政治"),
-			new SearchItem("#動物", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "動物"),
-			new SearchItem("#歴史", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "歴史"),
-			new SearchItem("#自然", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "自然"),
-			new SearchItem("#ニコニコ動画講座", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "ニコニコ動画講座"),
-			new SearchItem("#演奏してみた", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "演奏してみた"),
-			new SearchItem("#歌ってみた", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "歌ってみた"),
-			new SearchItem("#踊ってみた", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "踊ってみた"),
-			new SearchItem("#投稿者コメント", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "投稿者コメント"),
-			new SearchItem("#日記", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "日記"),
-			new SearchItem("#アンケート", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "アンケート"),
-			new SearchItem("#チャット", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "チャット"),
-			new SearchItem("#テスト", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "テスト"),
-			new SearchItem("#ニコニ・コモンズ", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "ニコニ・コモンズ"),
-			new SearchItem("#ひとこと動画", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "ひとこと動画"),
-			new SearchItem("#その他", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "その他"),
-			new SearchItem("#R-18", SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, "R-18")
+			new SearchItem("#音楽", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "音楽"),
+			new SearchItem("#エンターテイメント", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "エンターテイメント"),
+			new SearchItem("#アニメ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "アニメ"),
+			new SearchItem("#ゲーム", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ゲーム"),
+			new SearchItem("#ラジオ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ラジオ"),
+			new SearchItem("#スポーツ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "スポーツ"),
+			new SearchItem("#科学", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "科学"),
+			new SearchItem("#料理", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "料理"),
+			new SearchItem("#政治", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "政治"),
+			new SearchItem("#動物", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "動物"),
+			new SearchItem("#歴史", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "歴史"),
+			new SearchItem("#自然", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "自然"),
+			new SearchItem("#ニコニコ動画講座", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ニコニコ動画講座"),
+			new SearchItem("#演奏してみた", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "演奏してみた"),
+			new SearchItem("#歌ってみた", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "歌ってみた"),
+			new SearchItem("#踊ってみた", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "踊ってみた"),
+			new SearchItem("#投稿者コメント", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "投稿者コメント"),
+			new SearchItem("#日記", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "日記"),
+			new SearchItem("#アンケート", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "アンケート"),
+			new SearchItem("#チャット", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "チャット"),
+			new SearchItem("#テスト", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "テスト"),
+			new SearchItem("#ニコニ・コモンズ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ニコニ・コモンズ"),
+			new SearchItem("#ひとこと動画", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ひとこと動画"),
+			new SearchItem("#その他", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "その他"),
+			new SearchItem("#R-18", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "R-18")
 		);
 		
 		/**
@@ -361,7 +360,7 @@ package org.mineap.nndd.search
 					
 					searchItem = new SearchItem(name, 
 						SearchSortString.convertSortTypeFromIndex(4), 	// コメントが新しい順
-						SearchType.KEY_WORD, "", true);
+						NNDDSearchType.KEY_WORD, "", true);
 					
 					if(temp.children().length() > 0){
 						addSearchItemFromXML(temp, folder.children, searchItemMap);

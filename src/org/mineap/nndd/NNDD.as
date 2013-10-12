@@ -1,17 +1,22 @@
-/**
- * NNDD.as
- * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
- * 
- * Copyright (c) 2008-2012 MAP - MineApplicationProject. All Rights Reserved.
- * 
- */
-
 import flash.data.EncryptedLocalStore;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
 import flash.desktop.NativeApplication;
 import flash.desktop.NativeDragManager;
+import flash.display.NativeMenu;
+import flash.display.NativeMenuItem;
+import flash.display.NativeWindowDisplayState;
 import flash.errors.IOError;
+import flash.events.ContextMenuEvent;
+import flash.events.ErrorEvent;
+import flash.events.Event;
+import flash.events.FocusEvent;
+import flash.events.HTTPStatusEvent;
+import flash.events.IOErrorEvent;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.events.NativeDragEvent;
+import flash.events.TimerEvent;
 import flash.filesystem.File;
 import flash.geom.Rectangle;
 import flash.globalization.LocaleID;
@@ -21,7 +26,6 @@ import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.net.URLRequestDefaults;
 import flash.net.navigateToURL;
-import flash.system.Capabilities;
 import flash.text.Font;
 import flash.ui.ContextMenuItem;
 import flash.ui.Keyboard;
@@ -42,14 +46,12 @@ import mx.controls.TileList;
 import mx.controls.dataGridClasses.DataGridItemRenderer;
 import mx.controls.dataGridClasses.DataGridListData;
 import mx.controls.listClasses.IListItemRenderer;
-import mx.controls.sliderClasses.Slider;
 import mx.controls.treeClasses.TreeItemRenderer;
 import mx.core.Application;
 import mx.core.ClassFactory;
 import mx.core.FlexGlobals;
 import mx.core.FlexLoader;
 import mx.core.UITextField;
-import mx.core.windowClasses.StatusBar;
 import mx.events.AIREvent;
 import mx.events.CloseEvent;
 import mx.events.FlexEvent;
@@ -62,17 +64,16 @@ import mx.managers.PopUpManager;
 
 import org.mineap.nicovideo4as.Login;
 import org.mineap.nicovideo4as.UserAgentManager;
-import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
-import org.mineap.nicovideo4as.loader.MyListLoader;
+import org.mineap.nicovideo4as.analyzer.SearchResultAnalyzer;
 import org.mineap.nicovideo4as.loader.RankingLoader;
-import org.mineap.nicovideo4as.loader.api.ApiGetThumbInfoAccess;
-import org.mineap.nicovideo4as.model.SearchType;
+import org.mineap.nicovideo4as.loader.api.ApiSearchAccess;
 import org.mineap.nicovideo4as.util.HtmlUtil;
 import org.mineap.nndd.Access2Nico;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.NNDDMyListAdder;
 import org.mineap.nndd.NNDDMyListLoader;
+import org.mineap.nndd.NNDDSearchListRenewer;
 import org.mineap.nndd.RenewDownloadManager;
 import org.mineap.nndd.SystemTrayIconManager;
 import org.mineap.nndd.download.DownloadManager;
@@ -88,6 +89,8 @@ import org.mineap.nndd.library.LocalVideoInfoLoader;
 import org.mineap.nndd.library.namedarray.NamedArrayLibraryManager;
 import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
 import org.mineap.nndd.model.MyListSortType;
+import org.mineap.nndd.model.NNDDSearchSortType;
+import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.model.NNDDVideo;
 import org.mineap.nndd.model.PlayList;
 import org.mineap.nndd.model.RssType;
@@ -145,7 +148,7 @@ private var historyManager:HistoryManager;
 
 private var renewDownloadManager:RenewDownloadManager;
 private var rankingLoader:RankingLoader;
-private var a2nForSearch:Access2Nico;
+private var nnddSearchListRenewer:NNDDSearchListRenewer;
 
 private var _nnddMyListLoader:NNDDMyListLoader;
 private var _myListManager:MyListManager;
@@ -174,7 +177,6 @@ private var logString:String = "";
 
 //private var urlList:Array = new Array();
 private var categoryList:Array = new Array();
-private var searchPageLinkList:Array = new Array();
 
 private var isVersionCheckEnable:Boolean = true;
 
@@ -1512,7 +1514,7 @@ private function tagListItemHandler(event:ContextMenuEvent):void {
 		if(tag != null && tag.length > 0 && label != null){
 			if(label == Message.L_TAB_LIST_MENU_ITEM_LABEL_SEARCH){
 				search(new SearchItem(tag, SearchSortString.convertSortTypeFromIndex(4), 
-					SearchType.TAG, tag));
+					NNDDSearchType.TAG, tag));
 			}else if(label == Message.L_TAB_LIST_MENU_ITEM_LABEL_JUMP_DIC){
 				navigateToURL(new URLRequest("http://dic.nicovideo.jp/a/" + encodeURIComponent(tag)));
 			}else if(label == Message.L_TAB_LIST_MENU_ITEM_LABEL_HIDE_TAG){
@@ -5096,25 +5098,18 @@ private function loadSearchHistory():void{
  * ニコニコ動画内を検索語で検索します。
  * 
  */
-private function searchNicoButtonClicked(url:String = null):void{
-	if(a2nForSearch == null){
-		if(combobox_NicoSearch.text.length > 0 || url != null){
+private function searchNicoButtonClicked(pageCount:int = 1):void{
+	
+	if(nnddSearchListRenewer == null){
+		if(combobox_NicoSearch.text.length > 0){
 			
 			isRankingWatching = false;
 			
 			var searchWord:String = this.combobox_NicoSearch.text;
 			addSearchHistory(searchWord);
 			
-			var searchUrl:String = Access2Nico.NICO_SEARCH_TYPE_URL[combobox_serchType.selectedIndex];
 			searchPageCountProvider = new Array();
-			if(url != null){
-				searchWord = url.substring(url.lastIndexOf("/")+1);
-			}else{
-				searchPageCountProvider.push(1);
-				combobox_pageCounter_search.selectedIndex = searchPageCountProvider.indexOf(1);
-				searchWord = encodeURIComponent(searchWord);
-				this.searchPageIndex = 1;
-			}
+			this.searchPageIndex = pageCount;
 			
 			try{
 				
@@ -5122,63 +5117,56 @@ private function searchNicoButtonClicked(url:String = null):void{
 				loading.show(dataGrid_search, dataGrid_ranking.width/2, dataGrid_ranking.height/2);
 				loading.start(360/12);
 				
-//				setEnableSearchButton(false);
-//				radiogroup_period.enabled = false;
-//				radiogroup_target.enabled = false;
-//				rankingRenewButton.enabled = false;
-//				list_categoryList.enabled = false;
 				button_SearchNico.label = Message.L_CANCEL;
 				
-				a2nForSearch = new Access2Nico(null, downloadedListManager, null, logManager, null);
-				a2nForSearch.addEventListener(Access2Nico.NICO_SEARCH_COMPLETE, function(event:Event):void{
-//					setEnableSearchButton(true);
-//					radiogroup_period.enabled = true;
-//					radiogroup_target.enabled = true;
-//					rankingRenewButton.enabled = true;
-//					list_categoryList.enabled = true;
+				nnddSearchListRenewer = new NNDDSearchListRenewer();
+				nnddSearchListRenewer.addEventListener(NNDDSearchListRenewer.RENEW_SUCCESS, function(event:Event):void{
 					button_SearchNico.label = "検索";
-					searchPageLinkList = a2nForSearch.getPageLinkList();
+					
+					var analyzer:SearchResultAnalyzer = nnddSearchListRenewer.result;
+					var pageCount:int = analyzer.totalCount / 32;
+					
+					if (analyzer.totalCount % 32 != 0) 
+					{
+						pageCount++;
+					}
+					
+					searchProvider = nnddSearchListRenewer.createSearchList();
 					
 					//リンクリストを更新
-					if(searchPageLinkList != null){
-						searchPageCountProvider.splice(0,searchPageCountProvider.length);
-						searchPageCountProvider.push(searchPageIndex);
-						for(var i:int=0; i<searchPageLinkList.length/2; i++){
-							searchPageCountProvider.push(searchPageLinkList[i][1]);
-						}
+					searchPageCountProvider.splice(0,searchPageCountProvider.length);
+					searchPageCountProvider.push(searchPageIndex);
+					for(var i:int=1; i<=pageCount; i++){
+						searchPageCountProvider.push(i);
 					}
-					label_totalCount.text = "(合計: " + searchPageCountProvider.length + "ページ )";
-					logManager.addLog("検索結果を更新:"+ decodeURIComponent(searchUrl + searchWord));
 					
-					a2nForSearch = null;
+					var combobox_index:int = searchPageCountProvider.indexOf(searchPageIndex);
+					combobox_pageCounter_search.selectedIndex = combobox_index;
+					
+					label_totalCount.text = "(合計: " + pageCount + "ページ )";
+					logManager.addLog("検索結果を更新:"+ searchWord);
+					
+					nnddSearchListRenewer = null;
 					loading.stop();
 					loading.remove();
 					loading = null;
 				});
-				a2nForSearch.request_search(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, UserManager.instance.user, UserManager.instance.password, searchUrl, searchWord , searchProvider, comboBox_sortType.selectedIndex, this.searchPageIndex);
+				
+				var nnddSearchSortType:NNDDSearchSortType = SearchSortString.convertSortTypeFromIndex(comboBox_sortType.selectedIndex);
+				nnddSearchListRenewer.renew(UserManager.instance.user, UserManager.instance.password, searchWord, nnddSearchSortType.sort, nnddSearchSortType.order, pageCount);
 			}catch(error:Error){
-//				setEnableSearchButton(true);
-//				radiogroup_period.enabled = true;
-//				radiogroup_target.enabled = true;
-//				rankingRenewButton.enabled = true;
-//				list_categoryList.enabled = true;
 				loading.stop();
 				loading.remove();
 				loading = null;
 				button_SearchNico.label = "検索";
-				Alert.show("検索中に想定外の例外が発生しました。\n"+ error + "\nURL:" + searchUrl + encodeURIComponent(searchWord), "エラー");
-				logManager.addLog("検索中に想定外の例外が発生しました。\n"+ error +  "\nURL:"+ searchUrl + encodeURIComponent(searchWord) + "\n" + error.getStackTrace() );
-				a2nForSearch = null;
+				Alert.show("検索中に想定外の例外が発生しました。\n"+ error, "エラー");
+				logManager.addLog("検索中に想定外の例外が発生しました。\n"+ error + "\n" + error.getStackTrace() );
+				nnddSearchListRenewer = null;
 			}
 		}
 	}else if(button_SearchNico.label == Message.L_CANCEL){
-		a2nForSearch.searchCancel();
-		a2nForSearch = null;
-//		setEnableSearchButton(true);
-//		radiogroup_period.enabled = true;
-//		radiogroup_target.enabled = true;
-//		rankingRenewButton.enabled = true;
-//		list_categoryList.enabled = true;
+		nnddSearchListRenewer.close();
+		nnddSearchListRenewer = null;
 		button_SearchNico.label = "検索";
 		if(loading != null){
 			loading.stop();
@@ -5366,9 +5354,9 @@ private function rankingPageCountChanged():void{
  * 
  */
 private function searchPageCountChanged():void{
-	if(searchPageLinkList.length > 0 && combobox_pageCounter_search.selectedIndex >= 0 ){
+	if(combobox_pageCounter_search.selectedIndex >= 0 ){
 		this.searchPageIndex = new int(combobox_pageCounter_search.selectedLabel);
-		searchNicoButtonClicked(searchPageLinkList[getIndexByPageCountForSearch(searchPageIndex)][0]);
+		searchNicoButtonClicked(searchPageIndex);
 		
 		searchPageCountProvider.unshift(searchPageIndex);
 		combobox_pageCounter_search.selectedIndex = searchPageCountProvider.indexOf(searchPageIndex);
@@ -5398,16 +5386,14 @@ private function nextButtonClicked():void{
  */
 private function searchNextButtonClicked():void{
 	if(searchPageCountProvider.length > 0){
-		if(searchPageLinkList != null && searchPageLinkList.length > 0){
-			var index:int = getIndexByPageCountForSearch(searchPageIndex+1);
-			if(index != -1){
-				this.searchPageIndex++;
-				
-				searchNicoButtonClicked(searchPageLinkList[index][0]);
-				
-				searchPageCountProvider.push(searchPageIndex);
-				combobox_pageCounter_search.selectedIndex = searchPageCountProvider.indexOf(searchPageIndex);
-			}
+		var index:int = getIndexByPageCountForSearch(searchPageIndex+1);
+		if(index != -1){
+			this.searchPageIndex++;
+			
+			searchNicoButtonClicked(searchPageIndex);
+			
+			searchPageCountProvider.push(searchPageIndex);
+			combobox_pageCounter_search.selectedIndex = searchPageCountProvider.indexOf(searchPageIndex);
 		}
 	}
 }
@@ -5434,14 +5420,12 @@ private function backButtonClicked():void{
  */
 private function searchBackButtonClicked():void{
 	if(searchPageCountProvider.length > 0){
-		if(searchPageLinkList != null && searchPageLinkList.length > 0){
-			var index:int = getIndexByPageCountForSearch(searchPageIndex-1);
-			if(index != -1){
-				this.searchPageIndex--;
-				searchNicoButtonClicked(searchPageLinkList[index][0]);
-				searchPageCountProvider.push(searchPageIndex);
-				combobox_pageCounter_search.selectedIndex = searchPageCountProvider.indexOf(searchPageIndex);
-			}
+		var index:int = getIndexByPageCountForSearch(searchPageIndex-1);
+		if(index != -1){
+			this.searchPageIndex--;
+			searchNicoButtonClicked(searchPageIndex);
+			searchPageCountProvider.push(searchPageIndex);
+			combobox_pageCounter_search.selectedIndex = searchPageCountProvider.indexOf(searchPageIndex);
 		}
 	}
 }
@@ -5453,8 +5437,8 @@ private function searchBackButtonClicked():void{
  * 
  */
 private function getIndexByPageCountForSearch(pageCount:int):int{
-	for(var i:int = 0; i<searchPageLinkList.length; i++){
-		if(searchPageLinkList[i][1] == pageCount){
+	for(var i:int = 0; i<searchPageCountProvider.length; i++){
+		if(searchPageCountProvider[i] == pageCount){
 			return i;
 		}
 	}
@@ -7604,7 +7588,7 @@ public function tagTileListItemDoubleClickEventHandler(event:ListEvent):void{
 	if(event.itemRenderer.data != null){
 		if(event.itemRenderer.data is String){
 			var word:String = String(event.itemRenderer.data);
-			search(new SearchItem(word, SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, word));
+			search(new SearchItem(word, SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
 		}
 	}
 }

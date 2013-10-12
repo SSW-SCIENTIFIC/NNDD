@@ -1,7 +1,5 @@
 package org.mineap.nndd.model
 {
-	import org.mineap.nicovideo4as.model.SearchSortType;
-	import org.mineap.nicovideo4as.model.SearchType;
 
 	/**
 	 * SearchItem.as<br>
@@ -23,7 +21,7 @@ package org.mineap.nndd.model
 		/**
 		 * 検索結果のソート種別
 		 */
-		public var sortType:SearchSortType = new SearchSortType(SearchSortType.COMMENT_TIME, SearchSortType.ORDER_D);
+		public var sortType:NNDDSearchSortType = new NNDDSearchSortType(NNDDSearchSortType.COMMENT_TIME, NNDDSearchSortType.ORDER_D);
 		
 		/**
 		 * 検索の種別（キーワード、タグ）
@@ -49,7 +47,7 @@ package org.mineap.nndd.model
 		 * @param isDir
 		 * 
 		 */
-		public function SearchItem(name:String, sortType:SearchSortType, searchType:int, searchWord:String, isDir:Boolean = false)
+		public function SearchItem(name:String, sortType:NNDDSearchSortType, searchType:int, searchWord:String, isDir:Boolean = false)
 		{
 			this.name = name;
 			this.sortType = sortType;

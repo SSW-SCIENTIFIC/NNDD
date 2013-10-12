@@ -6,8 +6,6 @@
 			import org.mineap.nndd.model.SearchItem;
 			import org.mineap.nndd.model.SearchSortString;
 			import org.mineap.nndd.model.SearchTypeString;
-			import org.mineap.nicovideo4as.model.SearchSortType;
-			import org.mineap.nicovideo4as.model.SearchType;
 
 			private var _searchItem:SearchItem = null;
 			

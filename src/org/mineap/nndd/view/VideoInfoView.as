@@ -1,20 +1,14 @@
-/**
- * VideoInfoView.as
- * 
- * Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved.
- *  
- * @author shiraminekeisuke
- * 
- */	
-
 import flash.display.StageDisplayState;
-import flash.display.StageQuality;
 import flash.events.Event;
+import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.events.NativeWindowBoundsEvent;
 import flash.events.TextEvent;
+import flash.events.TimerEvent;
 import flash.geom.Rectangle;
-import flash.sampler.getInvocationCount;
+import flash.net.URLRequest;
+import flash.net.navigateToURL;
+import flash.ui.Keyboard;
 import flash.utils.Timer;
 
 import mx.collections.ArrayCollection;
@@ -39,20 +33,19 @@ import mx.events.ListEvent;
 import mx.events.NumericStepperEvent;
 import mx.events.SliderEvent;
 
-import org.mineap.nicovideo4as.model.SearchType;
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
 import org.mineap.nndd.model.NNDDVideo;
 import org.mineap.nndd.model.PlayList;
 import org.mineap.nndd.model.SearchItem;
 import org.mineap.nndd.model.SearchSortString;
+import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.util.DataGridColumnWidthUtil;
 import org.mineap.nndd.util.PathMaker;
 import org.mineap.util.config.ConfUtil;
 import org.mineap.util.config.ConfigManager;
-import org.mineap.util.font.FontUtil;
 
 private var videoPlayer:VideoPlayer;
 private var playerController:PlayerController;
@@ -1826,7 +1819,7 @@ public function tagListDoubleClickEventHandler(event:ListEvent):void{
 		if(event.itemRenderer.data is String){
 			var word:String = String(event.itemRenderer.data);
 			Application.application.search(new SearchItem(word, 
-				SearchSortString.convertSortTypeFromIndex(4), SearchType.TAG, word));
+				SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
 		}
 	}
 }

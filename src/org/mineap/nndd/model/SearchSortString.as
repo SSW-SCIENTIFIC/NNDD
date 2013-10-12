@@ -1,8 +1,6 @@
 package org.mineap.nndd.model
 {
 	
-	import org.mineap.nicovideo4as.model.SearchSortType;
-
 	/**
 	 * 検索ソート順の文字列を表現するクラスです。
 	 * 
@@ -26,7 +24,7 @@ package org.mineap.nndd.model
 		 * @return 
 		 * 
 		 */
-		public static function convertSortTypeFromIndex(index:int):SearchSortType{
+		public static function convertSortTypeFromIndex(index:int):NNDDSearchSortType{
 			return convertSortTypeFromString(NICO_SEARCH_SORT_TEXT_ARRAY[index]);
 		}
 		
@@ -37,21 +35,21 @@ package org.mineap.nndd.model
 		 * @return 
 		 * 
 		 */
-		public static function convertSortTypeFromString(text:String):SearchSortType{
+		public static function convertSortTypeFromString(text:String):NNDDSearchSortType{
 			
 			for(var index:int=0 ; NICO_SEARCH_SORT_TEXT_ARRAY.length > index; index++){
 				if(NICO_SEARCH_SORT_TEXT_ARRAY[index] == text){
-					var order:int = SearchSortType.ORDER_D;
+					var order:int = NNDDSearchSortType.ORDER_D;
 					if((index % 2) == 1){
 						// 2で割ったあまりが1
-						order = SearchSortType.ORDER_A;
+						order = NNDDSearchSortType.ORDER_A;
 					}
 					
-					return new SearchSortType(index / 2, order);
+					return new NNDDSearchSortType(index / 2, order);
 				}
 			}
 			
-			return new SearchSortType(SearchSortType.COMMENT_COUNT, SearchSortType.ORDER_D);
+			return new NNDDSearchSortType(NNDDSearchSortType.COMMENT_COUNT, NNDDSearchSortType.ORDER_D);
 		}
 		
 		/**
@@ -60,7 +58,7 @@ package org.mineap.nndd.model
 		 * @return 
 		 * 
 		 */
-		public static function convertTextArrayIndexFromSearchSortType(searchSortType:SearchSortType):int{
+		public static function convertTextArrayIndexFromSearchSortType(searchSortType:NNDDSearchSortType):int{
 			var index:int = 0;
 			index = searchSortType.sort * 2;
 			index += searchSortType.order;
