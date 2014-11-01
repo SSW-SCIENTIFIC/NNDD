@@ -1117,15 +1117,15 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		protected function osmfCurrentTimeChangeEventHandler(event:TimeEvent):void{
-			trace(event.type + ", time:" + event.time);
-			if(event.time < 0){
-				return;
-			}
-			if(videoInfoView.isResizePlayerEachPlay){
-				resizePlayerJustVideoSize(videoPlayer.nowRatio);
-			}else{
-				resizePlayerJustVideoSize();
-			}
+//			trace(event.type + ", time:" + event.time);
+//			if(event.time < 0){
+//				return;
+//			}
+//			if(videoInfoView.isResizePlayerEachPlay){
+//				resizePlayerJustVideoSize(videoPlayer.nowRatio);
+//			}else{
+//				resizePlayerJustVideoSize();
+//			}
 		}
 		
 		/**
@@ -1839,11 +1839,11 @@ package org.mineap.nndd.player
 		 * 
 		 */
 		private function durationChangeEventHandler(event:TimeEvent):void{
-			if(videoInfoView.isResizePlayerEachPlay){
-				resizePlayerJustVideoSize(videoPlayer.nowRatio);
-			}else{
-				resizePlayerJustVideoSize();
-			}
+//			if(videoInfoView.isResizePlayerEachPlay){
+//				resizePlayerJustVideoSize(videoPlayer.nowRatio);
+//			}else{
+//				resizePlayerJustVideoSize();
+//			}
 		}
 		
 		/**
