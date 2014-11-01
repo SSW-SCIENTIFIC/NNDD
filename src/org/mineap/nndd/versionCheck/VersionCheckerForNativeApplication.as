@@ -81,6 +81,7 @@ package org.mineap.nndd.versionCheck
 			}
 			
 			this.updater = new NNDDUpdaterWindow();
+			this.updater.isAutoCheck = !isCheckForUpdate;
 			this.updater.open();
 		}
 	}
