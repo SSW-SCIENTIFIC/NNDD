@@ -81,6 +81,9 @@
 
 		<!-- The window's initial maximum size, specified as a width/height pair, such as "1600 1200". Optional. -->
 		<!-- <maxSize></maxSize> -->
+		
+		<requestedDisplayResolution>high</requestedDisplayResolution>
+		
 	</initialWindow>
 
 	<!-- The subpath of the standard default installation location to use. Optional. -->
