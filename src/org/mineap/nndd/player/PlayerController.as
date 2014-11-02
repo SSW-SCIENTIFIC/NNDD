@@ -4163,7 +4163,7 @@ package org.mineap.nndd.player
 							_playMovie((event.target as NNDDDownloader).streamingUrl, 
 								(event.target as NNDDDownloader).fmsToken, 
 								playList, playListIndex, 
-								(event.target as NNDDDownloader).nicoVideoName, 
+								FileIO.getSafeFileName((event.target as NNDDDownloader).nicoVideoName), 
 								nnddDownloaderForStreaming.isEconomyMode);
 							
 							removeStreamingPlayHandler(event);
