@@ -853,20 +853,6 @@ private function selectAll(event:ContextMenuEvent):void
 	}
 }
 
-private function openNicomimi(event:ContextMenuEvent):void{
-	var videoId:String = getVideoIdDataGridContextEvent(event);
-	if(videoId != null){
-		WebServiceAccessUtil.openNicomimi(videoId);
-	}
-}
-
-private function openNicoStarSound(event:ContextMenuEvent):void
-{
-	var videoId:String = getVideoIdDataGridContextEvent(event);
-	if(videoId != null){
-		WebServiceAccessUtil.openNicoStarSound(videoId);
-	}
-}
 
 private function openNicoSound(event:ContextMenuEvent):void{
 	var videoId:String = getVideoIdDataGridContextEvent(event);

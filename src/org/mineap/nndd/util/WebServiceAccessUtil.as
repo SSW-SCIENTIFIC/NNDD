@@ -70,37 +70,6 @@ package org.mineap.nndd.util
 		/**
 		 * 
 		 * @param videoId
-		 * 
-		 */
-		public static function openNicomimi(videoId:String):void{
-			var url:String = null;
-			
-			if(videoId != null){
-				url = "http://www.nicomimi.net/play/" + videoId;
-				navigateToURL(new URLRequest(url));
-				LogManager.instance.addLog("nicomimi-にこみみ-で開く:" + url);
-			}
-		}
-		
-		
-		/**
-		 * 
-		 * @param videoId
-		 * 
-		 */
-		public static function openNicoStarSound(videoId:String):void{
-			var url:String = null;
-			
-			if(videoId != null){
-				url = "http://nicosound.anyap.info/sound/" + videoId;
-				navigateToURL(new URLRequest(url));
-				LogManager.instance.addLog("にこ☆さうんど#で開く:" + url);
-			}
-		}
-		
-		/**
-		 * 
-		 * @param videoId
 		 * @param title
 		 * 
 		 */

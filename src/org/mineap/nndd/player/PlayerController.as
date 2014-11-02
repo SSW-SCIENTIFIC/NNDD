@@ -4576,35 +4576,6 @@ package org.mineap.nndd.player
 			
 		}
 		
-		/**
-		 * 再生中の項目をにこ☆さうんどで開きます
-		 * 
-		 */
-		public function openNicoStarSound():void
-		{
-			var title:String = this.videoPlayer.title;
-			
-			if(title.length > 0){
-				var videoId:String = PathMaker.getVideoID(title);
-				WebServiceAccessUtil.openNicoStarSound(videoId);
-			}
-		}
-		
-		/**
-		 *  再生中の項目をnicomimiで開きます
-		 * 
-		 */
-		public function openNicomimi():void{
-			
-			var title:String = this.videoPlayer.title;
-			
-			if(title.length > 0){
-				
-				var videoId:String = PathMaker.getVideoID(title);
-				WebServiceAccessUtil.openNicomimi(videoId);
-			}
-			
-		}
 		
 		/**
 		 * 

@@ -22,10 +22,10 @@
 			private var videoDisplayMenuItem1:ContextMenuItem;
 			private var videoDisplayMenuItem2:ContextMenuItem;
 			private var videoDisplayMenuItem3:ContextMenuItem;
-			private var videoDisplayMenuItem4:ContextMenuItem;
+//			private var videoDisplayMenuItem4:ContextMenuItem;
 			private var videoDisplayMenuItem5:ContextMenuItem;
 			private var videoDisplayMenuItem6:ContextMenuItem;
-			private var videoDisplayMenuItem7:ContextMenuItem;
+//			private var videoDisplayMenuItem7:ContextMenuItem;
 			private var videoDisplayMenuItem8:ContextMenuItem;
 			private var videoDisplayMenuItem9:ContextMenuItem;
 			private var videoDisplayMenuItem10:ContextMenuItem;
@@ -100,12 +100,6 @@
 				downnloadNicoSoundMenuItem = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
 				downnloadNicoSoundMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
 				
-				videoDisplayMenuItem4 = new ContextMenuItem(Message.L_OPEN_NICO_STAR_SOUND, false);
-				videoDisplayMenuItem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoStarSound);
-				
-				videoDisplayMenuItem7 = new ContextMenuItem(Message.L_OPEN_NICOMIMI, false)
-				videoDisplayMenuItem7.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicomimi);
-				
 				videoDisplayMenuItem5 = new ContextMenuItem(Message.L_FULL_OR_NOMAL, true);
 				videoDisplayMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeFullClickEventHandler);
 				
@@ -139,7 +133,7 @@
 				videoDisplayMenu.customItems.push(videoDisplayMenuItem10, nextPlayListMenuItem, 
 					videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem, 
 					addDListMenuItem ,videoDisplayMenuItem2, videoDisplayMenuItem3, 
-					downnloadNicoSoundMenuItem, videoDisplayMenuItem4, videoDisplayMenuItem7, 
+					downnloadNicoSoundMenuItem, 
 					videoDisplayMenuItem5, videoDisplayMenuItem6, videoDisplayMenuItem9, 
 					videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13, 
 					videoDisplayMenuItem14);

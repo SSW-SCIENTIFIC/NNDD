@@ -82,12 +82,6 @@
 				thumbImgMenuItem6 = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
 				thumbImgMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
 				
-				thumbImgMenuItem4 = new ContextMenuItem(Message.L_OPEN_NICO_STAR_SOUND, true);
-				thumbImgMenuItem4.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoStarSound);
-				
-				thumbImgMenuItem5 = new ContextMenuItem(Message.L_OPEN_NICOMIMI, false)
-				thumbImgMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicomimi);
-				
 				thumbImgMenu.customItems.push(thumbImgMenuItem1, thumbImgMenuItem2, thumbImgMenuItem3, 
 					thumbImgMenuItem6, thumbImgMenuItem4, thumbImgMenuItem5);
 				

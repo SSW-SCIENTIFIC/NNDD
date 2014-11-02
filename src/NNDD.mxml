@@ -186,18 +186,6 @@
 				return openNicosoundMenuItem;
 			}
 			
-			private function get openNicoStarSoundMenuItem():ContextMenuItem{
-				var openNicoStarSoundMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_OPEN_NICO_STAR_SOUND, false);
-				openNicoStarSoundMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoStarSound);
-				return openNicoStarSoundMenuItem;
-			}
-			
-			private function get openNicomimiMenuItem():ContextMenuItem{
-				var openNicomimiMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_OPEN_NICOMIMI, false);
-				openNicomimiMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicomimi);
-				return openNicomimiMenuItem;
-			}
-			
 			private function get openWebBrowser():ContextMenuItem{
 				var openWebBrowserMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_OPEN_NICONICO_DOUGA, true);
 				openWebBrowserMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openWebBrowserForContextMenu);
@@ -253,7 +241,7 @@
 				
 				historyMenu.customItems.push(historyPlay, historyDownload, historyDelete, 
 					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
-					openWebBrowser, openNicosoundMenuItem, openNicoStarSoundMenuItem, openNicomimiMenuItem);
+					openWebBrowser, openNicosoundMenuItem);
 				historyMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_history.contextMenu = historyMenu;
 				
@@ -289,7 +277,7 @@
 				
 				downloadMenu.customItems.push(downloadMenuitem1, downloadMenuitem2, 
 					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
-					openWebBrowser, openNicosoundMenuItem, openNicoStarSoundMenuItem, openNicomimiMenuItem);
+					openWebBrowser, openNicosoundMenuItem);
 				downloadMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_downloadList.contextMenu = downloadMenu;
 				
@@ -336,7 +324,7 @@
 				myListMenu.customItems.push(myListMenuItem1, myListMenuItem2, 
 					playAllMenuItem, myListMenuItem4, myListMenuItem5, myListMenuItem3, 
 					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
-					openWebBrowser, openNicosoundMenuItem, openNicoStarSoundMenuItem, openNicomimiMenuItem);
+					openWebBrowser, openNicosoundMenuItem);
 				myListMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_myList.contextMenu = myListMenu;
 				
@@ -379,7 +367,7 @@
 				searchMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				searchMenu.customItems.push(searchMenuitem, searchMenuitem2, playAllMenuItem, searchMenuitem3, 
 					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
-					openWebBrowser, openNicosoundMenuItem, openNicoStarSoundMenuItem, openNicomimiMenuItem);
+					openWebBrowser, openNicosoundMenuItem);
 				
 				dataGrid_search.contextMenu = searchMenu;
 				
@@ -421,7 +409,7 @@
 				
 				rankingMenu.customItems.push(rankingMenuitem, rankingMenuitem2, playAllMenuItem, rankingMenuitem3,
 					playListContextMenuItem, selectAllMenuItem, copyUrlMenuItem, 
-					openWebBrowser, openNicosoundMenuItem, openNicoStarSoundMenuItem, openNicomimiMenuItem);
+					openWebBrowser, openNicosoundMenuItem);
 				rankingMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				dataGrid_ranking.contextMenu = rankingMenu;
 				
@@ -508,8 +496,7 @@
 				
 				downloadedMenu.customItems.push(downloadedMenuitem1, downloadedMenuitem3, 
 					downloadedMenuitem2, downloadedMenuitem6, playListContextMenuItem, 
-					openWebBrowser, openNicosoundMenuItem, openNicoStarSoundMenuItem, 
-					openNicomimiMenuItem, downloadedMenuitem4, 
+					openWebBrowser, openNicosoundMenuItem, downloadedMenuitem4, 
 					downloadedMenuitem5, copyUrlMenuItem, selectAllMenuItem);
 				downloadedMenu.addEventListener(ContextMenuEvent.MENU_SELECT, dataGridContextMenuSelectHandler);
 				downloadedMenu.addEventListener(Event.DISPLAYING, function(event:Event):void{
