@@ -66,7 +66,7 @@ import org.mineap.nicovideo4as.Login;
 import org.mineap.nicovideo4as.UserAgentManager;
 import org.mineap.nicovideo4as.analyzer.SearchResultAnalyzer;
 import org.mineap.nicovideo4as.loader.RankingLoader;
-import org.mineap.nicovideo4as.loader.api.ApiSearchAccess;
+import org.mineap.nicovideo4as.model.search.SearchType;
 import org.mineap.nicovideo4as.util.HtmlUtil;
 import org.mineap.nndd.Access2Nico;
 import org.mineap.nndd.LogManager;
@@ -5139,7 +5139,11 @@ private function searchNicoButtonClicked(pageCount:int = 1):void{
 				});
 				
 				var nnddSearchSortType:NNDDSearchSortType = SearchSortString.convertSortTypeFromIndex(comboBox_sortType.selectedIndex);
-				nnddSearchListRenewer.renew(UserManager.instance.user, UserManager.instance.password, searchWord, nnddSearchSortType.sort, nnddSearchSortType.order, pageCount);
+				var searchType:SearchType = SearchType.SEARCH;
+				if (combobox_serchType.selectedIndex == 1) {
+					searchType = SearchType.TAG;
+				}
+				nnddSearchListRenewer.renew(UserManager.instance.user, UserManager.instance.password, searchWord, searchType, nnddSearchSortType.sort, nnddSearchSortType.order, pageCount);
 			}catch(error:Error){
 				loading.stop();
 				loading.remove();

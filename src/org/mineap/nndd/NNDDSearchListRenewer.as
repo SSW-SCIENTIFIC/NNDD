@@ -57,6 +57,8 @@ package org.mineap.nndd
 		
 		private var _page:int = 1;
 		
+		private var _searchType:SearchType = SearchType.SEARCH;
+		
 		private var _result:SearchResultAnalyzer;
 		
 		public function NNDDSearchListRenewer()
@@ -64,7 +66,7 @@ package org.mineap.nndd
 		}
 		
 		
-		public function renew(user:String, password:String, word:String, sort:int, order:int, page:int):void{
+		public function renew(user:String, password:String, word:String, searchType:SearchType,sort:int, order:int, page:int):void{
 			
 			LogManager.instance.addLog("検索を開始します(word:" + word + ", sort:" + sort + ", order:" + order + ", page:" + page + ")");
 			
@@ -74,6 +76,7 @@ package org.mineap.nndd
 			this._sort = sort;
 			this._order = order;
 			this._page = page;
+			this._searchType = searchType;
 			
 			login();
 		}
@@ -102,7 +105,7 @@ package org.mineap.nndd
 			LogManager.instance.addLog("検索APIへアクセス中...");
 			
 			this._searchLoader.search(
-				SearchType.SEARCH, 
+				_searchType, 
 				encodeURIComponent(_word), 
 				_page, 
 				sort, 
