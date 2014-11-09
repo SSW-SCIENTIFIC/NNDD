@@ -24,7 +24,9 @@ package org.mineap.nndd.util
 				id = "";
 			}
 			
-			for each(var dataGridColumn:DataGridColumn in dataGrid.columns)
+			var columns:Array = dataGrid.columns;
+			
+			for each(var dataGridColumn:DataGridColumn in columns)
 			{
 				if (dataGridColumn.visible)
 				{
@@ -47,9 +49,16 @@ package org.mineap.nndd.util
 					if (value != null)
 					{
 						dataGridColumn.width = int(value);
+//						trace(confValueName + ":" + value + "(," + dataGridColumn.width + ")");
 					}
 				}
 			}
+			
+			for each(var dataGridColumn2:DataGridColumn in dataGrid.columns) {
+				var fieldName2:String = dataGridColumn2.dataField;
+//				trace(id + "_" + fieldName2 + "_width" + "(current):" + dataGridColumn2.width);
+			}
+			
 			
 		}
 		
@@ -86,6 +95,8 @@ package org.mineap.nndd.util
 					var width:int = dataGridColumn.width;
 					
 					var confValueName:String = id + "_" + fieldName + "_width";
+					
+//					trace(confValueName + ":" + width);
 					
 					ConfigManager.getInstance().setItem(confValueName, int(dataGridColumn.width));
 				}

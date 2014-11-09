@@ -99,6 +99,15 @@
 			private var playAllMenuItem:ContextMenuItem;
 			private var selectAllMenuItem:ContextMenuItem;
 			
+			private var rankingThumbSizeResizeCompleted:Boolean;
+			private var rankingTreeResizeCompleted:Boolean;
+			private var myListThumbSizeResizeCompleted:Boolean;
+			private var myListTreeResizeCompleted:Boolean;
+			private var searchThumbSizeResizeCompleted:Boolean;
+			private var searchTreeResizeCompleted:Boolean;
+			private var libraryThumbSizeResizeCompleted:Boolean;
+			private var libraryTreeResizeCompleted:Boolean;
+			
 			public var thumbImageView:Image = new Image();
 
 			protected function windowedapplication1_activateHandler(event:Event):void
@@ -295,8 +304,6 @@
 			protected function dataGrid_myList_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_myList, new Vector.<String>("dataGridColumn_condition"));
-				
 				myListMenu = new ContextMenu();
 				myListMenuItem1 = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
 				myListMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, myListItemHandler);
@@ -335,14 +342,16 @@
 					this.validateNow();
 				}
 				
+				this.myListThumbSizeResizeCompleted = true;
+				if (this.myListTreeResizeCompleted) {
+					DataGridColumnWidthUtil.loadAndSet(dataGrid_myList, new Vector.<String>("dataGridColumn_condition"));
+				}
 				
 			}
 
 
 			protected function dataGrid_search_creationCompleteHandler(event:FlexEvent):void
 			{
-				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_search, new Vector.<String>("dataGridColumn_condition"));
 				
 				searchMenu = new ContextMenu();
 				searchMenuitem = new ContextMenuItem(Message.L_RANKING_MENU_ITEM_LABEL_PLAY);
@@ -378,6 +387,10 @@
 					this.validateNow();
 				}
 				
+				this.searchThumbSizeResizeCompleted = true;
+				if (this.searchTreeResizeCompleted) {
+					DataGridColumnWidthUtil.loadAndSet(dataGrid_search, new Vector.<String>("dataGridColumn_condition"));
+				}
 				
 			}
 
@@ -419,6 +432,13 @@
 					dataGridColumn_thumbImage.width = 70*slider_thumbImageSize.value;
 					this.validateNow();
 				}
+				
+				//このタイミングでやってもうまくいかないのでログインダイアログが消えた後にやる
+//				this.rankingThumbSizeResizeCompleted = true;
+//				if (this.rankingTreeResizeCompleted) {
+//					DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>());
+//				}
+				
 				
 				this.dataGrid_ranking.visible = true;
 				
@@ -468,8 +488,6 @@
 			protected function dataGrid_downloaded_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				DataGridColumnWidthUtil.loadAndSet(dataGrid_downloaded, new Vector.<String>());
-				
 				downloadedMenu = new ContextMenu();
 				downloadedMenuitem1 = new ContextMenuItem(Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY);
 				downloadedMenuitem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,downloadedItemHandler);
@@ -516,12 +534,18 @@
 					this.validateNow();
 				}
 				this.canvas_libAndPList.addEventListener(ResizeEvent.RESIZE, libraryWidthChanged);
+				this.libraryTreeResizeCompleted = true;
 				
 				if(this.thumbImgSizeForLibrary != -1){
 					slider_thumbImageSizeForLibrary.value = this.thumbImgSizeForLibrary;
 					dataGrid_downloaded.rowHeight = 20*slider_thumbImageSizeForLibrary.value;
 					dataGridColumn_LibraryThumbImage.width = 25*slider_thumbImageSizeForLibrary.value;
 					this.validateNow();
+				}
+				this.libraryThumbSizeResizeCompleted = true;
+				
+				if (this.libraryTreeResizeCompleted && this.libraryThumbSizeResizeCompleted) {
+					DataGridColumnWidthUtil.loadAndSet(dataGrid_downloaded, new Vector.<String>());
 				}
 				
 				downloadedDataGridComplete = true;
@@ -548,6 +572,11 @@
 				tree_SearchItem.validateNow();
 				
 				this.canvas_searchItemList.addEventListener(ResizeEvent.RESIZE, searchItemListWidthChanged);
+				
+				this.searchTreeResizeCompleted = true;
+				if (this.searchThumbSizeResizeCompleted) {
+					DataGridColumnWidthUtil.loadAndSet(dataGrid_search, new Vector.<String>());
+				}
 			}
 
 
@@ -558,6 +587,11 @@
 					this.validateNow();
 				}
 				this.canvas_myListSummary.addEventListener(ResizeEvent.RESIZE, myListSummaryWidthChagned);
+				
+				this.myListTreeResizeCompleted = true;
+				if (this.myListThumbSizeResizeCompleted) {
+					DataGridColumnWidthUtil.loadAndSet(dataGrid_myList, new Vector.<String>());
+				}
 			}
 
 

@@ -2966,6 +2966,12 @@ private function rankingCanvasCreationComplete(event:FlexEvent):void{
   		this.validateNow();
   	}
   	this.list_categoryList.addEventListener(ResizeEvent.RESIZE, categoryListWidthChanged);
+	
+	// このタイミングでやってもうまくいかないのでログインダイアログが消えたあとにやる
+//	this.rankingTreeResizeCompleted = true;
+//	if (this.rankingThumbSizeResizeCompleted) {
+//		DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>());
+//	}
 }
 
 
