@@ -895,6 +895,9 @@
 								<mx:CheckBox label="別な動画にジャンプするかどうか確認する"  paddingLeft="20"
 											 id="checkBox_askToUserOnJump" click="checkBoxIsAskToUserOnJump(event)" 
 											 toolTip="ジャンプ命令が実行された際に、実際にジャンプするかユーザーに問い合わせます"/>
+								<mx:CheckBox label="プレイリスト再生中のジャンプ命令を無視する"  paddingLeft="20"
+											 id="checkBox_ignoreJumpOnPlayList" click="checkBoxIsIgnoreJumpOnPlayList(event)" 
+											 toolTip="プレイリスト再生中のジャンプ命令を無視します"/>
 								
 								<mx:HRule width="100%"/>
 								

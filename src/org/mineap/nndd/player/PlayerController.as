@@ -3695,9 +3695,13 @@ package org.mineap.nndd.player
 		public function seekOperation(vpos:Number):void{
 			if(videoInfoView.isEnableJump){
 //				this.seek(vpos/1000);
-				this.seek(vpos);
+				if ( isPlayListPlaying && videoInfoView.isIgnoreJumpOnPlayList ){
+					logManager.addLog("プレイリスト再生中はジャンプ命令を無視(ジャンプ先:" + vpos + ")")
+				} else {
+					this.seek(vpos);
+				}
 			}else{
-				logManager.addLog("ジャンプ命令を無視(ジャンプ先:" + vpos + " sec.)");
+				logManager.addLog("ジャンプ命令を無視(ジャンプ先:" + vpos + ")");
 			}
 		}
 		
@@ -3716,28 +3720,33 @@ package org.mineap.nndd.player
 			//ジャンプ命令は有効か？
 			if(videoInfoView.isEnableJump){
 				
-				//ジャンプ命令の際にユーザーに問い合わせる設定か？
-				if(videoInfoView.isAskToUserOnJump){
-					
-					if(!pausing){
-						this.play();
-					}
-					if(nicowariMC != null){
-						this.pauseByNicowari(true);
-					}
-					
-					videoPlayer.videoController.resetAlpha(true);
-					
-					//問い合わせダイアログ表示
-					videoPlayer.showAskToUserOnJump(function():void{
+				if ( isPlayListPlaying && videoInfoView.isIgnoreJumpOnPlayList ){
+					logManager.addLog("プレイリスト再生中はジャンプ命令を無視(ジャンプ先:" + videoId + ")")
+				} else {
+				
+					//ジャンプ命令の際にユーザーに問い合わせる設定か？
+					if(videoInfoView.isAskToUserOnJump){
+						
+						if(!pausing){
+							this.play();
+						}
+						if(nicowariMC != null){
+							this.pauseByNicowari(true);
+						}
+						
+						videoPlayer.videoController.resetAlpha(true);
+						
+						//問い合わせダイアログ表示
+						videoPlayer.showAskToUserOnJump(function():void{
+							jumpStart(videoId, message);
+						}, function():void{
+							play();
+							logManager.addLog("ジャンプ命令をキャンセル(ジャンプ先:" + videoId + ")");
+						}, videoId);
+						
+					}else{
 						jumpStart(videoId, message);
-					}, function():void{
-						play();
-						logManager.addLog("ジャンプ命令をキャンセル(ジャンプ先:" + videoId + ")");
-					}, videoId);
-					
-				}else{
-					jumpStart(videoId, message);
+					}
 				}
 				
 			}else{

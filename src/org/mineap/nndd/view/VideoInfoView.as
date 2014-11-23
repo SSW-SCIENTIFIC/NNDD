@@ -35,11 +35,11 @@ import mx.events.SliderEvent;
 
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
+import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.model.NNDDVideo;
 import org.mineap.nndd.model.PlayList;
 import org.mineap.nndd.model.SearchItem;
 import org.mineap.nndd.model.SearchSortString;
-import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.util.DataGridColumnWidthUtil;
@@ -91,6 +91,7 @@ public var isOpenFileDialogWhenOpenPlayer:Boolean = false;
 public var is184:Boolean = true;
 public var useDarkColor:Boolean = false;
 public var ownerCommentTextSize:int = 70;
+public var isIgnoreJumpOnPlayList:Boolean = true;
 
 public static const RESIZE_TYPE_NICO:int = 1;
 public static const RESIZE_TYPE_VIDEO:int = 2;
@@ -682,6 +683,10 @@ private function checkBoxIsAskToUserOnJump(event:MouseEvent):void{
 	isAskToUserOnJump = event.currentTarget.selected;
 }
 
+private function checkBoxIsIgnoreJumpOnPlayList(event:MouseEvent):void{
+	isIgnoreJumpOnPlayList = event.currentTarget.selected;
+}
+
 private function checkBoxIs184(event:MouseEvent):void
 {
 	is184 = event.currentTarget.selected;
@@ -889,6 +894,8 @@ private function configCanvas3CreationCompleteHandler(event:FlexEvent):void{
 	checkBox_is184.selected = is184;
 	
 	checkBox_useDarkColor.selected = useDarkColor;
+	
+	checkBox_ignoreJumpOnPlayList.selected = isIgnoreJumpOnPlayList;
 	
 }
 
@@ -1268,6 +1275,11 @@ private function readStore():void{
 			}
 		}
 		
+		confValue = ConfigManager.getInstance().getItem("isIgnoreJumpOnPlayList");
+		if (confValue != null) {
+			this.isIgnoreJumpOnPlayList = ConfUtil.parseBoolean(confValue);
+		}
+		
 	}catch(error:Error){
 		trace(error.getStackTrace());
 		Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
@@ -1404,6 +1416,8 @@ public function saveStore():void{
 		ConfigManager.getInstance().removeItem("isNotPlayNicowari");
 		ConfigManager.getInstance().setItem("isNotPlayNicowari", isNotPlayNicowari);
 		
+		ConfigManager.getInstance().removeItem("isIgnoreJumpOnPlayList");
+		ConfigManager.getInstance().setItem("isIgnoreJumpOnPlayList", isIgnoreJumpOnPlayList);
 		
 		/* DataGridの列幅保存 */
 		if (dataGrid_comment != null)
