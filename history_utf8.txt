@@ -4,9 +4,8 @@ MAP - MineApplicationProject.
 SSW-SCIENTIFIC - forked version (2.4.4～)
 -------------------------------------------
 
-***2016-12-04 v2.4.4-beta
+***2016-12-04 v2.4.4
 ・コメントが投稿出来ないことがある不具合を修正
-・SDKをAIR 23.0 + Apache Flex SDK 4.15.0に更新
 ・バイナリのリリースはAIRパッケージとEXEのみに(Windows上でDMGが生成出来ないため)
 
 ***2014-11-09 v2.4.3
