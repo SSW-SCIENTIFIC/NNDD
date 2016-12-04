@@ -40,7 +40,7 @@
 				
 				updater.updateVersion = "";
 				
-				updater.updateURL = "http://sourceforge.jp/projects/nndd/wiki/Version/attach/update_v2_native.xml";
+				updater.updateURL = "https://raw.githubusercontent.com/SSW-SCIENTIFIC/NNDD/master/update_v2_native.xml";
 				updater.addEventListener(UpdateEvent.INITIALIZED, updaterInitalizedHandler);
 				updater.addEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, statusErrorHandler);
 				updater.addEventListener(StatusUpdateEvent.UPDATE_STATUS, checkForUpdateEventHandler);

@@ -34,9 +34,14 @@
 </dmg>
 
 <exe>
-	<version>2.4.3</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/62201/NNDD_v2_4_3.exe</url>
+	<version>2.4.4-beta</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.4.4-beta/NNDD_v2_4_4-beta.exe</url>
 	<description><![CDATA[
+2016-12-04 v2.4.4-beta
+・コメントが投稿出来ないことがある不具合を修正
+・SDKをAIR 23.0 + Apache Flex SDK 4.15.0に更新
+・バイナリのリリースはAIRパッケージとEXEのみに(Windows上でDMGが生成出来ないため)
+
 2014-11-09 v2.4.3
 ・タグ検索が指定されている場合にキーワード検索を行ってしまう問題を修正
 ・データグリッドの列幅が正しく記憶されない問題を修正

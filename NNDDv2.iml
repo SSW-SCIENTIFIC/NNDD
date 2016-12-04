@@ -61,7 +61,7 @@
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon128.png" path-in-package="icon128.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/CategoryList.xml" path-in-package="CategoryList.xml" />
           </files-to-package>
-          <AirSigningOptions keystore-path="$MODULE_DIR$/AdobeAir.p12" use-temp-certificate="false" />
+          <AirSigningOptions keystore-path="$MODULE_DIR$/AirDigitalSign.p12" use-temp-certificate="false" />
         </packaging-air-desktop>
         <packaging-android />
         <packaging-ios />
