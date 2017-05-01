@@ -19,8 +19,11 @@ package org.mineap.nndd.player
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
-	
-	import mx.collections.ArrayCollection;
+import flash.utils.clearInterval;
+import flash.utils.setInterval;
+import flash.utils.setTimeout;
+
+import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.controls.DataGrid;
 	import mx.controls.SWFLoader;
@@ -4060,7 +4063,9 @@ package org.mineap.nndd.player
 					}
 				}else if((url.match(new RegExp("http://smile.*")) != null)
 					|| (url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null )
-					|| (url.match(new RegExp("rtmp[^:]*://smile.*")) != null)){
+					|| (url.match(new RegExp("rtmp[^:]*://smile.*")) != null)
+					|| (url.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null)
+				) {
 					
 					/* ストリーミング再生(接続先動画サーバがわかっている時) */
 					
@@ -4169,6 +4174,19 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming._otherNNDDServerAddress = nnddServerAddress;
 						nnddDownloaderForStreaming._otherNNDDServerPort = nnddServerPortNum;
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function(event:Event):void{
+							var intervalId: int;
+							if ((event.target as NNDDDownloader).streamingUrl.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null) {
+								intervalId = setInterval(function () {
+									trace("DmcBeating...");
+                                    (event.target as NNDDDownloader)._dmcAccess.beatDmcSession(
+											(event.target as NNDDDownloader)._dmcResultAnalyzer.sessionId,
+                                            (event.target as NNDDDownloader)._dmcResultAnalyzer.session
+									);
+								}, (event.target as NNDDDownloader)._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
+								setTimeout(function () {
+									clearInterval(intervalId);
+								}, 1000 * 60 * 10);
+							}
 							_playMovie((event.target as NNDDDownloader).streamingUrl, 
 								(event.target as NNDDDownloader).fmsToken, 
 								playList, playListIndex, 
@@ -4202,7 +4220,8 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
-						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_START, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_START, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_START, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS, getProgressListener);
 						
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
@@ -4215,6 +4234,7 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
 						
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener);
@@ -4227,6 +4247,7 @@ package org.mineap.nndd.player
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
+                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_FAIL, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, streamingPlayFailListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, streamingPlayFailListener);
 						nnddDownloaderForStreaming.requestDownloadForStreaming(UserManager.instance.user, 
@@ -4282,8 +4303,10 @@ package org.mineap.nndd.player
 				status = "サムネイル情報取得失敗";
 			}else if(event.type == NNDDDownloader.THUMB_IMG_GET_FAIL){
 				status = "サムネイル画像取得失敗";
-			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_FAIL){
-				status = "市場情報取得失敗";
+			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_FAIL) {
+                status = "市場情報取得失敗";
+            } else if (event.type == NNDDDownloader.CREATE_DMC_SESSION_FAIL) {
+				status = "DMCサーバ接続失敗";
 			}else if(event.type == NNDDDownloader.VIDEO_GET_FAIL){
 				status = "動画取得失敗";
 			} 
@@ -4315,7 +4338,9 @@ package org.mineap.nndd.player
 				status = "成功";
 			}else if(event.type == NNDDDownloader.THUMB_IMG_GET_SUCCESS){
 				status = "成功";
-			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_SUCCESS){
+			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_SUCCESS) {
+                status = "成功";
+            } else if (event.type == NNDDDownloader.CREATE_DMC_SESSION_SUCCESS) {
 				status = "成功";
 			}else if(event.type == NNDDDownloader.VIDEO_GET_SUCCESS){
 				status = "成功";
@@ -4337,8 +4362,10 @@ package org.mineap.nndd.player
 				status = "サムネイル情報を取得しています...";
 			}else if(event.type == NNDDDownloader.THUMB_IMG_GET_START){
 				status = "サムネイル画像を取得しています...";
-			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_START){
-				status = "市場情報を取得しています...";
+			}else if(event.type == NNDDDownloader.ICHIBA_INFO_GET_START) {
+                status = "市場情報を取得しています...";
+            } else if (event.type == NNDDDownloader.CREATE_DMC_SESSION_START) {
+				status = "DMCサーバに接続しています...";
 			}else if(event.type == NNDDDownloader.VIDEO_GET_START){
 				status = "動画を取得しています...";
 			}
@@ -4420,7 +4447,8 @@ package org.mineap.nndd.player
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener);
-			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.CREATE_DMC_SESSION_FAIL, getFailListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
 			
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
@@ -4432,6 +4460,7 @@ package org.mineap.nndd.player
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.CREATE_DMC_SESSION_SUCCESS, getFailListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
 			
@@ -4444,6 +4473,7 @@ package org.mineap.nndd.player
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.CREATE_DMC_SESSION_START, getFailListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_START, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS, getProgressListener);
 		}

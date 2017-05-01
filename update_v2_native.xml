@@ -34,9 +34,13 @@
 </dmg>
 
 <exe>
-	<version>2.4.4</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.4.4/NNDD_v2_4_4.exe</url>
+	<version>2.5.0</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.0/NNDD_v2_5_0.exe</url>
 	<description><![CDATA[
+2017-05-01 v2.5.0
+・DMCサーバに暫定的に対応(可能な場合は常にDMCから視聴/ダウンロード)
+・まともにデバグしてない上インターバルが残る可能性が高いためアルファ版扱い
+
 2016-12-04 v2.4.4
 ・コメントが投稿出来ないことがある不具合を修正
 ・バイナリのリリースはAIRパッケージとEXEのみに(Windows上でDMGが生成出来ないため)

@@ -13,9 +13,11 @@ package org.mineap.nndd
 	import flash.net.URLRequestHeader;
 	import flash.net.URLStream;
 	import flash.utils.ByteArray;
-	import flash.utils.getTimer;
-	
-	import mx.controls.Alert;
+import flash.utils.clearInterval;
+import flash.utils.getTimer;
+import flash.utils.setInterval;
+
+import mx.controls.Alert;
 	import mx.events.CloseEvent;
 	
 	import org.mineap.nicovideo4as.CommentLoader;
@@ -24,12 +26,15 @@ package org.mineap.nndd
 	import org.mineap.nicovideo4as.WatchVideoPage;
 	import org.mineap.nicovideo4as.analyzer.GetFlvResultAnalyzer;
 	import org.mineap.nicovideo4as.analyzer.GetWaybackkeyResultAnalyzer;
+	import org.mineap.nicovideo4as.analyzer.DmcResultAnalyzer;
+	import org.mineap.nicovideo4as.analyzer.DmcInfoAnalyzer;
 	import org.mineap.nicovideo4as.api.ApiGetBgmAccess;
 	import org.mineap.nicovideo4as.loader.IchibaInfoLoader;
 	import org.mineap.nicovideo4as.loader.ThumbImgLoader;
 	import org.mineap.nicovideo4as.loader.ThumbInfoLoader;
 	import org.mineap.nicovideo4as.loader.api.ApiGetFlvAccess;
 	import org.mineap.nicovideo4as.loader.api.ApiGetWaybackkeyAccess;
+	import org.mineap.nicovideo4as.loader.api.ApiDmcAccess;
 	import org.mineap.nicovideo4as.model.NgUp;
 	import org.mineap.nicovideo4as.model.VideoType;
 	import org.mineap.nicovideo4as.stream.VideoStream;
@@ -74,8 +79,12 @@ package org.mineap.nndd
 		private var _ichibaInfoLoader:IchibaInfoLoader;
 		private var _videoLoader:VideoLoader;
 		private var _videoStream:VideoStream;
-		
-		private var _otherNNDDInfoLoader:URLLoader;
+
+        public var _dmcAccess: ApiDmcAccess;
+		private var _dmcInfoAnalyzer: DmcInfoAnalyzer;
+		public var _dmcResultAnalyzer: DmcResultAnalyzer;
+
+        private var _otherNNDDInfoLoader:URLLoader;
 		
 		private var _flvResultAnalyzer:GetFlvResultAnalyzer;
 		
@@ -313,7 +322,11 @@ package org.mineap.nndd
 		 * _isSkipDownloadAtEcoがtrueに指定されている状態で動画をダウンロードしようとした際に発行されます。
 		 */
 		public static const DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP:String = "DownloadProccessEconomyModeSkip";
-		
+
+        public static const CREATE_DMC_SESSION_START: String = "CreateDmcSessionStart";
+        public static const CREATE_DMC_SESSION_SUCCESS: String = "CreateDmcSessionSuccess";
+        public static const CREATE_DMC_SESSION_FAIL: String = "CreateDmcSessionFail";
+        public static const BEAT_DMC_SESSION: String = "BeatDmcSession";
 		
 		/**
 		 * コンストラクタです。
@@ -335,7 +348,12 @@ package org.mineap.nndd
 			this._videoStream = new VideoStream();
 			
 			this._otherNNDDInfoLoader = new URLLoader();
-			
+
+			/* For DMC Servers */
+			this._dmcInfoAnalyzer = new DmcInfoAnalyzer();
+			this._dmcResultAnalyzer = new DmcResultAnalyzer();
+			this._dmcAccess = new ApiDmcAccess();
+
 			this._nicowariVideoIds = new Array();
 			this._nicowariVideoUrls = new Array();
 		}
@@ -824,27 +842,26 @@ package org.mineap.nndd
 		 * @param event
 		 * 
 		 */
-		private function thumbImgGetSuccess(event:Event):void{
-			
-			var fileIO:FileIO = new FileIO();
-			fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void{
-				trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
-				LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
-				dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
-				close(true, true, event);
-			});
-			this._thumbPath = fileIO.saveByteArray(this._saveVideoName + "[ThumbImg].jpeg", this._saveDir.url, (event.target as URLLoader).data).url;
-			
-			//サムネイル画像取得完了通知
-			(event.target as URLLoader).close();
-			LogManager.instance.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
-			trace(THUMB_IMG_GET_SUCCESS + ":" + event + "\n" + (new File(this._thumbPath)).nativePath);
-			dispatchEvent(new Event(THUMB_IMG_GET_SUCCESS));
-			
-			getFlvAccess();
-			
+		private function thumbImgGetSuccess(event:Event):void {
+
+            var fileIO:FileIO = new FileIO();
+            fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function (event:IOErrorEvent):void {
+                trace(THUMB_IMG_GET_FAIL + ":" + event + ":" + event.target + ":" + event.text);
+                LogManager.instance.addLog(THUMB_IMG_GET_FAIL + ":" + _videoId + ":" + event + ":" + event.target + ":" + event.text);
+                dispatchEvent(new IOErrorEvent(THUMB_IMG_GET_FAIL, false, false, event.text));
+                close(true, true, event);
+            });
+            this._thumbPath = fileIO.saveByteArray(this._saveVideoName + "[ThumbImg].jpeg", this._saveDir.url, (event.target as URLLoader).data).url;
+
+            //サムネイル画像取得完了通知
+            (event.target as URLLoader).close();
+            LogManager.instance.addLog("\t" + THUMB_IMG_GET_SUCCESS + ":" + (new File(this._thumbPath)).nativePath);
+            trace(THUMB_IMG_GET_SUCCESS + ":" + event + "\n" + (new File(this._thumbPath)).nativePath);
+            dispatchEvent(new Event(THUMB_IMG_GET_SUCCESS));
+
+            getFlvAccess();
 		}
-		
+
 		/**
 		 * 
 		 * 
@@ -1435,21 +1452,10 @@ package org.mineap.nndd
 			LogManager.instance.addLog("\t" + ICHIBA_INFO_GET_SUCCESS + ":" + path);
 			trace(ICHIBA_INFO_GET_SUCCESS + ":" + event + "\n" + path);
 			dispatchEvent(new Event(ICHIBA_INFO_GET_SUCCESS));
-			
-			try{
-				
-				getVideo();
-				
-			}
-			catch(error:Error)
-			{
-				trace(error.getStackTrace());
-				LogManager.instance.addLog("動画のダウンロードでエラーが発生:" + error);
-				var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
-				dispatchEvent(myEvent);
-				close(true, true, myEvent);
-			}
-			
+
+
+
+			switcher();
 		}
 		
 		private function createNNDDServerRequest():URLRequest
@@ -1465,8 +1471,84 @@ package org.mineap.nndd
 			
 			return request;
 		}
-		
-		
+
+		private function createDmcSession(): void
+		{
+			// Register EventListeners
+			this._getflvAccess.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
+				(event.target as URLLoader).close();
+				LogManager.instance.addLog(CREATE_DMC_SESSION_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
+				trace(CREATE_DMC_SESSION_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
+				dispatchEvent(new IOErrorEvent(CREATE_DMC_SESSION_FAIL, false, false, event.text));
+				close(true, true, event);
+			});
+			this._getflvAccess.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+				trace(event);
+				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+			});
+			this._dmcAccess.addEventListener(Event.COMPLETE, createDmcSessionSuccess);
+
+			trace(CREATE_DMC_SESSION_START + ":" + this._threadId + "(" + this._videoId + ")");
+			LogManager.instance.addLog(CREATE_DMC_SESSION_START + ":" + this._threadId + "(" + this._videoId + ")");
+			dispatchEvent(new Event(CREATE_DMC_SESSION_START));
+
+			this._dmcAccess.createDmcSession(
+					this._videoId,
+					this._dmcInfoAnalyzer.apiUrl,
+					this._dmcInfoAnalyzer.getSession(this._watchVideo.jsonData.viewerInfo.isPremium)
+			);
+		}
+
+		private function createDmcSessionSuccess(event: Event): void
+		{
+			this._dmcAccess.removeEventListener(Event.COMPLETE, createDmcSessionSuccess);
+			this._dmcResultAnalyzer.analyze(this._dmcAccess.data);
+
+			if (this._dmcResultAnalyzer.sessionId == null
+					|| this._dmcResultAnalyzer.sessionId.length == 0
+					|| this._dmcResultAnalyzer.session == null
+			) {
+				trace(CREATE_DMC_SESSION_FAIL + ":" + event);
+				LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_FAIL + ":" + this._videoId + ":" +  this._nicoVideoName);
+				LogManager.instance.addLog("動画が存在しないか、アクセスできません。(" + this._videoId + ")");
+				var errorEvent:ErrorEvent = new IOErrorEvent(CREATE_DMC_SESSION_FAIL, false, false, "動画が存在しないか、アクセスできません。(" + this._videoId + ")");
+				dispatchEvent(errorEvent);
+				close(true, true, errorEvent);
+				return;
+			}
+			else
+			{
+				trace(CREATE_DMC_SESSION_SUCCESS + ":" + event);
+				LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+				dispatchEvent(new Event(CREATE_DMC_SESSION_SUCCESS));
+			}
+
+			this.switcher();
+		}
+
+		private function switcher(): void
+		{
+			if (this._watchVideo.jsonData.flashvars.isDmc != 1) {
+				this._dmcAccess = null;
+			}
+
+            if (this._watchVideo.jsonData.flashvars.isDmc != 1 || this._dmcResultAnalyzer.isValid) {
+                try {
+                    getVideo();
+                }
+                catch (error:Error) {
+                    trace(error.getStackTrace());
+                    LogManager.instance.addLog("動画のダウンロードでエラーが発生:" + error);
+                    var myEvent:IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
+                    dispatchEvent(myEvent);
+                    close(true, true, myEvent);
+                }
+            } else {
+                this._dmcInfoAnalyzer.analyze(decodeURIComponent(this._watchVideo.jsonData.flashvars.dmcInfo));
+                createDmcSession();
+            }
+		}
+
 		private function getVideo():void
 		{
 		
@@ -1582,8 +1664,14 @@ package org.mineap.nndd
 
 			this._threadId = analyzer.threadId;
 			
-			if (analyzer.url == null || analyzer.url.length == 0)
-			{
+			if (analyzer.url == null
+					|| analyzer.url.length == 0
+					|| (
+							this._watchVideo.jsonData.flashvars.isDmc == 1
+							&& (!this._dmcResultAnalyzer.isValid
+							|| this._dmcResultAnalyzer.contentUri.length == 0)
+						)
+			) {
 				trace(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません:" + this.videoUrl);
 				LogManager.instance.addLog(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません。:" + this.videoUrl);
 				var event:ErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "動画サーバーのURLが取得できません。");
@@ -1596,11 +1684,12 @@ package org.mineap.nndd
 			var extension:String = "";
 			if(VideoType.VIDEO_TYPE_FLV == videoType){
 				extension = ".flv";
-			}else if(VideoType.VIDEO_TYPE_MP4 == videoType){
+			}else if(VideoType.VIDEO_TYPE_MP4 == videoType || this._watchVideo.jsonData.flashvars.isDmc == 1){
 				extension = ".mp4";
 			}else if(VideoType.VIDEO_TYPE_SWF == videoType){
 				extension = ".swf";
 			}
+
 			LogManager.instance.addLog("拡張子を判定:videoType=" + videoType + ", 拡張子=" + extension);
 			
 			//HTML特殊文字置き換え済動画名
@@ -1617,6 +1706,9 @@ package org.mineap.nndd
 			}
 			
 			var videoUrl:String = analyzer.url;
+			if (this._watchVideo.jsonData.flashvars.isDmc == 1 ) {
+				videoUrl = this._dmcResultAnalyzer.contentUri;
+			}
 			
 			if (this._isNNDDServerReady)
 			{
@@ -1630,6 +1722,16 @@ package org.mineap.nndd
 			dispatchEvent(new Event(VIDEO_GET_START));
 			
 			this._videoStream.getVideoStart(videoUrl);
+			var intervalId: int;
+			if (this._watchVideo.jsonData.flashvars.isDmc == 1) {
+                intervalId = setInterval(function (): void {
+                    trace("DMCSessionBeating...");
+                    _dmcAccess.beatDmcSession(_dmcResultAnalyzer.sessionId, _dmcResultAnalyzer.session);
+                }, this._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
+                this._videoStream.addEventListener(Event.COMPLETE, function (event: Event): void {
+                    clearInterval(intervalId);
+                });
+			}
 		}
 		
 		/**
@@ -1674,7 +1776,7 @@ package org.mineap.nndd
 				var extension:String = "";
 				if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_FLV){
 					extension = ".flv";
-				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4){
+				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4 || this._watchVideo.jsonData.flashvars.isDmc == 1){
 					extension = ".mp4";
 				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_SWF){
 					extension = ".swf";
@@ -1692,7 +1794,7 @@ package org.mineap.nndd
 			
 			LogManager.instance.addLog("ストリーム再生用のURLを取得:" + this._nicoVideoName);
 			
-			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess);
+			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess, this._dmcAccess);
 		}
 		
 		/**
