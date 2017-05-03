@@ -1528,11 +1528,11 @@ import mx.controls.Alert;
 
 		private function switcher(): void
 		{
-			if (this._watchVideo.jsonData.flashvars.isDmc != 1) {
+			if (!this._watchVideo.isDmc) {
 				this._dmcAccess = null;
 			}
 
-            if (this._watchVideo.jsonData.flashvars.isDmc != 1 || this._dmcResultAnalyzer.isValid) {
+            if (!this._watchVideo.isDmc || this._dmcResultAnalyzer.isValid) {
                 try {
                     getVideo();
                 }
@@ -1544,7 +1544,7 @@ import mx.controls.Alert;
                     close(true, true, myEvent);
                 }
             } else {
-                this._dmcInfoAnalyzer.analyze(decodeURIComponent(this._watchVideo.jsonData.flashvars.dmcInfo));
+                this._dmcInfoAnalyzer.analyze(this._watchVideo.dmcInfo);
                 createDmcSession();
             }
 		}
@@ -1667,7 +1667,7 @@ import mx.controls.Alert;
 			if (analyzer.url == null
 					|| analyzer.url.length == 0
 					|| (
-							this._watchVideo.jsonData.flashvars.isDmc == 1
+							this._watchVideo.isDmc
 							&& (!this._dmcResultAnalyzer.isValid
 							|| this._dmcResultAnalyzer.contentUri.length == 0)
 						)
@@ -1684,7 +1684,7 @@ import mx.controls.Alert;
 			var extension:String = "";
 			if(VideoType.VIDEO_TYPE_FLV == videoType){
 				extension = ".flv";
-			}else if(VideoType.VIDEO_TYPE_MP4 == videoType || this._watchVideo.jsonData.flashvars.isDmc == 1){
+			}else if(VideoType.VIDEO_TYPE_MP4 == videoType || this._watchVideo.isDmc){
 				extension = ".mp4";
 			}else if(VideoType.VIDEO_TYPE_SWF == videoType){
 				extension = ".swf";
@@ -1706,7 +1706,7 @@ import mx.controls.Alert;
 			}
 			
 			var videoUrl:String = analyzer.url;
-			if (this._watchVideo.jsonData.flashvars.isDmc == 1 ) {
+			if (this._watchVideo.isDmc) {
 				videoUrl = this._dmcResultAnalyzer.contentUri;
 			}
 			
@@ -1723,7 +1723,7 @@ import mx.controls.Alert;
 			
 			this._videoStream.getVideoStart(videoUrl);
 			var intervalId: int;
-			if (this._watchVideo.jsonData.flashvars.isDmc == 1) {
+			if (this._watchVideo.isDmc) {
                 intervalId = setInterval(function (): void {
                     trace("DMCSessionBeating...");
                     _dmcAccess.beatDmcSession(_dmcResultAnalyzer.sessionId, _dmcResultAnalyzer.session);
@@ -1776,7 +1776,7 @@ import mx.controls.Alert;
 				var extension:String = "";
 				if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_FLV){
 					extension = ".flv";
-				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4 || this._watchVideo.jsonData.flashvars.isDmc == 1){
+				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4 || this._watchVideo.isDmc){
 					extension = ".mp4";
 				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_SWF){
 					extension = ".swf";

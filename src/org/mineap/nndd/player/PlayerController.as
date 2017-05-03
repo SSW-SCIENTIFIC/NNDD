@@ -273,7 +273,6 @@ import mx.collections.ArrayCollection;
 			this.commentManager = new CommentManager(videoPlayer, videoInfoView, this);
 
 			this.playerHistoryManager = new PlayerHistoryManager();
-			
 		}
 		
 		/**
@@ -724,8 +723,10 @@ import mx.collections.ArrayCollection;
 					
 					videoDisplay.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
 					videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
+					videoDisplay.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, function (event: MediaPlayerStateChangeEvent): void {
+
+					});
 					videoDisplay.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
-						event.currentTarget.setFocus();
 					});
 					
 					videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
