@@ -1475,14 +1475,14 @@ import mx.controls.Alert;
 		private function createDmcSession(): void
 		{
 			// Register EventListeners
-			this._getflvAccess.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
+			this._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function(event:ErrorEvent):void{
 				(event.target as URLLoader).close();
 				LogManager.instance.addLog(CREATE_DMC_SESSION_FAIL + ":" + _videoId + ":" + event + ":" + event.target +  ":" + event.text);
 				trace(CREATE_DMC_SESSION_FAIL + ":" + event + ":" + event.target +  ":" + event.text);
 				dispatchEvent(new IOErrorEvent(CREATE_DMC_SESSION_FAIL, false, false, event.text));
 				close(true, true, event);
 			});
-			this._getflvAccess.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
+			this._dmcAccess.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function(event:HTTPStatusEvent):void{
 				trace(event);
 				LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
 			});
