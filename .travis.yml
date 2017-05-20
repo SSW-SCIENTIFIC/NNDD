@@ -22,14 +22,16 @@ script:
 - echo "do nothing"
 before_deploy:
 - mkdir build
-- wget -P ./build https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/$TRAVIS_TAG/NNDD_${TRAVIS_TAG%%-*}.air
+- TAG_VERSION=${TRAVIS_TAG%%-*}
+- FILENAME=NNDD_${TAG_VERSION//./_}
+- wget -P ./build https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/$TRAVIS_TAG/${FILENAME}.air
 - ls -al build/
-- adt -package -target native $(pwd)/build/NNDD_${TRAVIS_TAG%%-*}.dmg $(pwd)/build/NNDD_${TRAVIS_TAG%%-*}.air
+- adt -package -target native $(pwd)/build/${FILENAME}.dmg $(pwd)/build/${FILENAME}.air
 deploy:
   provider: releases
   api_key:
     secure: RxISIngDf7ayID2HiyOmOylo3FIabENi/jUE02+ioe4yOcoynb7B90RuFuSpGMmSHUYl4umkEI6X4cnV7meWnagfhKYMHt4AGgc/2tITv6PIGAPk0X/N+APyIxb/7Hw746rDFn0OW0dfIzXgW6C6ULGksE2xrr5ylvXN4VyH5VOiUYTv2R43kJYwII1TGELtaXoeRogmnmAhupg/pKRsg/Gplp6kR+NaOA4t+rLU5ayeWywdyTAbj83n5F/gUrgeXR3nmMHlNgXeUZnzKj8hCiPc3RpoV2+puFDt4OjG5L4wH9C0sxgQaSFvYJQWQ2D56/W4pQAeANIN6kF1Y4F8yYoCRr+wFRVWUn0A+8Vp3Apj5iLXmxtaSyLpk7V3ahaitJ2W0x4YZDBuVPeOWhoGrJM8fWlsXeqJPLXSIfmcLMhp0v+8q47kSqdp7Kv1xB/QLWafrlXzxGAKkzMH/jMd70ztMOpXNjG2dUXV5uw2eP/cHJ/qoroWDyRzxQ+ABeMIZ74HG3t+dARM24lEro/rVh7G0/qjpiVTCwn5U6c6WfWDY2njwMawRL2C3yvEo9fOr1+bGuZBZXdnO3HuDE+bX0gGfyCWPG43RLVgidWt5seJ5gWVKqBIU93QIEXVjcV/os01t6nFDpxsSnZIYMFGR0eZdl9LiL/F3MBF763n8mM=
-  file: build/NNDD_${TRAVIS_TAG%%-*}.dmg
+  file: build/${FILENAME}.dmg
   skip_cleanup: true
   on:
    tags: true 
