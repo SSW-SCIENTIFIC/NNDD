@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.4.3</version>
-	<url>http://osdn.dl.sourceforge.jp/nndd/62201/NNDD_v2_4_3.dmg</url>
+	<version>2.5.3</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.3-Beta/NNDD_v2_5_3.dmg</url>
 	<description><![CDATA[
+2017-06-09 v2.5.3
+・DMCサーバへのリクエストパラメータを動的に取得するように修正
+
+2017-05-04 v2.5.2
+・公式動画視聴に失敗する不具合を修正
+
+2017-05-04 v2.5.1
+・HTML5プレイヤーからデータを読む場合に対応(したつもり)
+・まともにデバグしてない上インターバルが残る可能性が高いためベータ版扱い
+
+2017-05-01 v2.5.0
+・DMCサーバに暫定的に対応(可能な場合は常にDMCから視聴/ダウンロード)
+・まともにデバグしてない上インターバルが残る可能性が高いためアルファ版扱い
+
+2016-12-04 v2.4.4
+・コメントが投稿出来ないことがある不具合を修正
+・バイナリのリリースはAIRパッケージとEXEのみに(Windows上でDMGが生成出来ないため)
+
 2014-11-09 v2.4.3
 ・タグ検索が指定されている場合にキーワード検索を行ってしまう問題を修正
 ・データグリッドの列幅が正しく記憶されない問題を修正
@@ -34,9 +52,12 @@
 </dmg>
 
 <exe>
-	<version>2.5.2</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.2-Beta/NNDD_v2_5_2.exe</url>
+	<version>2.5.3</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.3-Beta/NNDD_v2_5_3.exe</url>
 	<description><![CDATA[
+2017-06-09 v2.5.3
+・DMCサーバへのリクエストパラメータを動的に取得するように修正
+
 2017-05-04 v2.5.2
 ・公式動画視聴に失敗する不具合を修正
 
