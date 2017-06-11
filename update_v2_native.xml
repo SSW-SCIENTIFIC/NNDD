@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.5.3</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.3-Beta/NNDD_v2_5_3.dmg</url>
+	<version>2.5.4</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.4-Beta/NNDD_v2_5_4.dmg</url>
 	<description><![CDATA[
+2017-06-12 v2.5.4
+・ストリーミング再生時にDMCセッションの維持時間を動画の再生時間と同じに変更
+
 2017-06-09 v2.5.3
 ・DMCサーバへのリクエストパラメータを動的に取得するように修正
 
@@ -52,9 +55,12 @@
 </dmg>
 
 <exe>
-	<version>2.5.3</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.3-Beta/NNDD_v2_5_3.exe</url>
+	<version>2.5.4</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.4-Beta/NNDD_v2_5_4.exe</url>
 	<description><![CDATA[
+2017-06-12 v2.5.4
+・ストリーミング再生時にDMCセッションの維持時間を動画の再生時間と同じに変更
+
 2017-06-09 v2.5.3
 ・DMCサーバへのリクエストパラメータを動的に取得するように修正
 

@@ -81,7 +81,7 @@ import mx.controls.Alert;
 		private var _videoStream:VideoStream;
 
         public var _dmcAccess: ApiDmcAccess;
-		private var _dmcInfoAnalyzer: DmcInfoAnalyzer;
+		public var _dmcInfoAnalyzer: DmcInfoAnalyzer;
 		public var _dmcResultAnalyzer: DmcResultAnalyzer;
 
         private var _otherNNDDInfoLoader:URLLoader;

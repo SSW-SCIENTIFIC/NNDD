@@ -723,10 +723,8 @@ import mx.collections.ArrayCollection;
 					
 					videoDisplay.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
 					videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
-					videoDisplay.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, function (event: MediaPlayerStateChangeEvent): void {
-
-					});
 					videoDisplay.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+                        event.currentTarget.setFocus();
 					});
 					
 					videoPlayer.videoController.button_play.setStyle("icon", icon_Pause);
@@ -4176,17 +4174,19 @@ import mx.collections.ArrayCollection;
 						nnddDownloaderForStreaming._otherNNDDServerPort = nnddServerPortNum;
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function(event:Event):void{
 							var intervalId: int;
-							if ((event.target as NNDDDownloader).streamingUrl.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null) {
-								intervalId = setInterval(function () {
+							var nnddDownloader: NNDDDownloader = (event.target as NNDDDownloader);
+							if (nnddDownloader.streamingUrl.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null) {
+								intervalId = setInterval(function (): void {
 									trace("DmcBeating...");
-                                    (event.target as NNDDDownloader)._dmcAccess.beatDmcSession(
-											(event.target as NNDDDownloader)._dmcResultAnalyzer.sessionId,
-                                            (event.target as NNDDDownloader)._dmcResultAnalyzer.session
+                                    nnddDownloader._dmcAccess.beatDmcSession(
+                                            nnddDownloader._dmcResultAnalyzer.sessionId,
+                                            nnddDownloader._dmcResultAnalyzer.session
 									);
-								}, (event.target as NNDDDownloader)._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
-								setTimeout(function () {
+								}, nnddDownloader._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
+								setTimeout(function (): void {
+                                    trace("Clearing Interval...");
 									clearInterval(intervalId);
-								}, 1000 * 60 * 10);
+								}, nnddDownloader._dmcInfoAnalyzer.dmcInfo.video.length_seconds * 1000);
 							}
 							_playMovie((event.target as NNDDDownloader).streamingUrl, 
 								(event.target as NNDDDownloader).fmsToken, 
