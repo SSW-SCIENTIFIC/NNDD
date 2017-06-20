@@ -1776,7 +1776,7 @@ import mx.controls.Alert;
 				var extension:String = "";
 				if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_FLV){
 					extension = ".flv";
-				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4 || this._watchVideo.isDmc){
+				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_MP4){
 					extension = ".mp4";
 				}else if((event.target as VideoLoader).videoType == VideoType.VIDEO_TYPE_SWF){
 					extension = ".swf";
