@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.5.4</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.4-Beta/NNDD_v2_5_4.dmg</url>
+	<version>2.5.5</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.5-Beta/NNDD_v2_5_5.dmg</url>
 	<description><![CDATA[
+2017-06-20 v2.5.5
+・ニコニコ動画の仕様変更に対応
+
 2017-06-12 v2.5.4
 ・ストリーミング再生時にDMCセッションの維持時間を動画の再生時間と同じに変更
 
@@ -55,9 +58,12 @@
 </dmg>
 
 <exe>
-	<version>2.5.4</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.4-Beta/NNDD_v2_5_4.exe</url>
+	<version>2.5.5</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.5-Beta/NNDD_v2_5_5.exe</url>
 	<description><![CDATA[
+2017-06-20 v2.5.5
+・ニコニコ動画の仕様変更に対応
+
 2017-06-12 v2.5.4
 ・ストリーミング再生時にDMCセッションの維持時間を動画の再生時間と同じに変更
 
