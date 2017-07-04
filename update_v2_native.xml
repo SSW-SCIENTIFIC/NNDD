@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.5.6</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.6-Beta/NNDD_v2_5_6.dmg</url>
+	<version>2.5.7</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.7-Beta/NNDD_v2_5_7.dmg</url>
 	<description><![CDATA[
+2017-07-04 v2.5.7
+・R-18動画の再生でwatchページを繰り返し取得する不具合を修正
+
 2017-06-21 v2.5.6
 ・SWF形式の動画がストリーミング再生出来ない不具合を修正
 
@@ -61,9 +64,12 @@
 </dmg>
 
 <exe>
-	<version>2.5.6</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.6-Beta/NNDD_v2_5_6.exe</url>
+	<version>2.5.7</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.7-Beta/NNDD_v2_5_7.exe</url>
 	<description><![CDATA[
+2017-07-04 v2.5.7
+・R-18動画の再生でwatchページを繰り返し取得する不具合を修正
+
 2017-06-21 v2.5.6
 ・SWF形式の動画がストリーミング再生出来ない不具合を修正
 

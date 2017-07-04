@@ -576,11 +576,11 @@ import mx.controls.Alert;
 		/**
 		 * 
 		 * @param videoId
-		 * @param watchHarmful
+		 * @param watchHarmful deprecated
 		 * @return 
 		 * 
 		 */
-		private function watch(videoId:String, watchHarmful:Boolean):void
+		private function watch(videoId:String, watchHarmful:Boolean = false):void
 		{
 			//リスナ追加
 			this._watchVideo.addEventListener(WatchVideoPage.WATCH_SUCCESS, watchSuccess);
@@ -620,7 +620,7 @@ import mx.controls.Alert;
 			LogManager.instance.addLog(WATCH_START + ":" + this._videoId);
 			dispatchEvent(new Event(WATCH_START));
 			
-			this._watchVideo.watchVideo(videoId, watchHarmful);
+			this._watchVideo.watchVideo(videoId, false);
 		}
 		
 		
@@ -643,9 +643,6 @@ import mx.controls.Alert;
 			if(this._watchVideo.checkHarmful())
 			{
 				LogManager.instance.addLog("この動画は有害報告されています:" + this._videoId);
-				// 有害判定無視指定で再生しに行く
-				watch(this._videoId, true);
-				return;
 			}
 			
 			var videoId:String = this._watchVideo.getVideoId();
