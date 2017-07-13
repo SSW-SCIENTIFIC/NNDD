@@ -1492,12 +1492,12 @@ import mx.controls.Alert;
 			this._dmcAccess.createDmcSession(
 					this._videoId,
 					this._dmcInfoAnalyzer.apiUrl,
-					this._dmcInfoAnalyzer.getSession(this._watchVideo.jsonData.viewerInfo.isPremium)
+					this._dmcInfoAnalyzer.getSession(this._watchVideo.jsonData.viewer.isPremium)
 			);
 		}
 
-		private function createDmcSessionSuccess(event: Event): void
-		{
+            private function createDmcSessionSuccess(event: Event): void
+            {
 			this._dmcAccess.removeEventListener(Event.COMPLETE, createDmcSessionSuccess);
 			this._dmcResultAnalyzer.analyze(this._dmcAccess.data);
 
