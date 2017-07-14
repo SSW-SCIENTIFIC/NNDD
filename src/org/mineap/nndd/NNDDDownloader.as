@@ -1702,7 +1702,7 @@ import mx.controls.Alert;
 				oldFile.moveToTrash();
 			}
 			
-			var videoUrl:String = analyzer.url;
+			var videoUrl:String = this._watchVideo.jsonData.video.smileInfo.url;
 			if (this._watchVideo.isDmc) {
 				videoUrl = this._dmcResultAnalyzer.contentUri;
 			}
@@ -1791,7 +1791,7 @@ import mx.controls.Alert;
 			
 			LogManager.instance.addLog("ストリーム再生用のURLを取得:" + this._nicoVideoName);
 			
-			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess, this._dmcAccess);
+			this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess, this._dmcAccess, this._watchVideo);
 		}
 		
 		/**
