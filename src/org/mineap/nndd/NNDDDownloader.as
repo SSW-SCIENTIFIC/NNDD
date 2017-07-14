@@ -1492,7 +1492,7 @@ import mx.controls.Alert;
 			this._dmcAccess.createDmcSession(
 					this._videoId,
 					this._dmcInfoAnalyzer.apiUrl,
-					this._dmcInfoAnalyzer.getSession(this._watchVideo.jsonData.viewer.isPremium)
+					this._dmcInfoAnalyzer.getSession(this._watchVideo.isPremium)
 			);
 		}
 
@@ -1702,7 +1702,10 @@ import mx.controls.Alert;
 				oldFile.moveToTrash();
 			}
 			
-			var videoUrl:String = this._watchVideo.jsonData.video.smileInfo.url;
+			var videoUrl:String = this._watchVideo.isHTML5 ?
+					this._watchVideo.smileInfo.url :
+					analyzer.url;
+
 			if (this._watchVideo.isDmc) {
 				videoUrl = this._dmcResultAnalyzer.contentUri;
 			}

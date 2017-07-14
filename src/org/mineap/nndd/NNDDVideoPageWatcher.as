@@ -113,12 +113,6 @@ package org.mineap.nndd
 			trace(event);
 			LogManager.instance.addLog("\t" + event.type + ":" + this._videoId + ":" + event);
 			
-			if((event.currentTarget as WatchVideoPage).checkHarmful())
-			{
-				this._watch.watchVideo(this._videoId, true);
-				return;
-			}
-			
 			if(this._onlyOwnerText){
 				close();
 				dispatchEvent(new Event(SUCCESS));
