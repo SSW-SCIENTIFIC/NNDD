@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nnddv2" default="all">
+  
+  
+  <property file="nnddv2.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.ane"/>
+    <include name="*.zip"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="project.jdk.home" value="${jdk.home.airsdk_compiler}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.airsdk_compiler}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.airsdk_compiler"/>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module NNDDv2 -->
+  
+  <dirname property="module.nnddv2.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.nnddv2" value="${jdk.home.airsdk_compiler}"/>
+  <property name="module.jdk.bin.nnddv2" value="${jdk.bin.airsdk_compiler}"/>
+  <property name="module.jdk.classpath.nnddv2" value="jdk.classpath.airsdk_compiler"/>
+  
+  <property name="compiler.args.nnddv2" value="-encoding UTF-8 -source 1.3 -target 1.3 ${compiler.args}"/>
+  
+  <property name="nnddv2.output.dir" value="${module.nnddv2.basedir}/classes/production/NNDDv2"/>
+  <property name="nnddv2.testoutput.dir" value="${module.nnddv2.basedir}/classes/test/NNDDv2"/>
+  
+  <path id="nnddv2.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="nnddv2.module.production.classpath">
+    <path refid="${module.jdk.classpath.nnddv2}"/>
+    <fileset dir="${basedir}/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="nnddv2.runtime.production.module.classpath">
+    <pathelement location="${nnddv2.output.dir}"/>
+    <fileset dir="${basedir}/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="nnddv2.module.classpath">
+    <path refid="${module.jdk.classpath.nnddv2}"/>
+    <pathelement location="${nnddv2.output.dir}"/>
+    <fileset dir="${basedir}/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="nnddv2.runtime.module.classpath">
+    <pathelement location="${nnddv2.testoutput.dir}"/>
+    <pathelement location="${nnddv2.output.dir}"/>
+    <fileset dir="${basedir}/libs">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.nnddv2">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.nnddv2">
+    <patternset refid="excluded.from.module.nnddv2"/>
+  </patternset>
+  
+  <path id="nnddv2.module.sourcepath">
+    <dirset dir="${module.nnddv2.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.nnddv2" depends="compile.module.nnddv2.production,compile.module.nnddv2.tests" description="Compile module NNDDv2"/>
+  
+  <target name="compile.module.nnddv2.production" depends="register.custom.compilers" description="Compile module NNDDv2; production classes">
+    <mkdir dir="${nnddv2.output.dir}"/>
+    <javac2 destdir="${nnddv2.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.nnddv2}/javac">
+      <compilerarg line="${compiler.args.nnddv2}"/>
+      <bootclasspath refid="nnddv2.module.bootclasspath"/>
+      <classpath refid="nnddv2.module.production.classpath"/>
+      <src refid="nnddv2.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.nnddv2"/>
+    </javac2>
+    
+    <copy todir="${nnddv2.output.dir}">
+      <fileset dir="${module.nnddv2.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.nnddv2.tests" depends="register.custom.compilers,compile.module.nnddv2.production" description="compile module NNDDv2; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.nnddv2" description="cleanup module">
+    <delete dir="${nnddv2.output.dir}"/>
+    <delete dir="${nnddv2.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.nnddv2" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.nnddv2" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
