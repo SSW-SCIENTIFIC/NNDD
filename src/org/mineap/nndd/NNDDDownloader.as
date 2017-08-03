@@ -1489,6 +1489,13 @@ import mx.controls.Alert;
 			LogManager.instance.addLog(CREATE_DMC_SESSION_START + ":" + this._threadId + "(" + this._videoId + ")");
 			dispatchEvent(new Event(CREATE_DMC_SESSION_START));
 
+			if (!this._dmcInfoAnalyzer.isAvailable) {
+                LogManager.instance.addLog(CREATE_DMC_SESSION_FAIL + ":" + _videoId + ": DMC Server is Unavailable");
+                trace(CREATE_DMC_SESSION_FAIL + ": DMC Server is Unavailable");
+                close(true, true);
+				return;
+			}
+
 			this._dmcAccess.createDmcSession(
 					this._videoId,
 					this._dmcInfoAnalyzer.apiUrl,
