@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
 	<version>2.5.11</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.11-Beta/NNDD_v2_5_11.dmg</url>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/mod_v2.5.11-Beta/NNDD_mod_v2_5_11.dmg</url>
 	<description><![CDATA[
 2017-08-03 v2.5.11
 ・有料動画のダウンロードで正しく失敗するように修正
@@ -77,7 +77,7 @@
 
 <exe>
 	<version>2.5.11</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.11-Beta/NNDD_v2_5_11.exe</url>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/mod_v2.5.11-mod-Beta/NNDD_mod_v2_5_11.exe</url>
 	<description><![CDATA[
 2017-08-03 v2.5.11
 ・有料動画のダウンロードで正しく失敗するように修正
