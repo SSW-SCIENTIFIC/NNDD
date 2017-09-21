@@ -21,6 +21,9 @@ package org.mineap.nndd.player
 	 * 
 	 * Copyright (c) 2009 MAP - MineApplicationProject. All Rights Reserved.
 	 *  
+	 * NGコマンド機能追加処理、NNDDスレ855　2017/09/21
+	 * ngCommandListを追加、DEVICE:3DS、DEVICE:WIIU、DEVICE:SWITCH を追加
+	 *
 	 * @author shiraminekeisuke
 	 * 
 	 */	
@@ -149,6 +152,24 @@ package org.mineap.nndd.player
 			return array;
 		}
 		
+ 	       /**
+	         *
+        	 * 2017/09/21
+        	 * @ngCommandList
+        	 * NGコマンドリストをngCommandListとして定義
+        	 *
+        	 */
+        	public function get ngCommandList():Array{
+        	    var array:Array = new Array();
+        	    for(var i:int = 0; i<videoInfoView.ngListProvider.length; i++){
+        	        if(videoInfoView.ngListProvider[i].ng_kind_column == Comments.NG_KIND_ARRAY[Comments.NG_COMMAND]){
+        	            array.push(videoInfoView.ngListProvider[i].ng_word_column);
+        	        }
+        	    }
+        	    return array;
+        	}
+
+
 		/**
 		 * 指定されたidがNG(もしくは許可)かどうかチェックし、結果を返します。
 		 * 
@@ -196,7 +217,8 @@ package org.mineap.nndd.player
 				if (isAll)
 				{
 					// 184、iPhone、docomo以外のコメントを見つけたらこのコマンドはNG
-					if ("184" != com && "IPHONE" != com && "DOCOMO" != com)
+                   			// DEVICE:3DS、DEVICE:WIIU、DEVICE:SWITCH を追加　2017/09/21
+                   			 if ("184" != com && "IPHONE" != com && "DOCOMO" != com && "DEVICE:3DS" != com && "DEVICE:WIIU" != com && "DEVICE:SWITCH" != com)
 					{
 						return true;
 					}
