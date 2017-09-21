@@ -20,6 +20,9 @@ package org.mineap.nndd.player.comment
 	 * 
 	 * Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved.
 	 *  
+	 * NGコマンド機能追加処理、NNDDスレ855　2017/09/21
+	 *　NGコマンドを文字列で処理出来るように追加
+	 * 
 	 * @author shiraminekeisuke
 	 * 
 	 */	
@@ -337,6 +340,8 @@ package org.mineap.nndd.player.comment
 		 * @param showOnlyPermissionIDComment
 		 * @param isHideSekaShinComment
 		 * @param filterEnable
+		 *
+		 * NGコマンド機能追加処理、NNDDスレ855　2017/09/21
 		 * 
 		 */
 		private function addCommentToArrayCollection(array:ArrayCollection, 
@@ -348,6 +353,8 @@ package org.mineap.nndd.player.comment
 			
 			//NGワード文字列
 			var ngWordList:Array = ngListManager.ngWordList;
+			//NGコマンド文字列　2017/09/21
+     　　　　　　　　　　　　　　　　　var ngCommandList:Array = ngListManager.ngCommandList;
 			
 			var lastTime:int = 0;
 			for(var j:int=0; j<this.commentArray.length; j++){
@@ -388,7 +395,20 @@ package org.mineap.nndd.player.comment
 							this.commentArray[index].text = "";
 							comment = "#---- このコメントは表示されません(NGコマンド) ----#";
 						}else{
-							//NGワードか？
+						　　　　//NGコマンドの文字列と一致するか？　2017/09/21
+						　　　　for each(var ngCommand:String in ngCommandList){
+						　　　　　　　　//文字を大文字に変換　2017/09/21
+                               　　　　　　　　　　　　　　　　　　　　　　　var ngCommand:String = ngCommand.toUpperCase();
+                                　　　　　　　　　　　　　　　　　　　　　　var Command2:String = this.commentArray[index].mail.toUpperCase();
+						  　　　　　　//trace("中身 "+ngCommand +" 配列の先 "+Command2+"  " ); //チェック用出力行　2017/09/21
+						    　　　　//NGコマンド文字列とコマンドを文字列として比較、一致したらNGコマンド処理　2017/09/21
+						    　　　　if(Command2.indexOf(ngCommand) != -1){
+						    　　　　　　　　this.commentArray[index].text = "";
+							　　　　comment = "#---- このコメントは表示されません(NGコマンド) ----#";
+							　　　　break;
+							}
+                            　　　　　　　　　　　　　　　　　　　　　}
+			    　　　　　　　　　　　　　　　　　　　　　//NGワードか？
 							for each(var ngword:String in ngWordList){
 								if(comment.indexOf(ngword) != -1){
 									this.commentArray[index].text = "";
