@@ -21,6 +21,10 @@ package org.mineap.nndd.player
 	 * 
 	 * Copyright (c) 2009 MAP - MineApplicationProject. All Rights Reserved.
 	 *  
+	 *
+	 * NGコマンド機能追加処理、NNDDスレ855　2017/09/21
+	 * ngCommandListを追加、DEVICE:3DS、DEVICE:WIIU、DEVICE:SWITCH を追加
+	 *
 	 * @author shiraminekeisuke
 	 * 
 	 */	
@@ -34,6 +38,11 @@ package org.mineap.nndd.player
 		private var libraryManager:ILibraryManager;
 		
 		private var ngMap:Object;
+		
+		//　NGコマンドに"ALL"があるかどうかのフラグ　　2017/09/27
+		private var ngCommandAll:Boolean;
+		//　NGコマンド文字列を宣言　2017/09/28
+		private var ngCommandList:Array = new Array();
 		
 		/**
 		 * 
@@ -118,16 +127,32 @@ package org.mineap.nndd.player
 		/**
 		 * NGMapを再構築します。
 		 * 
+		 * NGコマンドに"ALL"があるかどうか確認して、あった場合は　ngCommandAll　にtrueをセットする　2017/09/27
+		 * NGコマンドの配列を　ngCommandList　に作成　2017/09/27
+		 *
 		 */
 		public function refreshNgMap():void{
 			this.ngMap = new Object();
+			
+			// NGコマンドに"ALL"が含まれているかどうかのフラグとして使用する　ngCommandAll　を初期化　2017/09/27
+			ngCommandAll = false;
+			// NGコマンドリストの初期化　2017/09/27
+			ngCommandList = [];
 			for(var i:int = 0; i<videoInfoView.ngListProvider.length; i++){
 				
 				var ngId:String = videoInfoView.ngListProvider[i].ng_word_column;
 				var ngKind:String = videoInfoView.ngListProvider[i].ng_kind_column;
 				
 				if(ngKind == Comments.NG_KIND_ARRAY[Comments.NG_COMMAND]){
-					this.ngMap[ngId.toUpperCase()] = ngKind;
+					//ngListManagerから移動、NGコマンドチェックのための事前処理、"ALL"が入力されていた場合isAllにtrueを設定しておく　2017/09/27
+					var ngCommand:String = ngId.toUpperCase();
+					if(ngCommand == "ALL") {
+						ngCommandAll = true;
+					}
+					//NGコマンドを　ngCommandList　に格納する　　2017/09/27
+					ngCommandList.push(ngCommand);
+					
+					//this.ngMap[ngId.toUpperCase()] = ngKind;
 				}else{
 					this.ngMap[ngId] = ngKind;
 				}
@@ -166,9 +191,14 @@ package org.mineap.nndd.player
 		
 		/**
 		 * 指定されたコマンドがNGコマンドとして登録されているかどうかチェックします
-		 * 
+		 *
 		 * @param command コマンド文字列。
-		 * @return コマンドがNGとして登録されている場合にtrueを返します。空白区切りのコマンド群を指定すると、コマンド群に含まれるコマンドに一つ以上NGコマンドが存在した場合にtrueを返します。
+		 * @ngCommandAll NGコマンドに"ALL"が入っているかどうかの情報、入っている場合にはtrueが入っている　2017/09/27
+		 * @return コマンドがNGとして登録されている場合にtrueを返します。
+		 * 　　　　　空白区切りのコマンド群を指定すると、コマンド群に含まれるコマンドに一つ以上NGコマンドが存在した場合にtrueを返します。
+		 *
+		 * 上記コマンドがNGとして登録されている場合の処理を
+		 * コマンドの文字列に対してNGコマンド文字列の正規表現検索を行い、一致部分があったらtrueを返すように変更　　2017/09/27
 		 * 
 		 */
 		public function isNgCommand(command:String):Boolean{
@@ -178,40 +208,50 @@ package org.mineap.nndd.player
 				return false;
 			}
 			
-			//　分割
+			//　コマンドの文字列を大文字化し分割
 			var array:Array = command.toUpperCase().split(" ");
 			
+			//コメントのコマンド文字を大文字に変換　2017/09/28
+			var Command2:String = command.toUpperCase();
+			
+			/**　大幅な修正、この処理を　refreshNgMap　に移動　2017/09/27
 			var isAll:Boolean = false;
 			
-			// Ngにコマンドが"all"指定されている場合は、"184"以外のコマンドを見つけたら一律でtrue
+			// NGコマンドに"all"指定されている場合は、"184"以外のコマンドを見つけたら一律でtrue
 			var kind:String = this.ngMap["ALL"];
 			if (Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind)
 			{
 				isAll = true;
 			}
+			*/
 			
-			for each(var com:String in array)
-			{
-				
-				if (isAll)
-				{
+			//NGコマンドに"ALL"が指定されていた場合、"184"などのコマンドかどうかのチェックに移動する　2017/09/28
+			if (ngCommandAll) {
+				for each(var com:String in array) {
 					// 184、iPhone、docomo以外のコメントを見つけたらこのコマンドはNG
-					if ("184" != com && "IPHONE" != com && "DOCOMO" != com)
-					{
+					// DEVICE:3DS、DEVICE:WIIU、DEVICE:SWITCH を追加　2017/09/21
+					if ("184" != com && "IPHONE" != com && "DOCOMO" != com && "DEVICE:3DS" != com && "DEVICE:WIIU" != com && "DEVICE:SWITCH" != com) {
 						return true;
 					}
 				}
-				else
-				{
+				/**　大幅な修正、ここの処理を無くして「NGコマンドの文字列と一致するか？」に変更　2017/09/27
+				else {
 					kind = this.ngMap[com];
 					
-					if(Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind){
+					if (Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] == kind) {
 						return true;
 					}
 				}
+				*/
 				
 			}
-			
+			//NGコマンドの文字列と一致するか？（"ALL"と無関係に比較する）　2017/09/21
+			for each(var ngCommand:String in ngCommandList){
+				// NGコマンド文字列とコマンド文字列として正規表現を使い比較、一致したらNGコマンド処理　2017/09/21
+				if(Command2.match(ngCommand)){
+					return true;
+				}
+			}
 			return false;
 		}
 		
