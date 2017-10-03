@@ -248,7 +248,7 @@ package org.mineap.nndd.player
 			//NGコマンドの文字列と一致するか？（"ALL"と無関係に比較する）　2017/09/21
 			for each(var ngCommand:String in ngCommandList){
 				// NGコマンド文字列とコマンド文字列として正規表現を使い比較、一致したらNGコマンド処理　2017/09/21
-				if(Command2.match(ngCommand)){
+				if(Command2.match("\\b" + ngCommand + "\\b")){
 					return true;
 				}
 			}
