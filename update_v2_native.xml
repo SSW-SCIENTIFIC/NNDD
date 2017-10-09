@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.5.11</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/mod_v2.5.11-Beta/NNDD_mod_v2_5_11.dmg</url>
+	<version>2.5.12</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/mod_v2.5.12-Beta/NNDD_mod_v2_5_12.dmg</url>
 	<description><![CDATA[
+2017-10-09 v2.5.12
+・NGコマンドを半角スペース区切りで列挙することで「全てを含む」場合のNG処理を行うように拡張 @kurotoris
+
 2017-08-03 v2.5.11
 ・有料動画のダウンロードで正しく失敗するように修正
 
@@ -77,8 +80,11 @@
 
 <exe>
 	<version>2.5.11</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/mod_v2.5.11-mod-Beta/NNDD_mod_v2_5_11.exe</url>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/mod_v2.5.12-mod-Beta/NNDD_mod_v2_5_12.exe</url>
 	<description><![CDATA[
+2017-10-09 v2.5.12
+・NGコマンドを半角スペース区切りで列挙することで「全てを含む」場合のNG処理を行うように拡張 @kurotoris
+
 2017-08-03 v2.5.11
 ・有料動画のダウンロードで正しく失敗するように修正
 
