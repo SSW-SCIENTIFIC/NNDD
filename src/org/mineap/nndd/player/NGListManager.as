@@ -209,11 +209,8 @@ package org.mineap.nndd.player
 			}
 			
 			//　コマンドの文字列を大文字化し分割
-			var array:Array = command.toUpperCase().split(" ");
-			
-			//コメントのコマンド文字を大文字に変換　2017/09/28
-			var Command2:String = command.toUpperCase();
-			
+			var commands:Array = command.toUpperCase().split(" ");
+						
 			/**　大幅な修正、この処理を　refreshNgMap　に移動　2017/09/27
 			var isAll:Boolean = false;
 			
@@ -227,7 +224,7 @@ package org.mineap.nndd.player
 			
 			//NGコマンドに"ALL"が指定されていた場合、"184"などのコマンドかどうかのチェックに移動する　2017/09/28
 			if (ngCommandAll) {
-				for each(var com:String in array) {
+				for each(var com:String in commands) {
 					// 184、iPhone、docomo以外のコメントを見つけたらこのコマンドはNG
 					// DEVICE:3DS、DEVICE:WIIU、DEVICE:SWITCH を追加　2017/09/21
 					if ("184" != com && "IPHONE" != com && "DOCOMO" != com && "DEVICE:3DS" != com && "DEVICE:WIIU" != com && "DEVICE:SWITCH" != com) {
@@ -247,8 +244,17 @@ package org.mineap.nndd.player
 			}
 			//NGコマンドの文字列と一致するか？（"ALL"と無関係に比較する）　2017/09/21
 			for each(var ngCommand:String in ngCommandList){
-				// NGコマンド文字列とコマンド文字列として正規表現を使い比較、一致したらNGコマンド処理　2017/09/21
-				if(Command2.match("\\b" + ngCommand + "\\b")){
+				var ngCommands: Array = ngCommand.split(" ");
+				var status: Boolean = true;
+				
+				for each (var ngItem: String in ngCommands) {
+					if (commands.indexOf(ngItem) === -1) {
+						status = false;
+						break;
+					}
+				}
+				
+				if (status) {
 					return true;
 				}
 			}
