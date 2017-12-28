@@ -17,7 +17,7 @@
             <entry key="compiler.locale" value="ja_JP" />
           </map>
         </compiler-options>
-        <packaging-air-desktop use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/src/NNDD-app.xml" package-file-name="NNDD_mod">
+        <packaging-air-desktop use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/src/NNDD-app.xml" package-file-name="NNDD">
           <files-to-package>
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/config" path-in-package="config" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/player" path-in-package="player" />

@@ -2655,18 +2655,9 @@
 					</ns1:ConnectionStatusView>
 				</mx:Canvas>
 			</mx:TabNavigator>
-			
-			<s:HGroup left="10" bottom="10" verticalAlign="middle">
-				<mx:Label text="PayPalでMineAPに寄付:"/>
-				<mx:LinkButton label="寄付ページを開く" click="donate_clickHandler(event)"
-							   toolTip="PayPalでMineAppProject(MineAP)に寄付を行います。既定のブラウザでPayPalのページを開きます。"
-							   color="#0000FF" textDecoration="underline"/>
-				
-			</s:HGroup>
-			
-			<mx:LinkButton label="http://sourceforge.jp/projects/nndd/" right="10" bottom="10" toolTip="NNDD - ニコニコ動画DL＆再生ソフトのページを既定のブラウザで開きます。" 
+
+			<mx:LinkButton label="https://github.com/SSW-SCIENTIFIC/NNDD" right="10" bottom="10" toolTip="SSW-SCIENTIFIC/NNDD - 既定のブラウザでGitHubのSSW-SCIENTIFIC/NNDDを開きます。"
 						   click="openProjectPage(event)" color="#0000FF" textDecoration="underline"/>
-			
 			
 		</mx:Canvas>
 		

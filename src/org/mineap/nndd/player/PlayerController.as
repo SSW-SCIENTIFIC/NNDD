@@ -2160,6 +2160,11 @@ import mx.collections.ArrayCollection;
 				/* 動画のリピートは無効 */
 				
 				this.stop();
+
+				// DMCサーバ接続の場合は配信URLが無効になるので再度認証接続処理が必要
+				if (this.source.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null) {
+					this.source = "http://www.nicovideo.jp/watch/" + videoId;
+				}
 				
 				if (isPlayListingPlay)
 				{

@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>2.5.13</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.13-Beta/NNDD_v2_5_13.dmg</url>	<description><![CDATA[
+	<version>v2.6.0</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.0-Beta/NNDD_v2_6_0.dmg</url>
+	<description><![CDATA[
+2017-12-29 v2.6.0
+・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正
+・リリースをmod版のみに(オリジナル版NNDDと共存可, 設定引継ぎは手動で行う必要あり)
+・オリジナル版のSourceForgeプロジェクトページへのリンクをGitHubのプロジェクトページへのリンクに差し替え
+・PayPalへのリンクを除去
+
 2017-11-15 v2.5.13
 ・サムネイルURLのフォーマット変更に対応
 
@@ -81,8 +88,15 @@
 </dmg>
 
 <exe>
-	<version>2.5.13</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.5.13-Beta/NNDD_v2_5_13.exe</url>	<description><![CDATA[
+	<version>2.6.0</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.0-Beta/NNDD_v2_6_0.exe</url>
+	<description><![CDATA[
+2017-12-29 v2.6.0
+・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正
+・リリースをmod版のみに(オリジナル版NNDDと共存可, 設定引継ぎは手動で行う必要あり)
+・オリジナル版のSourceForgeプロジェクトページへのリンクをGitHubのプロジェクトページへのリンクに差し替え
+・PayPalへのリンクを除去
+
 2017-11-15 v2.5.13
 ・サムネイルURLのフォーマット変更に対応
 
