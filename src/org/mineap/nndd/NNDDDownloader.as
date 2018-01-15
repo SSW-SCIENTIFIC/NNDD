@@ -739,12 +739,8 @@ import mx.controls.Alert;
 					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title + ", errorCode=" + analyzer.errorCode);
 					trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
 					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "サムネイル情報の解析に失敗(errorCode=" + analyzer.errorCode + ")"));
-					close(true, true, new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "サムネイル情報の解析に失敗(errorCode=" + analyzer.errorCode + ")"));
-					
 					trace(this._saveVideoName);
 					trace(xml);
-					
-					return;
 				}
 				
 			}catch(error:Error){
@@ -1523,7 +1519,10 @@ import mx.controls.Alert;
 			else
 			{
 				trace(CREATE_DMC_SESSION_SUCCESS + ":" + event);
-				LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+
+                this._nicoVideoName = this._watchVideo.jsonData.video.title + " - [" + this._videoId + "]";
+
+                LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 				dispatchEvent(new Event(CREATE_DMC_SESSION_SUCCESS));
 			}
 

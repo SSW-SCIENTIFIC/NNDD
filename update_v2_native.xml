@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>v2.6.0</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.0-Beta/NNDD_v2_6_0.dmg</url>
+	<version>v2.6.1</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.1-Beta/NNDD_v2_6_1.dmg</url>
 	<description><![CDATA[
+2018-01-15 v2.6.1
+・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正出来ていなかったので再修正
+・オリジナル版のSourceForgeプロジェクトページへのリンクをGitHubのプロジェクトページへのリンクに差し替え出来ていなかったので改めて差し替え
+・コミュニティ限定動画の再生・ダウンロードを可能に(要ブラウザで再生可能なURLの指定, 動画情報やサムネイル, 市場などは取得不可)
+
 2017-12-29 v2.6.0
 ・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正
 ・リリースをmod版のみに(オリジナル版NNDDと共存可, 設定引継ぎは手動で行う必要あり)
@@ -88,9 +93,14 @@
 </dmg>
 
 <exe>
-	<version>2.6.0</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.0-Beta/NNDD_v2_6_0.exe</url>
+	<version>2.6.1</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.1-Beta/NNDD_v2_6_1.exe</url>
 	<description><![CDATA[
+2018-01-15 v2.6.1
+・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正出来ていなかったので再修正
+・オリジナル版のSourceForgeプロジェクトページへのリンクをGitHubのプロジェクトページへのリンクに差し替え出来ていなかったので改めて差し替え
+・コミュニティ限定動画の再生・ダウンロードを可能に(要ブラウザで再生可能なURLの指定, 動画情報やサムネイル, 市場などは取得不可)
+
 2017-12-29 v2.6.0
 ・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正
 ・リリースをmod版のみに(オリジナル版NNDDと共存可, 設定引継ぎは手動で行う必要あり)

@@ -2156,19 +2156,9 @@ import mx.collections.ArrayCollection;
 			}
 			else
 			{
-				
-				/* 動画のリピートは無効 */
-				
-				this.stop();
-
-				// DMCサーバ接続の場合は配信URLが無効になるので再度認証接続処理が必要
-				if (this.source.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null) {
-					this.source = "http://www.nicovideo.jp/watch/" + videoId;
-				}
-				
 				if (isPlayListingPlay)
 				{
-					
+					this.stop();
 					/* プレイリスト再生中 */
 					
 					logManager.addLog("***動画の再生(ローカル)***");
@@ -2212,6 +2202,10 @@ import mx.collections.ArrayCollection;
 								PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 					}
 				}
+				else
+				{
+                    this.goToTop();
+                }
 			}
 		}
 		

@@ -8030,7 +8030,7 @@ public function setPlayerFontSize(size:int):void{
 }
 
 public function openProjectPage(event:Event):void{
-	navigateToURL(new URLRequest("http://sourceforge.jp/projects/nndd/simple/"));
+	navigateToURL(new URLRequest(event.target.label));
 }
 
 public function getUseOldTypeCommentGet():Boolean
