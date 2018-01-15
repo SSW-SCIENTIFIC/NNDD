@@ -650,8 +650,18 @@ import mx.controls.Alert;
 				this._thumbInfoId = videoId;
 				LogManager.instance.addLog("サムネイル情報用ID:" + videoId);
 			}
-			
-			//動画ページアクセス完了通知(動画ページへのアクセスは閉じない)
+
+            this._nicoVideoName = (
+                    this._watchVideo.isHTML5 ?
+                        this._watchVideo.jsonData.video.title :
+                        this._watchVideo.jsonData.flashvars.videoTitle
+                    ) + " - [" + this._videoId + "]";
+            if (this._saveVideoName == null || this._saveVideoName == "")
+            {
+                this._saveVideoName = FileIO.getSafeFileName(this._nicoVideoName);
+            }
+
+            //動画ページアクセス完了通知(動画ページへのアクセスは閉じない)
 			trace(WATCH_SUCCESS + ":" + event);
 			LogManager.instance.addLog("\t" + WATCH_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 			dispatchEvent(new Event(WATCH_SUCCESS));
@@ -725,20 +735,14 @@ import mx.controls.Alert;
 				if (analyzer.status == ThumbInfoAnalyzer.STATUS_OK)
 				{
 					this._videoId = analyzer.videoId;
-					
-					if (this._saveVideoName == null || this._saveVideoName == "")
-					{
-						this._saveVideoName = FileIO.getSafeFileName(HtmlUtil.convertSpecialCharacterNotIncludedString(analyzer.title)) + " - [" + _videoId + "]";
-					}
-					this._nicoVideoName = HtmlUtil.convertSpecialCharacterNotIncludedString(analyzer.title) + " - [" + _videoId + "]";
-					
-				} else {
+				}
+                else
+                {
 					
 					// サムネイル情報を取得したが動画は削除済み？とりあえず次に進む。
 					
 					LogManager.instance.addLog(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" +  _videoId + ", title=" + analyzer.title + ", errorCode=" + analyzer.errorCode);
 					trace(THUMB_INFO_GET_FAIL + ", ThumbInfoAnalyzeFailed:" + _videoId + ", title=" + analyzer.title);
-					dispatchEvent(new IOErrorEvent(THUMB_INFO_GET_FAIL, false, false, "サムネイル情報の解析に失敗(errorCode=" + analyzer.errorCode + ")"));
 					trace(this._saveVideoName);
 					trace(xml);
 				}
@@ -1519,9 +1523,6 @@ import mx.controls.Alert;
 			else
 			{
 				trace(CREATE_DMC_SESSION_SUCCESS + ":" + event);
-
-                this._nicoVideoName = this._watchVideo.jsonData.video.title + " - [" + this._videoId + "]";
-
                 LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
 				dispatchEvent(new Event(CREATE_DMC_SESSION_SUCCESS));
 			}
@@ -2102,8 +2103,8 @@ import mx.controls.Alert;
 				
 				try
 				{
-					// 動画タイトルにスレッドIDが含まれているか？
-					if (file != null && file.exists && nnddVideo != null && file.name.indexOf(this._threadId) != -1)
+					// 動画タイトルに動画IDとは異なるスレッドIDが含まれているか？
+					if (file != null && file.exists && nnddVideo != null && this._threadId != this._videoId && file.name.indexOf(this._threadId) != -1)
 					{
 						
 						LogManager.instance.addLog("動画タイトルのスレッドID(" + this._threadId + ")を動画ID(" + this._videoId + ")に置き換え中...");
