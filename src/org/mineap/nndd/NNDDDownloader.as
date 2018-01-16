@@ -645,10 +645,10 @@ import mx.controls.Alert;
 				LogManager.instance.addLog("この動画は有害報告されています:" + this._videoId);
 			}
 			
-			var videoId:String = this._watchVideo.getVideoId();
-			if(videoId != this._thumbInfoId){
-				this._thumbInfoId = videoId;
-				LogManager.instance.addLog("サムネイル情報用ID:" + videoId);
+			this._videoId = this._watchVideo.getVideoId();
+			if(this._videoId != this._thumbInfoId){
+				this._thumbInfoId = this._videoId;
+				LogManager.instance.addLog("サムネイル情報用ID:" + this._videoId);
 			}
 
             this._nicoVideoName = (
@@ -672,7 +672,7 @@ import mx.controls.Alert;
 				return;
 			}
 			
-			getThumbInfo(videoId);
+			getThumbInfo(this._videoId);
 			
 		}
 		

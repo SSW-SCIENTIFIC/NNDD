@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>v2.6.1</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.1-Beta/NNDD_v2_6_1.dmg</url>
+	<version>v2.6.2</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.2-Beta/NNDD_v2_6_2.dmg</url>
 	<description><![CDATA[
+2018-01-16 v2.6.2
+・公式動画をダウンロードリストから再生しようとした際にファイルが見つからなかった不具合を修正
+
 2018-01-15 v2.6.1
 ・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正出来ていなかったので再修正
 ・オリジナル版のSourceForgeプロジェクトページへのリンクをGitHubのプロジェクトページへのリンクに差し替え出来ていなかったので改めて差し替え
@@ -93,9 +96,12 @@
 </dmg>
 
 <exe>
-	<version>2.6.1</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.1-Beta/NNDD_v2_6_1.exe</url>
+	<version>2.6.2</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.2-Beta/NNDD_v2_6_2.exe</url>
 	<description><![CDATA[
+2018-01-16 v2.6.2
+・公式動画をダウンロードリストから再生しようとした際にファイルが見つからなかった不具合を修正
+
 2018-01-15 v2.6.1
 ・DMCサーバの動画再生終了後に再度プレイボタンを押すと動画取得が出来なかった問題を修正出来ていなかったので再修正
 ・オリジナル版のSourceForgeプロジェクトページへのリンクをGitHubのプロジェクトページへのリンクに差し替え出来ていなかったので改めて差し替え
