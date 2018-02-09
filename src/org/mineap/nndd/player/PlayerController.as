@@ -2205,6 +2205,8 @@ import mx.collections.ArrayCollection;
 				else
 				{
                     this.goToTop();
+					this.play();
+					this.stop();
                 }
 			}
 		}

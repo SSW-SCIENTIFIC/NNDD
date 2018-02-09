@@ -11,6 +11,7 @@ import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
 import flash.events.KeyboardEvent;
+import flash.system.Capabilities;
 import flash.ui.Keyboard;
 import flash.utils.ByteArray;
 
@@ -27,6 +28,7 @@ import org.mineap.util.config.ConfigManager;
 public static const ON_LOGIN_SUCCESS:String = "onFirestTimeLoginSuccess";
 public static const LOGIN_FAIL:String = "LoginFail";
 public static const NO_LOGIN:String = "noLogin";
+public static const DEVICE_NAME: String = "NNDD (" + Capabilities.os + ")";
 
 public static var TOP_PAGE_URL:String;
 public static var LOGIN_URL:String;
@@ -48,6 +50,7 @@ private var loading:LoadingPicture = new LoadingPicture();
 
 private var userName:String = null;
 private var password:String = null;
+private var otp: String = null;
 
 
 public function initLoginDialog(topURL:String, loginURL:String, logManager:LogManager, isLogout:Boolean = false):void
@@ -95,7 +98,8 @@ private function login():void
 	    _login = new Login();
 		_login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
 		_login.addEventListener(Login.LOGIN_FAIL, loginFail);
-		_login.login(this.userName, this.password);
+		_login.addEventListener(Login.MULTI_FACTOR_AUTHENTICATION_REQUIRED, multiFactorAuthenticationRequiredHandler);
+		_login.login(this.userName, this.password, this.otp, DEVICE_NAME);
 		
 	}else if(loginButton.label == LoginDialog.LABEL_CANCEL){
 		noLoginButton.enabled = true;
@@ -259,4 +263,16 @@ private function buttonKeyUp(event:KeyboardEvent):void{
 			this.notLogin();
 		}
 	}	
+}
+
+private function multiFactorAuthenticationRequiredHandler(event: Event): void {
+	trace("MultiFactorAuthentication is required.");
+	trace(event);
+	Alert.show("2段階認証が要求されています。\n6桁の数字からなるワンタイムパッドを入力してください。");
+	textInput_otp.enabled = true;
+    textInput_userName.enabled = false;
+    textInput_password.enabled = false;
+	hGroup_otp.visible = true;
+	loginButton.label = LoginDialog.LABEL_LOGIN;
+	loginButton.enabled = true;
 }

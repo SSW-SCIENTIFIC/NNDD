@@ -26,12 +26,17 @@
 			{
 				userName = (event.currentTarget as TextInput).text;
 			}
-			
+
 			protected function textInput_password_changeHandler(event:Event):void
 			{
 				password = (event.currentTarget as TextInput).text;
 			}
-			
+
+			protected function textInput_otp_changeHandler(event:Event):void
+			{
+				otp = (event.currentTarget as TextInput).text;
+			}
+
 			protected function textInput_userName_creationCompleteHandler(event:FlexEvent):void
 			{
 				var userName:String = ConfigManager.getInstance().getItem("userName");
@@ -91,7 +96,11 @@
 				}
 				
 			}
-			
+
+			protected function textInput_otp_creationCompleteHandler(event: FlexEvent): void {
+				// do nothing...
+			}
+
 			protected function checkbox_autoLogin_creationCompleteHandler(event:FlexEvent):void
 			{
 				
@@ -147,7 +156,7 @@
 					}
 				}
 			}
-			
+
 			protected function checkBox_storeUserName_creationCompleteHandler(event:FlexEvent):void
 			{
 				var storeNameAndPassStr:String = ConfigManager.getInstance().getItem("storeNameAndPass");
@@ -216,16 +225,25 @@
 							  change="textInput_userName_changeHandler(event)" 
 							  enter="enterHandler(event)" width="183"/>
 			</s:HGroup>
-			
+
 			<s:HGroup top="62" right="10">
 				<mx:Label text="パスワード" />
-				<mx:TextInput id="textInput_password" 
-							  creationComplete="textInput_password_creationCompleteHandler(event)" 
-							  change="textInput_password_changeHandler(event)" 
-							  displayAsPassword="true" 
+				<mx:TextInput id="textInput_password"
+							  creationComplete="textInput_password_creationCompleteHandler(event)"
+							  change="textInput_password_changeHandler(event)"
+							  displayAsPassword="true"
 							  enter="enterHandler(event)" width="183"/>
 			</s:HGroup>
-			
+
+			<s:HGroup id="hGroup_otp" top="62" right="10" visible="false">
+				<mx:Label text="ワンタイムパッド" />
+				<mx:TextInput id="textInput_otp"
+							  creationComplete="textInput_otp_creationCompleteHandler(event)"
+							  change="textInput_otp_changeHandler(event)"
+							  enter="enterHandler(event)" width="183"
+				              enabled="false" />
+			</s:HGroup>
+
 		</s:VGroup>
 		
 		<mx:CheckBox label="メールアドレスを記憶する" id="checkBox_storeUserName" 
