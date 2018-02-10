@@ -2156,9 +2156,14 @@ import mx.collections.ArrayCollection;
 			}
 			else
 			{
+				
+				/* 動画のリピートは無効 */
+				
+				this.stop();
+				
 				if (isPlayListingPlay)
 				{
-					this.stop();
+					
 					/* プレイリスト再生中 */
 					
 					logManager.addLog("***動画の再生(ローカル)***");
@@ -2202,12 +2207,6 @@ import mx.collections.ArrayCollection;
 								PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
 					}
 				}
-				else
-				{
-                    this.goToTop();
-					this.play();
-					this.stop();
-                }
 			}
 		}
 		
