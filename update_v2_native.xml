@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>v2.6.3</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.3-Beta/NNDD_v2_6_3.dmg</url>
+	<version>v2.6.4</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.4-Beta/NNDD_v2_6_4.dmg</url>
 	<description><![CDATA[
+2018-02-10 v2.6.4
+・動画再生完了後の動作をv2.6.0-Beta以前のものに差し戻し
+
 2018-02-09 v2.6.3
 ・多段階認証に対応
 
@@ -99,9 +102,12 @@
 </dmg>
 
 <exe>
-	<version>2.6.3</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.3-Beta/NNDD_v2_6_3.exe</url>
+	<version>2.6.4</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.4-Beta/NNDD_v2_6_4.exe</url>
 	<description><![CDATA[
+2018-02-10 v2.6.4
+・動画再生完了後の動作をv2.6.0-Beta以前のものに差し戻し
+
 2018-02-09 v2.6.3
 ・多段階認証に対応
 
