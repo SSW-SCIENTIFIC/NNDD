@@ -82,8 +82,9 @@ package org.mineap.nndd
 		}
 		
 		private function login():void{
-			
-			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccessEventHandler);
+
+            this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccessEventHandler);
+            this._login.addEventListener(Login.NO_LOGIN, loginSuccessEventHandler);
 			this._login.addEventListener(Login.LOGIN_FAIL, failEventHandler);
 			
 			this._login.login(this._user, this._password);

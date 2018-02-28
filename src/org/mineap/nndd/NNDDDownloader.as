@@ -136,8 +136,9 @@ import mx.controls.Alert;
 		/**
 		 * ログインに成功したとき、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
-		public static const LOGIN_SUCCESS:String = "LoginSuccess";
-		
+        public static const LOGIN_SUCCESS:String = "LoginSuccess";
+        public static const LOGIN_SKIP:String = "LoginSkip";
+
 		/**
 		 * 動画ページへのアクセスを開始したときに、typeプロパティがこの定数に設定されたEventが発行されます。
 		 */
@@ -407,8 +408,9 @@ import mx.controls.Alert;
 			}else{
 				this._saveVideoName = "";
 			}
-			
-			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
+
+            this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
+            this._login.addEventListener(Login.NO_LOGIN, loginSkip);
 			this._login.addEventListener(Login.LOGIN_FAIL, function(event:ErrorEvent):void{
 //				(event.target as Login).close();
 				LogManager.instance.addLog(LOGIN_FAIL + event.target + ":" + event.text);
@@ -549,31 +551,54 @@ import mx.controls.Alert;
 			this._login.login(user, password);
 			
 		}
-		
-		/**
-		 * 
-		 * @param event
-		 * 
-		 */
-		private function loginSuccess(event:Event):void{
-			
-			//ログイン成功通知
-			trace(LOGIN_SUCCESS + ":" + event);
-			LogManager.instance.addLog("\t" + LOGIN_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
-			dispatchEvent(new Event(LOGIN_SUCCESS));
-			
-			// closeが呼ばれていないか？
-			if (this._watchVideo == null)
-			{
-				return;
-			}
-			
-			// 動画を見に行く
-			watch(this._videoId, false);
-			
-		}
-		
-		/**
+
+        /**
+         *
+         * @param event
+         *
+         */
+        private function loginSuccess(event:Event):void{
+
+            //ログイン成功通知
+            trace(LOGIN_SUCCESS + ":" + event);
+            LogManager.instance.addLog("\t" + LOGIN_SUCCESS + ":" + this._videoId + ":" +  this._nicoVideoName);
+            dispatchEvent(new Event(LOGIN_SUCCESS));
+
+            // closeが呼ばれていないか？
+            if (this._watchVideo == null)
+            {
+                return;
+            }
+
+            // 動画を見に行く
+            watch(this._videoId, false);
+
+        }
+
+        /**
+         *
+         * @param event
+         *
+         */
+        private function loginSkip(event:Event):void{
+
+            //ログイン成功通知
+            trace(LOGIN_SKIP + ":" + event);
+            LogManager.instance.addLog("\t" + LOGIN_SKIP + ":" + this._videoId + ":" +  this._nicoVideoName);
+            dispatchEvent(new Event(LOGIN_SKIP));
+
+            // closeが呼ばれていないか？
+            if (this._watchVideo == null)
+            {
+                return;
+            }
+
+            // 動画を見に行く
+            watch(this._videoId, false);
+
+        }
+
+        /**
 		 * 
 		 * @param videoId
 		 * @param watchHarmful deprecated

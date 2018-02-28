@@ -502,23 +502,17 @@ import mx.collections.ArrayCollection;
 				}
 				
 				if(this._videoID != null && PathMaker.getVideoID(videoPath) == LibraryUtil.getVideoKey(videoPath)){
-					
-					if((UserManager.instance.user != null && UserManager.instance.password != null) && (UserManager.instance.user != "" && UserManager.instance.password != null && UserManager.instance.password != "")){
-						
-						/* ログイン済みの場合は更新を試みる */
-						
-						var videoUrl:String = "http://www.nicovideo.jp/watch/"+PathMaker.getVideoID(this._videoID);
-						
-						renewCommentAtStart(PathMaker.getVideoID(this._videoID), videoPath, thumbInfoPath, autoPlay);
-						
-					}else{
-						
-						/* ログインしていないときは再生を開始 */
+					if(
+						(UserManager.instance.user == null || UserManager.instance.password == null) ||
+						(UserManager.instance.user == "" || UserManager.instance.password == "")
+					){
+						/* ログインしていないとき*/
 						logManager.addLog(Message.FAIL_PLAY_EACH_COMMENT_DOWNLOAD + "(ログインしていません)");
-						initStart(videoPath, thumbInfoPath, autoPlay);
-						
 					}
-					
+
+                    var videoUrl:String = "http://www.nicovideo.jp/watch/"+PathMaker.getVideoID(this._videoID);
+
+                    renewCommentAtStart(PathMaker.getVideoID(this._videoID), videoPath, thumbInfoPath, autoPlay);
 				}else{
 					
 					logManager.addLog(Message.FAIL_PLAY_EACH_COMMENT_DOWNLOAD + "(動画IDが存在しません)");
@@ -2884,7 +2878,7 @@ import mx.collections.ArrayCollection;
 			
 			if(!isStreaming){ //ストリーミング再生では無い場合は、ローカル以外にもニコ動から取得したデータを設定する
 				
-				if(videoID != null && (UserManager.instance.user != null && UserManager.instance.password != null) && (UserManager.instance.user != "" && UserManager.instance.password != "") ){
+				if(videoID != null){
 					
 					//初期化
 					videoInfoView.ichibaNicoProvider.addItem({
@@ -2975,7 +2969,7 @@ import mx.collections.ArrayCollection;
 				}
 			}
 			
-			if(videoID != null && (UserManager.instance.user != null && UserManager.instance.password != null) && (UserManager.instance.user != "" && UserManager.instance.password != "") ){
+			if(videoID != null){
 				retryCount = 0;
 				setNicoVideoPageInfo(PathMaker.getVideoID(videoID), 0, isStreaming);	//ストリーミングのとき説明文のみ取得
 			}
@@ -4125,12 +4119,6 @@ import mx.collections.ArrayCollection;
 					/* ストリーミング再生(接続先動画サーバがまだわかっていない時) */
 					
 					logManager.addLog("***ストリーミング再生の準備***");
-					if(UserManager.instance.user == "" || UserManager.instance.password == ""){
-						Alert.show("ニコニコ動画にログインしてください。", Message.M_ERROR);
-						logManager.addLog("ニコニコ動画にログインしてください。");
-						FlexGlobals.topLevelApplication.activate();
-						return;
-					}
 					
 					this.playerHistoryManager.addVideoUrl(url);
 					
@@ -4228,7 +4216,8 @@ import mx.collections.ArrayCollection;
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
-						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_SKIP, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getProgressListener);
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);
@@ -4324,8 +4313,10 @@ import mx.collections.ArrayCollection;
 		public function getProgressListener(event:Event):void{
 			var status:String = null;
 			if(event.type == NNDDDownloader.LOGIN_SUCCESS){
-				status = "成功";
-			}else if(event.type == NNDDDownloader.WATCH_SUCCESS){
+                status = "成功";
+            }else if(event.type == NNDDDownloader.LOGIN_SKIP){
+                status = "スキップ";
+            }else if(event.type == NNDDDownloader.WATCH_SUCCESS){
 				status = "成功";
 			}else if(event.type == NNDDDownloader.GETFLV_API_ACCESS_SUCCESS){
 				status = "成功";
@@ -4455,7 +4446,8 @@ import mx.collections.ArrayCollection;
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
-			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_SKIP, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getProgressListener);
 			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);

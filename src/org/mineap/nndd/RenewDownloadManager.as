@@ -79,7 +79,8 @@ package org.mineap.nndd
 			this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
-			this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SKIP, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getSuccessListener, false, 0, true);
@@ -135,7 +136,8 @@ package org.mineap.nndd
 			this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
-			this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SKIP, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
 			this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getSuccessListener, false, 0, true);
@@ -198,8 +200,10 @@ package org.mineap.nndd
 		public function getSuccessListener(event:Event):void{
 			var status:String = "";
 			var statusInt:int = 0;
-			if(event.type == NNDDDownloader.LOGIN_SUCCESS){
-				status = "ログイン成功";
+            if(event.type == NNDDDownloader.LOGIN_SUCCESS) {
+                status = "ログイン成功";
+            } else if (event.type == NNDDDownloader.LOGIN_SKIP){
+                    status = "ログインしない";
 			}else if(event.type == NNDDDownloader.WATCH_SUCCESS){
 				status = "動画ページアクセス成功";
 			}else if(event.type == NNDDDownloader.GETFLV_API_ACCESS_SUCCESS){

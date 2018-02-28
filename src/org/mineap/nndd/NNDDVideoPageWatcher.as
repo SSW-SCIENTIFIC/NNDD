@@ -75,8 +75,9 @@ package org.mineap.nndd
 			this._onlyOwnerText = onlyOwnerText;
 			
 			this._login = new Login();
-			
-			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccessEventListener);
+
+            this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccessEventListener);
+            this._login.addEventListener(Login.NO_LOGIN, loginSuccessEventListener);
 			this._login.addEventListener(Login.LOGIN_FAIL, loginFailEventListener);
 			
 			LogManager.instance.addLog("ログインします");

@@ -96,7 +96,8 @@ private function login():void
 		}
 		
 	    _login = new Login();
-		_login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
+        _login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
+        _login.addEventListener(Login.NO_LOGIN, loginSuccess);
 		_login.addEventListener(Login.LOGIN_FAIL, loginFail);
 		_login.addEventListener(Login.MULTI_FACTOR_AUTHENTICATION_REQUIRED, multiFactorAuthenticationRequiredHandler);
 		_login.login(this.userName, this.password, this.otp, DEVICE_NAME);

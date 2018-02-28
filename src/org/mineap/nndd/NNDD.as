@@ -1726,13 +1726,8 @@ private function invokeEventHandler(event:InvokeEvent):void{
 			}else if(arg1.indexOf("http://www.nicovideo.jp/watch/") > -1){
 				// ニコ動
 				
-				if(UserManager.instance.user == ""){
-					this.isArgumentBoot = true;
-					this.argumentURL = arg1;
-				}else{
-					this.playingVideoPath = arg1;
-					this.videoStreamingPlayStart(arg1);
-				}
+				this.playingVideoPath = arg1;
+				this.videoStreamingPlayStart(arg1)
 			}else if(arg1.indexOf("http://") > -1){
 				var checker:ShortUrlChecker = new ShortUrlChecker();
 				if (checker.isShortUrl(arg1))
@@ -1743,7 +1738,7 @@ private function invokeEventHandler(event:InvokeEvent):void{
 						if (checker.url != null)
 						{
 							logManager.addLog("短縮URLを展開...:" + checker.url);
-							if(UserManager.instance.user == ""){
+							if(UserManager.instance.user == "" || UserManager.instance.user == null){
 								isArgumentBoot = true;
 								argumentURL = checker.url;
 							}else{
@@ -2507,7 +2502,7 @@ private function createLoginDialog(isLogout:Boolean, isLocalStoreError:Boolean):
 	loginDialog = PopUpManager.createPopUp(this, LoginDialog, true) as LoginDialog;
 	loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, LogManager.instance, isLogout);
 	// ログイン時のイベントリスナを追加
-	loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
+    loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
 	loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
 	loginDialog.addEventListener(LoginDialog.NO_LOGIN, noLogin);
 	loginDialog.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:Event):void{
@@ -2647,8 +2642,8 @@ private function noLogin(event:HTTPStatusEvent):void
 	
 	PopUpManager.removePopUp(loginDialog);
 	
-	UserManager.instance.user = "";
-	UserManager.instance.password = "";
+	UserManager.instance.user = null;
+	UserManager.instance.password = null;
 	
 	MyListRenewScheduler.instance.mailAddress = UserManager.instance.user;
 	MyListRenewScheduler.instance.password = UserManager.instance.password;
@@ -4544,8 +4539,8 @@ private function logout(isBootTime:Boolean = true):void
 		logoutButton.label = "ログイン";
 	});
 	
-	UserManager.instance.user = "";
-	UserManager.instance.password = "";
+	UserManager.instance.user = null;
+	UserManager.instance.password = null;
 	
 	if(this.downloadManager != null){
 		this.downloadManager.stop();
@@ -6199,11 +6194,6 @@ private function addDLListButtonClicked(event:MouseEvent):void{
 private function addDLList(url:String):void{
 	
 	var auto:Boolean = isAutoDownload;
-	if(UserManager.instance.user == null || UserManager.instance.password == null ||
-		UserManager.instance.user == "" || UserManager.instance.password == ""){
-		// ログインしていないなら自動ダウンロードしない
-		auto = false;
-	}		
 	
 	var matchResult:Array = url.match(new RegExp("http://www.nicovideo.jp/watch/"));
 	if(matchResult != null && matchResult.length > 0){

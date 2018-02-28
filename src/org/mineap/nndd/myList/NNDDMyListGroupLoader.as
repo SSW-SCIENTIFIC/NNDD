@@ -41,7 +41,8 @@ package org.mineap.nndd.myList
 			this._login = new Login();
 			
 			this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccessEventHandler);
-			this._login.addEventListener(Login.LOGIN_FAIL, loginFailEventHandler);
+            this._login.addEventListener(Login.NO_LOGIN, loginFailEventHandler);
+            this._login.addEventListener(Login.LOGIN_FAIL, loginFailEventHandler);
 			this._login.login(mailAddress, password);
 			
 		}
@@ -121,8 +122,9 @@ package org.mineap.nndd.myList
 		private function removeHandler():void{
 			
 			if(this._login != null){
-				this._login.removeEventListener(Login.LOGIN_SUCCESS, loginSuccessEventHandler);
-				this._login.removeEventListener(Login.LOGIN_FAIL, loginFailEventHandler);
+                this._login.removeEventListener(Login.LOGIN_SUCCESS, loginSuccessEventHandler);
+                this._login.removeEventListener(Login.NO_LOGIN, loginFailEventHandler);
+                this._login.removeEventListener(Login.LOGIN_FAIL, loginFailEventHandler);
 			}
 			
 			if(this._myListGroupLoader != null){
