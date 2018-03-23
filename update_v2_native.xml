@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
 <dmg>
-	<version>v2.6.4</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.4-Beta/NNDD_v2_6_4.dmg</url>
+	<version>v2.7.1</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.dmg</url>
 	<description><![CDATA[
+2018-02-10 v2.7.1
+・動画配信アドレスがHTTPSである場合が出始めたので対応
+・ログインせずに視聴出来る機能をBetaに
+
 2018-02-10 v2.6.4
 ・動画再生完了後の動作をv2.6.0-Beta以前のものに差し戻し
 
@@ -102,9 +106,13 @@
 </dmg>
 
 <exe>
-	<version>2.6.4</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.6.4-Beta/NNDD_v2_6_4.exe</url>
+	<version>2.7.1</version>
+	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.exe</url>
 	<description><![CDATA[
+2018-02-10 v2.7.1
+・動画配信アドレスがHTTPSである場合が出始めたので対応
+・ログインせずに視聴出来る機能をBetaに
+
 2018-02-10 v2.6.4
 ・動画再生完了後の動作をv2.6.0-Beta以前のものに差し戻し
 

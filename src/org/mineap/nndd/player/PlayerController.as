@@ -3959,7 +3959,7 @@ import mx.collections.ArrayCollection;
 				
 				setPlayed(PathMaker.getVideoID(url));
 				
-				if(url.indexOf("http://") == -1 && url.indexOf("rtmp") == -1){
+				if(url.indexOf("http://") == -1 && url.indexOf("https://") == -1 && url.indexOf("rtmp") == -1){
 					/* ---- ローカルの動画を再生 ---- */
 					
 					videoPlayer.title = url;
@@ -4054,10 +4054,10 @@ import mx.collections.ArrayCollection;
 							this.init(url, PlayerController.WINDOW_TYPE_FLV, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
 						}
 					}
-				}else if((url.match(new RegExp("http://smile.*")) != null)
+				}else if((url.match(new RegExp("https?://smile.*")) != null)
 					|| (url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null )
 					|| (url.match(new RegExp("rtmp[^:]*://smile.*")) != null)
-					|| (url.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null)
+					|| (url.match(new RegExp("https?://[a-z0-9]+\.dmc\.nico")) != null)
 				) {
 					
 					/* ストリーミング再生(接続先動画サーバがわかっている時) */
