@@ -4163,7 +4163,7 @@ import mx.collections.ArrayCollection;
 						nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function(event:Event):void{
 							var intervalId: int;
 							var nnddDownloader: NNDDDownloader = (event.target as NNDDDownloader);
-							if (nnddDownloader.streamingUrl.match(new RegExp("http://[a-z0-9]+\.dmc\.nico")) != null) {
+							if (nnddDownloader.streamingUrl.match(new RegExp("https?://[a-z0-9]+\.dmc\.nico")) != null) {
 								intervalId = setInterval(function (): void {
 									trace("DmcBeating...");
                                     nnddDownloader._dmcAccess.beatDmcSession(
