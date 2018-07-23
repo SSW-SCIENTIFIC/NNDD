@@ -1,163 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="300" height="214" layout="absolute" title="検索条件を編集" xmlns:s="library://ns.adobe.com/flex/spark">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="300" height="214" layout="absolute" title="検索条件を編集"
+                xmlns:s="library://ns.adobe.com/flex/spark">
 
-	<mx:Script>
+    <mx:Script>
 		<![CDATA[
-			import org.mineap.nndd.model.SearchItem;
-			import org.mineap.nndd.model.SearchSortString;
-			import org.mineap.nndd.model.SearchTypeString;
+        import org.mineap.nndd.model.SearchItem;
+        import org.mineap.nndd.model.SearchSortString;
+        import org.mineap.nndd.model.SearchTypeString;
 
-			private var _searchItem:SearchItem = null;
-			
-			private var _oldSearchItemName:String = "";
-			
-			private var _isDir:Boolean = false;
-			
-			[Bindable]
-			private var dataProvider:Array = new Array("はい","いいえ");
-			
-			/**
-			 * 検索条件を返します
-			 * @return 検索条件
-			 */
-			public function get searchItem():SearchItem{
-				return this._searchItem;
-			}
-			
-			/**
-			 * 古い検索条件名を返します。
-			 * @return 編集前の検索条件名
-			 */
-			public function get oldSearchItemName():String{
-				return this._oldSearchItemName;
-			}
-			
-			/**
-			 * 検索条件を使ってウィンドウ上の項目を初期化します
-			 * @param searchItem
-			 * @param isCreate
-			 */
-			public function initSearchItem(searchItem:SearchItem, isCreate:Boolean = false):void{
-				if(isCreate){
-					this.title = "検索条件を作成";
-					this.button_edit.label = "作成";
-				}
-				this.textInput_name.text = searchItem.name;
-				this._oldSearchItemName = searchItem.name;
-				this.textInput_word.text = searchItem.searchWord
-				this.comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
-				this.comboBox_searchType.selectedIndex = searchItem.searchType;
-			}
-			
-			protected function button_cancel_clickHandler(event:MouseEvent):void
-			{
-				/*なにもしない*/
-				dispatchEvent(new Event(Event.CANCEL));
-			}
+        private var _searchItem: SearchItem = null;
 
-			/**
-			 * 
-			 */
-			protected function button_edit_clickHandler(event:Event):void
-			{
-				if(this.textInput_name.text.length == 0){
-					return;
-				}
-				if(!this._isDir &&  this.textInput_word.text.length == 0){
-					return;
-				}
-				
-				this._searchItem = new SearchItem(this.textInput_name.text, 
-					SearchSortString.convertSortTypeFromIndex(this.comboBox_sortType.selectedIndex), 
-					this.comboBox_searchType.selectedIndex, this.textInput_word.text, this._isDir);
-				dispatchEvent(new Event(Event.COMPLETE));
-			}
-			
-			/**
-			 * 
-			 */
-			public function getIsDir():Boolean{
-				
-				if(comboBox_isFolder.selectedIndex == 0){
-					return true;
-				}else{
-					return false;
-				}
-				
-			}
-			
-			/**
-			 * このマイリスト項目がディレクトリを表すかどうかを
-			 */
-			public function setDir(isDir:Boolean):void{
-				this._isDir = isDir;
-				if(isDir){
-					comboBox_isFolder.selectedIndex = 0;
-					comboBox_sortType.enabled = false;
-					comboBox_searchType.enabled = false;
-					textInput_word.enabled = false;
-				}else{
-					comboBox_isFolder.selectedIndex = 1;
-					comboBox_sortType.enabled = true;
-					comboBox_searchType.enabled = true;
-					textInput_word.enabled = true;
-				}
-			}
-			
-			private function comboBox_isFolder_changeHandler(event:Event):void{
-				if(ComboBox(event.currentTarget).selectedIndex == 0){
-					this._isDir = true;
-					comboBox_sortType.enabled = false;
-					comboBox_searchType.enabled = false;
-					textInput_word.enabled = false;
-				}else{
-					this._isDir = false;
-					comboBox_sortType.enabled = true;
-					comboBox_searchType.enabled = true;
-					textInput_word.enabled = true;
-				}
-			}
-			
-			/**
-			 * TextInputにフォーカスが移った際のイベントハンドラです
-			 */
-			protected function textInputfocusInHandler(event:FocusEvent):void
-			{
-				TextInput(event.currentTarget).selectionBeginIndex = 0;
-				TextInput(event.currentTarget).selectionEndIndex = TextInput(event.currentTarget).text.length;
-			}
+        private var _oldSearchItemName: String = "";
 
-		]]>
+        private var _isDir: Boolean = false;
+
+        [Bindable]
+        private var dataProvider: Array = new Array("はい", "いいえ");
+
+        /**
+         * 検索条件を返します
+         * @return 検索条件
+         */
+        public function get searchItem(): SearchItem {
+            return this._searchItem;
+        }
+
+        /**
+         * 古い検索条件名を返します。
+         * @return 編集前の検索条件名
+         */
+        public function get oldSearchItemName(): String {
+            return this._oldSearchItemName;
+        }
+
+        /**
+         * 検索条件を使ってウィンドウ上の項目を初期化します
+         * @param searchItem
+         * @param isCreate
+         */
+        public function initSearchItem(searchItem: SearchItem, isCreate: Boolean = false): void {
+            if (isCreate) {
+                this.title = "検索条件を作成";
+                this.button_edit.label = "作成";
+            }
+            this.textInput_name.text = searchItem.name;
+            this._oldSearchItemName = searchItem.name;
+            this.textInput_word.text = searchItem.searchWord;
+            this.comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
+            this.comboBox_searchType.selectedIndex = searchItem.searchType;
+        }
+
+        protected function button_cancel_clickHandler(event: MouseEvent): void {
+            /*なにもしない*/
+            dispatchEvent(new Event(Event.CANCEL));
+        }
+
+        /**
+         *
+         */
+        protected function button_edit_clickHandler(event: Event): void {
+            if (this.textInput_name.text.length == 0) {
+                return;
+            }
+            if (!this._isDir && this.textInput_word.text.length == 0) {
+                return;
+            }
+
+            this._searchItem = new SearchItem(this.textInput_name.text,
+                    SearchSortString.convertSortTypeFromIndex(this.comboBox_sortType.selectedIndex),
+                    this.comboBox_searchType.selectedIndex, this.textInput_word.text, this._isDir);
+            dispatchEvent(new Event(Event.COMPLETE));
+        }
+
+        /**
+         *
+         */
+        public function getIsDir(): Boolean {
+
+            if (comboBox_isFolder.selectedIndex == 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+
+        /**
+         * このマイリスト項目がディレクトリを表すかどうかを
+         */
+        public function setDir(isDir: Boolean): void {
+            this._isDir = isDir;
+            if (isDir) {
+                comboBox_isFolder.selectedIndex = 0;
+                comboBox_sortType.enabled = false;
+                comboBox_searchType.enabled = false;
+                textInput_word.enabled = false;
+            } else {
+                comboBox_isFolder.selectedIndex = 1;
+                comboBox_sortType.enabled = true;
+                comboBox_searchType.enabled = true;
+                textInput_word.enabled = true;
+            }
+        }
+
+        private function comboBox_isFolder_changeHandler(event: Event): void {
+            if (ComboBox(event.currentTarget).selectedIndex == 0) {
+                this._isDir = true;
+                comboBox_sortType.enabled = false;
+                comboBox_searchType.enabled = false;
+                textInput_word.enabled = false;
+            } else {
+                this._isDir = false;
+                comboBox_sortType.enabled = true;
+                comboBox_searchType.enabled = true;
+                textInput_word.enabled = true;
+            }
+        }
+
+        /**
+         * TextInputにフォーカスが移った際のイベントハンドラです
+         */
+        protected function textInputfocusInHandler(event: FocusEvent): void {
+            TextInput(event.currentTarget).selectionBeginIndex = 0;
+            TextInput(event.currentTarget).selectionEndIndex = TextInput(event.currentTarget).text.length;
+        }
+        ]]>
 	</mx:Script>
 
-	<s:HGroup left="10" top="10" right="10">
-		<mx:Label text="名前:" />
-		<mx:TextInput width="100%" id="textInput_name" enter="button_edit_clickHandler(event)" focusIn="textInputfocusInHandler(event)"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="36" right="10">
-		<mx:Label text="順序:" />
-		<mx:ComboBox id="comboBox_sortType" dataProvider="{SearchSortString.NICO_SEARCH_SORT_TEXT_ARRAY}" width="150"></mx:ComboBox>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="62" right="10">
-		<mx:Label text="種別:" />
-		<mx:ComboBox id="comboBox_searchType" dataProvider="{SearchTypeString.NICO_SEARCH_TYPE_TEXT}" width="150"></mx:ComboBox>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="88" right="10">
-		<mx:Label text="単語:" />
-		<mx:TextInput width="100%" id="textInput_word" enter="button_edit_clickHandler(event)" focusIn="textInputfocusInHandler(event)"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="116" right="10" >
-		<mx:Label text="フォルダ：" id="label_folder"/>
-		<mx:ComboBox id="comboBox_isFolder" selectedIndex="1" change="comboBox_isFolder_changeHandler(event)" dataProvider="{dataProvider}"></mx:ComboBox>
-	</s:HGroup>
-	
-	<s:HGroup bottom="10" right="10">
-		<mx:Button label="キャンセル" width="76" click="button_cancel_clickHandler(event)"/>
-		<mx:Button label="編集" width="46" id="button_edit" click="button_edit_clickHandler(event)" />
-	</s:HGroup>
-	
+    <s:HGroup left="10" top="10" right="10">
+        <mx:Label text="名前:"/>
+        <mx:TextInput width="100%" id="textInput_name" enter="button_edit_clickHandler(event)"
+                      focusIn="textInputfocusInHandler(event)"/>
+    </s:HGroup>
+
+    <s:HGroup left="10" top="36" right="10">
+        <mx:Label text="順序:"/>
+        <mx:ComboBox id="comboBox_sortType" dataProvider="{SearchSortString.NICO_SEARCH_SORT_TEXT_ARRAY}"
+                     width="150"></mx:ComboBox>
+    </s:HGroup>
+
+    <s:HGroup left="10" top="62" right="10">
+        <mx:Label text="種別:"/>
+        <mx:ComboBox id="comboBox_searchType" dataProvider="{SearchTypeString.NICO_SEARCH_TYPE_TEXT}"
+                     width="150"></mx:ComboBox>
+    </s:HGroup>
+
+    <s:HGroup left="10" top="88" right="10">
+        <mx:Label text="単語:"/>
+        <mx:TextInput width="100%" id="textInput_word" enter="button_edit_clickHandler(event)"
+                      focusIn="textInputfocusInHandler(event)"/>
+    </s:HGroup>
+
+    <s:HGroup left="10" top="116" right="10">
+        <mx:Label text="フォルダ：" id="label_folder"/>
+        <mx:ComboBox id="comboBox_isFolder" selectedIndex="1" change="comboBox_isFolder_changeHandler(event)"
+                     dataProvider="{dataProvider}"></mx:ComboBox>
+    </s:HGroup>
+
+    <s:HGroup bottom="10" right="10">
+        <mx:Button label="キャンセル" width="76" click="button_cancel_clickHandler(event)"/>
+        <mx:Button label="編集" width="46" id="button_edit" click="button_edit_clickHandler(event)"/>
+    </s:HGroup>
+
 </mx:TitleWindow>

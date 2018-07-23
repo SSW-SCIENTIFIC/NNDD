@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
-<dmg>
-	<version>v2.7.1</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.dmg</url>
-	<description><![CDATA[
+    <dmg>
+        <version>v2.7.1</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.dmg</url>
+        <description><![CDATA[
 2018-02-10 v2.7.1
 ・動画配信アドレスがHTTPSである場合が出始めたので対応
 ・ログインせずに視聴出来る機能をBetaに
@@ -103,12 +103,12 @@
 ・【バグフィックス】ライブラリから連続再生した場合に、表示順序通りに連続再生されない問題を修正
 ・【バグフィックス】削除した検索履歴が復活する問題を修正
 ]]></description>
-</dmg>
+    </dmg>
 
-<exe>
-	<version>2.7.1</version>
-	<url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.exe</url>
-	<description><![CDATA[
+    <exe>
+        <version>2.7.1</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.exe</url>
+        <description><![CDATA[
 2018-02-10 v2.7.1
 ・動画配信アドレスがHTTPSである場合が出始めたので対応
 ・ログインせずに視聴出来る機能をBetaに
@@ -208,6 +208,6 @@
 ・【バグフィックス】ライブラリから連続再生した場合に、表示順序通りに連続再生されない問題を修正
 ・【バグフィックス】削除した検索履歴が復活する問題を修正
 ]]></description>
-</exe>
+    </exe>
 
 </update>

@@ -1,166 +1,166 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <application xmlns="http://ns.adobe.com/air/application/25.0">
 
-<!-- Adobe AIR Application Descriptor File Template.
+    <!-- Adobe AIR Application Descriptor File Template.
 
-	Specifies parameters for identifying, installing, and launching AIR applications.
+        Specifies parameters for identifying, installing, and launching AIR applications.
 
-	xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/2.5
-			The last segment of the namespace specifies the version 
-			of the AIR runtime required for this application to run.
-			
-	minimumPatchLevel - The minimum patch level of the AIR runtime required to run 
-			the application. Optional.
--->
+        xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/2.5
+                The last segment of the namespace specifies the version
+                of the AIR runtime required for this application to run.
 
-	<!-- A universally unique application identifier. Must be unique across all AIR applications.
-	Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-	<id>org.mineap.nndd-dmc</id>
+        minimumPatchLevel - The minimum patch level of the AIR runtime required to run
+                the application. Optional.
+    -->
 
-	<!-- Used as the filename for the application. Required. -->
-	<filename>NNDD+DMC</filename>
+    <!-- A universally unique application identifier. Must be unique across all AIR applications.
+    Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
+    <id>org.mineap.nndd-dmc</id>
 
-	<!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade. 
-	Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
-	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
-	<versionNumber>2.7.1</versionNumber>
-		         
-	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
-	<versionLabel>v2.7.1-Beta</versionLabel>
+    <!-- Used as the filename for the application. Required. -->
+    <filename>NNDD+DMC</filename>
 
-	<!-- Description, displayed in the AIR application installer. Optional. -->
-	<!-- <description></description> -->
+    <!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade.
+    Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
+    An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
+    <versionNumber>2.7.1</versionNumber>
 
-	<!-- Copyright information. Optional -->
-	<copyright>Copyright (c) 2008-2014 MAP - MineApplicationProject. All Rights Reserved.</copyright>
+    <!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
+    <versionLabel>v2.7.1-Beta</versionLabel>
 
-	<!-- Publisher ID. Used if you're updating an application created prior to 1.5.3 -->
-	<!-- <publisherID></publisherID> -->
+    <!-- Description, displayed in the AIR application installer. Optional. -->
+    <!-- <description></description> -->
 
-	<!-- Settings for the application's initial window. Required. -->
-	<initialWindow>
-		<!-- The main SWF or HTML file of the application. Required. -->
-		<!-- Note: In Flex Builder, the SWF reference is set automatically. -->
-		<content>[この値は Flex　Builder の出力ファイル app.xml　に上書きされます]</content>
-		
-		<!-- The title of the main window. Optional. -->
-		<!-- <title></title> -->
+    <!-- Copyright information. Optional -->
+    <copyright>Copyright (c) 2008-2014 MAP - MineApplicationProject. All Rights Reserved.</copyright>
 
-		<!-- The type of system chrome to use (either "standard" or "none"). Optional. Default standard. -->
-		<!-- <systemChrome>standard</systemChrome> -->
+    <!-- Publisher ID. Used if you're updating an application created prior to 1.5.3 -->
+    <!-- <publisherID></publisherID> -->
 
-		<!-- Whether the window is transparent. Only applicable when systemChrome is false. Optional. Default false. -->
-		<!-- <transparent>true</transparent> -->
+    <!-- Settings for the application's initial window. Required. -->
+    <initialWindow>
+        <!-- The main SWF or HTML file of the application. Required. -->
+        <!-- Note: In Flex Builder, the SWF reference is set automatically. -->
+        <content>[この値は Flex　Builder の出力ファイル app.xml　に上書きされます]</content>
 
-		<!-- Whether the window is initially visible. Optional. Default false. -->
-		<!-- <visible>true</visible> -->
+        <!-- The title of the main window. Optional. -->
+        <!-- <title></title> -->
 
-		<!-- Whether the user can minimize the window. Optional. Default true. -->
-		<!-- <minimizable></minimizable> -->
+        <!-- The type of system chrome to use (either "standard" or "none"). Optional. Default standard. -->
+        <!-- <systemChrome>standard</systemChrome> -->
 
-		<!-- Whether the user can maximize the window. Optional. Default true. -->
-		<!-- <maximizable></maximizable> -->
+        <!-- Whether the window is transparent. Only applicable when systemChrome is false. Optional. Default false. -->
+        <!-- <transparent>true</transparent> -->
 
-		<!-- Whether the user can resize the window. Optional. Default true. -->
-		<!-- <resizable></resizable> -->
+        <!-- Whether the window is initially visible. Optional. Default false. -->
+        <!-- <visible>true</visible> -->
 
-		<!-- The window's initial width. Optional. -->
-		<width>900</width>
+        <!-- Whether the user can minimize the window. Optional. Default true. -->
+        <!-- <minimizable></minimizable> -->
 
-		<!-- The window's initial height. Optional. -->
-		<height>600</height>
+        <!-- Whether the user can maximize the window. Optional. Default true. -->
+        <!-- <maximizable></maximizable> -->
 
-		<!-- The window's initial x position. Optional. -->
-		<!-- <x></x> -->
+        <!-- Whether the user can resize the window. Optional. Default true. -->
+        <!-- <resizable></resizable> -->
 
-		<!-- The window's initial y position. Optional. -->
-		<!-- <y></y> -->
+        <!-- The window's initial width. Optional. -->
+        <width>900</width>
 
-		<!-- The window's minimum size, specified as a width/height pair, such as "400 200". Optional. -->
-		<!-- <minSize>1000 500</minSize> -->
+        <!-- The window's initial height. Optional. -->
+        <height>600</height>
 
-		<!-- The window's initial maximum size, specified as a width/height pair, such as "1600 1200". Optional. -->
-		<!-- <maxSize></maxSize> -->
-		
-		<requestedDisplayResolution>high</requestedDisplayResolution>
-		
-	</initialWindow>
+        <!-- The window's initial x position. Optional. -->
+        <!-- <x></x> -->
 
-	<!-- The subpath of the standard default installation location to use. Optional. -->
-	<!-- <installFolder></installFolder> -->
+        <!-- The window's initial y position. Optional. -->
+        <!-- <y></y> -->
 
-	<!-- The subpath of the Windows Start/Programs menu to use. Optional. -->
-	<!-- <programMenuFolder></programMenuFolder> -->
+        <!-- The window's minimum size, specified as a width/height pair, such as "400 200". Optional. -->
+        <!-- <minSize>1000 500</minSize> -->
 
-	<!-- The icon the system uses for the application. For at least one resolution,
-		 specify the path to a PNG file included in the AIR package. Optional. -->
-	<icon>
-		<image16x16>icon16.png</image16x16>
-		<image32x32>icon32.png</image32x32>
-		<image48x48>icon48.png</image48x48>
-		<image128x128>icon128.png</image128x128>
-	</icon>
+        <!-- The window's initial maximum size, specified as a width/height pair, such as "1600 1200". Optional. -->
+        <!-- <maxSize></maxSize> -->
 
-	<!-- Whether the application handles the update when a user double-clicks an update version
-	of the AIR file (true), or the default AIR application installer handles the update (false).
-	Optional. Default false. -->
-	<!-- <customUpdateUI></customUpdateUI> -->
-	
-	<!-- Whether the application can be launched when the user clicks a link in a web browser.
-	Optional. Default false. -->
-	<!-- <allowBrowserInvocation></allowBrowserInvocation> -->
+        <requestedDisplayResolution>high</requestedDisplayResolution>
 
-	<!-- Listing of file types for which the application can register. Optional. -->
-	<fileTypes>
+    </initialWindow>
 
-		<!-- Defines one file type. Optional. -->
-		<fileType>
+    <!-- The subpath of the standard default installation location to use. Optional. -->
+    <!-- <installFolder></installFolder> -->
 
-			<!-- The name that the system displays for the registered file type. Required. -->
-			<name>MP4</name>
+    <!-- The subpath of the Windows Start/Programs menu to use. Optional. -->
+    <!-- <programMenuFolder></programMenuFolder> -->
 
-			<!-- The extension to register. Required. -->
-			<extension>mp4</extension>
-			
-			<!-- The description of the file type. Optional. -->
-			<!-- <description></description> -->
-			
-			<!-- The MIME type. Optional. -->
-			<contentType>video/mp4</contentType>
-			
-			<!-- The icon to display for the file type. Optional. -->
-			<!-- <icon>
-				<image16x16></image16x16>
-				<image32x32></image32x32>
-				<image48x48></image48x48>
-				<image128x128></image128x128>
-			</icon> -->
-			
-		</fileType>
-		<fileType>
+    <!-- The icon the system uses for the application. For at least one resolution,
+         specify the path to a PNG file included in the AIR package. Optional. -->
+    <icon>
+        <image16x16>icon16.png</image16x16>
+        <image32x32>icon32.png</image32x32>
+        <image48x48>icon48.png</image48x48>
+        <image128x128>icon128.png</image128x128>
+    </icon>
 
-			<!-- The name that the system displays for the registered file type. Required. -->
-			<name>FLV</name>
+    <!-- Whether the application handles the update when a user double-clicks an update version
+    of the AIR file (true), or the default AIR application installer handles the update (false).
+    Optional. Default false. -->
+    <!-- <customUpdateUI></customUpdateUI> -->
 
-			<!-- The extension to register. Required. -->
-			<extension>flv</extension>
-			
-			<!-- The MIME type. Optional. -->
-			<contentType>video/x-flv</contentType>
-			
-		</fileType>
-		<fileType>
+    <!-- Whether the application can be launched when the user clicks a link in a web browser.
+    Optional. Default false. -->
+    <!-- <allowBrowserInvocation></allowBrowserInvocation> -->
 
-			<!-- The name that the system displays for the registered file type. Required. -->
-			<name>SWF</name>
+    <!-- Listing of file types for which the application can register. Optional. -->
+    <fileTypes>
 
-			<!-- The extension to register. Required. -->
-			<extension>swf</extension>
-			
-			<!-- The MIME type. Optional. -->
-			<contentType>application/x-shockwave-flash</contentType>
-			
-		</fileType>
-	</fileTypes>
+        <!-- Defines one file type. Optional. -->
+        <fileType>
+
+            <!-- The name that the system displays for the registered file type. Required. -->
+            <name>MP4</name>
+
+            <!-- The extension to register. Required. -->
+            <extension>mp4</extension>
+
+            <!-- The description of the file type. Optional. -->
+            <!-- <description></description> -->
+
+            <!-- The MIME type. Optional. -->
+            <contentType>video/mp4</contentType>
+
+            <!-- The icon to display for the file type. Optional. -->
+            <!-- <icon>
+                <image16x16></image16x16>
+                <image32x32></image32x32>
+                <image48x48></image48x48>
+                <image128x128></image128x128>
+            </icon> -->
+
+        </fileType>
+        <fileType>
+
+            <!-- The name that the system displays for the registered file type. Required. -->
+            <name>FLV</name>
+
+            <!-- The extension to register. Required. -->
+            <extension>flv</extension>
+
+            <!-- The MIME type. Optional. -->
+            <contentType>video/x-flv</contentType>
+
+        </fileType>
+        <fileType>
+
+            <!-- The name that the system displays for the registered file type. Required. -->
+            <name>SWF</name>
+
+            <!-- The extension to register. Required. -->
+            <extension>swf</extension>
+
+            <!-- The MIME type. Optional. -->
+            <contentType>application/x-shockwave-flash</contentType>
+
+        </fileType>
+    </fileTypes>
 
 </application>

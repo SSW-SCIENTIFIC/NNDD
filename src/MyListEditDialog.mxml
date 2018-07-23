@@ -3,128 +3,133 @@
 <!-- NameEditDialog.mxml -->
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="306" height="162" title="マイリスト/チャンネルを編集" xmlns:s="library://ns.adobe.com/flex/spark">
-	
-	<mx:Script>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="306" height="162"
+                title="マイリスト/チャンネルを編集" xmlns:s="library://ns.adobe.com/flex/spark">
+
+    <mx:Script>
 		<![CDATA[
-			import mx.events.ListEvent;
-			import org.mineap.nndd.myList.MyListBuilder;
-			import org.mineap.nndd.Message;
-			import mx.events.IndexChangedEvent;
-			import mx.managers.PopUpManager;
-			import org.mineap.nndd.LogManager;
-			import mx.controls.Alert;
-			
-			private var logManager:LogManager;
-			private var _name:String;
-			private var _url:String;
-			
-			[Bindable]
-			private var dataProvider:Array = new Array("はい","いいえ");
-			
-			public function initNameEditDialog(logManager:LogManager):void{
-				this.logManager = logManager;
-			}
-			
-			public function get myListName():String{
-				return this._name;
-			}
-			
-			public function get myListUrl():String{
-				return this._url;
-			}
-			
-			private function editButtonClicked():void{
-				if(textInput_name.text.length >= 1){
-					
-					if(getIsDir()==true || textInput_url.text.length >= 1){
-						
-						this._name = textInput_name.text;
-						this._url = textInput_url.text;
-						
-						dispatchEvent(new Event(Event.COMPLETE));
-					}	
-				}
-			}
-			
-			private function editCancelButtonClicked():void{
-				PopUpManager.removePopUp(this);
-			}
+        import mx.events.ListEvent;
 
-			/**
-			 * 
-			 */
-			private function comboBox_isFolder_changeHandler(event:ListEvent):void
-			{
-				if(ComboBox(event.currentTarget).selectedIndex == 0){
-					label_url.enabled = false;
-					textInput_url.enabled = false;
-				}else{
-					label_url.enabled = true;
-					textInput_url.enabled = true;
-				}
-			}
-			
-			/**
-			 * 
-			 */
-			public function getIsDir():Boolean{
-				
-				if(comboBox_isFolder.selectedIndex == 0){
-					return true;
-				}else{
-					return false;
-				}
-				
-			}
-			
-			/**
-			 * このマイリスト項目がディレクトリを表すかどうかを
-			 */
-			public function setDir(isDir:Boolean):void{
-				if(isDir){
-					comboBox_isFolder.selectedIndex = 0;
-					label_url.enabled = false;
-					textInput_url.enabled = false;
-				}else{
-					comboBox_isFolder.selectedIndex = 1;
-					label_url.enabled = true;
-					textInput_url.enabled = true;
-				}
-			}
+        import org.mineap.nndd.myList.MyListBuilder;
+        import org.mineap.nndd.Message;
 
-			/**
-			 * TextInputにフォーカスが移った際のイベントハンドラです
-			 */
-			protected function textInputfocusInHandler(event:FocusEvent):void
-			{
-				TextInput(event.currentTarget).selectionBeginIndex = 0;
-				TextInput(event.currentTarget).selectionEndIndex = TextInput(event.currentTarget).text.length;
-			}
+        import mx.events.IndexChangedEvent;
+        import mx.managers.PopUpManager;
 
-		]]>
+        import org.mineap.nndd.LogManager;
+
+        import mx.controls.Alert;
+
+        private var logManager: LogManager;
+        private var _name: String;
+        private var _url: String;
+
+        [Bindable]
+        private var dataProvider: Array = new Array("はい", "いいえ");
+
+        public function initNameEditDialog(logManager: LogManager): void {
+            this.logManager = logManager;
+        }
+
+        public function get myListName(): String {
+            return this._name;
+        }
+
+        public function get myListUrl(): String {
+            return this._url;
+        }
+
+        private function editButtonClicked(): void {
+            if (textInput_name.text.length >= 1) {
+
+                if (getIsDir() == true || textInput_url.text.length >= 1) {
+
+                    this._name = textInput_name.text;
+                    this._url = textInput_url.text;
+
+                    dispatchEvent(new Event(Event.COMPLETE));
+                }
+            }
+        }
+
+        private function editCancelButtonClicked(): void {
+            PopUpManager.removePopUp(this);
+        }
+
+        /**
+         *
+         */
+        private function comboBox_isFolder_changeHandler(event: ListEvent): void {
+            if (ComboBox(event.currentTarget).selectedIndex == 0) {
+                label_url.enabled = false;
+                textInput_url.enabled = false;
+            } else {
+                label_url.enabled = true;
+                textInput_url.enabled = true;
+            }
+        }
+
+        /**
+         *
+         */
+        public function getIsDir(): Boolean {
+
+            if (comboBox_isFolder.selectedIndex == 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+
+        /**
+         * このマイリスト項目がディレクトリを表すかどうかを
+         */
+        public function setDir(isDir: Boolean): void {
+            if (isDir) {
+                comboBox_isFolder.selectedIndex = 0;
+                label_url.enabled = false;
+                textInput_url.enabled = false;
+            } else {
+                comboBox_isFolder.selectedIndex = 1;
+                label_url.enabled = true;
+                textInput_url.enabled = true;
+            }
+        }
+
+        /**
+         * TextInputにフォーカスが移った際のイベントハンドラです
+         */
+        protected function textInputfocusInHandler(event: FocusEvent): void {
+            TextInput(event.currentTarget).selectionBeginIndex = 0;
+            TextInput(event.currentTarget).selectionEndIndex = TextInput(event.currentTarget).text.length;
+        }
+        ]]>
 	</mx:Script>
 
-	<s:HGroup left="10" top="10" right="10">
-		<mx:Label text="名前："  id="label_name"/>
-		<mx:TextInput width="100%" id="textInput_name" enter="editButtonClicked()" focusIn="textInputfocusInHandler(event)"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="36" right="10">
-		<mx:Label text="URL："  id="label_url"/>
-		<mx:TextInput width="100%" id="textInput_url" enter="editButtonClicked()" focusIn="textInputfocusInHandler(event)"/>
-	</s:HGroup>
-	
-	<s:HGroup left="10" top="62">
-		<mx:Label text="フォルダ："  id="label_folder"/>
-		<mx:ComboBox id="comboBox_isFolder" selectedIndex="1" change="comboBox_isFolder_changeHandler(event)" dataProvider="{dataProvider}"></mx:ComboBox>
-	</s:HGroup>
-	
-	<s:HGroup bottom="10" right="10">
-		<mx:Button id="button_edit" label="編集"
-				   click="editButtonClicked()"/>
-		<mx:Button label="キャンセル" id="button_cancel" click="editCancelButtonClicked()"/>
-	</s:HGroup>
-	
-	
+    <s:HGroup left="10" top="10" right="10">
+        <mx:Label text="名前：" id="label_name"/>
+        <mx:TextInput width="100%" id="textInput_name" enter="editButtonClicked()"
+                      focusIn="textInputfocusInHandler(event)"/>
+    </s:HGroup>
+
+    <s:HGroup left="10" top="36" right="10">
+        <mx:Label text="URL：" id="label_url"/>
+        <mx:TextInput width="100%" id="textInput_url" enter="editButtonClicked()"
+                      focusIn="textInputfocusInHandler(event)"/>
+    </s:HGroup>
+
+    <s:HGroup left="10" top="62">
+        <mx:Label text="フォルダ：" id="label_folder"/>
+        <mx:ComboBox id="comboBox_isFolder" selectedIndex="1" change="comboBox_isFolder_changeHandler(event)"
+                     dataProvider="{dataProvider}"></mx:ComboBox>
+    </s:HGroup>
+
+    <s:HGroup bottom="10" right="10">
+        <mx:Button id="button_edit" label="編集"
+                   click="editButtonClicked()"/>
+        <mx:Button label="キャンセル" id="button_cancel" click="editCancelButtonClicked()"/>
+    </s:HGroup>
+
+
 </mx:TitleWindow>

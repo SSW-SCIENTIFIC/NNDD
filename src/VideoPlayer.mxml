@@ -2,252 +2,265 @@
 
 <!-- VideoPlayer.mxml -->
 <!-- Copyright (c) 2008-2009 MAP - MineApplicationProject. All Rights Reserved. -->
-	
+
 <s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
-		  xmlns:s="library://ns.adobe.com/flex/spark"
-		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  xmlns:ns1="*"
-		  width="550" height="540" minWidth="300" minHeight="300" backgroundColor="#FFFFFF"
-		  close="windowClosed()" closing="windowClosing(event)" contentBackgroundColor="#BBBBBB"
-		  resize="resizeNow(event)" showStatusBar="false" title="NNDD - Player"
-		  updateComplete="updateComplete()" windowActivate="window1_windowActivateHandler(event)"
-		  windowComplete="windowComplete(event)" windowMove="windowMove(event)"
-		  windowResize="windowResized(event)">
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          xmlns:ns1="*"
+          width="550" height="540" minWidth="300" minHeight="300" backgroundColor="#FFFFFF"
+          close="windowClosed()" closing="windowClosing(event)" contentBackgroundColor="#BBBBBB"
+          resize="resizeNow(event)" showStatusBar="false" title="NNDD - Player"
+          updateComplete="updateComplete()" windowActivate="window1_windowActivateHandler(event)"
+          windowComplete="windowComplete(event)" windowMove="windowMove(event)"
+          windowResize="windowResized(event)">
 
-	<fx:Script>
+    <fx:Script>
 		<![CDATA[
-			import mx.containers.ViewStack;
-			
-			private var videoDisplayMenu:ContextMenu;
-			private var videoDisplayMenuItem1:ContextMenuItem;
-			private var videoDisplayMenuItem2:ContextMenuItem;
-			private var videoDisplayMenuItem3:ContextMenuItem;
-//			private var videoDisplayMenuItem4:ContextMenuItem;
-			private var videoDisplayMenuItem5:ContextMenuItem;
-			private var videoDisplayMenuItem6:ContextMenuItem;
-//			private var videoDisplayMenuItem7:ContextMenuItem;
-			private var videoDisplayMenuItem8:ContextMenuItem;
-			private var videoDisplayMenuItem9:ContextMenuItem;
-			private var videoDisplayMenuItem10:ContextMenuItem;
-			private var videoDisplayMenuItem11:ContextMenuItem;
-			private var videoDisplayMenuItem12:ContextMenuItem;
-			private var videoDisplayMenuItem13:ContextMenuItem;
-			private var videoDisplayMenuItem14:ContextMenuItem;
-			private var nextPlayListMenuItem:ContextMenuItem;
-			private var downnloadNicoSoundMenuItem:ContextMenuItem;
-			private var addDListMenuItem:ContextMenuItem;
-			
-			private var _contextMenuShowing:Boolean = false;
-			
-			public function changeColor(isDark:Boolean):void
-			{
-				if (isDark)
-				{
-					this.setStyle("backgroundColor", "#646464");
-					this.setStyle("contentBackgroundColor", "#969696");
-					vbox_videoPlayer.setStyle("backgroundColor", "#646464");
-				}
-				else
-				{
-					this.setStyle("backgroundColor", "#FFFFFF");
-					this.setStyle("contentBackgroundColor", "#FFFFFF");
-					vbox_videoPlayer.setStyle("backgroundColor", "#FFFFFF");
-				}
-				
-				videoController.commentPostView.changeColor(isDark);
-				videoController_under.commentPostView.changeColor(isDark);
-			}
-			
-			protected function textArea_tag_keyDownHandler(event:KeyboardEvent):void
-			{
-				playerController.play();
-			}
+        import mx.containers.ViewStack;
 
-			protected function canvas_video_back_creationCompleteHandler(event:FlexEvent):void
-			{
-				videoDisplayMenu = new ContextMenu();
-				videoDisplayMenu.addEventListener(Event.DISPLAYING, videoDisplayContextMenuDisplayHandler);
-				videoDisplayMenu.addEventListener(Event.SELECT, videoDisplayContextMenuSelectHandler);
-				
-				// 戻る
-				videoDisplayMenuItem10 = new ContextMenuItem(Message.L_BACK);
-				videoDisplayMenuItem10.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, backClickEventHandler);
-				
-				// プレイリストを進む
-				nextPlayListMenuItem = new ContextMenuItem(Message.L_NEXT);
-				nextPlayListMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, backPlayListClickEventHandler);
-				nextPlayListMenuItem.addEventListener(Event.DISPLAYING, controlPlayListContextMenuDisplayHandler);
-				
-				videoDisplayMenuItem11 = new ContextMenuItem(Message.L_OPEN_FILE, true);
-				videoDisplayMenuItem11.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileOpenClickEventHandler);
-				
-				videoDisplayMenuItem1 = new ContextMenuItem(Message.L_OPEN_DEFAULT_WEB_BROWSER, true);
-				videoDisplayMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, button_goToWebClicked);
-				
-				var playListContextMenuItem:ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
-				playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
-				
-				// DLリストに追加
-				addDListMenuItem = new ContextMenuItem(Message.L_ADD_DL_LIST, true);
-				addDListMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, addDlListFromContextMenu);
-				
-				videoDisplayMenuItem2 = new ContextMenuItem(Message.L_TWEET, true);
-				videoDisplayMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, tweet);
-				
-				videoDisplayMenuItem3 = new ContextMenuItem(Message.L_ADD_HATENA_BOOKMARK, true);
-				videoDisplayMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, addHatenaBookmark);
-				
-				downnloadNicoSoundMenuItem = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
-				downnloadNicoSoundMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
-				
-				videoDisplayMenuItem5 = new ContextMenuItem(Message.L_FULL_OR_NOMAL, true);
-				videoDisplayMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeFullClickEventHandler);
-				
-				videoDisplayMenuItem6 = new ContextMenuItem(Message.L_COMMENT_SHOW_OR_HIDE);
-				videoDisplayMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeShowCommentClickEventHandler);
-				
-				videoDisplayMenuItem9 = new ContextMenuItem(Message.L_NOMAL_OR_WIDE);
-				videoDisplayMenuItem9.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeWideMode);
-				videoDisplayMenuItem9.addEventListener(Event.DISPLAYING, function(event:Event):void{
-					if(videoInfoView != null){
-						if(videoInfoView.isResizePlayerEachPlay && 
-							videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO){
-							videoDisplayMenuItem9.enabled = true;
-						}else{
-							videoDisplayMenuItem9.enabled = false;
-						}
-					}
-				});
-				
-				videoDisplayMenuItem8 = new ContextMenuItem(Message.L_INFOVIEW_SHOW_OR_HIDE, true);
-				videoDisplayMenuItem8.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeShowVideoInfoView);
-				
-				videoDisplayMenuItem12 = new ContextMenuItem(Message.L_COPY_VIDEO_URL, true);
-				videoDisplayMenuItem12.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyVideoUrl);
-				videoDisplayMenuItem13 = new ContextMenuItem(Message.L_COPY_VIDEO_URL_WITH_TITLE, false);
-				videoDisplayMenuItem13.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyVideoUrlWithTitle);
-				
-				videoDisplayMenuItem14 = new ContextMenuItem(Message.L_RELOAD_VIDEO, true);
-				videoDisplayMenuItem14.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, videoReload);
-				
-				videoDisplayMenu.customItems.push(videoDisplayMenuItem10, nextPlayListMenuItem, 
-					videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem, 
-					addDListMenuItem ,videoDisplayMenuItem2, videoDisplayMenuItem3, 
-					downnloadNicoSoundMenuItem, 
-					videoDisplayMenuItem5, videoDisplayMenuItem6, videoDisplayMenuItem9, 
-					videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13, 
-					videoDisplayMenuItem14);
-				
-				canvas_video_back.contextMenu = videoDisplayMenu;
-				
-				videoInfoView.changeColor(videoInfoView.useDarkColor);
-				
-			}
-			
-			protected function videoDisplayContextMenuDisplayHandler(event:Event):void{
-				this._contextMenuShowing = true;
-			}
-			
-			protected function videoDisplayContextMenuSelectHandler(event:Event):void{
-				this._contextMenuShowing = false;
-			}
-			
-			protected function mouseLeaveEventHandler(event:Event):void{
-				this._contextMenuShowing = false;
-			}
+        private var videoDisplayMenu: ContextMenu;
+        private var videoDisplayMenuItem1: ContextMenuItem;
+        private var videoDisplayMenuItem2: ContextMenuItem;
+        private var videoDisplayMenuItem3: ContextMenuItem;
+        //			private var videoDisplayMenuItem4:ContextMenuItem;
+        private var videoDisplayMenuItem5: ContextMenuItem;
+        private var videoDisplayMenuItem6: ContextMenuItem;
+        //			private var videoDisplayMenuItem7:ContextMenuItem;
+        private var videoDisplayMenuItem8: ContextMenuItem;
+        private var videoDisplayMenuItem9: ContextMenuItem;
+        private var videoDisplayMenuItem10: ContextMenuItem;
+        private var videoDisplayMenuItem11: ContextMenuItem;
+        private var videoDisplayMenuItem12: ContextMenuItem;
+        private var videoDisplayMenuItem13: ContextMenuItem;
+        private var videoDisplayMenuItem14: ContextMenuItem;
+        private var nextPlayListMenuItem: ContextMenuItem;
+        private var downnloadNicoSoundMenuItem: ContextMenuItem;
+        private var addDListMenuItem: ContextMenuItem;
 
-			protected function mouseUpEventHandler(event:Event):void{
-				this._contextMenuShowing = false;
-			}
-			
-			public function get contextMenuShowing():Boolean{
-				return this._contextMenuShowing;
-			}
+        private var _contextMenuShowing: Boolean = false;
 
-			protected function canvas_videoPlayer_creationCompleteHandler(event:FlexEvent):void
-			{
-				this.stage.addEventListener(Event.ACTIVATE, mouseUpEventHandler);
-				this.stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpEventHandler);
-			}
+        public function changeColor(isDark: Boolean): void {
+            if (isDark) {
+                this.setStyle("backgroundColor", "#646464");
+                this.setStyle("contentBackgroundColor", "#969696");
+                vbox_videoPlayer.setStyle("backgroundColor", "#646464");
+            }
+            else {
+                this.setStyle("backgroundColor", "#FFFFFF");
+                this.setStyle("contentBackgroundColor", "#FFFFFF");
+                vbox_videoPlayer.setStyle("backgroundColor", "#FFFFFF");
+            }
+
+            videoController.commentPostView.changeColor(isDark);
+            videoController_under.commentPostView.changeColor(isDark);
+        }
+
+        protected function textArea_tag_keyDownHandler(event: KeyboardEvent): void {
+            playerController.play();
+        }
+
+        protected function canvas_video_back_creationCompleteHandler(event: FlexEvent): void {
+            videoDisplayMenu = new ContextMenu();
+            videoDisplayMenu.addEventListener(Event.DISPLAYING, videoDisplayContextMenuDisplayHandler);
+            videoDisplayMenu.addEventListener(Event.SELECT, videoDisplayContextMenuSelectHandler);
+
+            // 戻る
+            videoDisplayMenuItem10 = new ContextMenuItem(Message.L_BACK);
+            videoDisplayMenuItem10.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, backClickEventHandler);
+
+            // プレイリストを進む
+            nextPlayListMenuItem = new ContextMenuItem(Message.L_NEXT);
+            nextPlayListMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, backPlayListClickEventHandler);
+            nextPlayListMenuItem.addEventListener(Event.DISPLAYING, controlPlayListContextMenuDisplayHandler);
+
+            videoDisplayMenuItem11 = new ContextMenuItem(Message.L_OPEN_FILE, true);
+            videoDisplayMenuItem11.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fileOpenClickEventHandler);
+
+            videoDisplayMenuItem1 = new ContextMenuItem(Message.L_OPEN_DEFAULT_WEB_BROWSER, true);
+            videoDisplayMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, button_goToWebClicked);
+
+            var playListContextMenuItem: ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+            playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
+
+            // DLリストに追加
+            addDListMenuItem = new ContextMenuItem(Message.L_ADD_DL_LIST, true);
+            addDListMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, addDlListFromContextMenu);
+
+            videoDisplayMenuItem2 = new ContextMenuItem(Message.L_TWEET, true);
+            videoDisplayMenuItem2.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, tweet);
+
+            videoDisplayMenuItem3 = new ContextMenuItem(Message.L_ADD_HATENA_BOOKMARK, true);
+            videoDisplayMenuItem3.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, addHatenaBookmark);
+
+            downnloadNicoSoundMenuItem = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
+            downnloadNicoSoundMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
+
+            videoDisplayMenuItem5 = new ContextMenuItem(Message.L_FULL_OR_NOMAL, true);
+            videoDisplayMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeFullClickEventHandler);
+
+            videoDisplayMenuItem6 = new ContextMenuItem(Message.L_COMMENT_SHOW_OR_HIDE);
+            videoDisplayMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeShowCommentClickEventHandler);
+
+            videoDisplayMenuItem9 = new ContextMenuItem(Message.L_NOMAL_OR_WIDE);
+            videoDisplayMenuItem9.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeWideMode);
+            videoDisplayMenuItem9.addEventListener(Event.DISPLAYING, function (event: Event): void {
+                if (videoInfoView != null) {
+                    if (videoInfoView.isResizePlayerEachPlay &&
+                            videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO) {
+                        videoDisplayMenuItem9.enabled = true;
+                    } else {
+                        videoDisplayMenuItem9.enabled = false;
+                    }
+                }
+            });
+
+            videoDisplayMenuItem8 = new ContextMenuItem(Message.L_INFOVIEW_SHOW_OR_HIDE, true);
+            videoDisplayMenuItem8.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeShowVideoInfoView);
+
+            videoDisplayMenuItem12 = new ContextMenuItem(Message.L_COPY_VIDEO_URL, true);
+            videoDisplayMenuItem12.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyVideoUrl);
+            videoDisplayMenuItem13 = new ContextMenuItem(Message.L_COPY_VIDEO_URL_WITH_TITLE, false);
+            videoDisplayMenuItem13.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, copyVideoUrlWithTitle);
+
+            videoDisplayMenuItem14 = new ContextMenuItem(Message.L_RELOAD_VIDEO, true);
+            videoDisplayMenuItem14.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, videoReload);
+
+            videoDisplayMenu.customItems.push(videoDisplayMenuItem10, nextPlayListMenuItem,
+                    videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem,
+                    addDListMenuItem, videoDisplayMenuItem2, videoDisplayMenuItem3,
+                    downnloadNicoSoundMenuItem,
+                    videoDisplayMenuItem5, videoDisplayMenuItem6, videoDisplayMenuItem9,
+                    videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13,
+                    videoDisplayMenuItem14);
+
+            canvas_video_back.contextMenu = videoDisplayMenu;
+
+            videoInfoView.changeColor(videoInfoView.useDarkColor);
+
+        }
+
+        protected function videoDisplayContextMenuDisplayHandler(event: Event): void {
+            this._contextMenuShowing = true;
+        }
+
+        protected function videoDisplayContextMenuSelectHandler(event: Event): void {
+            this._contextMenuShowing = false;
+        }
+
+        protected function mouseLeaveEventHandler(event: Event): void {
+            this._contextMenuShowing = false;
+        }
+
+        protected function mouseUpEventHandler(event: Event): void {
+            this._contextMenuShowing = false;
+        }
+
+        public function get contextMenuShowing(): Boolean {
+            return this._contextMenuShowing;
+        }
+
+        protected function canvas_videoPlayer_creationCompleteHandler(event: FlexEvent): void {
+            this.stage.addEventListener(Event.ACTIVATE, mouseUpEventHandler);
+            this.stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpEventHandler);
+        }
 
 
-			protected function window1_windowActivateHandler(event:Event):void
-			{
-				if(this.videoInfoView != null && (this.videoInfoView as Window).visible){
-					if(this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
+        protected function window1_windowActivateHandler(event: Event): void {
+            if (this.videoInfoView != null && (this.videoInfoView as Window).visible) {
+                if (this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {
 //						showVideoInfoView();
-						this.showVideoPlayerAndVideoInfoView();
-					}
-				}
-			}
+                    this.showVideoPlayerAndVideoInfoView();
+                }
+            }
+        }
 
 
-			protected function canvas_video_clickHandler(event:MouseEvent):void
-			{
-				canvas_video.setFocus();
-			}
+        protected function canvas_video_clickHandler(event: MouseEvent): void {
+            canvas_video.setFocus();
+        }
 
-			
-			
-			protected function addDlListFromContextMenu(event:ContextMenuEvent):void
-			{
-				playerController.addDlList();
-			}
-			
-		]]>
+
+        protected function addDlListFromContextMenu(event: ContextMenuEvent): void {
+            playerController.addDlList();
+        }
+        ]]>
 	</fx:Script>
 
 
-	<fx:Script source="org/mineap/nndd/view/VideoPlayer.as" />
-	
-	<mx:Canvas width="100%" x="0" height="100%" y="0" id="canvas_videoPlayer" creationComplete="canvas_videoPlayer_creationCompleteHandler(event)" verticalScrollPolicy="off" horizontalScrollPolicy="off">
-		<mx:TextArea id="textArea_tag" minHeight="10" height="50" htmlText="{textAreaTagProvider}" link="tagTextAreaLinkClikced(event)" left="5" top="5" right="5" 
-				editable="false" focusEnabled="false" keyDown="textArea_tag_keyDownHandler(event)"/>
-		<mx:VBox left="5" top="58" bottom="5" right="5" resize="resizeNow(event)" id="vbox_videoPlayer" >
-			<mx:Canvas width="100%" height="15%" backgroundColor="#969696" id="canvas_nicowari" horizontalScrollPolicy="off" verticalScrollPolicy="off" mouseMove="mouseMove(event)">
-			</mx:Canvas>
-			<mx:Canvas id="canvas_video_back" width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" mouseMove="mouseMove(event)" 
-					   updateComplete="updateComplete()" focusEnabled="true" creationComplete="canvas_video_back_creationCompleteHandler(event)">
-				
-				<mx:Canvas width="100%" height="100%" id="canvas_video" 
-						   horizontalScrollPolicy="off" verticalScrollPolicy="off" 
-						   backgroundColor="#000000" doubleClickEnabled="true" 
-						   doubleClick="panelDoubleClicked(event)" 
-						   nativeDragDrop="canvasVideoDroped(event)" 
-						   nativeDragEnter="canvasVideoDragEnter(event)" 
-						   resize="videoCanvasResize(event)" updateComplete="updateComplete()" 
-						   toolTip="ここに動画ファイルをドロップすると動画を再生できます。"
-						   click="canvas_video_clickHandler(event)">
-				</mx:Canvas>
-				<ns1:VideoController id="videoController" backgroundAlpha="0.7" 
-									 alpha="1.0" backgroundColor="#FFFFFF" 
-									 borderStyle="solid" 
-									 horizontalCenter="0" bottom="40">
-				</ns1:VideoController>
-				<mx:Label id="label_playSourceStatus" rollOut="rollOut(event)" rollOver="rollOver(event)" color="#FFFFFF" right="10" top="10" initialize="label_playSourceStatusInit(event)"  fontWeight="bold"/>
-				<mx:Label id="label_economyStatus" rollOut="rollOut(event)" rollOver="rollOver(event)" color="#FFFFFF" initialize="label_economyStatusInit(event)"  fontWeight="bold" right="10" top="30"/>
-				<mx:Text color="#FFFFFF" fontWeight="bold" id="label_downloadStatus" left="10" top="10"/>
-				
-				<mx:HBox left="10" bottom="5" backgroundColor="#FFFFFF" cornerRadius="5" 
-						 alpha="1.0" right="10" backgroundAlpha="0.0" id="hbox_displayButtons" 
-						 initialize="hbox_displayLabelsInit(event)"
-						 height="20">
-					<mx:LinkButton label="x1.0" color="#FFFFFF" toolTip="標準サイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x1" click="changeWindowSizeRatio(1.0, true)"/>
-					<mx:LinkButton label="x1.5" color="#FFFFFF" toolTip="1.5倍のサイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x1_5" click="changeWindowSizeRatio(1.5, true)"/>
-					<mx:LinkButton label="x2.0" color="#FFFFFF" toolTip="２倍のサイズ" rollOut="rollOut(event)" rollOver="rollOver(event)" id="button_x2" click="changeWindowSizeRatio(2.0, true)"/>
-					<mx:LinkButton id="button_ChangeFullScreen" rollOut="rollOut(event)" rollOver="rollOver(event)" label="FULL" click="changeFullButtonClicked(event)" toolTip="フルスクリーン表示" color="#FFFFFF" />
-					<mx:LinkButton id="button_ChangeShowInfoView" rollOut="rollOut(event)" rollOver="rollOver(event)" label="INFO" click="changeShowInfoViewButtonClicked(event)" toolTip="Info表示" color="#FFFFFF" />
-					<mx:Label width="100%"/>
-					<mx:LinkButton id="button_ChangeRepeat" rollOut="rollOut(event)" rollOver="rollOver(event)" label="Repeat" click="changeRepateButtonClicked(event)" toolTip="リピートの有無を切り替え" color="#FFFFFF" creationComplete="changeRepeatCreationComplete(event)"/>
-					<mx:LinkButton id="button_ChangeShowComment" rollOut="rollOut(event)" rollOver="rollOver(event)" label="Comment" click="changeShowCommentButtonClicked(event)" toolTip="コメントの表示/非表示を切り替え" creationComplete="changeShowCommentCreationComplete(event)" color="#FFFFFF"/>
-				</mx:HBox>
-				
-			</mx:Canvas>
-			
-			<mx:Canvas x="71" y="366" width="100%" height="60" id="canvas_under" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-				<ns1:VideoController left="0" top="0" right="0" id="videoController_under" height="60" backgroundAlpha="0.8" backgroundColor="#FFFFFF">
-				</ns1:VideoController>
-			</mx:Canvas>
-		</mx:VBox>
-	</mx:Canvas>
+    <fx:Script source="org/mineap/nndd/view/VideoPlayer.as"/>
+
+    <mx:Canvas width="100%" x="0" height="100%" y="0" id="canvas_videoPlayer"
+               creationComplete="canvas_videoPlayer_creationCompleteHandler(event)" verticalScrollPolicy="off"
+               horizontalScrollPolicy="off">
+        <mx:TextArea id="textArea_tag" minHeight="10" height="50" htmlText="{textAreaTagProvider}"
+                     link="tagTextAreaLinkClikced(event)" left="5" top="5" right="5"
+                     editable="false" focusEnabled="false" keyDown="textArea_tag_keyDownHandler(event)"/>
+        <mx:VBox left="5" top="58" bottom="5" right="5" resize="resizeNow(event)" id="vbox_videoPlayer">
+            <mx:Canvas width="100%" height="15%" backgroundColor="#969696" id="canvas_nicowari"
+                       horizontalScrollPolicy="off" verticalScrollPolicy="off" mouseMove="mouseMove(event)">
+            </mx:Canvas>
+            <mx:Canvas id="canvas_video_back" width="100%" height="100%" horizontalScrollPolicy="off"
+                       verticalScrollPolicy="off" mouseMove="mouseMove(event)"
+                       updateComplete="updateComplete()" focusEnabled="true"
+                       creationComplete="canvas_video_back_creationCompleteHandler(event)">
+
+                <mx:Canvas width="100%" height="100%" id="canvas_video"
+                           horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                           backgroundColor="#000000" doubleClickEnabled="true"
+                           doubleClick="panelDoubleClicked(event)"
+                           nativeDragDrop="canvasVideoDroped(event)"
+                           nativeDragEnter="canvasVideoDragEnter(event)"
+                           resize="videoCanvasResize(event)" updateComplete="updateComplete()"
+                           toolTip="ここに動画ファイルをドロップすると動画を再生できます。"
+                           click="canvas_video_clickHandler(event)">
+                </mx:Canvas>
+                <ns1:VideoController id="videoController" backgroundAlpha="0.7"
+                                     alpha="1.0" backgroundColor="#FFFFFF"
+                                     borderStyle="solid"
+                                     horizontalCenter="0" bottom="40">
+                </ns1:VideoController>
+                <mx:Label id="label_playSourceStatus" rollOut="rollOut(event)" rollOver="rollOver(event)"
+                          color="#FFFFFF" right="10" top="10" initialize="label_playSourceStatusInit(event)"
+                          fontWeight="bold"/>
+                <mx:Label id="label_economyStatus" rollOut="rollOut(event)" rollOver="rollOver(event)" color="#FFFFFF"
+                          initialize="label_economyStatusInit(event)" fontWeight="bold" right="10" top="30"/>
+                <mx:Text color="#FFFFFF" fontWeight="bold" id="label_downloadStatus" left="10" top="10"/>
+
+                <mx:HBox left="10" bottom="5" backgroundColor="#FFFFFF" cornerRadius="5"
+                         alpha="1.0" right="10" backgroundAlpha="0.0" id="hbox_displayButtons"
+                         initialize="hbox_displayLabelsInit(event)"
+                         height="20">
+                    <mx:LinkButton label="x1.0" color="#FFFFFF" toolTip="標準サイズ" rollOut="rollOut(event)"
+                                   rollOver="rollOver(event)" id="button_x1" click="changeWindowSizeRatio(1.0, true)"/>
+                    <mx:LinkButton label="x1.5" color="#FFFFFF" toolTip="1.5倍のサイズ" rollOut="rollOut(event)"
+                                   rollOver="rollOver(event)" id="button_x1_5"
+                                   click="changeWindowSizeRatio(1.5, true)"/>
+                    <mx:LinkButton label="x2.0" color="#FFFFFF" toolTip="２倍のサイズ" rollOut="rollOut(event)"
+                                   rollOver="rollOver(event)" id="button_x2" click="changeWindowSizeRatio(2.0, true)"/>
+                    <mx:LinkButton id="button_ChangeFullScreen" rollOut="rollOut(event)" rollOver="rollOver(event)"
+                                   label="FULL" click="changeFullButtonClicked(event)" toolTip="フルスクリーン表示"
+                                   color="#FFFFFF"/>
+                    <mx:LinkButton id="button_ChangeShowInfoView" rollOut="rollOut(event)" rollOver="rollOver(event)"
+                                   label="INFO" click="changeShowInfoViewButtonClicked(event)" toolTip="Info表示"
+                                   color="#FFFFFF"/>
+                    <mx:Label width="100%"/>
+                    <mx:LinkButton id="button_ChangeRepeat" rollOut="rollOut(event)" rollOver="rollOver(event)"
+                                   label="Repeat" click="changeRepateButtonClicked(event)" toolTip="リピートの有無を切り替え"
+                                   color="#FFFFFF" creationComplete="changeRepeatCreationComplete(event)"/>
+                    <mx:LinkButton id="button_ChangeShowComment" rollOut="rollOut(event)" rollOver="rollOver(event)"
+                                   label="Comment" click="changeShowCommentButtonClicked(event)"
+                                   toolTip="コメントの表示/非表示を切り替え"
+                                   creationComplete="changeShowCommentCreationComplete(event)" color="#FFFFFF"/>
+                </mx:HBox>
+
+            </mx:Canvas>
+
+            <mx:Canvas x="71" y="366" width="100%" height="60" id="canvas_under" horizontalScrollPolicy="off"
+                       verticalScrollPolicy="off">
+                <ns1:VideoController left="0" top="0" right="0" id="videoController_under" height="60"
+                                     backgroundAlpha="0.8" backgroundColor="#FFFFFF">
+                </ns1:VideoController>
+            </mx:Canvas>
+        </mx:VBox>
+    </mx:Canvas>
 </s:Window>
