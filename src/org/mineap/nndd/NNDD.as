@@ -6683,7 +6683,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
 //
 //					}
 
-                    button_myListRenew.label == "更新";
+                    button_myListRenew.label = "更新";
                     dataGrid_myList.validateNow();
                     if (loading != null) {
                         loading.stop();
@@ -6699,7 +6699,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                 this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, function (myevent: Event): void {
                     logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
                     Alert.show("マイリストの更新に失敗しました。\n" + myevent, Message.M_ERROR);
-                    button_myListRenew.label == "更新";
+                    button_myListRenew.label = "更新";
                     if (loading != null) {
                         loading.stop();
                         loading.remove();
@@ -6712,7 +6712,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                 });
                 this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, function (myevent: Event): void {
                     logManager.addLog("マイリストの更新をキャンセル:" + url + ":" + myevent);
-                    button_myListRenew.label == "更新";
+                    button_myListRenew.label = "更新";
                     if (loading != null) {
                         loading.stop();
                         loading.remove();
@@ -6726,7 +6726,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                 this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, function (myevent: Event): void {
                     logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
                     Alert.show("マイリストの更新に失敗しました。\nマイリストが削除されている可能性があります。\n" + myevent, Message.M_ERROR);
-                    button_myListRenew.label == "更新";
+                    button_myListRenew.label = "更新";
                     if (loading != null) {
                         loading.stop();
                         loading.remove();
@@ -6778,7 +6778,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                         break;
                 }
 
-                button_myListRenew.label == "更新";
+                button_myListRenew.label = "更新";
                 loading.stop();
                 loading.remove();
                 loading = null;
@@ -6790,7 +6790,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
             }
         } else {
             //キャンセル
-            button_myListRenew.label == "更新";
+            button_myListRenew.label = "更新";
 
             if (loading != null) {
                 loading.stop();
@@ -6810,7 +6810,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
     } catch (error: Error) {
 
         //キャンセル
-        button_myListRenew.label == "更新";
+        button_myListRenew.label = "更新";
 
         if (loading != null) {
             loading.stop();
