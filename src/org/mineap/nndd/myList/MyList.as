@@ -76,14 +76,15 @@ package org.mineap.nndd.myList {
          *
          */
         public function get id(): String {
-            if (type == RssType.CHANNEL) {
-                return MyListUtil.getChannelId(myListUrl);
-            }
-            else if (type == RssType.USER_UPLOAD_VIDEO) {
-                return MyListUtil.getUserUploadVideoListId(myListUrl);
-            }
-            else {
-                return MyListUtil.getMyListId(myListUrl);
+            switch (type) {
+                case RssType.CHANNEL:
+                    return MyListUtil.getChannelId(myListUrl);
+                case RssType.COMMUNITY:
+                    return MyListUtil.getCommunityId(myListUrl);
+                case RssType.USER_UPLOAD_VIDEO:
+                    return MyListUtil.getUserUploadVideoListId(myListUrl);
+                default:
+                    return MyListUtil.getMyListId(myListUrl);
             }
         }
 
@@ -92,14 +93,15 @@ package org.mineap.nndd.myList {
          * 例えば、"myList/xxxxxxx"のような文字列を返します。
          */
         public function get idWithPrefix(): String {
-            if (type == RssType.CHANNEL) {
-                return "channel/" + MyListUtil.getChannelId(myListUrl);
-            }
-            else if (type == RssType.USER_UPLOAD_VIDEO) {
-                return "user/" + MyListUtil.getUserUploadVideoListId(myListUrl);
-            }
-            else {
-                return "myList/" + MyListUtil.getMyListId(myListUrl);
+            switch (type) {
+                case RssType.CHANNEL:
+                    return "channel/" + MyListUtil.getChannelId(myListUrl);
+                case RssType.COMMUNITY:
+                    return "community/" + MyListUtil.getMyListId(myListUrl);
+                case RssType.USER_UPLOAD_VIDEO:
+                    return "user/" + MyListUtil.getUserUploadVideoListId(myListUrl);
+                default:
+                    return "myList/" + MyListUtil.getMyListId(myListUrl);
             }
         }
 

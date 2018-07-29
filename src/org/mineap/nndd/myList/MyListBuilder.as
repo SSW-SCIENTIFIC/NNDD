@@ -68,17 +68,16 @@ package org.mineap.nndd.myList {
 
 
             var type: RssType = RssType.MY_LIST;
-            ;
             var links: XMLList = xml.channel.link;
             if (links.length() > 0) {
                 var url: String = (links[0] as XML).toString();
                 if (MyListUtil.getChannelId(url) != null) {
                     type = RssType.CHANNEL;
-                }
-                else if (MyListUtil.getUserUploadVideoListId(url) != null) {
+                } else if (MyListUtil.getCommunityId(url) != null) {
+                    type = RssType.COMMUNITY;
+                } else if (MyListUtil.getUserUploadVideoListId(url) != null) {
                     type = RssType.USER_UPLOAD_VIDEO;
-                }
-                else if (MyListUtil.getMyListId(url) != null) {
+                } else if (MyListUtil.getMyListId(url) != null) {
                     type = RssType.MY_LIST;
                 }
             }

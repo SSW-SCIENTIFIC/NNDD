@@ -25,7 +25,8 @@ package org.mineap.nndd.util {
             var myList_pattern: RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/mylist/\\d+\"[^>]*>(mylist/\\d+)</a>|(mylist/\\d+)", "ig");
             var user_pattern: RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/user/\\d+\"[^>]*>(user/\\d+)</a>|(user/\\d+)", "ig");
             var videoId_pattern: RegExp = new RegExp("<a href=\"http://www.nicovideo.jp/watch/[^\"]+\"[^>]*>([^<]+)</a>|" + VideoTypeUtil.VIDEO_ID_WITHOUT_NUMONLY_SEARCH_PATTERN_STRING, "ig");
-            var channel_pattern: RegExp = new RegExp("<a href=\"http://ch.nicovideo.jp/(channel/ch[^\"]+)\">[^<]+</a>|(channel/\\w+)", "ig");
+            var channel_pattern: RegExp = new RegExp("<a href=\"http://ch.nicovideo.jp/(channel/ch[^\"]+)\">[^<]+</a>|(channel/\\w+)", "ig");  // TODO
+            var community_pattern: RegExp = new RegExp("<a href=\"https?://com.nicovideo.jp/video/(co[^\"]+)\">[^<]+</a>|(community/\\w+)", "ig");
 
             var fontsize_pattern: RegExp = new RegExp("size=\"(\\d+)\"", "ig");
 

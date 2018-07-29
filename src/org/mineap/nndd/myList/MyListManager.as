@@ -516,15 +516,19 @@ package org.mineap.nndd.myList {
          *
          */
         private function setVideoId_MyListId_Map(videoId: String, myListId: String, type: RssType): void {
-
-            if (type == RssType.CHANNEL) {
-                myListId = "channel/" + myListId;
-            }
-            else if (type == RssType.MY_LIST) {
-                myListId = "myList/" + myListId;
-            }
-            else if (type == RssType.USER_UPLOAD_VIDEO) {
-                myListId = "user/" + myListId;
+            switch (type) {
+                case RssType.CHANNEL:
+                    myListId = "channel/" + myListId;
+                    break;
+                case RssType.COMMUNITY:
+                    myListId = "community/" + myListId;
+                    break;
+                case RssType.USER_UPLOAD_VIDEO:
+                    myListId = "user/" + myListId;
+                    break;
+                case RssType.MY_LIST:
+                    myListId = "myList/" + myListId;
+                    break;
             }
 
             var myListIds: Vector.<String> = _videoId_myListIds_map[videoId];
@@ -824,17 +828,22 @@ package org.mineap.nndd.myList {
 
                 var file: File = this._libraryManager.systemFileDir;
 
-                if (type == RssType.CHANNEL) {
-                    _logManager.addLog("チャンネル(" + myListId + ")を保存中...");
-                    file = new File(file.url + "/channel/" + myListId + ".xml");
-                }
-                else if (type == RssType.USER_UPLOAD_VIDEO) {
-                    _logManager.addLog("投稿動画一覧(" + myListId + ")を保存中...");
-                    file = new File(file.url + "/user/" + myListId + ".xml");
-                }
-                else {
-                    _logManager.addLog("マイリスト(" + myListId + ")を保存中...");
-                    file = new File(file.url + "/myList/" + myListId + ".xml");
+                switch (type) {
+                    case RssType.CHANNEL:
+                        _logManager.addLog("チャンネル(" + myListId + ")を保存中...");
+                        file = new File(file.url + "/channel/" + myListId + ".xml");
+                        break;
+                    case RssType.COMMUNITY:
+                        _logManager.addLog("コミュニティ(" + myListId + ")を保存中...");
+                        file = new File(file.url + "/community/" + myListId + ".xml");
+                        break;
+                    case RssType.USER_UPLOAD_VIDEO:
+                        _logManager.addLog("投稿動画一覧(" + myListId + ")を保存中...");
+                        file = new File(file.url + "/user/" + myListId + ".xml");
+                        break;
+                    default:
+                        _logManager.addLog("マイリスト(" + myListId + ")を保存中...");
+                        file = new File(file.url + "/myList/" + myListId + ".xml");
                 }
 
                 var xmlList: XMLList = xml.descendants("item");
@@ -947,14 +956,19 @@ package org.mineap.nndd.myList {
 
                 var file: File = this._libraryManager.systemFileDir;
 
-                if (type == RssType.MY_LIST) {
-                    file = new File(file.url + "/myList/" + myListId + ".xml");
-                }
-                else if (type == RssType.CHANNEL) {
-                    file = new File(file.url + "/channel/" + myListId + ".xml");
-                }
-                else if (type == RssType.USER_UPLOAD_VIDEO) {
-                    file = new File(file.url + "/user/" + myListId + ".xml");
+                switch (type) {
+                    case RssType.MY_LIST:
+                        file = new File(file.url + "/myList/" + myListId + ".xml");
+                        break;
+                    case RssType.CHANNEL:
+                        file = new File(file.url + "/channel/" + myListId + ".xml");
+                        break;
+                    case RssType.COMMUNITY:
+                        file = new File(file.url + "/community/" + myListId + ".xml");
+                        break;
+                    case RssType.USER_UPLOAD_VIDEO:
+                        file = new File(file.url + "/user/" + myListId + ".xml");
+                        break;
                 }
 
                 var fileIO: FileIO = new FileIO(_logManager);
@@ -1404,11 +1418,14 @@ package org.mineap.nndd.myList {
          *
          */
         public static function checkType(url: String): RssType {
-            if (url != null && url.indexOf("channel/") != -1) {
-                return RssType.CHANNEL;
-            }
-            else if (url != null && url.indexOf("user/") != -1) {
-                return RssType.USER_UPLOAD_VIDEO;
+            if (url != null) {
+                if (url.indexOf("channel/") != -1) {
+                    return RssType.CHANNEL;
+                } else if (url.indexOf("community/") != -1) {
+                    return RssType.COMMUNITY;
+                } else if (url.indexOf("user/") != -1) {
+                    return RssType.USER_UPLOAD_VIDEO;
+                }
             }
 
             return RssType.MY_LIST;

@@ -5,6 +5,8 @@ package org.mineap.nndd.model {
 
         public static const CHANNEL: RssType = new RssType("CHANNEL");
 
+        public static const COMMUNITY: RssType = new RssType("COMMUNITY");
+
         public static const USER_UPLOAD_VIDEO: RssType = new RssType("USER_UPLOAD_VIDEO");
 
         private var value: String = null;
@@ -18,16 +20,18 @@ package org.mineap.nndd.model {
         }
 
         public static function convertStrToRssType(typeStr: String): RssType {
-            if (MY_LIST.value == typeStr) {
-                return MY_LIST;
+            switch (typeStr) {
+                case MY_LIST.value:
+                    return MY_LIST;
+                case CHANNEL.value:
+                    return CHANNEL;
+                case COMMUNITY.value:
+                    return COMMUNITY;
+                case USER_UPLOAD_VIDEO.value:
+                    return USER_UPLOAD_VIDEO;
+                default:
+                    return null;
             }
-            else if (CHANNEL.value == typeStr) {
-                return CHANNEL;
-            }
-            else if (USER_UPLOAD_VIDEO.value == typeStr) {
-                return USER_UPLOAD_VIDEO;
-            }
-            return null;
         }
 
     }

@@ -36,7 +36,13 @@
       <configuration name="NNDD(Debug)" target-platform="Desktop" main-class="NNDD" output-file="NNDD.swf" output-folder="$MODULE_DIR$/bin-debug">
         <dependencies>
           <entries>
-            <entry library-id="47a08832-7f2f-4c16-a009-e52a1b6e7151">
+            <entry library-id="dcc66440-3097-4bad-bd75-20225cd86147">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="c3c96809-d782-4dfc-96d0-21912f491d90">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="8bbda011-792a-437e-9152-352f72d761f4">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -86,13 +92,32 @@
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library type="flex">
-        <properties id="47a08832-7f2f-4c16-a009-e52a1b6e7151" />
+        <properties id="dcc66440-3097-4bad-bd75-20225cd86147" />
         <CLASSES>
-          <root url="file://$MODULE_DIR$/libs" />
+          <root url="file://$MODULE_DIR$/../nicovideo4as/src" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="c3c96809-d782-4dfc-96d0-21912f491d90" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/NativeApplicationUpdater-0.5.1.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="8bbda011-792a-437e-9152-352f72d761f4" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/airhttpd-0.5-mineap-0.1.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

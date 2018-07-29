@@ -364,11 +364,11 @@ package org.mineap.nndd.myList {
                 var myListStr: String;
                 if (myList.type == RssType.CHANNEL) {
                     myListStr = "channel/" + myList.id + " " + myList.myListName;
-                }
-                else if (myList.type == RssType.USER_UPLOAD_VIDEO) {
+                } else if (myList.type == RssType.COMMUNITY) {
+                    myListStr = "community/" + myListId + " " + myList.myListName;
+                } else if (myList.type == RssType.USER_UPLOAD_VIDEO) {
                     myListStr = "user/" + myList.id + " " + myList.myListName;
-                }
-                else {
+                } else {
                     myListStr = "mylist/" + myList.id + " " + myList.myListName;
                 }
 
@@ -384,14 +384,19 @@ package org.mineap.nndd.myList {
                 nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
                 nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
                 nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
-                if (myList.type == RssType.CHANNEL) {
-                    nnddMyListLoader.requestDownloadForChannel(_mailAddress, _password, myListId);
-                }
-                else if (myList.type == RssType.USER_UPLOAD_VIDEO) {
-                    nnddMyListLoader.requestDownloadForUserVideoList(_mailAddress, _password, myListId);
-                }
-                else {
-                    nnddMyListLoader.requestDownloadForMyList(_mailAddress, _password, myListId);
+
+                switch (myList.type) {
+                    case RssType.CHANNEL:
+                        nnddMyListLoader.requestDownloadForChannel(_mailAddress, _password, myListId);
+                        break;
+                    case RssType.COMMUNITY:
+                        nnddMyListLoader.requestDownloadForCommunity(_mailAddress, _password, myListId);
+                        break;
+                    case RssType.USER_UPLOAD_VIDEO:
+                        nnddMyListLoader.requestDownloadForUserVideoList(_mailAddress, _password, myListId);
+                        break;
+                    default:
+                        nnddMyListLoader.requestDownloadForMyList(_mailAddress, _password, myListId);
                 }
 
                 function myListGetComplete(event: Event): void {

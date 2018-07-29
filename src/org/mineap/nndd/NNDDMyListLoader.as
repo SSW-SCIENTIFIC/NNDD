@@ -10,6 +10,7 @@ package org.mineap.nndd {
 
     import org.mineap.nicovideo4as.Login;
     import org.mineap.nicovideo4as.loader.ChannelLoader;
+    import org.mineap.nicovideo4as.loader.CommunityLoader;
     import org.mineap.nicovideo4as.loader.PublicMyListLoader;
     import org.mineap.nicovideo4as.loader.UserVideoListLoader;
     import org.mineap.nndd.library.ILibraryManager;
@@ -40,6 +41,7 @@ package org.mineap.nndd {
         private var _login: Login;
 
         private var _channelLoader: ChannelLoader;
+        private var _communityLoader: CommunityLoader;
         private var _publicMyListLoader: PublicMyListLoader;
         private var _userVideoListLoader: UserVideoListLoader;
 
@@ -49,6 +51,7 @@ package org.mineap.nndd {
 
         private var _myListId: String;
         private var _channelId: String;
+        private var _communityId: String;
         private var _uploadUserId: String;
 
         public var enableNNDDServer: Boolean = false;
@@ -138,11 +141,23 @@ package org.mineap.nndd {
          *
          * @param user
          * @param password
+         * @param communityId
+         */
+        public function requestDownloadForCommunity(user: String, password: String, communityId: String): void {
+            trace("start - requestDownload(" + user + ", ****, community/" + communityId + ")");
+            this._communityId = communityId;
+            login(user, password);
+        }
+
+        /**
+         *
+         * @param user
+         * @param password
          * @param uploadUserId
          *
          */
         public function requestDownloadForUserVideoList(user: String, password: String, uploadUserId: String): void {
-            trace("start - requestDownload(" + user + ", ****, user/" + uploadUserId);
+            trace("start - requestDownload(" + user + ", ****, user/" + uploadUserId + ")");
 
             this._uploadUserId = uploadUserId;
 
@@ -188,15 +203,17 @@ package org.mineap.nndd {
 
                 var type: RssType = null;
                 var id: String = null;
+
                 if (this._myListId != null) {
                     id = this._myListId;
                     type = RssType.MY_LIST;
-                }
-                else if (this._channelId != null) {
+                } else if (this._channelId != null) {
                     id = this._channelId;
                     type = RssType.CHANNEL;
-                }
-                else if (this._uploadUserId != null) {
+                } else if (this._communityId != null) {
+                    id = this._communityId;
+                    type = RssType.COMMUNITY;
+                } else if (this._uploadUserId != null) {
                     id = this._uploadUserId;
                     type = RssType.USER_UPLOAD_VIDEO;
                 }
@@ -286,16 +303,21 @@ package org.mineap.nndd {
                 this._publicMyListLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
 
                 this._publicMyListLoader.getMyList(this._myListId);
-            }
-            else if (this._channelId != null) {
+            } else if (this._channelId != null) {
                 this._channelLoader = new ChannelLoader();
                 this._channelLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
                 this._channelLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
                 this._channelLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
 
                 this._channelLoader.getChannel(this._channelId);
-            }
-            else if (this._uploadUserId != null) {
+            } else if (this._communityId != null) {
+                this._communityLoader = new CommunityLoader();
+                this._communityLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
+                this._communityLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
+                this._communityLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
+
+                this._communityLoader.getCommunity(this._communityId);
+            } else if (this._uploadUserId != null) {
                 this._userVideoListLoader = new UserVideoListLoader();
                 this._userVideoListLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
                 this._userVideoListLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
@@ -316,11 +338,11 @@ package org.mineap.nndd {
             var targetId: String = "";
             if (this._myListId != null) {
                 targetId = "mylist/" + this._myListId;
-            }
-            else if (this._channelId != null) {
+            } else if (this._channelId != null) {
                 targetId = "channel/" + this._channelId;
-            }
-            else {
+            } else if (this._communityId != null) {
+                targetId = "community/" + this._communityId;
+            } else {
                 targetId = "user/" + this._uploadUserId + "/video";
             }
 
@@ -344,11 +366,11 @@ package org.mineap.nndd {
 //			trace(DOWNLOAD_PROCESS_COMPLETE + ":" + event + ":" + xml);
             if (this._myListId != null) {
                 LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": mylist/" + this._myListId);
-            }
-            else if (this._channelId != null) {
+            } else if (this._channelId != null) {
                 LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": channel/" + this._channelId);
-            }
-            else {
+            } else if (this._communityId != null) {
+                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": community/" + this._communityId);
+            } else {
                 LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": user/" + this._channelId);
             }
 
@@ -370,6 +392,7 @@ package org.mineap.nndd {
         private function terminate(): void {
             this._channelId = null;
             this._myListId = null;
+            this._communityId = null;
             this._uploadUserId = null;
             this._login = null;
             this._publicMyListLoader = null;
@@ -397,6 +420,11 @@ package org.mineap.nndd {
             try {
                 this._channelLoader.close();
                 trace(this._channelLoader + " is closed.");
+            } catch (error: Error) {
+            }
+            try {
+                this._communityLoader.close();
+                trace(this._communityLoader + " is closed.");
             } catch (error: Error) {
             }
             try {

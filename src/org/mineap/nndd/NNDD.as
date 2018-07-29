@@ -6574,14 +6574,19 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                     type = MyListManager.checkType(url);
 
                     var myListId: String = null;
-                    if (type == RssType.MY_LIST) {
-                        myListId = MyListUtil.getMyListId(url);
-                    }
-                    else if (type == RssType.CHANNEL) {
-                        myListId = MyListUtil.getChannelId(url);
-                    }
-                    else if (type == RssType.USER_UPLOAD_VIDEO) {
-                        myListId = MyListUtil.getUserUploadVideoListId(url);
+                    switch (type) {
+                        case RssType.CHANNEL:
+                            myListId = MyListUtil.getChannelId(url);
+                            break;
+                        case RssType.COMMUNITY:
+                            myListId = MyListUtil.getCommunityId(url);
+                            break;
+                        case RssType.USER_UPLOAD_VIDEO:
+                            myListId = MyListUtil.getUserUploadVideoListId(url);
+                            break;
+                        case RssType.MY_LIST:
+                            myListId = MyListUtil.getMyListId(url);
+                            break;
                     }
 
                     try {
@@ -6742,26 +6747,35 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                 }
 
                 var myListId: String = null;
-                if (type == RssType.MY_LIST) {
-                    var myListId: String = MyListUtil.getMyListId(url);
-                    if (myListId != null) {
-                        this._nnddMyListLoader.requestDownloadForMyList(UserManager.instance.user, UserManager.instance.password, myListId);
-                        return;
-                    }
-                }
-                else if (type == RssType.CHANNEL) {
-                    var channelId: String = MyListUtil.getChannelId(url);
-                    if (channelId != null) {
-                        this._nnddMyListLoader.requestDownloadForChannel(UserManager.instance.user, UserManager.instance.password, channelId);
-                        return;
-                    }
-                }
-                else if (type == RssType.USER_UPLOAD_VIDEO) {
-                    var userId: String = MyListUtil.getUserUploadVideoListId(url);
-                    if (userId != null) {
-                        this._nnddMyListLoader.requestDownloadForUserVideoList(UserManager.instance.user, UserManager.instance.password, userId);
-                        return;
-                    }
+                switch (type) {
+                    case RssType.MY_LIST:
+                        var myListId: String = MyListUtil.getMyListId(url);
+                        if (myListId != null) {
+                            this._nnddMyListLoader.requestDownloadForMyList(UserManager.instance.user, UserManager.instance.password, myListId);
+                            return;
+                        }
+                        break;
+                    case RssType.CHANNEL:
+                        var channelId: String = MyListUtil.getChannelId(url);
+                        if (channelId != null) {
+                            this._nnddMyListLoader.requestDownloadForChannel(UserManager.instance.user, UserManager.instance.password, channelId);
+                            return;
+                        }
+                        break;
+                    case RssType.COMMUNITY:
+                        var communityId: String = MyListUtil.getCommunityId(url);
+                        if (communityId != null) {
+                            this._nnddMyListLoader.requestDownloadForCommunity(UserManager.instance.user, UserManager.instance.password, communityId);
+                            return;
+                        }
+                        break;
+                    case RssType.USER_UPLOAD_VIDEO:
+                        var userId: String = MyListUtil.getUserUploadVideoListId(url);
+                        if (userId != null) {
+                            this._nnddMyListLoader.requestDownloadForUserVideoList(UserManager.instance.user, UserManager.instance.password, userId);
+                            return;
+                        }
+                        break;
                 }
 
                 button_myListRenew.label == "更新";
@@ -6962,12 +6976,13 @@ private function myListRenewForName(name: String): void {
     if (url.indexOf("channel") != -1) {
         myListId = MyListUtil.getChannelId(url);
         xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
-    }
-    else if (url.indexOf("user") != -1) {
+    } else if (url.indexOf("community") != -1) {
+        myListId = MyListUtil.getCommunityId(url);
+        xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
+    } else if (url.indexOf("user") != -1) {
         myListId = MyListUtil.getUserUploadVideoListId(url);
         xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
-    }
-    else {
+    } else {
         myListId = MyListUtil.getMyListId(url);
         xml = MyListManager.instance.readLocalMyList(myListId, MyListManager.checkType(url));
     }
@@ -7441,15 +7456,18 @@ public function showMyListOnNico(event: Event): void {
             navigateToURL(new URLRequest("http://ch.nicovideo.jp/channel/" + id));
             logManager.addLog("チャンネルをブラウザで表示:" + "http://ch.nicovideo.jp/channel/" + id);
         }
-    }
-    else if (id.indexOf("user") != -1) {
+    } else if (id.indexOf("community") != -1) {
+        id = MyListUtil.getCommunityId(id);
+        if (id != null) {
+            navigateToURL(new URLRequest("https://com.nicovideo.jp/video/" + id));
+            logManager.addLog("コミュニティをブラウザで表示:" + "https://com.nicovideo.jp/video/" + id);
+        }
+    } else if (id.indexOf("user") != -1) {
         id = MyListUtil.getUserUploadVideoListId(id);
         if (id != null) {
             navigateToURL(new URLRequest("http://www.nicovideo.jp/user/" + id + "/video"));
         }
-    }
-    else	// MyListだと推測
-    {
+    } else {	// MyListだと推測
         id = MyListUtil.getMyListId(id);
         if (id != null) {
             navigateToURL(new URLRequest("http://www.nicovideo.jp/mylist/" + id));

@@ -1917,6 +1917,8 @@ private function ownerTextLinkClicked(event: TextEvent): void {
         FlexGlobals.topLevelApplication.renewMyList(event.text);
     } else if (event.text.indexOf("channel/") != -1) {
         FlexGlobals.topLevelApplication.renewMyList(event.text);
+    } else if (event.text.indexOf("community/") != -1) {
+        FlexGlobals.topLevelApplication.renewMyList(event.text);
     } else if (event.text.indexOf("watch/") != -1) {
         var videoId: String = PathMaker.getVideoID(event.text);
 //		trace(videoId);

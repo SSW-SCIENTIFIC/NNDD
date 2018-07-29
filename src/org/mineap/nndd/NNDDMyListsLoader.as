@@ -77,14 +77,18 @@ package org.mineap.nndd {
                     var myListUrl: String = myListId;
 
                     var type: RssType = RssType.convertStrToRssType(myListType);
-                    if (type == RssType.CHANNEL) {
-                        myListUrl = "channel/" + myListId;
-                    }
-                    else if (type == RssType.USER_UPLOAD_VIDEO) {
-                        myListUrl = "user/" + myListId;
-                    }
-                    else {
-                        myListUrl = "myList/" + myListId;
+                    switch (type) {
+                        case RssType.CHANNEL:
+                            myListUrl = "channel/" + myListId;
+                            break;
+                        case RssType.COMMUNITY:
+                            myListUrl = "community/" + myListId;
+                            break;
+                        case RssType.USER_UPLOAD_VIDEO:
+                            myListUrl = "user/" + myListId;
+                            break;
+                        default:
+                            myListUrl = "myList/" + myListId;
                     }
 
                     if (myListName == null || myListName.length == 0) {
