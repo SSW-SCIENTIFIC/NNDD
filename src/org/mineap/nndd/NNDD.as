@@ -6559,7 +6559,7 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                 dataGrid_myList.enabled = false;
                 textinput_mylist.enabled = false;
 
-                button_myListRenew.label == "キャンセル";
+                button_myListRenew.label = "キャンセル";
                 loading = new LoadingPicture();
                 loading.show(dataGrid_myList, dataGrid_myList.width / 2, dataGrid_myList.height / 2);
                 loading.start(360 / 12);

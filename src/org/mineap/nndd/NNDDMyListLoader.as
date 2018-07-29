@@ -7,6 +7,9 @@ package org.mineap.nndd {
     import flash.events.SecurityErrorEvent;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
+    import flash.utils.setTimeout;
+
+    import mx.collections.CursorBookmark;
 
     import org.mineap.nicovideo4as.Login;
     import org.mineap.nicovideo4as.loader.ChannelLoader;
@@ -44,6 +47,7 @@ package org.mineap.nndd {
         private var _communityLoader: CommunityLoader;
         private var _publicMyListLoader: PublicMyListLoader;
         private var _userVideoListLoader: UserVideoListLoader;
+        private var _currentPage: int;
 
         private var _nnddServerUrlLoader: URLLoader;
 
@@ -84,6 +88,11 @@ package org.mineap.nndd {
          * ダウンロード処理が通常に終了したとき、typeプロパティがこの定数に設定されたEventが発行されます。
          */
         public static const DOWNLOAD_PROCESS_COMPLETE: String = "DownloadProcessComplete";
+
+        /**
+         * 動画リストが複数のページにまたがる場合のログに出力されます
+         */
+        public static const DOWNLOAD_PROCESS_INPROGRESS: String = "DownloadProcessInprogress";
 
         /**
          * ダウンロード処理が中断された際に、typeプロパティがこの定数に設定されたEventが発行されます。
@@ -146,6 +155,7 @@ package org.mineap.nndd {
         public function requestDownloadForCommunity(user: String, password: String, communityId: String): void {
             trace("start - requestDownload(" + user + ", ****, community/" + communityId + ")");
             this._communityId = communityId;
+            this._currentPage = 1;
             login(user, password);
         }
 
@@ -158,9 +168,8 @@ package org.mineap.nndd {
          */
         public function requestDownloadForUserVideoList(user: String, password: String, uploadUserId: String): void {
             trace("start - requestDownload(" + user + ", ****, user/" + uploadUserId + ")");
-
             this._uploadUserId = uploadUserId;
-
+            this._currentPage = 1;
             login(user, password);
         }
 
@@ -316,14 +325,14 @@ package org.mineap.nndd {
                 this._communityLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
                 this._communityLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
 
-                this._communityLoader.getCommunity(this._communityId);
+                this._communityLoader.getCommunity(this._communityId, this._currentPage);
             } else if (this._uploadUserId != null) {
                 this._userVideoListLoader = new UserVideoListLoader();
                 this._userVideoListLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
                 this._userVideoListLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
                 this._userVideoListLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
 
-                this._userVideoListLoader.getVideoList(this._uploadUserId);
+                this._userVideoListLoader.getVideoList(this._uploadUserId, this._currentPage);
             }
         }
 
@@ -361,7 +370,31 @@ package org.mineap.nndd {
         private function getXMLSuccess(event: Event): void {
 //			trace((event.target as URLLoader).data);
 
-            this._xml = new XML((event.target as URLLoader).data);
+            var xml: XML = new XML((event.target as URLLoader).data);
+            var items: XMLList = xml.child("channel")[0].child("item");
+            var next: Boolean = items.length() > 0;
+            if (this._xml == null) {
+                this._xml = xml;
+            } else {
+                for each(var tmp: XML in items) {
+                    if (tmp.name() == "item") {
+                        this._xml.child("channel")[0].appendChild(tmp);
+                    }
+                }
+            }
+
+            if (next && this._currentPage > 0) {
+                if (this._communityId != null) {
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId);
+                } else if (this._uploadUserId != null) {
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId);
+                }
+
+
+                this._currentPage++;
+                setTimeout(this.loadRss, 5000);
+                return;
+            }
 
 //			trace(DOWNLOAD_PROCESS_COMPLETE + ":" + event + ":" + xml);
             if (this._myListId != null) {
@@ -371,7 +404,7 @@ package org.mineap.nndd {
             } else if (this._communityId != null) {
                 LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": community/" + this._communityId);
             } else {
-                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": user/" + this._channelId);
+                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": user/" + this._uploadUserId);
             }
 
             dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
