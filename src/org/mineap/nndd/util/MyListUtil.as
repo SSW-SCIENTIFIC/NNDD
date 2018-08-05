@@ -126,7 +126,7 @@ package org.mineap.nndd.util {
         public static function getCommunityId(url: String): String {
             var communityId: String = null;
 
-            var pattern: RegExp = new RegExp("(?:https?://com.nicovideo.jp/video|community)/([a-z0-9]+)");
+            var pattern: RegExp = new RegExp("(?:https?://com\.nicovideo\.jp/video|community)/([a-z0-9]+)");
             var match: Array = pattern.exec(url);
             if (match != null && match.length > 0) {
                 communityId = match[1];

@@ -383,16 +383,23 @@ package org.mineap.nndd {
                 }
             }
 
+            // default wait par page is set by 100ms.
+            var wait: int = 100;
             if (next && this._currentPage > 0) {
                 if (this._communityId != null) {
-                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId);
+                    // community page load limit is very severe
+                    wait = this._currentPage % 5 === 0 ? 10000 : 1000;
+                    LogManager.instance.addLog(
+                        DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId + "/" + this._currentPage
+                    );
                 } else if (this._uploadUserId != null) {
-                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId);
+                    LogManager.instance.addLog(
+                        DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId + "/" + this._currentPage
+                    );
                 }
 
-
+                setTimeout(this.loadRss, wait);
                 this._currentPage++;
-                setTimeout(this.loadRss, 5000);
                 return;
             }
 
