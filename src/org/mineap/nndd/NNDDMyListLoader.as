@@ -389,6 +389,7 @@ package org.mineap.nndd {
                 if (this._communityId != null) {
                     // community page load limit is very severe
                     wait = this._currentPage % 5 === 0 ? 10000 : 1000;
+                    wait += this._currentPage > 20 ? 5000 : 0;
                     LogManager.instance.addLog(
                         DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId + "/" + this._currentPage
                     );
