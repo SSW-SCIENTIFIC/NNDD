@@ -1824,19 +1824,17 @@ package org.mineap.nndd.player {
          *
          */
         public function getStreamingProgress(): int {
-            var value: int = 0;
-            if (isStreamingPlay) {
-                if (videoDisplay != null) {
-                    value = (videoDisplay.bytesLoaded * 100 / videoDisplay.bytesTotal);
-                } else if (loader != null && loader.contentLoaderInfo != null) {
-                    value = (loader.contentLoaderInfo.bytesLoaded * 100 / loader.contentLoaderInfo.bytesTotal);
-                } else {
-                    value = 100;
-                }
-            } else {
-                value = 100;
+            if (!isStreamingPlay) {
+                return 100;
             }
-            return value;
+            if (videoDisplay != null) {
+                return videoDisplay.bytesLoaded * 100 / videoDisplay.bytesTotal;
+            }
+            if (loader != null && loader.contentLoaderInfo != null) {
+                return loader.contentLoaderInfo.bytesLoaded * 100 / loader.contentLoaderInfo.bytesTotal;
+            }
+
+            return 100;
         }
 
 
@@ -1910,6 +1908,7 @@ package org.mineap.nndd.player {
                     if (streamingProgressTimer != null) {
                         streamingProgressTimer.stop();
                     }
+                    // TODO: ダウンロードプログレス100%時のDMCビーティングのクリア
 
                     // 100%読み込みしたはずなのに読み込み済みバイト数が異常に少ない。
                     if (this.bytesLoaded <= 64) {
@@ -1939,6 +1938,7 @@ package org.mineap.nndd.player {
                             nicoVideoAccessRetryTimer = new Timer(10000 * this.streamingRetryCount, 1);
                             nicoVideoAccessRetryTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: Event): void {
                                 (event.currentTarget as Timer).stop();
+                                // TODO: DMCサーバ接続時のリトライ方法修正
                                 play();
                             });
                             nicoVideoAccessRetryTimer.start();
@@ -4155,12 +4155,14 @@ package org.mineap.nndd.player {
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_FAIL, getProgressListener);
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, streamingPlayFailListener);
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, streamingPlayFailListener);
-                        nnddDownloaderForStreaming.requestDownloadForStreaming(UserManager.instance.user,
-                                UserManager.instance.password,
-                                PathMaker.getVideoID(url),
-                                tempDir,
-                                videoInfoView.isAlwaysEconomyForStreaming,
-                                FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
+                        nnddDownloaderForStreaming.requestDownloadForStreaming(
+                            UserManager.instance.user,
+                            UserManager.instance.password,
+                            PathMaker.getVideoID(url),
+                            tempDir,
+                            videoInfoView.isAlwaysEconomyForStreaming,
+                            FlexGlobals.topLevelApplication.getUseOldTypeCommentGet()
+                        );
 
                     } catch (e: Error) {
                         videoPlayer.label_downloadStatus.text = "";

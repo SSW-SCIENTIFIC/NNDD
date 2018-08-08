@@ -89,6 +89,7 @@ package org.mineap.nndd {
         private var _videoId: String;
         private var _saveDir: File;
         private var _saveVideoName: String;
+        private var _saveVideoFileName: String;
         private var _streamingUrl: String;
         private var _nicoVideoName: String;
         private var _savedVideoPath: String;
@@ -99,6 +100,9 @@ package org.mineap.nndd {
         private var _waybackkey: String;
         private var _maxCommentCount: Number;
         private var _fmsToken: String;
+
+        private var _retryCount: int;
+        private var _downloadedSize: Number;
 
         private var _nicowariVideoUrl: String;
         private var _nicowariVideoId: String;
@@ -327,30 +331,19 @@ package org.mineap.nndd {
         public static const CREATE_DMC_SESSION_FAIL: String = "CreateDmcSessionFail";
         public static const BEAT_DMC_SESSION: String = "BeatDmcSession";
 
+        public static const RETRY_COUNT_LIMIT: int = 10;
+
         /**
          * コンストラクタです。
          *
          */
         public function NNDDDownloader() {
-            this._login = new Login();
-            this._watchVideo = new WatchVideoPage();
-            this._getflvAccess = new ApiGetFlvAccess();
-            this._commentLoader = new CommentLoader();
-            this._ownerCommentLoader = new CommentLoader();
-            this._nicowariLoader = new VideoLoader();
-            this._getbgmAccess = new ApiGetBgmAccess();
-            this._thumbInfoLoader = new ThumbInfoLoader();
-            this._thumbImgLoader = new ThumbImgLoader();
-            this._ichibaInfoLoader = new IchibaInfoLoader();
-            this._videoLoader = new VideoLoader();
-            this._videoStream = new VideoStream();
-
-            this._otherNNDDInfoLoader = new URLLoader();
+            this._retryCount = 0;
+            this._downloadedSize = 0;
 
             /* For DMC Servers */
             this._dmcInfoAnalyzer = new DmcInfoAnalyzer();
             this._dmcResultAnalyzer = new DmcResultAnalyzer();
-            this._dmcAccess = new ApiDmcAccess();
 
             this._nicowariVideoIds = new Array();
             this._nicowariVideoUrls = new Array();
@@ -406,6 +399,7 @@ package org.mineap.nndd {
                 this._saveVideoName = "";
             }
 
+            this._login = new Login();
             this._login.addEventListener(Login.LOGIN_SUCCESS, loginSuccess);
             this._login.addEventListener(Login.NO_LOGIN, loginSkip);
             this._login.addEventListener(Login.LOGIN_FAIL, function (event: ErrorEvent): void {
@@ -562,7 +556,7 @@ package org.mineap.nndd {
             dispatchEvent(new Event(LOGIN_SUCCESS));
 
             // closeが呼ばれていないか？
-            if (this._watchVideo == null) {
+            if (this._login == null) {
                 return;
             }
 
@@ -601,6 +595,7 @@ package org.mineap.nndd {
          *
          */
         private function watch(videoId: String, watchHarmful: Boolean = false): void {
+            this._watchVideo = new WatchVideoPage();
             //リスナ追加
             this._watchVideo.addEventListener(WatchVideoPage.WATCH_SUCCESS, watchSuccess);
             this._watchVideo.addEventListener(WatchVideoPage.WATCH_FAIL, function (event: ErrorEvent): void {
@@ -652,7 +647,7 @@ package org.mineap.nndd {
         private function watchSuccess(event: Event): void {
 
             // closeが呼ばれていないか？
-            if (this._getflvAccess == null) {
+            if (this._watchVideo == null) {
                 return;
             }
 
@@ -698,12 +693,12 @@ package org.mineap.nndd {
          *
          */
         private function getThumbInfo(videoId: String): void {
-
             // closeが呼ばれていないか？
-            if (this._thumbInfoLoader == null) {
+            if (this._login == null) {
                 return;
             }
 
+            this._thumbInfoLoader = new ThumbInfoLoader();
             this._thumbInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                 (event.currentTarget as URLLoader).close();
                 trace(THUMB_INFO_GET_FAIL + ":" + event + ":" + event.target + ":" + event.text);
@@ -803,7 +798,7 @@ package org.mineap.nndd {
         }
 
         private function getThumbImg(thumbUrl: String): void {
-
+            this._thumbImgLoader = new ThumbImgLoader();
             this._thumbImgLoader.addEventListener(Event.COMPLETE, thumbImgGetSuccess);
             this._thumbImgLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                 //				(event.target as URLLoader).close();
@@ -874,7 +869,7 @@ package org.mineap.nndd {
          *
          */
         private function getFlvAccess(): void {
-
+            this._getflvAccess = new ApiGetFlvAccess();
             //APIアクセス開始
             this._getflvAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: ErrorEvent): void {
                 (event.target as URLLoader).close();
@@ -989,10 +984,11 @@ package org.mineap.nndd {
         private function getNormalComment(): void {
 
             // closeが呼ばれていないか？
-            if (this._commentLoader == null) {
+            if (this._login == null) {
                 return;
             }
 
+            this._commentLoader = new CommentLoader();
             //リスナ追加
             this._commentLoader.addEventListener(CommentLoader.COMMENT_GET_SUCCESS, commentGetSuccess);
             this._commentLoader.addEventListener(CommentLoader.COMMENT_GET_FAIL, function (event: ErrorEvent): void {
@@ -1091,7 +1087,7 @@ package org.mineap.nndd {
         private function ownerCommentGetStart(loader: CommentLoader): void {
 
             // closeが呼ばれていないか？
-            if (this._ownerCommentLoader == null) {
+            if (this._login == null) {
                 return;
             }
 
@@ -1111,6 +1107,7 @@ package org.mineap.nndd {
             trace(COMMENT_GET_SUCCESS + ":" + loader + "\n" + path);
             dispatchEvent(new Event(COMMENT_GET_SUCCESS));
 
+            this._ownerCommentLoader = new CommentLoader();
             this._ownerCommentLoader.addEventListener(CommentLoader.COMMENT_GET_SUCCESS, ownerCommentGetSuccess);
             this._ownerCommentLoader.addEventListener(CommentLoader.COMMENT_GET_FAIL, function (event: ErrorEvent): void {
                 (event.target as CommentLoader).close();
@@ -1144,7 +1141,7 @@ package org.mineap.nndd {
         private function ownerCommentGetSuccess(event: Event): void {
 
             // closeが呼ばれていないか？
-            if (this._getbgmAccess == null) {
+            if (this._ownerCommentLoader == null) {
                 return;
             }
 
@@ -1195,6 +1192,7 @@ package org.mineap.nndd {
 //					getThumbInfo(this._thumbInfoId);
                     downloadIchibaInfo();
                 } else {
+                    this._getbgmAccess = new ApiGetBgmAccess();
                     //投コメにニコ割が指定されている。getbgmを確認してニコ割をダウンロード
                     this._getbgmAccess.addEventListener(ApiGetBgmAccess.SUCCESS, getNicowariUrlsSuccess);
                     this._getbgmAccess.addEventListener(ApiGetBgmAccess.FAIL, function (event: IOErrorEvent): void {
@@ -1319,6 +1317,7 @@ package org.mineap.nndd {
             this._nicowariVideoUrl = this._nicowariVideoUrls.shift();
             this._nicowariVideoId = this._nicowariVideoIds.shift();
 
+            this._nicowariLoader = new VideoLoader();
             this._nicowariLoader.addVideoLoaderListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                 (event.target as URLLoader).close();
                 trace(NICOWARI_GET_FAIL + ":" + _nicowariVideoId + ":" + event + ":" + event.target + ":" + event.text);
@@ -1334,8 +1333,6 @@ package org.mineap.nndd {
 
                 } else {
                     //次のニコ割を取りにいく
-                    //次で使う為にloaderを初期化
-                    _nicowariLoader = new VideoLoader();
                     getNicowari();
                 }
             });
@@ -1382,8 +1379,6 @@ package org.mineap.nndd {
 
             } else {
                 //次のニコ割を取りにいく
-                //次で使う為にloaderを初期化
-                this._nicowariLoader = new VideoLoader();
                 getNicowari();
             }
 
@@ -1397,10 +1392,11 @@ package org.mineap.nndd {
         private function downloadIchibaInfo(): void {
 
             // closeがよばれていないか？
-            if (this._ichibaInfoLoader == null) {
+            if (this._login == null) {
                 return;
             }
 
+            this._ichibaInfoLoader = new IchibaInfoLoader();
             this._ichibaInfoLoader.addEventListener(Event.COMPLETE, ichibaInfoGetSuccess);
             this._ichibaInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event: ErrorEvent): void {
                 (event.target as IchibaInfoLoader).close();
@@ -1431,7 +1427,7 @@ package org.mineap.nndd {
         private function ichibaInfoGetSuccess(event: Event): void {
 
             // closeがよばれていないか？
-            if (this._videoLoader == null) {
+            if (this._login == null) {
                 return;
             }
 
@@ -1468,6 +1464,7 @@ package org.mineap.nndd {
         }
 
         private function createDmcSession(): void {
+            this._dmcAccess = new ApiDmcAccess();
             // Register EventListeners
             this._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: ErrorEvent): void {
                 (event.target as URLLoader).close();
@@ -1504,9 +1501,10 @@ package org.mineap.nndd {
             this._dmcAccess.removeEventListener(Event.COMPLETE, createDmcSessionSuccess);
             this._dmcResultAnalyzer.analyze(this._dmcAccess.data);
 
-            if (this._dmcResultAnalyzer.sessionId == null
-                    || this._dmcResultAnalyzer.sessionId.length == 0
-                    || this._dmcResultAnalyzer.session == null
+            if (
+                this._dmcResultAnalyzer.sessionId == null ||
+                this._dmcResultAnalyzer.sessionId.length == 0 ||
+                this._dmcResultAnalyzer.session == null
             ) {
                 trace(CREATE_DMC_SESSION_FAIL + ":" + event);
                 LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_FAIL + ":" + this._videoId + ":" + this._nicoVideoName);
@@ -1515,8 +1513,7 @@ package org.mineap.nndd {
                 dispatchEvent(errorEvent);
                 close(true, true, errorEvent);
                 return;
-            }
-            else {
+            } else {
                 trace(CREATE_DMC_SESSION_SUCCESS + ":" + event);
                 LogManager.instance.addLog("\t" + CREATE_DMC_SESSION_SUCCESS + ":" + this._videoId + ":" + this._nicoVideoName);
                 dispatchEvent(new Event(CREATE_DMC_SESSION_SUCCESS));
@@ -1533,8 +1530,7 @@ package org.mineap.nndd {
             if (!this._watchVideo.isDmc || this._dmcResultAnalyzer.isValid) {
                 try {
                     getVideo();
-                }
-                catch (error: Error) {
+                } catch (error: Error) {
                     trace(error.getStackTrace());
                     LogManager.instance.addLog("動画のダウンロードでエラーが発生:" + error);
                     var myEvent: IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
@@ -1561,6 +1557,7 @@ package org.mineap.nndd {
                 var request: URLRequest = createNNDDServerRequest();
                 request.idleTimeout = timeout;
 
+                this._otherNNDDInfoLoader = new URLLoader();
                 this._otherNNDDInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
                     trace(event);
                     LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
@@ -1622,7 +1619,7 @@ package org.mineap.nndd {
          *
          */
         private function getVideoForDownload(): void {
-
+            this._videoStream = new VideoStream();
             this._videoStream.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                 (event.target as URLStream).close();
                 trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target + ":" + event.text);
@@ -1632,10 +1629,12 @@ package org.mineap.nndd {
             });
             this._videoStream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
                 trace(event);
-                for each(var header: URLRequestHeader in event.responseHeaders) {
-                    if (header.name == "Content-Length") {
-                        contentLength = Number(header.value);
-                        break;
+                if (_retryCount === 0) {
+                    for each(var header: URLRequestHeader in event.responseHeaders) {
+                        if (header.name == "Content-Length") {
+                            contentLength = Number(header.value);
+                            break;
+                        }
                     }
                 }
                 LogManager.instance.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
@@ -1678,15 +1677,15 @@ package org.mineap.nndd {
             LogManager.instance.addLog("拡張子を判定:videoType=" + videoType + ", 拡張子=" + extension);
 
             //HTML特殊文字置き換え済動画名
-            this._saveVideoName = HtmlUtil.convertSpecialCharacterNotIncludedString(this._saveVideoName) + extension;
+            this._saveVideoFileName = HtmlUtil.convertSpecialCharacterNotIncludedString(this._saveVideoName) + extension;
             this._nicoVideoName = this._nicoVideoName + extension;
 
-            LogManager.instance.addLog("保存ファイル名:" + this._saveVideoName);
+            LogManager.instance.addLog("保存ファイル名:" + this._saveVideoFileName);
             LogManager.instance.addLog("ニコ動の動画タイトル:" + this._nicoVideoName);
 
-            //保存済みのファイルがあるならゴミ箱へ移動
-            var oldFile: File = new File(_saveDir.url).resolvePath(_saveVideoName);
-            if (oldFile.exists) {
+            //保存済みのファイルがあり, かつリトライでないならゴミ箱へ移動
+            var oldFile: File = new File(_saveDir.url).resolvePath(_saveVideoFileName);
+            if (oldFile.exists && this._retryCount === 0) {
                 oldFile.moveToTrash();
             }
 
@@ -1708,7 +1707,7 @@ package org.mineap.nndd {
             LogManager.instance.addLog(VIDEO_GET_START + ":" + this._videoId);
             dispatchEvent(new Event(VIDEO_GET_START));
 
-            this._videoStream.getVideoStart(videoUrl);
+            this._videoStream.getVideoStart(videoUrl, this._downloadedSize);
             var intervalId: int;
             if (this._watchVideo.isDmc) {
                 intervalId = setInterval(function (): void {
@@ -1726,7 +1725,7 @@ package org.mineap.nndd {
          *
          */
         private function getVideoForStreaming(): void {
-
+            this._videoLoader = new VideoLoader();
             this._videoLoader.addVideoLoaderListener(VideoLoader.VIDEO_URL_GET_FAIL, function (event: IOErrorEvent): void {
                 (event.target as URLLoader).close();
                 trace(VIDEO_GET_FAIL + ":" + event + ":" + event.target + ":" + event.text);
@@ -1803,12 +1802,13 @@ package org.mineap.nndd {
          *
          */
         private function streamProgressHandler(event: ProgressEvent): void {
+            var downloadedSize: Number = event.bytesLoaded + this._downloadedSize;
 
             //イベントを乱発すると性能が落ちるので間引き
-            if (event.bytesLoaded - beforeBytes > 1000000 || beforeBytes == 0) {
-                trace(VIDEO_DOWNLOAD_PROGRESS + ":" + event.bytesLoaded + "/" + event.bytesTotal + " bytes");
-                dispatchEvent(new ProgressEvent(VIDEO_DOWNLOAD_PROGRESS, false, false, event.bytesLoaded, event.bytesTotal));
-                beforeBytes = event.bytesLoaded;
+            if (downloadedSize - beforeBytes > 1000000 || beforeBytes == 0) {
+                trace(VIDEO_DOWNLOAD_PROGRESS + ":" + downloadedSize + "/" + this.contentLength + " bytes");
+                dispatchEvent(new ProgressEvent(VIDEO_DOWNLOAD_PROGRESS, false, false, downloadedSize, this.contentLength));
+                beforeBytes = downloadedSize;
             }
 
             // 読み取り可能なバイト列があるかどうか
@@ -1830,7 +1830,7 @@ package org.mineap.nndd {
                 isWriting = true;
 
                 trace("append:" + loadedBytes.length + " bytes");
-                outputFile(_saveVideoName, _saveDir.url, loadedBytes);
+                outputFile(_saveVideoFileName, _saveDir.url, loadedBytes);
                 loadedBytes.clear();
 
                 isWriting = false;
@@ -1850,13 +1850,13 @@ package org.mineap.nndd {
             //バイト列をファイルに書き出し
             try {
                 var fileIO: FileIO = new FileIO();
-                var savedFile: File = fileIO.saveByteArray(_saveVideoName, _saveDir.url, loadedBytes, true);
+                var savedFile: File = fileIO.saveByteArray(fileName, saveDirPath, loadedBytes, true);
 
                 this._savedVideoPath = decodeURIComponent(savedFile.url);
             }
             catch (error: Error) {
                 trace(error.getStackTrace());
-                LogManager.instance.addLog("動画の保存に失敗:" + error.toString() + "\n" + _saveVideoName + ":" + _saveDir.url);
+                LogManager.instance.addLog("動画の保存に失敗:" + error.toString() + "\n" + fileName + ":" + saveDirPath);
 
                 var myEvent: IOErrorEvent = new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, error.toString());
                 dispatchEvent(myEvent);
@@ -1896,8 +1896,9 @@ package org.mineap.nndd {
                     // 一つ前の書き出しが終わるまで待つ
                     if (!isWriting) {
                         var fileIO: FileIO = new FileIO();
-                        var savedFile: File = fileIO.saveByteArray(_saveVideoName, _saveDir.url, loadedBytes, true);
+                        var savedFile: File = fileIO.saveByteArray(_saveVideoFileName, _saveDir.url, loadedBytes, true);
                         isWriting = false;
+                        this.loadedBytes.clear();
                         this._savedVideoPath = decodeURIComponent(savedFile.url);
                         break;
                     }
@@ -1906,8 +1907,7 @@ package org.mineap.nndd {
                         throw new IOError("ファイルの書き込みに失敗( " + min + " 秒待ちましたが、書き出し先のファイルのロックが解放されませんでした。)", 3013);
                     }
                 }
-            }
-            catch (error: Error) {
+            } catch (error: Error) {
                 trace(error.getStackTrace());
                 LogManager.instance.addLog("動画の保存に失敗:" + error.toString() + "\n" + _saveVideoName + ":" + _saveDir.url);
 
@@ -1923,9 +1923,22 @@ package org.mineap.nndd {
             trace(file.size + " bytes");
             if (file.size < 1000 || contentLength != file.size) {
                 LogManager.instance.addLog("ダウンロードした動画のサイズが正しくない:実際のサイズ=" + file.size + ", 想定されたサイズ=" + contentLength);
-                var myEvent: IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
-                dispatchEvent(myEvent);
-                close(true, true, myEvent);
+
+                var isLimitOver: Boolean = this._retryCount > RETRY_COUNT_LIMIT;
+                var isSizeOver: Boolean = contentLength < file.size;
+
+                if (isLimitOver || isSizeOver || !this._watchVideo.isDmc) {
+                    var myEvent: IOErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "DownloadFail");
+                    dispatchEvent(myEvent);
+                    close(true, true, myEvent);
+                    return;
+                }
+
+                this._retryCount++;
+                this._downloadedSize = file.size;
+                this._dmcResultAnalyzer.reset();
+                LogManager.instance.addLog("レジューム開始: 開始位置=" + file.size + ", リトライ回数=" + this._retryCount);
+                watch(this._videoId);
                 return;
             }
 
@@ -1982,10 +1995,9 @@ package org.mineap.nndd {
          *
          */
         public function get isEconomyMode(): Boolean {
-            if (this._videoLoader.economyMode || this._commentLoader.economyMode) {
-                return true;
-            }
-            return false;
+            var fromVideoLoader: Boolean = this._videoLoader != null && this._videoLoader.economyMode;
+            var fromCommentLoader: Boolean = this._commentLoader != null && this._commentLoader.economyMode;
+            return fromVideoLoader || fromCommentLoader;
         }
 
         /**
@@ -2043,6 +2055,8 @@ package org.mineap.nndd {
             this._thumbImgLoader = null;
             this._ichibaInfoLoader = null;
             this._videoLoader = null;
+            this._retryCount = 0;
+            this._downloadedSize = 0;
         }
 
         /**
@@ -2081,7 +2095,7 @@ package org.mineap.nndd {
 
                             this._savedVideoPath = newVideoFile.url;
                             this._thumbPath = newVideo.thumbUrl;
-                            this._saveVideoName = newVideoFile.name;
+                            this._saveVideoFileName = newVideoFile.name;
                         }
                     }
                 }
