@@ -1786,8 +1786,9 @@
                                      enter="myListRenewButtonClicked(event)"
                                      selectedIndex="-1"
                                      focusIn="textInputForcusEventHandler(event)"
-                                     text="マイリストURLかID、もしくはチャンネルのURLを入力"
-                                     toolTip="マイリストのURL、IDか、チャンネルのURLを入力して「更新」ボタンを押すと、一覧に表示されます"/>
+
+                                     text="マイリスト, チャンネル動画リスト, コミュニティ動画リストあるいはユーザ投稿動画リストのURLかID(それぞれmylist, channel, community, user/[ID])を入力"
+                                     toolTip="マイリスト, チャンネル動画リスト, コミュニティ動画リストあるいはユーザ投稿動画リストのURL/IDを入力して「更新」ボタンを押すと、一覧に表示されます"/>
                         <mx:Button label="更新" click="myListRenewButtonClicked(event)" id="button_myListRenew"/>
                         <mx:Button label="ニコ動で見る" toolTip="このマイリストをブラウザで表示します" click="showMyListOnNico(event)"/>
                     </s:HGroup>

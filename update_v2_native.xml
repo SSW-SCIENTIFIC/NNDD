@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v2.7.1</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.dmg</url>
+        <version>v2.8.3</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.3-Beta/NNDD_v2_8_3.dmg</url>
         <description><![CDATA[
+2018-08-09 v2.8.3
+・コミュニティ動画リストの取得に対応
+・20件を超えるユーザ投稿動画リストの取得に対応
+・短時間の回線切断発生時にダウンロードを途中再開する機能を追加
+・軽微なバグ修正
+
 2018-02-10 v2.7.1
 ・動画配信アドレスがHTTPSである場合が出始めたので対応
 ・ログインせずに視聴出来る機能をBetaに
@@ -106,9 +112,15 @@
     </dmg>
 
     <exe>
-        <version>2.7.1</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.7.1-Beta/NNDD_v2_7_1.exe</url>
+        <version>2.8.3</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.3-Beta/NNDD_v2_8_3.exe</url>
         <description><![CDATA[
+2018-08-09 v2.8.3
+・コミュニティ動画リストの取得に対応
+・20件を超えるユーザ投稿動画リストの取得に対応
+・短時間の回線切断発生時にダウンロードを途中再開する機能を追加
+・軽微なバグ修正
+
 2018-02-10 v2.7.1
 ・動画配信アドレスがHTTPSである場合が出始めたので対応
 ・ログインせずに視聴出来る機能をBetaに
