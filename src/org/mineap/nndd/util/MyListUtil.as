@@ -16,16 +16,14 @@ package org.mineap.nndd.util {
         public static function getMyListId(string: String): String {
             var matches: Array;
 
-            // Case:
-            //       mylist/[MyListID]
+            // Case: mylist/[MyListID]
             //       myListId/[MyListID] (default MyList)
             if (matches = string.match(/^(?i:mylist(?:id)?)\/([1-9][0-9]*)$/)) {
                 return matches[1];
             }
 
-            // Case:
-            // http://www.nicovideo.jp/mylist/[MyListID]
-            // http://www.nicovideo.jp/my/mylist/#/[MyListID]
+            // Case: http://www.nicovideo.jp/mylist/[MyListID]
+            //       http://www.nicovideo.jp/my/mylist/#/[MyListID]
             if (matches = string.match(/^http:\/\/www\.nicovideo\.jp\/(?:mylist|my\/mylist\/#)\/([1-9][0-9]*)$/)) {
                 return matches[1];
             }
@@ -42,15 +40,13 @@ package org.mineap.nndd.util {
         public static function getUserUploadVideoListId(string: String): String {
             var matches: Array;
 
-            // Case:
-            //       user/[UserID]
+            // Case: user/[UserID]
             //       /user/[UserID]/mylist (from XML file)
             if (matches = string.match(/^\/?(?i:user)\/([1-9][0-9]*)/)) {
                 return matches[1];
             }
 
-            // Case:
-            //       http://www.nicovideo.jp/user/[UserID]/video
+            // Case: http://www.nicovideo.jp/user/[UserID]/video
             //       http://www.nicovideo.jp/user/[UserID]
             if (matches = string.match(/^http:\/\/www\.nicovideo\.jp\/user\/([1-9][0-9]*)/)) {
                 return matches[1];
@@ -74,13 +70,12 @@ package org.mineap.nndd.util {
                 return matches[1];
             }
 
-            // Case:
-            //      http://ch.nicovideo.jp/[ChannelID]
-            //      https://ch.nicovideo.jp/[ChannelID]
-            //      http://ch.nicovideo.jp/[ChannelID]/video
-            //      https://ch.nicovideo.jp/[ChannelID]/video
-            //      http://ch.nicovideo.jp/video/[ChannelID]
-            //      https://ch.nicovideo.jp/video/[ChannelID]
+            // Case: http://ch.nicovideo.jp/[ChannelID]
+            //       https://ch.nicovideo.jp/[ChannelID]
+            //       http://ch.nicovideo.jp/[ChannelID]/video
+            //       https://ch.nicovideo.jp/[ChannelID]/video
+            //       http://ch.nicovideo.jp/video/[ChannelID]
+            //       https://ch.nicovideo.jp/video/[ChannelID]
             if (matches = string.match(/^https?:\/\/ch\.nicovideo\.jp\/(?:video\/)?([^\/]+)/)) {
                 return matches[1];
             }
@@ -101,14 +96,11 @@ package org.mineap.nndd.util {
                 return matches[1];
             }
 
-            // Case:
-            //      http://com.nicovideo.jp/[CommunityID]
-            //      https://com.nicovideo.jp/[CommunityID]
-            //      http://com.nicovideo.jp/[CommunityID]/video
-            //      https://com.nicovideo.jp/[CommunityID]/video
-            //      http://com.nicovideo.jp/video/[CommunityID]
-            //      https://com.nicovideo.jp/video/[CommunityID]
-            if (matches = url.match(/^https?:\/\/com\.nicovideo\.jp\/(?:video\/)?([a-z0-9]+)/)) {
+            // Case: http://com.nicovideo.jp/community/[CommunityID]
+            //       https://com.nicovideo.jp/community/[CommunityID]
+            //       http://com.nicovideo.jp/video/[CommunityID]
+            //       https://com.nicovideo.jp/video/[CommunityID]
+            if (matches = url.match(/^https?:\/\/com\.nicovideo\.jp\/(?:community|video)\/([a-z0-9]+)$/)) {
                 return matches[1];
             }
 
