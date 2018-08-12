@@ -43,7 +43,7 @@ package org.mineap.nndd.util {
         /**
          * マイリストの取得結果の中からサムネイル画像のURLを抽出する正規表現です。
          */
-        public static var myListThumbImgUrlPattern: RegExp = new RegExp("src=\"(http://tn[\.\-][^\"]*)\"");
+        public static var myListThumbImgUrlPattern: RegExp = new RegExp("src=\"(https?://tn[\.\-][^\"]*)\"");
 
         /**
          * マイリストの取得結果の中からメモを抽出する正規表現です。
