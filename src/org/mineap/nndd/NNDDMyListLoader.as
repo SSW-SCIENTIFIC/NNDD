@@ -48,6 +48,7 @@ package org.mineap.nndd {
         private var _publicMyListLoader: PublicMyListLoader;
         private var _userVideoListLoader: UserVideoListLoader;
         private var _currentPage: int;
+        private var _retryCount: int;
 
         private var _nnddServerUrlLoader: URLLoader;
 
@@ -84,6 +85,8 @@ package org.mineap.nndd {
          */
         public static const DOWNLOAD_FAIL: String = "DownloadFail";
 
+        public static const DOWNLOAD_RETRY: String = "RetryDownload";
+
         /**
          * ダウンロード処理が通常に終了したとき、typeプロパティがこの定数に設定されたEventが発行されます。
          */
@@ -103,6 +106,8 @@ package org.mineap.nndd {
          * ダウンロード処理が異状終了した際に、typeプロパティがこの定数に設定されたEventが発行されます。
          */
         public static const DOWNLOAD_PROCESS_ERROR: String = "DownloadProccessError";
+
+        public static const RETRY_COUNT_LIMIT: int = 10;
 
         /**
          *
@@ -156,6 +161,7 @@ package org.mineap.nndd {
             trace("start - requestDownload(" + user + ", ****, community/" + communityId + ")");
             this._communityId = communityId;
             this._currentPage = 1;
+            this._retryCount = 0;
             login(user, password);
         }
 
@@ -170,6 +176,7 @@ package org.mineap.nndd {
             trace("start - requestDownload(" + user + ", ****, user/" + uploadUserId + ")");
             this._uploadUserId = uploadUserId;
             this._currentPage = 1;
+            this._retryCount = 0;
             login(user, password);
         }
 
@@ -350,13 +357,20 @@ package org.mineap.nndd {
             } else if (this._channelId != null) {
                 targetId = "channel/" + this._channelId;
             } else if (this._communityId != null) {
-                targetId = "community/" + this._communityId;
+                targetId = "community/" + this._communityId + "/" + this._currentPage;
             } else {
-                targetId = "user/" + this._uploadUserId + "/video";
+                targetId = "user/" + this._uploadUserId + "/video/" + this._currentPage;
             }
 
             LogManager.instance.addLog(DOWNLOAD_FAIL + ":" + targetId + ":" + event + ":" + event.target + ":" + event.text);
             trace(DOWNLOAD_FAIL + ":" + targetId + ":" + event + ":" + event.target + ":" + event.text);
+
+            if (this._currentPage > 0 && this._retryCount < RETRY_COUNT_LIMIT) {
+                this._retryCount++;
+                LogManager.instance.addLog(DOWNLOAD_RETRY + ": Count: " + this._retryCount + "/" + RETRY_COUNT_LIMIT);
+                setTimeout(this.loadRss, 60000);
+                return;
+            }
 
             dispatchEvent(new IOErrorEvent(DOWNLOAD_FAIL, false, false, event.text));
             close(false, false);
@@ -401,6 +415,7 @@ package org.mineap.nndd {
 
                 setTimeout(this.loadRss, wait);
                 this._currentPage++;
+                this._retryCount = 0;
                 return;
             }
 
