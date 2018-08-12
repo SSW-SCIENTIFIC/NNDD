@@ -14,29 +14,23 @@ package org.mineap.nndd.util {
          *
          */
         public static function getMyListId(string: String): String {
+            var matches: Array;
 
-            var myListId: String = null;
-
-            var pattern: RegExp = new RegExp("http://www.nicovideo.jp/mylist/(\\d*)");
-            var array: Array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                myListId = array[1];
-                return myListId;
-            }
-            pattern = new RegExp("[mylist/]*(\\d+)");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                myListId = array[array.length - 1];
-                return myListId;
-            }
-            pattern = new RegExp("http://www.nicovideo.jp/my/mylist/#/(\\d*)");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                myListId = array[array.length - 1];
-                return myListId;
+            // Case:
+            //       mylist/[MyListID]
+            //       myListId/[MyListID] (default MyList)
+            if (matches = string.match(/^(?i:mylist(?:id)?)\/([1-9][0-9]*)$/)) {
+                return matches[1];
             }
 
-            return myListId;
+            // Case:
+            // http://www.nicovideo.jp/mylist/[MyListID]
+            // http://www.nicovideo.jp/my/mylist/#/[MyListID]
+            if (matches = string.match(/^http:\/\/www\.nicovideo\.jp\/(?:mylist|my\/mylist\/#)\/([1-9][0-9]*)$/)) {
+                return matches[1];
+            }
+
+            return null;
         }
 
         /**
@@ -46,41 +40,23 @@ package org.mineap.nndd.util {
          *
          */
         public static function getUserUploadVideoListId(string: String): String {
-            var userId: String = null;
+            var matches: Array;
 
-            // http://www.nicovideo.jp/user/13520681/video
-
-            var pattern: RegExp = new RegExp("http://www.nicovideo.jp/user/(.+)/video");
-            var array: Array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                userId = array[1];
-                return userId;
+            // Case:
+            //       user/[UserID]
+            //       /user/[UserID]/mylist (from XML file)
+            if (matches = string.match(/^\/?(?i:user)\/([1-9][0-9]*)/)) {
+                return matches[1];
             }
 
-            pattern = new RegExp("http://www.nicovideo.jp/user/(.+)");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                userId = array[array.length - 1];
-                return userId;
+            // Case:
+            //       http://www.nicovideo.jp/user/[UserID]/video
+            //       http://www.nicovideo.jp/user/[UserID]
+            if (matches = string.match(/^http:\/\/www\.nicovideo\.jp\/user\/([1-9][0-9]*)/)) {
+                return matches[1];
             }
 
-            pattern = new RegExp("user/(.+)/video");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                userId = array[array.length - 1];
-                return userId;
-            }
-
-            pattern = new RegExp("user/(.+)");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                userId = array[array.length - 1];
-                return userId;
-            }
-
-            return userId;
-
-
+            return null;
         }
 
 
@@ -91,31 +67,25 @@ package org.mineap.nndd.util {
          *
          */
         public static function getChannelId(string: String): String {
+            var matches: Array;
 
-            var channelId: String = null;
-
-            //http://ch.nicovideo.jp/channel/ben-to
-
-            var pattern: RegExp = new RegExp("http://ch.nicovideo.jp/channel/(.+)");
-            var array: Array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                channelId = array[1];
-                return channelId;
-            }
-            pattern = new RegExp("http://ch.nicovideo.jp/video/(.+)");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                channelId = array[array.length - 1];
-                return channelId;
-            }
-            pattern = new RegExp("channel/(.+)");
-            array = pattern.exec(string);
-            if (array != null && array.length >= 1 && array[1].length >= 1) {
-                channelId = array[array.length - 1];
-                return channelId;
+            // Case: channel/[ChannelID]
+            if (matches = string.match(/^(?i:channel)\/([^\/]+)$/)) {
+                return matches[1];
             }
 
-            return channelId;
+            // Case:
+            //      http://ch.nicovideo.jp/[ChannelID]
+            //      https://ch.nicovideo.jp/[ChannelID]
+            //      http://ch.nicovideo.jp/[ChannelID]/video
+            //      https://ch.nicovideo.jp/[ChannelID]/video
+            //      http://ch.nicovideo.jp/video/[ChannelID]
+            //      https://ch.nicovideo.jp/video/[ChannelID]
+            if (matches = string.match(/^https?:\/\/ch\.nicovideo\.jp\/(?:video\/)?([^\/]+)/)) {
+                return matches[1];
+            }
+
+            return null;
         }
 
         /**
@@ -124,16 +94,25 @@ package org.mineap.nndd.util {
          * @return
          */
         public static function getCommunityId(url: String): String {
-            var communityId: String = null;
+            var matches: Array;
 
-            var pattern: RegExp = new RegExp("(?:https?://com\.nicovideo\.jp/video|community)/([a-z0-9]+)");
-            var match: Array = pattern.exec(url);
-            if (match != null && match.length > 0) {
-                communityId = match[1];
-                return communityId;
+            // Case: community/[CommunityID]
+            if (matches = url.match(/^(?i:community)\/([a-z0-9]+)$/)) {
+                return matches[1];
             }
 
-            return communityId;
+            // Case:
+            //      http://com.nicovideo.jp/[CommunityID]
+            //      https://com.nicovideo.jp/[CommunityID]
+            //      http://com.nicovideo.jp/[CommunityID]/video
+            //      https://com.nicovideo.jp/[CommunityID]/video
+            //      http://com.nicovideo.jp/video/[CommunityID]
+            //      https://com.nicovideo.jp/video/[CommunityID]
+            if (matches = url.match(/^https?:\/\/com\.nicovideo\.jp\/(?:video\/)?([a-z0-9]+)/)) {
+                return matches[1];
+            }
+
+            return null;
         }
     }
 }
