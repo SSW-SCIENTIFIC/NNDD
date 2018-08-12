@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v2.8.4</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.4-Beta/NNDD_v2_8_4.dmg</url>
+        <version>v2.8.5</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.5-Beta/NNDD_v2_8_5.dmg</url>
         <description><![CDATA[
+2018-08-13 v2.8.5
+・コミュニティトップページのURLから動画リスト取得を可能に
+・長大な動画リストを取得中にサーバ側制限に掛かった場合, 60秒ウェイトして取得を継続するように
+・サムネイルURLがHTTPS URLになったものを確認したので対応
+
 2018-08-12 v2.8.4
 ・コミュニティ動画リスト及びチャンネル動画リストをURLから取得出来るように
 ・上記に伴い, 各種動画リストIDの抽出コードを改善
@@ -116,9 +121,14 @@
     </dmg>
 
     <exe>
-        <version>2.8.4</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.4-Beta/NNDD_v2_8_4.exe</url>
+        <version>2.8.5</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.5-Beta/NNDD_v2_8_5.exe</url>
         <description><![CDATA[
+2018-08-13 v2.8.5
+・コミュニティトップページのURLから動画リスト取得を可能に
+・長大な動画リストを取得中にサーバ側制限に掛かった場合, 60秒ウェイトして取得を継続するように
+・サムネイルURLがHTTPS URLになったものを確認したので対応
+
 2018-08-12 v2.8.4
 ・コミュニティ動画リスト及びチャンネル動画リストをURLから取得出来るように
 ・上記に伴い, 各種動画リストIDの抽出コードを改善
