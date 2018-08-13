@@ -146,7 +146,8 @@ package org.mineap.nndd {
             trace("start - requestDownload(" + user + ", ****, channel/" + id + ")");
 
             this._channelId = id;
-
+            this._currentPage = 1;
+            this._retryCount = 0;
             login(user, password);
 
         }
@@ -325,7 +326,7 @@ package org.mineap.nndd {
                 this._channelLoader.addEventListener(IOErrorEvent.IO_ERROR, xmlLoadIOErrorHandler);
                 this._channelLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, xmlLoadIOErrorHandler);
 
-                this._channelLoader.getChannel(this._channelId);
+                this._channelLoader.getChannel(this._channelId, this._currentPage);
             } else if (this._communityId != null) {
                 this._communityLoader = new CommunityLoader();
                 this._communityLoader.addEventListener(Event.COMPLETE, getXMLSuccess);
@@ -355,7 +356,7 @@ package org.mineap.nndd {
             if (this._myListId != null) {
                 targetId = "mylist/" + this._myListId;
             } else if (this._channelId != null) {
-                targetId = "channel/" + this._channelId;
+                targetId = "channel/" + this._channelId + "/" + this._currentPage;
             } else if (this._communityId != null) {
                 targetId = "community/" + this._communityId + "/" + this._currentPage;
             } else {
@@ -406,6 +407,10 @@ package org.mineap.nndd {
                     wait += this._currentPage > 20 ? 5000 : 0;
                     LogManager.instance.addLog(
                         DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId + "/" + this._currentPage
+                    );
+                } else if (this._channelId != null) {
+                    LogManager.instance.addLog(
+                            DOWNLOAD_PROCESS_INPROGRESS + ": channel/" + this._uploadUserId + "/" + this._currentPage
                     );
                 } else if (this._uploadUserId != null) {
                     LogManager.instance.addLog(
