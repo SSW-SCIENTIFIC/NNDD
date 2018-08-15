@@ -1284,10 +1284,25 @@ package org.mineap.nndd.myList {
             var count: int = 0;
 
             for each(var myList: MyList in this._myListName_MyList_Map) {
-                var myListId: String = MyListUtil.getMyListId(myList.myListUrl);
+                var rssType: RssType = checkType(myList.myListUrl);
+                var myListId: String;
+
+                switch (rssType) {
+                    case RssType.CHANNEL:
+                        myListId = MyListUtil.getChannelId(myList.myListUrl);
+                        break;
+                    case RssType.COMMUNITY:
+                        myListId = MyListUtil.getCommunityId(myList.myListUrl);
+                        break;
+                    case RssType.USER_UPLOAD_VIDEO:
+                        myListId = MyListUtil.getUserUploadVideoListId(myList.myListUrl);
+                        break;
+                    default:
+                        myListId = MyListUtil.getMyListId(myList.myListUrl);
+                }
+
                 if (myListId != null) {
-                    var type: RssType = checkType(myList.myListUrl);
-                    var myCount: int = countUnPlayVideos(myListId, type);
+                    var myCount: int = countUnPlayVideos(myListId, rssType);
                     myList.unPlayVideoCount = myCount;
                     count += myCount;
                 }
