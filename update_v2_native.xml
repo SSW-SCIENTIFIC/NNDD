@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v2.8.5</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.5-Beta/NNDD_v2_8_5.dmg</url>
+        <version>v2.8.6</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.6-Beta/NNDD_v2_8_6.dmg</url>
         <description><![CDATA[
+2018-08-16 v2.8.6
+・複数ページに渡るチャンネル動画リストの取得に対応
+・通常マイリスト以外の動画リストから未視聴数の取得が出来ていなかったのを修正
+
 2018-08-13 v2.8.5
 ・コミュニティトップページのURLから動画リスト取得を可能に
 ・長大な動画リストを取得中にサーバ側制限に掛かった場合, 60秒ウェイトして取得を継続するように
@@ -121,9 +125,13 @@
     </dmg>
 
     <exe>
-        <version>2.8.5</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.5-Beta/NNDD_v2_8_5.exe</url>
+        <version>2.8.6</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.6-Beta/NNDD_v2_8_6.exe</url>
         <description><![CDATA[
+2018-08-16 v2.8.6
+・複数ページに渡るチャンネル動画リストの取得に対応
+・通常マイリスト以外の動画リストから未視聴数の取得が出来ていなかったのを修正
+
 2018-08-13 v2.8.5
 ・コミュニティトップページのURLから動画リスト取得を可能に
 ・長大な動画リストを取得中にサーバ側制限に掛かった場合, 60秒ウェイトして取得を継続するように
