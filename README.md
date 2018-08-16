@@ -17,6 +17,13 @@ NNDD+DMCは[ニコニコ動画](http://www.nicovideo.jp)にアップロードさ
 
 動画の視聴, 保存に加え, ランキングの表示や動画の検索, マイリストの管理を行うことが出来ます。
 
+## 対応環境
+Windows用インストーラ(.exe)及びmacOS用イメージ(.dmg), どちらでも利用可能なAIRパッケージ(.air)の3種類をリリースしています。
+メンテナの環境はWindowsであるため, メインストリームはWindows, 詳細なバグ報告等が頂ければmacOSでも対応を検討するというスタンスです。
+
+尚, Linux上で動作する報告もあり, メンテナも手元で確認しましたが, Linuxについては質問やバグ報告等頂いても**一切対応しません**。
+手元で動作させた状況のみWiki [(参考) Linuxへのインストール][NNDD+DMC on Linux] に記述しましたので, これ以上は必要であれば各自でご対応下さい。
+
 ## ダウンロード
 最新版のダウンロードは[**こちら (releases/latest)**][Release-Latest]から行ってください(Beta表記は多分外れることはありません)。
 
@@ -54,6 +61,7 @@ MITライセンスに示されるとおり, 本ソフトウェアは**無保証*
 [License]: https://github.com/SSW-SCIENTIFIC/NNDD/blob/master/LICENSE
 [License-Orig]: https://github.com/SSW-SCIENTIFIC/NNDD/blob/master/LICENSE0
 [NativeApplicationUpdater]: https://code.google.com/archive/p/nativeapplicationupdater/
-[Config]: https://github.com/SSW-SCIENTIFIC/NNDD/wiki/NNDD%E3%81%8B%E3%82%89NNDD-DMC%E3%81%B8%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%81%AE%E5%BC%95%E7%B6%99%E3%81%8E%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6
+[Config]: https://github.com/SSW-SCIENTIFIC/NNDD/wiki/NNDD%E3%81%8B%E3%82%89NNDD-DMC%E3%81%B8%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%81%AE%E5%BC%95%E7%B6%99%E3%81%8E%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6NN
+[NNDD+DMC on Linux]: https://github.com/SSW-SCIENTIFIC/NNDD/wiki/(%E5%8F%82%E8%80%83)-Linux%E3%81%B8%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB
 [Release-Latest]: https://github.com/SSW-SCIENTIFIC/NNDD/releases/latest
 [Releases]: https://github.com/SSW-SCIENTIFIC/NNDD/releases
