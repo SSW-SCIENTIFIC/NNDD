@@ -3107,7 +3107,8 @@ package org.mineap.nndd.player {
                                         + watchVideoPage.watcher.getPubUserId() + ", "
                                         + watchVideoPage.watcher.getPubUserIconUrl());
 
-                                videoInfoView.pubUserLinkButtonText = "http://www.nicovideo.jp/user/" + watchVideoPage.watcher.getPubUserId();
+                                videoInfoView.pubUserId = "user/" + watchVideoPage.watcher.getPubUserId();
+                                videoInfoView.pubUserLinkButtonText = "http://www.nicovideo.jp/" + videoInfoView.pubUserId;
                                 videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getPubUserIconUrl();
                                 videoInfoView.pubUserName = watchVideoPage.watcher.getPubUserName();
 
@@ -3117,7 +3118,12 @@ package org.mineap.nndd.player {
                                         + watchVideoPage.watcher.getChannel() + ", "
                                         + watchVideoPage.watcher.getChannelIconUrl());
 
-                                videoInfoView.pubUserLinkButtonText = "http://ch.nicovideo.jp/channel/" + watchVideoPage.watcher.getChannel();
+                                var id: String = watchVideoPage.watcher.getChannel();
+                                if (id.match(/^[1-9][0-9]*$/)) {
+                                    id = "ch" + id;
+                                }
+                                videoInfoView.pubUserId = "channel/" + id;
+                                videoInfoView.pubUserLinkButtonText = "http://ch.nicovideo.jp/" + videoInfoView.pubUserId;
                                 videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getChannelIconUrl();
                                 videoInfoView.pubUserName = watchVideoPage.watcher.getChannelName();
 

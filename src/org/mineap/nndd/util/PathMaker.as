@@ -529,7 +529,7 @@ package org.mineap.nndd.util {
          *
          */
         public static function getVideoNum(videoId: String): String {
-
+            // FIXME: sometimes given videoId is numbers only
             var videoNum: String = getVideoID(videoId);
             if (videoNum != null) {
                 videoNum = videoNum.substring(2);

@@ -1225,10 +1225,15 @@ private function mouseOutEventHandler(event: MouseEvent): void {
 }
 
 private function infoAreaLinkClicked(event: TextEvent): void {
-    if (event.text.indexOf("mylist/") != -1) {
+    if (
+            event.text.indexOf("mylist/") !== -1 ||
+            event.text.indexOf("channel/") !== -1 ||
+            event.text.indexOf("community/") !== -1 ||
+            event.text.indexOf("user/") !== -1
+    ) {
 //		trace(event.text);
         Application.application.renewMyList(event.text);
-    } else if (event.text.indexOf("watch/") != -1) {
+    } else if (event.text.indexOf("watch/") !== -1) {
         var videoId: String = PathMaker.getVideoID(event.text);
 //		trace(videoId);
         playerController.playMovie("http://www.nicovideo.jp/watch/" + videoId);

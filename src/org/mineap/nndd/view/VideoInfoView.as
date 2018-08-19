@@ -163,6 +163,8 @@ public var pubUserNameIconUrl: String = "";
 public var pubUserName: String = "";
 [Bindalbe]
 public var pubUserLinkButtonText: String = "";
+[Bindalbe]
+public var pubUserId: String = "";
 [Bindable]
 public var currentWindowSize: String = "";
 [Bindable]
@@ -1912,14 +1914,15 @@ public function setMyLists(myListNames: Array, myListNums: Array): void {
 }
 
 private function ownerTextLinkClicked(event: TextEvent): void {
-    if (event.text.indexOf("mylist/") != -1) {
+    if (
+            event.text.indexOf("mylist/") !== -1 ||
+            event.text.indexOf("channel/") !== -1 ||
+            event.text.indexOf("community/") !== -1 ||
+            event.text.indexOf("user/") !== -1
+    ) {
 //		trace(event.text);
         FlexGlobals.topLevelApplication.renewMyList(event.text);
-    } else if (event.text.indexOf("channel/") != -1) {
-        FlexGlobals.topLevelApplication.renewMyList(event.text);
-    } else if (event.text.indexOf("community/") != -1) {
-        FlexGlobals.topLevelApplication.renewMyList(event.text);
-    } else if (event.text.indexOf("watch/") != -1) {
+    } else if (event.text.indexOf("watch/") !== -1) {
         var videoId: String = PathMaker.getVideoID(event.text);
 //		trace(videoId);
         playerController.playMovie("http://www.nicovideo.jp/watch/" + videoId);

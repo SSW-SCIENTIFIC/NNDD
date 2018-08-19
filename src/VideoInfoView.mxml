@@ -43,8 +43,7 @@
             if (isDark) {
                 this.setStyle("backgroundColor", "#646464");
                 this.setStyle("contentBackgroundColor", "#969696");
-            }
-            else {
+            } else {
                 this.setStyle("backgroundColor", "#FFFFFF");
                 this.setStyle("contentBackgroundColor", "#FFFFFF");
             }
@@ -76,8 +75,7 @@
             thumbImgMenuItem6 = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
             thumbImgMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
 
-            thumbImgMenu.customItems.push(thumbImgMenuItem1, thumbImgMenuItem2, thumbImgMenuItem3,
-                    thumbImgMenuItem6, thumbImgMenuItem4, thumbImgMenuItem5);
+            thumbImgMenu.customItems.push(thumbImgMenuItem1, thumbImgMenuItem2, thumbImgMenuItem3, thumbImgMenuItem6, thumbImgMenuItem4, thumbImgMenuItem5);
 
             image_thumbImg.contextMenu = thumbImgMenu;
 
@@ -195,9 +193,8 @@
 
 
         protected function pubUserLinkButton_clickHandler(event: MouseEvent): void {
-            var url: String = pubUserLinkButton.label;
-            if (url != null && url.length > 1) {
-                navigateToURL(new URLRequest(url));
+            if (pubUserId !== null) {
+                FlexGlobals.topLevelApplication.renewMyList(pubUserId);
             } else {
 
             }
@@ -546,7 +543,7 @@
                                        label="{pubUserLinkButtonText}"
                                        click="pubUserLinkButton_clickHandler(event)"
                                        color="#0000FF" textDecoration="underline"
-                                       toolTip="投稿者のユーザーページを既定のブラウザで開きます"/>
+                                       toolTip="このユーザの投稿動画一覧を開きます"/>
 
                         <mx:VDividedBox left="0" top="50" bottom="0" right="0">
                             <mx:TabNavigator width="100%" height="180"
