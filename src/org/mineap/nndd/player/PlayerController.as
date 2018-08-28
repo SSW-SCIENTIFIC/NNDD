@@ -4091,7 +4091,13 @@ package org.mineap.nndd.player {
                                             nnddDownloader._dmcResultAnalyzer.sessionId,
                                             nnddDownloader._dmcResultAnalyzer.session
                                     );
-                                }, nnddDownloader._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
+                                }, nnddDownloader._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.5);
+
+                                nnddDownloader._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
+                                    trace("DmcBeating Error...");
+                                    clearInterval(intervalId);
+                                });
+
                                 setTimeout(function (): void {
                                     trace("Clearing Interval...");
                                     clearInterval(intervalId);

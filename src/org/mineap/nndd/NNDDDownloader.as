@@ -330,6 +330,7 @@ package org.mineap.nndd {
         public static const CREATE_DMC_SESSION_SUCCESS: String = "CreateDmcSessionSuccess";
         public static const CREATE_DMC_SESSION_FAIL: String = "CreateDmcSessionFail";
         public static const BEAT_DMC_SESSION: String = "BeatDmcSession";
+        public static const DMC_SESSION_FAIL: String = "DmcSessionFail";
 
         public static const RETRY_COUNT_LIMIT: int = 10;
 
@@ -1714,6 +1715,17 @@ package org.mineap.nndd {
                     trace("DMCSessionBeating...");
                     _dmcAccess.beatDmcSession(_dmcResultAnalyzer.sessionId, _dmcResultAnalyzer.session);
                 }, this._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
+
+                this._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
+                    (event.target as URLStream).close();
+                    trace(DMC_SESSION_FAIL + ":" + event + ":" + event.target + ":" + event.text);
+                    LogManager.instance.addLog(DMC_SESSION_FAIL + ":" + _videoId + ":" + event + ":" + event.target + ":" + event.text);
+                    dispatchEvent(new IOErrorEvent(DMC_SESSION_FAIL, false, false, event.text));
+                    close(true, true, event);
+                    clearInterval(intervalId);
+                });
+
+
                 this._videoStream.addEventListener(Event.COMPLETE, function (event: Event): void {
                     clearInterval(intervalId);
                 });
