@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v2.8.6</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.6-Beta/NNDD_v2_8_6.dmg</url>
+        <version>v2.8.7</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.7-Beta/NNDD_v2_8_7.dmg</url>
         <description><![CDATA[
+2018-08-29 v2.8.7
+・プログレッシブ再生の場合にセッションが途切れることが多発したのでハートビート間隔を短縮
+・dアニメをダウンロードする際に正しく中断されなかった問題を修正
+
 2018-08-16 v2.8.6
 ・複数ページに渡るチャンネル動画リストの取得に対応
 ・通常マイリスト以外の動画リストから未視聴数の取得が出来ていなかったのを修正
@@ -125,9 +129,13 @@
     </dmg>
 
     <exe>
-        <version>2.8.6</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.6-Beta/NNDD_v2_8_6.exe</url>
+        <version>2.8.7</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.7-Beta/NNDD_v2_8_7.exe</url>
         <description><![CDATA[
+2018-08-29 v2.8.7
+・プログレッシブ再生の場合にセッションが途切れることが多発したのでハートビート間隔を短縮
+・dアニメをダウンロードする際に正しく中断されなかった問題を修正
+
 2018-08-16 v2.8.6
 ・複数ページに渡るチャンネル動画リストの取得に対応
 ・通常マイリスト以外の動画リストから未視聴数の取得が出来ていなかったのを修正
