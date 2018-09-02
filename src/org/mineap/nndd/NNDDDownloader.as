@@ -1494,7 +1494,7 @@ package org.mineap.nndd {
             this._dmcAccess.createDmcSession(
                     this._videoId,
                     this._dmcInfoAnalyzer.apiUrl,
-                    this._dmcInfoAnalyzer.getSession(this._watchVideo.isPremium)
+                    this._dmcInfoAnalyzer.getSession(this._isVideoNotDownload)
             );
         }
 

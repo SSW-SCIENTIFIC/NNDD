@@ -51,10 +51,11 @@ package org.mineap.nndd {
                     "\n\t暗号化された保存領域のサポート:" + EncryptedLocalStore.isSupported +
                     "\n\t最高レベルIDC:" + Capabilities.maxLevelIDC +
                     "\n" +
-                    "\n\tNNDDは以下のライブラリを使用しています。" +
-                    "\n\t・NativeApplicationUpdater - Apache License V2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
+                    "\n\tNNDD+DMCは以下のライブラリを使用しています。" +
+                    "\n\t・NativeApplicationUpdater - Apache License 2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
                     "\n\t・airhttpd - MIT License ( http://code.google.com/p/airhttpd/ )" +
-                    "\n\t・nicovideo4as - MIT/X Consortium License ( http://sourceforge.jp/projects/nndd/ )" +
+                    "\n\t・nicovideo4as - MIT License ( https://github.com/SSW-SCIENTIFIC/nicovideo4as )" +
+                    "\n\t・Flashls - Mozilla Public License 2.0 ( http://www.flashls.org/ )" +
                     "\n";
 
             this.logString += "\n" + tempStr;

@@ -27,6 +27,9 @@
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon48.png" path-in-package="icon48.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon128.png" path-in-package="icon128.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/CategoryList.xml" path-in-package="CategoryList.xml" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/README.md" path-in-package="README.md" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/LICENSE" path-in-package="LICENSE" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/LICENSE0" path-in-package="LICENSE0" />
           </files-to-package>
           <AirSigningOptions keystore-path="$MODULE_DIR$/AirDigitalSign.p12" tsa="http://sha256timestamp.ws.symantec.com/sha256/timestamp" use-temp-certificate="false" />
         </packaging-air-desktop>
@@ -43,6 +46,9 @@
               <dependency linkage="Merged" />
             </entry>
             <entry library-id="8bbda011-792a-437e-9152-352f72d761f4">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="83bac509-49cc-4d3f-953a-496132ee7d7c">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -63,6 +69,9 @@
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon48.png" path-in-package="icon48.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon128.png" path-in-package="icon128.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/CategoryList.xml" path-in-package="CategoryList.xml" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/LICENSE" path-in-package="LICENSE" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/LICENSE0" path-in-package="LICENSE0" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/README.md" path-in-package="README.md" />
           </files-to-package>
           <AirSigningOptions keystore-path="$MODULE_DIR$/AirDigitalSign.p12" use-temp-certificate="false" />
         </packaging-air-desktop>
@@ -115,6 +124,16 @@
         <properties id="8bbda011-792a-437e-9152-352f72d761f4" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/airhttpd-0.5-mineap-0.1.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="83bac509-49cc-4d3f-953a-496132ee7d7c" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/flashlsOSMF.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -37,6 +37,8 @@ package org.mineap.nndd.player {
     import mx.formatters.NumberFormatter;
 
     import org.mineap.nndd.player.PatchedVideoDisplay;
+    import org.osmf.events.MediaFactoryEvent;
+    import org.osmf.media.MediaFactory;
 
     import org.libspark.utils.ForcibleLoader;
     import org.mineap.nicovideo4as.CommentPost;
@@ -88,6 +90,11 @@ package org.mineap.nndd.player {
     import org.osmf.net.DynamicStreamingItem;
     import org.osmf.net.DynamicStreamingResource;
     import org.osmf.utils.OSMFSettings;
+
+    import org.osmf.media.PluginInfoResource;
+    import org.mangui.osmf.plugins.HLSPlugin;
+
+    import mx.core.mx_internal;
 
     /**
      * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
@@ -690,7 +697,28 @@ package org.mineap.nndd.player {
 //						(videoDisplay.mx_internal::videoPlayer as MediaPlayer).authenticateWithToken(this._fmsToken);
                     }
                     else {
-                        videoDisplay.source = videoPath;
+                        var factory: MediaFactory = this.videoDisplay.mx_internal::mediaFactory;
+
+                        factory.addEventListener(
+                                MediaFactoryEvent.PLUGIN_LOAD,
+                                function (event: MediaFactoryEvent): void {
+                                    if (isStreamingPlay) {
+                                        videoDisplay.source = new DynamicStreamingResource(videoPath);
+                                    } else {
+                                        videoDisplay.source = videoPath;
+                                    }
+                                }
+                        );
+
+                        factory.addEventListener(
+                                MediaFactoryEvent.PLUGIN_LOAD_ERROR,
+                                function (event: MediaFactoryEvent): void {
+                                    trace("Error: OSFM HLS Plugin Load Failure.");
+                                    throw new Error("OSFM HLS Plugin Load Failure.");
+                                }
+                        );
+
+                        factory.loadPlugin(new PluginInfoResource(new HLSPlugin()));
                     }
                     videoDisplay.autoRewind = false;
                     videoDisplay.volume = videoPlayer.videoController.slider_volume.value;
