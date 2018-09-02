@@ -36,7 +36,7 @@ package org.mineap.nndd.player {
     import mx.formatters.DateFormatter;
     import mx.formatters.NumberFormatter;
 
-    import spark.components.VideoDisplay;
+    import org.mineap.nndd.player.PatchedVideoDisplay;
 
     import org.libspark.utils.ForcibleLoader;
     import org.mineap.nicovideo4as.CommentPost;
@@ -87,6 +87,7 @@ package org.mineap.nndd.player {
     import org.osmf.media.MediaPlayerState;
     import org.osmf.net.DynamicStreamingItem;
     import org.osmf.net.DynamicStreamingResource;
+    import org.osmf.utils.OSMFSettings;
 
     /**
      * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
@@ -117,7 +118,7 @@ package org.mineap.nndd.player {
         private var loader: Loader = null;
         private var isMovieClipPlaying: Boolean = false;
 
-        private var videoDisplay: VideoDisplay = null;
+        private var videoDisplay: PatchedVideoDisplay = null;
 
         private var nicowariSwfLoader: SWFLoader = null;
 
@@ -245,6 +246,7 @@ package org.mineap.nndd.player {
          *
          */
         public function PlayerController() {
+            OSMFSettings.enableStageVideo = false;
             this.logManager = LogManager.instance;
             this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
             this.playListManager = PlayListManager.instance;
@@ -639,7 +641,7 @@ package org.mineap.nndd.player {
 
                     isMovieClipPlaying = false;
 
-                    videoDisplay = new VideoDisplay();
+                    videoDisplay = new PatchedVideoDisplay();
 
                     videoPlayer.label_downloadStatus.text = "";
 
@@ -1163,8 +1165,8 @@ package org.mineap.nndd.player {
                     }
                 }
             } else {
-                (event.currentTarget as VideoDisplay).stop();
-                (event.currentTarget as VideoDisplay).removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
+                (event.currentTarget as PatchedVideoDisplay).stop();
+                (event.currentTarget as PatchedVideoDisplay).removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
                 destructor();
             }
         }
@@ -1274,31 +1276,31 @@ package org.mineap.nndd.player {
          */
         public function setVideoSmoothing(isSmoothing: Boolean): void {
 
-            if (videoDisplay != null && videoDisplay.videoObject != null) {
+            if (videoDisplay != null && videoDisplay.videoSurfaceObject != null) {
 
                 if (isSmoothing) {
                     // スムージングする
 
-                    if (videoDisplay.videoObject.videoWidth == videoDisplay.videoObject.width) {
+                    if (videoDisplay.videoSurfaceObject.videoWidth == videoDisplay.videoSurfaceObject.width) {
                         // 動画がピクセル等倍で表示されている
                         if (videoInfoView.isSmoothingOnlyNotPixelIdenticalDimensions) {
                             // ピクセル等倍のときはスムージングしない
-                            videoDisplay.videoObject.smoothing = false;
+                            videoDisplay.videoSurfaceObject.smoothing = false;
                         }
                         else {
                             // ピクセル等倍のときもスムージングする
-                            videoDisplay.videoObject.smoothing = true;
+                            videoDisplay.videoSurfaceObject.smoothing = true;
                         }
                     }
                     else {
                         // 動画がピクセル等倍以外で表示されている
-                        videoDisplay.videoObject.smoothing = true;
+                        videoDisplay.videoSurfaceObject.smoothing = true;
                     }
 
                 }
                 else {
                     // スムージングしない
-                    videoDisplay.videoObject.smoothing = false;
+                    videoDisplay.videoSurfaceObject.smoothing = false;
                 }
 
             }
@@ -1385,17 +1387,17 @@ package org.mineap.nndd.player {
                     //再生ごとのリサイズが有効か？ 有効でなくてもレートが指定されているか？
                     if (this.videoInfoView.isResizePlayerEachPlay || windowSizeRatio != -1) {
 
-                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoObject != null) {
+                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoSurfaceObject != null) {
                             //FLV再生か？
 
                             // スムージングを設定
                             this.setVideoSmoothing(videoInfoView.isSmoothing);
 
-                            if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoObject.videoHeight > 0) {
+                            if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoSurfaceObject.videoHeight > 0) {
 
                                 //動画の大きさがニコ動の表示窓より小さいとき && ウィンドウの大きさを動画に合わせる (動画の高さが０の時は読み込み終わっていないのでスキップ)
                                 var isWideVideo: Boolean = false;
-                                if (WIDE_MODE_ASPECT_RATIO < Number(this.videoDisplay.videoObject.videoWidth) / Number(this.videoDisplay.videoObject.videoHeight)) {
+                                if (WIDE_MODE_ASPECT_RATIO < Number(this.videoDisplay.videoSurfaceObject.videoWidth) / Number(this.videoDisplay.videoSurfaceObject.videoHeight)) {
                                     // この動画は16:9だ
                                     isWideVideo = true;
                                     trace("enable 16:9 mode");
@@ -1427,7 +1429,7 @@ package org.mineap.nndd.player {
 
                                 trace(videoDisplay.width + "," + videoDisplay.height);
 
-                                logManager.addLog("オリジナルの動画サイズ:" + this.videoDisplay.videoObject.videoWidth + " x " + this.videoDisplay.videoObject.videoHeight);
+                                logManager.addLog("オリジナルの動画サイズ:" + this.videoDisplay.videoSurfaceObject.videoWidth + " x " + this.videoDisplay.videoSurfaceObject.videoHeight);
 
                                 if (videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)) {
                                     //init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
@@ -1438,12 +1440,12 @@ package org.mineap.nndd.player {
                                     videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
                                 }
 
-                            } else if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO && this.videoDisplay.videoObject.videoHeight > 0) {
+                            } else if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO && this.videoDisplay.videoSurfaceObject.videoHeight > 0) {
 
                                 //動画の大きさにウィンドウの大きさを合わせるとき(videoHeightが0の時は動画がまだ読み込まれていないのでスキップ)
 
-                                videoWindowHeight = (this.videoDisplay.videoObject.videoHeight * ratio) + PlayerController.NICO_VIDEO_PADDING * 2;
-                                videoWindowWidth = (this.videoDisplay.videoObject.videoWidth * ratio) + PlayerController.NICO_VIDEO_PADDING * 2;
+                                videoWindowHeight = (this.videoDisplay.videoSurfaceObject.videoHeight * ratio) + PlayerController.NICO_VIDEO_PADDING * 2;
+                                videoWindowWidth = (this.videoDisplay.videoSurfaceObject.videoWidth * ratio) + PlayerController.NICO_VIDEO_PADDING * 2;
 
                                 this.videoDisplay.setConstraintValue("bottom", NICO_VIDEO_PADDING);
                                 this.videoDisplay.setConstraintValue("left", NICO_VIDEO_PADDING);
@@ -1502,7 +1504,7 @@ package org.mineap.nndd.player {
                     }
                     else {
                         // ウィンドウの大きさ調整が無効
-                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoObject != null) {
+                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoSurfaceObject != null) {
                             //FLV再生か？
 
                             // スムージングを設定
@@ -1771,7 +1773,7 @@ package org.mineap.nndd.player {
          * @param videoDisplay
          *
          */
-        private function addVideoDisplayEventListeners(videoDisplay: VideoDisplay): void {
+        private function addVideoDisplayEventListeners(videoDisplay: PatchedVideoDisplay): void {
             videoDisplay.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, currentTimeChangeEventHandler);
             videoDisplay.addEventListener(TimeEvent.DURATION_CHANGE, durationChangeEventHandler);
             videoDisplay.addEventListener(TimeEvent.COMPLETE, videoDisplayCompleteHandler);
@@ -1782,7 +1784,7 @@ package org.mineap.nndd.player {
          * @param videoDisplay
          *
          */
-        private function removeVideoDisplayEventListeners(videoDisplay: VideoDisplay): void {
+        private function removeVideoDisplayEventListeners(videoDisplay: PatchedVideoDisplay): void {
             if (videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)) {
                 videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, currentTimeChangeEventHandler);
             }
@@ -2015,7 +2017,7 @@ package org.mineap.nndd.player {
                 videoPlayer.videoController.label_time.text = nowMin + ":" + nowSec + "/" + allMin + ":" + allSec;
                 videoPlayer.videoController.slider_timeline.enabled = true;
             } catch (error: Error) {
-                VideoDisplay(event.currentTarget).stop();
+                PatchedVideoDisplay(event.currentTarget).stop();
                 trace(error.getStackTrace());
             }
         }
@@ -2258,9 +2260,9 @@ package org.mineap.nndd.player {
             formatter.precision = 2;
 
             if (videoDisplay != null && videoInfoView != null) {
-                if (videoDisplay.videoObject != null) {
-                    videoInfoView.format = videoDisplay.videoObject.videoWidth + " × " + videoDisplay.videoObject.videoHeight;
-                    videoInfoView.currentWindowSize = videoDisplay.videoObject.width + " × " + videoDisplay.videoObject.height;
+                if (videoDisplay.videoSurfaceObject != null) {
+                    videoInfoView.format = videoDisplay.videoSurfaceObject.videoWidth + " × " + videoDisplay.videoSurfaceObject.videoHeight;
+                    videoInfoView.currentWindowSize = videoDisplay.videoSurfaceObject.width + " × " + videoDisplay.videoSurfaceObject.height;
                 }
                 else {
                     videoInfoView.format = "-";

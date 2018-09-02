@@ -10,7 +10,7 @@
   <component name="ProjectResources">
     <resource url="http://ns.riaspace.com/air/framework/update/description/1.1" location="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" project-jdk-name="AIRSDK_Compiler" project-jdk-type="Flex SDK Type (new)">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" project-jdk-name="4.16.1" project-jdk-type="Flex SDK Type (new)">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
 </project>
