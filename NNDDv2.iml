@@ -21,7 +21,6 @@
           <files-to-package>
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/config" path-in-package="config" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/player" path-in-package="player" />
-            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/donate.txt" path-in-package="donate.txt" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon16.png" path-in-package="icon16.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon32.png" path-in-package="icon32.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon48.png" path-in-package="icon48.png" />
@@ -63,7 +62,6 @@
           <files-to-package>
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/config" path-in-package="config" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/player" path-in-package="player" />
-            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/donate.txt" path-in-package="donate.txt" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon16.png" path-in-package="icon16.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon32.png" path-in-package="icon32.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon48.png" path-in-package="icon48.png" />
