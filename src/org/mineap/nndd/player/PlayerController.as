@@ -18,9 +18,6 @@ package org.mineap.nndd.player {
     import flash.media.SoundTransform;
     import flash.net.URLRequest;
     import flash.utils.Timer;
-    import flash.utils.clearInterval;
-    import flash.utils.setInterval;
-    import flash.utils.setTimeout;
 
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
@@ -35,6 +32,9 @@ package org.mineap.nndd.player {
     import mx.events.VideoEvent;
     import mx.formatters.DateFormatter;
     import mx.formatters.NumberFormatter;
+
+    import org.mangui.hls.HLSSettings;
+    import org.mangui.hls.constant.HLSSeekMode;
 
     import org.mineap.nndd.player.PatchedVideoDisplay;
     import org.osmf.events.MediaFactoryEvent;
@@ -236,6 +236,8 @@ package org.mineap.nndd.player {
 
         private var _fmsToken: String;
 
+        private var _dmcHeartbeartTimer: Timer = null;
+
         [Embed(source="/player/NNDDicons_play_20x20.png")]
         private var icon_Play: Class;
 
@@ -254,6 +256,10 @@ package org.mineap.nndd.player {
          */
         public function PlayerController() {
             OSMFSettings.enableStageVideo = false;
+            HLSSettings.maxBufferLength = 0;
+            HLSSettings.maxBackBufferLength = 0;
+            HLSSettings.seekMode = HLSSeekMode.ACCURATE_SEEK;
+
             this.logManager = LogManager.instance;
             this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
             this.playListManager = PlayListManager.instance;
@@ -702,7 +708,7 @@ package org.mineap.nndd.player {
                         factory.addEventListener(
                                 MediaFactoryEvent.PLUGIN_LOAD,
                                 function (event: MediaFactoryEvent): void {
-                                    if (isStreamingPlay && nnddDownloaderForStreaming._dmcInfoAnalyzer.dmcInfo !== null) {
+                                    if (isStreamingPlay && _dmcHeartbeartTimer !== null) {
                                         videoDisplay.source = new DynamicStreamingResource(videoPath);
                                     } else {
                                         videoDisplay.source = videoPath;
@@ -1853,18 +1859,18 @@ package org.mineap.nndd.player {
          * @return
          *
          */
-        public function getStreamingProgress(): int {
+        public function getStreamingProgress(): Number {
             if (!isStreamingPlay) {
                 return 100;
             }
-            if (videoDisplay != null) {
+            if (videoDisplay !== null && videoDisplay.bytesTotal > 0) {
                 return videoDisplay.bytesLoaded * 100 / videoDisplay.bytesTotal;
             }
             if (loader != null && loader.contentLoaderInfo != null) {
                 return loader.contentLoaderInfo.bytesLoaded * 100 / loader.contentLoaderInfo.bytesTotal;
             }
 
-            return 100;
+            return 0;
         }
 
 
@@ -1873,36 +1879,36 @@ package org.mineap.nndd.player {
          * @return
          *
          */
-        public function getStreamingSpeed(): Number {
+        public function getStreamingSpeed(interval: Number): Number {
 
-            // timerから1000msごとに呼ばれる
+            // timerからintervalごとに呼ばれる
+
+            if (!this.isStreamingPlay) {
+                return 0;
+            }
 
             var value: Number = 0;
-            if (isStreamingPlay) {
-                if (videoDisplay != null) {
-                    value = videoDisplay.bytesLoaded - this.lastLoadedBytes;
-                    this.lastLoadedBytes = videoDisplay.bytesLoaded;
-                } else if (loader != null && loader.contentLoaderInfo != null) {
-                    value = loader.contentLoaderInfo.bytesLoaded - this.lastLoadedBytes;
-                    this.lastLoadedBytes = loader.contentLoaderInfo.bytesLoaded;
-                } else {
-                    return value;
-                }
+            if (videoDisplay != null) {
+                value = videoDisplay.bytesLoaded - this.lastLoadedBytes;
+                this.lastLoadedBytes = videoDisplay.bytesLoaded;
+            } else if (loader != null && loader.contentLoaderInfo != null) {
+                value = loader.contentLoaderInfo.bytesLoaded - this.lastLoadedBytes;
+                this.lastLoadedBytes = loader.contentLoaderInfo.bytesLoaded;
+            } else {
+                return value;
+            }
 
-                trace(value);
-
+            if (this._dmcHeartbeartTimer === null) {
                 //MBに直す
-                value = value / 1048576;
+                value /= 1048576;
+            }
 
-                // MB/sに直す
-                value = value / 1;
-            }
-            else {
-                // 何もしない
-            }
+            trace("StreamingProgress: " + value + "MB");
+
+            // MB/sに直す
+            value /= interval / 1000;
 
             return value;
-
         }
 
         /**
@@ -1929,73 +1935,83 @@ package org.mineap.nndd.player {
          *
          */
         private function streamingProgressHandler(event: TimerEvent): void {
-            if (isStreamingPlay) {
-                var value: int = getStreamingProgress();
-                var speed: Number = getStreamingSpeed();
-                if (value >= 100) {
-                    this.videoPlayer.label_playSourceStatus.text = "Streaming:100%";
-                    videoPlayer.videoController.resetStatusAlpha();
-                    if (streamingProgressTimer != null) {
-                        streamingProgressTimer.stop();
-                    }
-                    // TODO: ダウンロードプログレス100%時のDMCビーティングのクリア
-
-                    // 100%読み込みしたはずなのに読み込み済みバイト数が異常に少ない。
-                    if (this.bytesLoaded <= 64) {
-
-                        var maxCount: int = 1;
-                        var confValue: String = ConfigManager.getInstance().getItem("streamingRetryMaxCount");
-                        if (confValue == null) {
-                            ConfigManager.getInstance().removeItem("streamingRetryMaxCount");
-                            ConfigManager.getInstance().setItem("streamingRetryMaxCount", maxCount);
-                        }
-                        else {
-                            maxCount = int(confValue);
-                        }
-
-                        if (this.streamingRetryCount <= maxCount) {
-                            // 再生し直す
-                            this.streamingRetryCount++;
-                            var timeStr: String = String(int(10000 * this.streamingRetryCount / 1000));
-                            stop();
-                            logManager.addLog("ニコ動へのアクセスの再試行(動画読み込みに失敗:読み込み済みバイト数:" + this.bytesLoaded + ")");
-                            videoPlayer.label_downloadStatus.text = "動画の読み込みに失敗したため、再試行します。(" + timeStr + "秒後、" + this.streamingRetryCount + "回目 )";
-
-                            if (nicoVideoAccessRetryTimer != null) {
-                                nicoVideoAccessRetryTimer.stop();
-                                nicoVideoAccessRetryTimer = null;
-                            }
-                            nicoVideoAccessRetryTimer = new Timer(10000 * this.streamingRetryCount, 1);
-                            nicoVideoAccessRetryTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: Event): void {
-                                (event.currentTarget as Timer).stop();
-                                // TODO: DMCサーバ接続時のリトライ方法修正
-                                play();
-                            });
-                            nicoVideoAccessRetryTimer.start();
-
-                        } else {
-                            stop();
-                            logManager.addLog("動画読み込みに失敗:読み込み済みバイト数:" + this.bytesLoaded);
-                            videoPlayer.label_downloadStatus.text = "動画の読み込みに失敗しました。(動画が正しく読み込めませんでした。)";
-                        }
-                    } else {
-                        // うまく行った
-                        this.streamingRetryCount = 0;
-                    }
-
-                } else {
-
-                    var formatter: NumberFormatter = new NumberFormatter();
-                    formatter.precision = 2;
-                    var str: String = formatter.format(speed) + "MB/s";
-
-                    this.videoPlayer.label_playSourceStatus.text = "Streaming:" + value + "% (" + str + ")";
-                }
-            } else {
-                if (streamingProgressTimer != null) {
+            // ストリーミング再生でない
+            if (!this.isStreamingPlay) {
+                if (streamingProgressTimer !== null) {
                     streamingProgressTimer.stop();
                 }
+
+                return;
             }
+
+            var value: Number = getStreamingProgress();
+            var speed: Number = getStreamingSpeed((event.target as Timer).delay);
+
+            // ストリーミング進捗が100%未満
+            if (value < 100) {
+                var formatter: NumberFormatter = new NumberFormatter();
+                formatter.precision = 2;
+                var str: String = formatter.format(speed) + "MB/s";
+
+                this.videoPlayer.label_playSourceStatus.text = "Streaming:" + formatter.format(
+                    value) + "% (" + str + ")";
+
+                return;
+            }
+
+            // ストリーミング進捗100%
+            this.videoPlayer.label_playSourceStatus.text = "Streaming:100%";
+            videoPlayer.videoController.resetStatusAlpha();
+            if (streamingProgressTimer !== null) {
+                streamingProgressTimer.stop();
+            }
+
+            // ある程度以上データが読めていれば完了
+            if (this.bytesLoaded > 64) {
+                this.streamingRetryCount = 0;
+                return;
+            }
+
+            // 100%読み込みしたはずなのに読み込み済みバイト数が異常に少ない
+            // 接続リトライを試行する
+            var maxCount: int = 1;
+            var confValue: String = ConfigManager.getInstance().getItem("streamingRetryMaxCount");
+            if (confValue == null) {
+                ConfigManager.getInstance().removeItem("streamingRetryMaxCount");
+                ConfigManager.getInstance().setItem("streamingRetryMaxCount", maxCount);
+            } else {
+                maxCount = int(confValue);
+            }
+
+            // 最大許容リトライ回数以下ならば再生し直す
+            if (this.streamingRetryCount <= maxCount) {
+                // 再生し直す
+                this.streamingRetryCount++;
+                var timeStr: String = String(int(10000 * this.streamingRetryCount / 1000));
+                stop();
+                logManager.addLog("ニコ動へのアクセスの再試行(動画読み込みに失敗:読み込み済みバイト数:" + this.bytesLoaded + ")");
+                videoPlayer.label_downloadStatus.text =
+                    "動画の読み込みに失敗したため、再試行します。(" + timeStr + "秒後、" + this.streamingRetryCount + "回目 )";
+
+                if (nicoVideoAccessRetryTimer != null) {
+                    nicoVideoAccessRetryTimer.stop();
+                    nicoVideoAccessRetryTimer = null;
+                }
+                nicoVideoAccessRetryTimer = new Timer(10000 * this.streamingRetryCount, 1);
+                nicoVideoAccessRetryTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: Event): void {
+                    (event.currentTarget as Timer).stop();
+                    // TODO: DMCサーバ接続時のリトライ方法修正
+                    play();
+                });
+                nicoVideoAccessRetryTimer.start();
+
+                return;
+            }
+
+            // 最大試行回数を超えたのでエラー終了
+            stop();
+            logManager.addLog("動画読み込みに失敗:読み込み済みバイト数:" + this.bytesLoaded);
+            videoPlayer.label_downloadStatus.text = "動画の読み込みに失敗しました。(動画が正しく読み込めませんでした。)";
         }
 
         /**
@@ -4112,32 +4128,17 @@ package org.mineap.nndd.player {
                         nnddDownloaderForStreaming._otherNNDDServerAddress = nnddServerAddress;
                         nnddDownloaderForStreaming._otherNNDDServerPort = nnddServerPortNum;
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function (event: Event): void {
-                            var intervalId: int;
-                            var nnddDownloader: NNDDDownloader = (event.target as NNDDDownloader);
-                            if (nnddDownloader.streamingUrl.match(new RegExp("https?://[a-z0-9]+\.dmc\.nico")) != null) {
-                                intervalId = setInterval(function (): void {
-                                    trace("DmcBeating...");
-                                    nnddDownloader._dmcAccess.beatDmcSession(
-                                            nnddDownloader._dmcResultAnalyzer.sessionId,
-                                            nnddDownloader._dmcResultAnalyzer.session
-                                    );
-                                }, nnddDownloader._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.5);
-
-                                nnddDownloader._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
-                                    trace("DmcBeating Error...");
-                                    clearInterval(intervalId);
-                                });
-
-                                setTimeout(function (): void {
-                                    trace("Clearing Interval...");
-                                    clearInterval(intervalId);
-                                }, nnddDownloader._dmcInfoAnalyzer.dmcInfo.video.length_seconds * 1000);
+                            _dmcHeartbeartTimer = nnddDownloaderForStreaming.createDmcBeatingTimer();
+                            if (_dmcHeartbeartTimer !== null) {
+                                _dmcHeartbeartTimer.start();
                             }
-                            _playMovie((event.target as NNDDDownloader).streamingUrl,
-                                    (event.target as NNDDDownloader).fmsToken,
-                                    playList, playListIndex,
-                                    FileIO.getSafeFileName((event.target as NNDDDownloader).nicoVideoName),
-                                    nnddDownloaderForStreaming.isEconomyMode);
+                            _playMovie(
+                                (event.target as NNDDDownloader).streamingUrl,
+                                (event.target as NNDDDownloader).fmsToken,
+                                playList, playListIndex,
+                                FileIO.getSafeFileName((event.target as NNDDDownloader).nicoVideoName),
+                                nnddDownloaderForStreaming.isEconomyMode
+                            );
 
                             removeStreamingPlayHandler(event);
                             nnddDownloaderForStreaming = null;

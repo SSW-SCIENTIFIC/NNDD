@@ -6,15 +6,15 @@ package org.mineap.nndd {
     import flash.events.HTTPStatusEvent;
     import flash.events.IOErrorEvent;
     import flash.events.ProgressEvent;
+    import flash.events.TimerEvent;
     import flash.filesystem.File;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
     import flash.net.URLRequestHeader;
     import flash.net.URLStream;
     import flash.utils.ByteArray;
-    import flash.utils.clearInterval;
+    import flash.utils.Timer;
     import flash.utils.getTimer;
-    import flash.utils.setInterval;
 
     import mx.controls.Alert;
     import mx.events.CloseEvent;
@@ -81,6 +81,8 @@ package org.mineap.nndd {
         public var _dmcAccess: ApiDmcAccess;
         public var _dmcInfoAnalyzer: DmcInfoAnalyzer;
         public var _dmcResultAnalyzer: DmcResultAnalyzer;
+
+        private var _dmcHeartBeatTimer: Timer = null;
 
         private var _otherNNDDInfoLoader: URLLoader;
 
@@ -1708,28 +1710,40 @@ package org.mineap.nndd {
             LogManager.instance.addLog(VIDEO_GET_START + ":" + this._videoId);
             dispatchEvent(new Event(VIDEO_GET_START));
 
+            this._dmcHeartBeatTimer = createDmcBeatingTimer();
+            if (this._dmcHeartBeatTimer !== null) {
+                this._dmcHeartBeatTimer.start();
+            }
             this._videoStream.getVideoStart(videoUrl, this._downloadedSize);
-            var intervalId: int;
-            if (this._watchVideo.isDmc) {
-                intervalId = setInterval(function (): void {
-                    trace("DMCSessionBeating...");
-                    _dmcAccess.beatDmcSession(_dmcResultAnalyzer.sessionId, _dmcResultAnalyzer.session);
-                }, this._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.9);
+        }
 
-                this._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
-                    (event.target as URLStream).close();
-                    trace(DMC_SESSION_FAIL + ":" + event + ":" + event.target + ":" + event.text);
-                    LogManager.instance.addLog(DMC_SESSION_FAIL + ":" + _videoId + ":" + event + ":" + event.target + ":" + event.text);
-                    dispatchEvent(new IOErrorEvent(DMC_SESSION_FAIL, false, false, event.text));
-                    close(true, true, event);
-                    clearInterval(intervalId);
-                });
+        public function createDmcBeatingTimer(): Timer {
+            if (!this._watchVideo.isDmc) {
+                return null;
+            }
 
+            var timer: Timer = new Timer(this._dmcResultAnalyzer.session.session.keep_method.heartbeat.lifetime * 0.5);
+            timer.addEventListener(TimerEvent.TIMER, function (event: TimerEvent): void {
+                trace("DMCSessionBeating...");
+                _dmcAccess.beatDmcSession(_dmcResultAnalyzer.sessionId, _dmcResultAnalyzer.session);
+            });
 
+            this._dmcAccess.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
+                (event.target as URLStream).close();
+                trace(DMC_SESSION_FAIL + ":" + event + ":" + event.target + ":" + event.text);
+                LogManager.instance.addLog(DMC_SESSION_FAIL + ":" + _videoId + ":" + event + ":" + event.target + ":" + event.text);
+                dispatchEvent(new IOErrorEvent(DMC_SESSION_FAIL, false, false, event.text));
+                close(true, true, event);
+                timer.stop();
+            });
+
+            if (this._videoStream !== null) {
                 this._videoStream.addEventListener(Event.COMPLETE, function (event: Event): void {
-                    clearInterval(intervalId);
+                    timer.stop();
                 });
             }
+
+            return timer;
         }
 
         /**
