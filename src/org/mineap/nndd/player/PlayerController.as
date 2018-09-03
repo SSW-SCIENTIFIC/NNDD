@@ -702,7 +702,7 @@ package org.mineap.nndd.player {
                         factory.addEventListener(
                                 MediaFactoryEvent.PLUGIN_LOAD,
                                 function (event: MediaFactoryEvent): void {
-                                    if (isStreamingPlay) {
+                                    if (isStreamingPlay && nnddDownloaderForStreaming._dmcInfoAnalyzer.dmcInfo !== null) {
                                         videoDisplay.source = new DynamicStreamingResource(videoPath);
                                     } else {
                                         videoDisplay.source = videoPath;
