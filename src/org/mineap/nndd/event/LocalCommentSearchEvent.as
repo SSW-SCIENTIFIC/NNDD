@@ -19,7 +19,12 @@ package org.mineap.nndd.event {
          * @param commentFiles
          *
          */
-        public function LocalCommentSearchEvent(type: String, bubbles: Boolean = false, cancelable: Boolean = false, commentFiles: Vector.<File> = null) {
+        public function LocalCommentSearchEvent(
+            type: String,
+            bubbles: Boolean = false,
+            cancelable: Boolean = false,
+            commentFiles: Vector.<File> = null
+        ) {
             super(type, bubbles, cancelable);
 
             if (commentFiles != null) {

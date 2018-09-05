@@ -1,6 +1,4 @@
 package org.mineap.nndd {
-    import com.tilfin.airthttpd.server.HttpResponse;
-
     import flash.events.ErrorEvent;
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -24,8 +22,7 @@ package org.mineap.nndd {
      *
      * @author shiraminekeisuke (MineAP)
      *
-     */
-    public class NNDDVideoPageWatcher extends EventDispatcher {
+     */ public class NNDDVideoPageWatcher extends EventDispatcher {
 
         private var _videoId: String = null;
 

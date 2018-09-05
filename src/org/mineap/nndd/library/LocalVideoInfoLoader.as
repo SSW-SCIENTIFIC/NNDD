@@ -8,7 +8,6 @@ package org.mineap.nndd.library {
     import org.mineap.nndd.util.LibraryUtil;
     import org.mineap.nndd.util.PathMaker;
 
-
     /**
      *
      * @author shiraminekeisuke (MineAP)
@@ -41,7 +40,8 @@ package org.mineap.nndd.library {
             var thumbInfoXML: XML = null;
 
             var fileIO: FileIO = new FileIO(logManager);
-            thumbInfoXML = fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath, searchThumbFile), false);
+            thumbInfoXML =
+                fileIO.loadXMLSync(PathMaker.createThmbInfoPathByVideoPath(filePath, searchThumbFile), false);
 
             var file: File = null;
 
@@ -67,7 +67,19 @@ package org.mineap.nndd.library {
                     thumbUrl = PathMaker.getThumbImgUrl(id);
                 }
 
-                return new NNDDVideo(file.url, file.name, false, null, file.modificationDate, file.creationDate, thumbUrl, 0, time, null, null);
+                return new NNDDVideo(
+                    file.url,
+                    file.name,
+                    false,
+                    null,
+                    file.modificationDate,
+                    file.creationDate,
+                    thumbUrl,
+                    0,
+                    time,
+                    null,
+                    null
+                );
 
             }
 
@@ -85,13 +97,26 @@ package org.mineap.nndd.library {
                 pubDate = DateUtil.getDateForThumbXML(thumbInfoXML.thumb.first_retrieve);
             } else {
                 // サムネイル情報が存在しない時、もしくは動画が削除されているときは、既存の動画からタグ情報を取得
-                var tempVideo: NNDDVideo = LibraryManagerBuilder.instance.libraryManager.isExist(LibraryUtil.getVideoKey(decodeURIComponent(filePath)));
+                var tempVideo: NNDDVideo = LibraryManagerBuilder.instance.libraryManager.isExist(LibraryUtil.getVideoKey(
+                    decodeURIComponent(filePath)));
                 if (tempVideo != null) {
                     tagArray = tempVideo.tagStrings;
                 }
             }
 
-            var video: NNDDVideo = new NNDDVideo(filePath, null, false, tagArray, null, null, null, 0, time, null, pubDate);
+            var video: NNDDVideo = new NNDDVideo(
+                filePath,
+                null,
+                false,
+                tagArray,
+                null,
+                null,
+                null,
+                0,
+                time,
+                null,
+                pubDate
+            );
             file = new File(filePath);
             if (file.exists) {
                 video.creationDate = file.creationDate;

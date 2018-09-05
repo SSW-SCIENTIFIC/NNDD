@@ -1,7 +1,6 @@
 package org.mineap.nndd.model {
     import org.mineap.nndd.util.MyListUtil;
 
-
     /**
      * マイリストやチャネルなどの、RSSのアドレスを表現するクラスです。
      *
@@ -46,7 +45,12 @@ package org.mineap.nndd.model {
          * @param isDir
          * @param videoIds
          */
-        public function NicoVideoRSS(url: String, name: String, isDir: Boolean = false, videoIds: Vector.<String> = null) {
+        public function NicoVideoRSS(
+            url: String,
+            name: String,
+            isDir: Boolean = false,
+            videoIds: Vector.<String> = null
+        ) {
             if (url != null) {
                 this.url = url;
             }

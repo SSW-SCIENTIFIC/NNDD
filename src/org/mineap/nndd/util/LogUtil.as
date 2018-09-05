@@ -1,5 +1,4 @@
 package org.mineap.nndd.util {
-    import flash.errors.IOError;
     import flash.filesystem.File;
     import flash.filesystem.FileMode;
     import flash.filesystem.FileStream;
@@ -52,10 +51,8 @@ package org.mineap.nndd.util {
             } catch (error: Error) {
                 if (!logOutputFail) {
                     logOutputFail = true;
-                    Alert.show("ログの出力に失敗しました。(" + error + ")\n" +
-                            "出力先が存在しないか、アクセス権がない可能性があります。\n\n" +
-                            "出力先:" + filePath + "\n" +
-                            "StackTrace:" + error.getStackTrace());
+                    Alert.show("ログの出力に失敗しました。(" + error + ")\n" + "出力先が存在しないか、アクセス権がない可能性があります。\n\n" + "出力先:" +
+                               filePath + "\n" + "StackTrace:" + error.getStackTrace());
                 }
                 trace(error.getStackTrace());
                 if (fileStream != null) {

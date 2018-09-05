@@ -1,5 +1,4 @@
 package org.mineap.nndd.library.sqlite.dao {
-    import flash.data.SQLConnection;
     import flash.data.SQLResult;
     import flash.data.SQLStatement;
     import flash.errors.SQLError;
@@ -78,7 +77,8 @@ package org.mineap.nndd.library.sqlite.dao {
          */
         public function addNNDDVideos(nnddVideos: Vector.<NNDDVideo>,
                                       updateProperties: Vector.<String>,
-                                      withOutUpdateProperties: Vector.<String>): Boolean {
+                                      withOutUpdateProperties: Vector.<String>
+        ): Boolean {
 
             try {
                 DbAccessHelper.instance.connection.begin();
@@ -145,8 +145,7 @@ package org.mineap.nndd.library.sqlite.dao {
 
                     if (null != insertVideo_map[nnddVideo.key]) {
                         result = insertNNDDVideo(nnddVideo, dbFile.id, false);
-                    }
-                    else {
+                    } else {
                         var tempVideo: NNDDVideo = dbVideo_map[nnddVideo.key];
 
                         var prop: String = null;
@@ -163,8 +162,7 @@ package org.mineap.nndd.library.sqlite.dao {
                             }
 
                             result = updateNNDDVideo(nnddVideo, dbFile.id, false);
-                        }
-                        else {
+                        } else {
                             for each(prop in updateProperties) {
                                 if (tempVideo.hasOwnProperty(prop)) {
                                     tempVideo[prop] = nnddVideo[prop];
@@ -247,7 +245,11 @@ package org.mineap.nndd.library.sqlite.dao {
                     }
 
                     if (tagIdArray.length > 0) {
-                        NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(videoIdArray, tagIdArray, false);
+                        NNDDVideoTagStringDao.instance.insertNNDDVideoTagStringRelation(
+                            videoIdArray,
+                            tagIdArray,
+                            false
+                        );
                     }
                 }
 
@@ -255,8 +257,7 @@ package org.mineap.nndd.library.sqlite.dao {
 
                 return true;
 
-            }
-            catch (error: SQLError) {
+            } catch (error: SQLError) {
                 DbAccessHelper.instance.connection.rollback();
                 trace(error.getStackTrace());
             }
@@ -271,7 +272,10 @@ package org.mineap.nndd.library.sqlite.dao {
          * @return
          *
          */
-        public function insertNNDDVideoWithFileAndTags(nnddVideo: NNDDVideo, transactionEnable: Boolean = true): Boolean {
+        public function insertNNDDVideoWithFileAndTags(
+            nnddVideo: NNDDVideo,
+            transactionEnable: Boolean = true
+        ): Boolean {
 
             try {
 
@@ -345,7 +349,11 @@ package org.mineap.nndd.library.sqlite.dao {
          * @return
          *
          */
-        private function insertNNDDVideo(nnddVideo: NNDDVideo, dirId: Number, transactionEnable: Boolean = true): Boolean {
+        private function insertNNDDVideo(
+            nnddVideo: NNDDVideo,
+            dirId: Number,
+            transactionEnable: Boolean = true
+        ): Boolean {
             try {
 
                 if (transactionEnable) {
@@ -398,8 +406,7 @@ package org.mineap.nndd.library.sqlite.dao {
 
                 return true;
 
-            }
-            catch (error: SQLError) {
+            } catch (error: SQLError) {
                 if (transactionEnable) {
                     DbAccessHelper.instance.connection.rollback();
                 }
@@ -417,7 +424,10 @@ package org.mineap.nndd.library.sqlite.dao {
          * @return
          *
          */
-        public function updateNNDDVideoWithFileAndTags(nnddVideo: NNDDVideo, transactionEnable: Boolean = true): Boolean {
+        public function updateNNDDVideoWithFileAndTags(
+            nnddVideo: NNDDVideo,
+            transactionEnable: Boolean = true
+        ): Boolean {
 
             try {
 
@@ -493,7 +503,8 @@ package org.mineap.nndd.library.sqlite.dao {
          */
         private function updateNNDDVideo(nnddVideo: NNDDVideo,
                                          dirId: Number,
-                                         transactionEnable: Boolean = true): Boolean {
+                                         transactionEnable: Boolean = true
+        ): Boolean {
             try {
 
                 if (transactionEnable) {
@@ -547,8 +558,7 @@ package org.mineap.nndd.library.sqlite.dao {
 
                 return true;
 
-            }
-            catch (error: SQLError) {
+            } catch (error: SQLError) {
                 if (transactionEnable) {
                     DbAccessHelper.instance.connection.rollback();
                 }
@@ -774,7 +784,8 @@ package org.mineap.nndd.library.sqlite.dao {
         public function selectNNDDVideoByFile(file: File,
                                               enableTran: Boolean = true,
                                               fetchTags: Boolean = true,
-                                              withSubFile: Boolean = true): Vector.<NNDDVideo> {
+                                              withSubFile: Boolean = true
+        ): Vector.<NNDDVideo> {
 
             var vector: Vector.<NNDDVideo> = new Vector.<NNDDVideo>();
 
@@ -882,9 +893,18 @@ package org.mineap.nndd.library.sqlite.dao {
                 pubDate = new Date(Number(object.pubDate));
             }
 
-            var nnddVideo: NNDDVideo = new NNDDVideo(uri, videoName, isEconomy,
-                    tags, modificationDate, creationDate, thumbUrl, playCount,
-                    time, lastPlayDate, pubDate);
+            var nnddVideo: NNDDVideo = new NNDDVideo(uri,
+                                                     videoName,
+                                                     isEconomy,
+                                                     tags,
+                                                     modificationDate,
+                                                     creationDate,
+                                                     thumbUrl,
+                                                     playCount,
+                                                     time,
+                                                     lastPlayDate,
+                                                     pubDate
+            );
 
             nnddVideo.id = object.id;
 

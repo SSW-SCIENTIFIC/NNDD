@@ -30,24 +30,24 @@ package org.mineap.nndd.util {
 //
 
             var myList_pattern: RegExp = new RegExp(
-                    "<(?i:a href)=\"http://www\\.nicovideo\\.jp/mylist/[1-9][0-9]*\"[^>]*>((?i:mylist)/[1-9][0-9]*)</(?i:a)>|((?i:mylist)/[1-9][0-9]*)",
-                    "g"
+                "<(?i:a href)=\"http://www\\.nicovideo\\.jp/mylist/[1-9][0-9]*\"[^>]*>((?i:mylist)/[1-9][0-9]*)</(?i:a)>|((?i:mylist)/[1-9][0-9]*)",
+                "g"
             );
             var user_pattern: RegExp = new RegExp(
-                    "<(?i:a href)=\"http://www\\.nicovideo\\.jp/user/[1-9][0-9]*\"[^>]*>((?i:user)/[1-9][0-9]*)</a>|((?i:user)/[1-9][0-9]*)",
-                    "g"
+                "<(?i:a href)=\"http://www\\.nicovideo\\.jp/user/[1-9][0-9]*\"[^>]*>((?i:user)/[1-9][0-9]*)</a>|((?i:user)/[1-9][0-9]*)",
+                "g"
             );
-            var videoId_pattern: RegExp = new RegExp(
-                    "<(?i:a href)=\"http://www\\.nicovideo\\.jp/watch/[^\"]+\"[^>]*>([^<]+)</a>|" + VideoTypeUtil.VIDEO_ID_WITHOUT_NUMONLY_SEARCH_PATTERN_STRING,
-                    "g"
+            var videoId_pattern: RegExp = new RegExp("<(?i:a href)=\"http://www\\.nicovideo\\.jp/watch/[^\"]+\"[^>]*>([^<]+)</a>|" +
+                                                     VideoTypeUtil.VIDEO_ID_WITHOUT_NUMONLY_SEARCH_PATTERN_STRING,
+                                                     "g"
             );
             var channel_pattern: RegExp = new RegExp(
-                    "<(?i:a href)=\"https?://ch\\.nicovideo\\.jp/(channel/ch[^\"]+)\"[^>]*>[^<]+</a>|((?i:channel)/\\w+)",
-                    "g"
+                "<(?i:a href)=\"https?://ch\\.nicovideo\\.jp/(channel/ch[^\"]+)\"[^>]*>[^<]+</a>|((?i:channel)/\\w+)",
+                "g"
             );  // TODO
             var community_pattern: RegExp = new RegExp(
-                    "<(?i:a href)=\"https?://com\\.nicovideo\\.jp/(community/co[^\"]+)\"[^>]*>[^<]+</a>|((?i:co)[1-9][0-9]+)",
-                    "g"
+                "<(?i:a href)=\"https?://com\\.nicovideo\\.jp/(community/co[^\"]+)\"[^>]*>[^<]+</a>|((?i:co)[1-9][0-9]+)",
+                "g"
             );
 
             var fontsize_pattern: RegExp = new RegExp("size=\"(\\d+)\"", "ig");
@@ -110,7 +110,8 @@ package org.mineap.nndd.util {
                     }
                 }
 
-                return "<a href=\"event:watch/" + videoId + "\"><u><font color=\"#0000ff\">" + videoId + "</font></u></a>";
+                return "<a href=\"event:watch/" + videoId + "\"><u><font color=\"#0000ff\">" + videoId +
+                       "</font></u></a>";
 
             }
 

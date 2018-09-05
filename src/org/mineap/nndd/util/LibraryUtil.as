@@ -1,6 +1,4 @@
 package org.mineap.nndd.util {
-    import flash.filesystem.File;
-
     /**
      *
      * @author shiraminekeisuke

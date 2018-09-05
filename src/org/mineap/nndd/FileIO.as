@@ -1,20 +1,15 @@
 package org.mineap.nndd {
 
-    import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.filesystem.File;
     import flash.filesystem.FileMode;
     import flash.filesystem.FileStream;
     import flash.net.URLLoader;
-    import flash.net.URLRequest;
     import flash.utils.ByteArray;
 
-    import mx.collections.ArrayCollection;
     import mx.controls.Alert;
 
     import org.mineap.nndd.model.NNDDVideo;
-    import org.mineap.nndd.util.DateUtil;
-    import org.mineap.nndd.util.PathMaker;
 
     /**
      * FileIO.as
@@ -140,7 +135,13 @@ package org.mineap.nndd {
          * @param isAppend 既にファイルがある場合、ファイルを追記して保存するかどうかです。
          * @param maxCount isAppendがtrueの場合、追記後のコメントの最大値を指定します。
          */
-        public function saveComment(comment: XML, fileName: String, path: String, isAppend: Boolean, maxCount: Number): File {
+        public function saveComment(
+            comment: XML,
+            fileName: String,
+            path: String,
+            isAppend: Boolean,
+            maxCount: Number
+        ): File {
             fileName = getSafeFileName(fileName);
 
             if (path.charAt(path.length) != "/") {
@@ -424,7 +425,8 @@ package org.mineap.nndd {
             var buffer: String = "";
             for (var i: int = 0; i < videos.length; i++) {
                 var video: NNDDVideo = videos[i];
-                buffer = buffer + video.getDecodeUrl() + "\n" + "#EXTINF:" + video.time + "," + video.getVideoNameWithVideoID() + "\n";
+                buffer = buffer + video.getDecodeUrl() + "\n" + "#EXTINF:" + video.time + "," +
+                         video.getVideoNameWithVideoID() + "\n";
             }
 
             fileStream.open(file, FileMode.WRITE);
@@ -457,8 +459,7 @@ package org.mineap.nndd {
 
             if (append) {
                 fileStream.open(file, FileMode.APPEND);
-            }
-            else {
+            } else {
                 fileStream.open(file, FileMode.WRITE);
             }
             fileStream.writeBytes(bytes, 0, bytes.length);

@@ -58,33 +58,100 @@ package org.mineap.nndd {
                                             isAppendComment: Boolean,
                                             when: Date,
                                             commentMaxCount: Number,
-                                            useOldType: Boolean): void {
+                                            useOldType: Boolean
+        ): void {
             //失敗系ハンドラ登録
             this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_FAIL,
+                getFailListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_FAIL,
+                getFailListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETWAYBACKKEY_API_ACCESS_FAIL, getFailListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETWAYBACKKEY_API_ACCESS_FAIL,
+                getFailListener,
+                false,
+                0,
+                true
+            );
 
             //成功系ハンドラ登録
-            this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.COMMENT_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.ICHIBA_INFO_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SKIP, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.NICOWARI_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.THUMB_IMG_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.THUMB_INFO_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getSuccessListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETWAYBACKKEY_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETWAYBACKKEY_API_ACCESS_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
 
             //完了系ハンドラ登録
             this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
@@ -92,7 +159,18 @@ package org.mineap.nndd {
             this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
 
             this._videoName = videoName;
-            this._nnddDownloader.requestDownloadForCommentOnly(user, password, videoId, videoName, saveDir, false, isAppendComment, when, commentMaxCount, useOldType);
+            this._nnddDownloader.requestDownloadForCommentOnly(
+                user,
+                password,
+                videoId,
+                videoName,
+                saveDir,
+                false,
+                isAppendComment,
+                when,
+                commentMaxCount,
+                useOldType
+            );
         }
 
         /**
@@ -115,33 +193,100 @@ package org.mineap.nndd {
                                            isAppendComment: Boolean,
                                            when: Date,
                                            commentMaxCount: Number,
-                                           useOldType: Boolean): void {
+                                           useOldType: Boolean
+        ): void {
             //失敗系ハンドラ登録
             this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_FAIL,
+                getFailListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_FAIL,
+                getFailListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETWAYBACKKEY_API_ACCESS_FAIL, getFailListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETWAYBACKKEY_API_ACCESS_FAIL,
+                getFailListener,
+                false,
+                0,
+                true
+            );
 
             //成功系ハンドラ登録
-            this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.COMMENT_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.ICHIBA_INFO_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SKIP, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.NICOWARI_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.THUMB_IMG_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.THUMB_INFO_GET_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
             this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getSuccessListener, false, 0, true);
             this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_SUCCESS, getSuccessListener, false, 0, true);
-            this._nnddDownloader.addEventListener(NNDDDownloader.GETWAYBACKKEY_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
+            this._nnddDownloader.addEventListener(
+                NNDDDownloader.GETWAYBACKKEY_API_ACCESS_SUCCESS,
+                getSuccessListener,
+                false,
+                0,
+                true
+            );
 
             //完了系ハンドラ登録
             this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
@@ -149,7 +294,18 @@ package org.mineap.nndd {
             this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
 
             this._videoName = videoName;
-            this._nnddDownloader.requestDownloadForOtherVideo(user, password, videoId, videoName, saveDir, false, isAppendComment, when, commentMaxCount, useOldType);
+            this._nnddDownloader.requestDownloadForOtherVideo(
+                user,
+                password,
+                videoId,
+                videoName,
+                saveDir,
+                false,
+                isAppendComment,
+                when,
+                commentMaxCount,
+                useOldType
+            );
         }
 
         /**
@@ -252,7 +408,8 @@ package org.mineap.nndd {
 
             //videoNameが一致するものを探す
             if (this._dataProvider != null) {
-                if (this._dataProvider.length > index && this._dataProvider[index] != undefined && this._dataProvider[index].dataGridColumn_videoName.indexOf(videoName) != -1) {
+                if (this._dataProvider.length > index && this._dataProvider[index] != undefined &&
+                    this._dataProvider[index].dataGridColumn_videoName.indexOf(videoName) != -1) {
                     var object: Object = this._dataProvider[index];
                     object.dataGridColumn_condition = status;
                 }
@@ -309,7 +466,10 @@ package org.mineap.nndd {
          *
          */
         public function removeHandler(): void {
-            this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
+            this._nnddDownloader.removeEventListener(
+                NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
+                downloadCompleteListener
+            );
             this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
             this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, downlaodFailListener);
         }

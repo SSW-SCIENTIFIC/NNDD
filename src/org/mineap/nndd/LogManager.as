@@ -41,22 +41,16 @@ package org.mineap.nndd {
 
             var tempStr: String = this.logString;
 
-            this.logString = dateString + ":" + Message.BOOT_TIME_LOG +
-                    "\n\tAIRランタイムバージョン:" + NativeApplication.nativeApplication.runtimeVersion +
-                    "\n\tFlashPlayerバージョン:" + Capabilities.version +
-                    "\n\tデバッガバージョン:" + Capabilities.isDebugger +
-                    "\n\tプレイヤータイプ:" + Capabilities.playerType +
-                    "\n\tオペレーティングシステム:" + Capabilities.os +
-                    "\n\tネイティブプロセスAPIサポート:" + NativeProcess.isSupported +
-                    "\n\t暗号化された保存領域のサポート:" + EncryptedLocalStore.isSupported +
-                    "\n\t最高レベルIDC:" + Capabilities.maxLevelIDC +
-                    "\n" +
-                    "\n\tNNDD+DMCは以下のライブラリを使用しています。" +
-                    "\n\t・NativeApplicationUpdater - Apache License 2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
-                    "\n\t・airhttpd - MIT License ( http://code.google.com/p/airhttpd/ )" +
-                    "\n\t・nicovideo4as - MIT License ( https://github.com/SSW-SCIENTIFIC/nicovideo4as )" +
-                    "\n\t・Flashls - Mozilla Public License 2.0 ( http://www.flashls.org/ )" +
-                    "\n";
+            this.logString = dateString + ":" + Message.BOOT_TIME_LOG + "\n\tAIRランタイムバージョン:" +
+                             NativeApplication.nativeApplication.runtimeVersion + "\n\tFlashPlayerバージョン:" +
+                             Capabilities.version + "\n\tデバッガバージョン:" + Capabilities.isDebugger + "\n\tプレイヤータイプ:" +
+                             Capabilities.playerType + "\n\tオペレーティングシステム:" + Capabilities.os + "\n\tネイティブプロセスAPIサポート:" +
+                             NativeProcess.isSupported + "\n\t暗号化された保存領域のサポート:" + EncryptedLocalStore.isSupported +
+                             "\n\t最高レベルIDC:" + Capabilities.maxLevelIDC + "\n" + "\n\tNNDD+DMCは以下のライブラリを使用しています。" +
+                             "\n\t・NativeApplicationUpdater - Apache License 2.0 ( http://code.google.com/p/nativeapplicationupdater/ )" +
+                             "\n\t・airhttpd - MIT License ( http://code.google.com/p/airhttpd/ )" +
+                             "\n\t・nicovideo4as - MIT License ( https://github.com/SSW-SCIENTIFIC/nicovideo4as )" +
+                             "\n\t・Flashls - Mozilla Public License 2.0 ( http://www.flashls.org/ )" + "\n";
 
             this.logString += "\n" + tempStr;
 

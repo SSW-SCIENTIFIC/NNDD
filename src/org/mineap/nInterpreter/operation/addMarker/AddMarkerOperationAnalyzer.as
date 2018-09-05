@@ -5,7 +5,8 @@ package org.mineap.nInterpreter.operation.addMarker {
 
     public class AddMarkerOperationAnalyzer implements IOperationAnalyzer {
 
-        public static const ADD_MARKER_OPERATION_PATTERN_1: RegExp = new RegExp("addMarker\\(name:['\"]([^,]+)['\"],vpos:['\"]([^\\)]+)['\"]\\)");
+        public static const ADD_MARKER_OPERATION_PATTERN_1: RegExp = new RegExp(
+            "addMarker\\(name:['\"]([^,]+)['\"],vpos:['\"]([^\\)]+)['\"]\\)");
 
         public function AddMarkerOperationAnalyzer() {
         }

@@ -1,6 +1,5 @@
 package org.mineap.nndd.player.comment {
     import org.mineap.nInterpreter.IAnalyzeResult;
-    import org.mineap.nInterpreter.ResultType;
     import org.mineap.nInterpreter.ScriptLine;
     import org.mineap.nInterpreter.instance.JumpMarkerManager;
     import org.mineap.nInterpreter.nico2niwa.operation.jump.JumpComverter;
@@ -28,34 +27,28 @@ package org.mineap.nndd.player.comment {
         public static const NICOWARI_STOP: int = 0;
         public static const NICOWARI_PLAY: int = 1;
 
-        public static const POSITION_ARRAY: Array = new Array(
-                "naka", "ue", "shita"
-        );
+        public static const POSITION_ARRAY: Array = new Array("naka", "ue", "shita");
 
         /**
          * 位置を指定するコマンドを表す正規表現です。
          */
-        public static const POSITION_PATTERNS: Array = new Array(
-                new RegExp("\\b" + POSITION_ARRAY[0] + "\\b", "ig"),
-                new RegExp("\\b" + POSITION_ARRAY[1] + "\\b", "ig"),
-                new RegExp("\\b" + POSITION_ARRAY[2] + "\\b", "ig")
+        public static const POSITION_PATTERNS: Array = new Array(new RegExp("\\b" + POSITION_ARRAY[0] + "\\b", "ig"),
+                                                                 new RegExp("\\b" + POSITION_ARRAY[1] + "\\b", "ig"),
+                                                                 new RegExp("\\b" + POSITION_ARRAY[2] + "\\b", "ig")
         );
 
         public static const BIG: int = 0;
         public static const MEDIUM: int = 1;
         public static const SMALL: int = 2;
 
-        public static const SIZE_ARRAY: Array = new Array(
-                "big", "medium", "small"
-        );
+        public static const SIZE_ARRAY: Array = new Array("big", "medium", "small");
 
         /**
          * サイズを指定するコマンドを表す正規表現です。
          */
-        public static const SIZE_PATTERNS: Array = new Array(
-                new RegExp("\\b" + SIZE_ARRAY[0] + "\\b", "ig"),
-                new RegExp("\\b" + SIZE_ARRAY[1] + "\\b", "ig"),
-                new RegExp("\\b" + SIZE_ARRAY[2] + "\\b", "ig")
+        public static const SIZE_PATTERNS: Array = new Array(new RegExp("\\b" + SIZE_ARRAY[0] + "\\b", "ig"),
+                                                             new RegExp("\\b" + SIZE_ARRAY[1] + "\\b", "ig"),
+                                                             new RegExp("\\b" + SIZE_ARRAY[2] + "\\b", "ig")
         );
 
         public static const WHITE: int = 0;
@@ -68,30 +61,49 @@ package org.mineap.nndd.player.comment {
         public static const BLUE: int = 7;
         public static const PURPLE: int = 8;
 
-        public static const COLLOR_VALUE_ARRAY: Array = new Array(
-                new int("0xFFFFFF"), new int("0xFF0000"), new int("0xFF8080"),
-                new int("0xFFCC00"), new int("0xFFFF00"), new int("0x00FF00"),
-                new int("0x00FFFF"), new int("0x0000FF"), new int("0xC000FF")
+        public static const COLLOR_VALUE_ARRAY: Array = new Array(new int("0xFFFFFF"),
+                                                                  new int("0xFF0000"),
+                                                                  new int("0xFF8080"),
+                                                                  new int("0xFFCC00"),
+                                                                  new int("0xFFFF00"),
+                                                                  new int("0x00FF00"),
+                                                                  new int("0x00FFFF"),
+                                                                  new int("0x0000FF"),
+                                                                  new int("0xC000FF")
         );
 
-        public static const COLLOR_COMMAND_ARRAY: Array = new Array(
-                "white", "red", "pink", "orange", "yellow", "green", "cyan",
-                "blue", "purple"
+        public static const COLLOR_COMMAND_ARRAY: Array = new Array("white",
+                                                                    "red",
+                                                                    "pink",
+                                                                    "orange",
+                                                                    "yellow",
+                                                                    "green",
+                                                                    "cyan",
+                                                                    "blue",
+                                                                    "purple"
         );
 
         /**
          * 色を指定するコマンドを表す正規表現です。
          */
-        public static const COLLOR_COMMAND_PATTERNS: Array = new Array(
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[0] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[1] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[2] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[3] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[4] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[5] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[6] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[7] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_COMMAND_ARRAY[8] + "\\b", "ig")
+        public static const COLLOR_COMMAND_PATTERNS: Array = new Array(new RegExp("\\b" + COLLOR_COMMAND_ARRAY[0] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[1] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[2] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[3] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[4] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[5] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[6] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[7] +
+                                                                                  "\\b", "ig"),
+                                                                       new RegExp("\\b" + COLLOR_COMMAND_ARRAY[8] +
+                                                                                  "\\b", "ig")
         );
 
         public static const NICONICO_WHITE: int = 0, WHITE2: int = 0;
@@ -103,48 +115,92 @@ package org.mineap.nndd.player.comment {
         public static const NOBLE_VIOLET: int = 6, PURPLE2: int = 6;
         public static const BLACK: int = 7;
 
-        public static const COLLOR_PREMIUM_VALUE_ARRAY: Array = new Array(
-                new int("0xCCCC99"), new int("0xCC0033"), new int("0xFF6600"),
-                new int("0x999900"), new int("0x00CC66"), new int("0x33FFFC"),
-                new int("0x6633CC"), new int("0x000000")
+        public static const COLLOR_PREMIUM_VALUE_ARRAY: Array = new Array(new int("0xCCCC99"),
+                                                                          new int("0xCC0033"),
+                                                                          new int("0xFF6600"),
+                                                                          new int("0x999900"),
+                                                                          new int("0x00CC66"),
+                                                                          new int("0x33FFFC"),
+                                                                          new int("0x6633CC"),
+                                                                          new int("0x000000")
         );
 
-        public static const COLLOR_PREMIUM_COMMAND_ARRAY: Array = new Array(
-                "niconicowhite", "truered", "passionorange", "madyyellow",
-                "elementalgreen", "marineblue", "nobleviolet", "black"
+        public static const COLLOR_PREMIUM_COMMAND_ARRAY: Array = new Array("niconicowhite",
+                                                                            "truered",
+                                                                            "passionorange",
+                                                                            "madyyellow",
+                                                                            "elementalgreen",
+                                                                            "marineblue",
+                                                                            "nobleviolet",
+                                                                            "black"
         );
 
         /**
          * 色を指定するプレミアムコマンドを表す正規表現です。
          */
-        public static const COLLOR_PREMIUM_COMMAND_PATTERNS: Array = new Array(
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[0] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[1] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[2] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[3] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[4] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[5] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[6] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND_ARRAY[7] + "\\b", "ig")
+        public static const COLLOR_PREMIUM_COMMAND_PATTERNS: Array = new Array(new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[0] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[1] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[2] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[3] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[4] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[5] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[6] +
+                                                                                          "\\b", "ig"),
+                                                                               new RegExp("\\b" +
+                                                                                          COLLOR_PREMIUM_COMMAND_ARRAY[7] +
+                                                                                          "\\b", "ig")
         );
 
-        public static const COLLOR_PREMIUM_COMMAND2_ARRAY: Array = new Array(
-                "white2", "red2", "orange2", "yellow2",
-                "green2", "blue2", "purple2", "black"
+        public static const COLLOR_PREMIUM_COMMAND2_ARRAY: Array = new Array("white2",
+                                                                             "red2",
+                                                                             "orange2",
+                                                                             "yellow2",
+                                                                             "green2",
+                                                                             "blue2",
+                                                                             "purple2",
+                                                                             "black"
         );
 
         /**
          * 色を指定するプレミアムコマンド(2)を表す正規表現です。
          */
-        public static const COLLOR_PREMIUM_COMMAND2_PATTERNS: Array = new Array(
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[0] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[1] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[2] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[3] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[4] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[5] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[6] + "\\b", "ig"),
-                new RegExp("\\b" + COLLOR_PREMIUM_COMMAND2_ARRAY[7] + "\\b", "ig")
+        public static const COLLOR_PREMIUM_COMMAND2_PATTERNS: Array = new Array(new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[0] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[1] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[2] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[3] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[4] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[5] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[6] +
+                                                                                           "\\b", "ig"),
+                                                                                new RegExp("\\b" +
+                                                                                           COLLOR_PREMIUM_COMMAND2_ARRAY[7] +
+                                                                                           "\\b", "ig")
         );
 
         /**
@@ -238,8 +294,7 @@ package org.mineap.nndd.player.comment {
             var op: String = command.substring(0, 3);
 
             if (command.length > 0) {
-                if (op == "＠ＣＭ" || op == "@CM" ||
-                        op == "@ＣＭ" || op == "＠CM") {
+                if (op == "＠ＣＭ" || op == "@CM" || op == "@ＣＭ" || op == "＠CM") {
                     var pattern1: RegExp = new RegExp("(nm\\d+)", "ig");
                     var pattern2: RegExp = new RegExp("(nm\\d+)[^\\d].*\\s(\\d\\d\\d\\d)", "ig");
                     var videoIds: Array = pattern1.exec(command);
@@ -350,18 +405,15 @@ package org.mineap.nndd.player.comment {
                 command.line = line.substring(line.indexOf("jump"));
                 analyzer = new JumpOperationAnalyzer();
                 iAnalyzeResult = analyzer.analyze(command);
-            }
-            else if (line.indexOf("seek") != -1) {
+            } else if (line.indexOf("seek") != -1) {
                 command.line = line.substring(line.indexOf("seek"));
                 analyzer = new SeekOperationAnalyzer();
                 iAnalyzeResult = analyzer.analyze(command);
-            }
-            else if (line.indexOf("addMarker") != -1) {
+            } else if (line.indexOf("addMarker") != -1) {
                 command.line = line.substring(line.indexOf("addMarker"));
                 analyzer = new AddMarkerOperationAnalyzer();
                 iAnalyzeResult = analyzer.analyze(command);
-            }
-            else if (line.indexOf("commentColor") != -1) {
+            } else if (line.indexOf("commentColor") != -1) {
                 command.line = line.substring(line.indexOf("commentColor"));
                 analyzer = new CommentColorOperationAnalyzer();
                 analyzer.analyze(command);	//CommentColorOperationAnalyzer#analyze() は null を返す

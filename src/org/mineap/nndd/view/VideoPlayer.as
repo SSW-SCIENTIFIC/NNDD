@@ -53,10 +53,10 @@ import mx.managers.PopUpManager;
 
 import org.mineap.nndd.LogManager;
 import org.mineap.nndd.Message;
+import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.model.NNDDVideo;
 import org.mineap.nndd.model.SearchItem;
 import org.mineap.nndd.model.SearchSortString;
-import org.mineap.nndd.model.NNDDSearchType;
 import org.mineap.nndd.playList.PlayListManager;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.nndd.player.model.PlayerTagString;
@@ -164,8 +164,7 @@ public function setTagArray(tags: Vector.<PlayerTagString>): void {
         if (showAll) {
             logManager.addLog("Playerですべてのタグを表示");
         }
-    }
-    else {
+    } else {
         ConfigManager.getInstance().setItem("showAllTag", "false");
         ConfigManager.getInstance().save();
     }
@@ -177,8 +176,7 @@ public function setTagArray(tags: Vector.<PlayerTagString>): void {
         if (loc == null) {
             ConfigManager.getInstance().setItem("showTagLoc", "jp");
             ConfigManager.getInstance().save();
-        }
-        else {
+        } else {
             // e.g. "jp","tw","es","de"
             showLoc = loc;
         }
@@ -193,9 +191,7 @@ public function setTagArray(tags: Vector.<PlayerTagString>): void {
             continue;
         }
 
-        if (tag != null
-                && tag.indexOf("(取得できなかった") == -1
-                && tag.indexOf("(タグ情報の取得に失敗)") == -1) {
+        if (tag != null && tag.indexOf("(取得できなかった") == -1 && tag.indexOf("(タグ情報の取得に失敗)") == -1) {
             var lockStr: String = "";
             if (tagStr.lock) {
                 lockStr = "<font color=\"#ff0000\" size=\"8\">[LOCK]</font> ";
@@ -217,10 +213,10 @@ public function setTagArray(tags: Vector.<PlayerTagString>): void {
             myPattern = new RegExp("\"", "g");
             replacedTagStr = replacedTagStr.replace(myPattern, "&quot;");
 
-            text += "<a href=\"event:" + replacedTagStr + "\"><u><font color=\"#0000ff\">" + replacedTagStr + "</font></u></a>" +
-                    "<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) + "\"><font color=\"#0000ff\">【<u>百</u>】</font></a>" + lockStr + "  ";
-        }
-        else {
+            text += "<a href=\"event:" + replacedTagStr + "\"><u><font color=\"#0000ff\">" + replacedTagStr +
+                    "</font></u></a>" + "<a href=\"http://dic.nicovideo.jp/a/" + encodeURIComponent(tag) +
+                    "\"><font color=\"#0000ff\">【<u>百</u>】</font></a>" + lockStr + "  ";
+        } else {
             text += tag + "  ";
         }
     }
@@ -250,10 +246,8 @@ public function showVideoPlayerAndVideoInfoView(forcePlayerFront: Boolean = fals
 
 //		trace("ShowVideoInfoView");
 
-        if (this.nativeWindow != null
-                && !this.closed
-                && videoInfoView.nativeWindow != null
-                && videoInfoView.visible == true) {
+        if (this.nativeWindow != null && !this.closed && videoInfoView.nativeWindow != null && videoInfoView.visible ==
+            true) {
             videoInfoView.visible = true;
             videoInfoView.nativeWindow.orderToFront();
 
@@ -268,12 +262,10 @@ public function showVideoPlayerAndVideoInfoView(forcePlayerFront: Boolean = fals
 
     }
 
-    if (this.nativeWindow != null
-            && !this.closed) {
+    if (this.nativeWindow != null && !this.closed) {
         if (forcePlayerFront) {
             this.nativeWindow.activate();
-        }
-        else {
+        } else {
             this.nativeWindow.orderToFront();
         }
     }
@@ -295,7 +287,10 @@ public function tagListDoubleClickEventHandler(event: ListEvent): void {
         if (event.itemRenderer.data is String) {
             var word: String = String(event.itemRenderer.data);
             FlexGlobals.topLevelApplication.search(new SearchItem(word,
-                    SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
+                                                                  SearchSortString.convertSortTypeFromIndex(4),
+                                                                  NNDDSearchType.TAG,
+                                                                  word
+            ));
         }
     }
 }
@@ -331,31 +326,28 @@ private function windowMove(event: NativeWindowBoundsEvent): void {
     if (Capabilities.os.toLowerCase().indexOf("linux") > -1) {
         var timer: Timer = new Timer(100, 1);
         timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: TimerEvent): void {
-            var rect: Rectangle = new Rectangle(
-                    this.nativeWindow.x,
-                    this.nativeWindow.y,
-                    this.nativeWindow.width,
-                    this.nativeWindow.height);
+            var rect: Rectangle = new Rectangle(this.nativeWindow.x,
+                                                this.nativeWindow.y,
+                                                this.nativeWindow.width,
+                                                this.nativeWindow.height
+            );
             lastRect = rect;
             followInfoView(lastRect);
             resizeInfoView();
         }, false, 0, true);
-    }
-    else {
+    } else {
         followInfoView(lastRect);
         resizeInfoView();
     }
 }
 
 public function resizeInfoView(): void {
-    if (isWindowPositionSetupCompleted && this.videoInfoView != null
-            && this.nativeWindow != null
-            && this.videoInfoView.nativeWindow != null
-            && this.videoInfoView.visible
-            && this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
-            && this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED 	// videoPlayerが最小化されていない
-            && this.videoInfoView.isFollowInfoViewHeight 										// 追従が有効になっている
-            && this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {	// videoPlayerがフルスクリーンではない
+    if (isWindowPositionSetupCompleted && this.videoInfoView != null && this.nativeWindow != null &&
+        this.videoInfoView.nativeWindow != null && this.videoInfoView.visible &&
+        this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
+        && this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED 	// videoPlayerが最小化されていない
+        && this.videoInfoView.isFollowInfoViewHeight 										// 追従が有効になっている
+        && this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {	// videoPlayerがフルスクリーンではない
 
         this.videoInfoView.nativeWindow.height = this.nativeWindow.height;
         this.videoInfoView.validateNow();
@@ -365,17 +357,14 @@ public function resizeInfoView(): void {
 }
 
 public function followInfoView(lastRect: Rectangle): void {
-    if (isWindowPositionSetupCompleted && lastRect != null && this.videoInfoView != null
-            && this.nativeWindow != null
-            && !this.closed	// playerが閉じられたあとではない
-            && this.visible
-            && this.videoInfoView.nativeWindow != null
-            && !this.videoInfoView.closed	// infoviewが閉じられたあとではない
-            && this.videoInfoView.visible
-            && this.videoInfoView.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
-            && this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED 	// videoPlayerが最小化されていない
-            && this.videoInfoView.isPlayerFollow 										// 追従が有効になっている
-            && this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {	// videoPlayerがフルスクリーンではない
+    if (isWindowPositionSetupCompleted && lastRect != null && this.videoInfoView != null && this.nativeWindow != null &&
+        !this.closed	// playerが閉じられたあとではない
+        && this.visible && this.videoInfoView.nativeWindow != null && !this.videoInfoView.closed	// infoviewが閉じられたあとではない
+        && this.videoInfoView.visible && this.videoInfoView.nativeWindow.displayState !=
+        NativeWindowDisplayState.MINIMIZED // infoViewが最小化されていない
+        && this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED 	// videoPlayerが最小化されていない
+        && this.videoInfoView.isPlayerFollow 										// 追従が有効になっている
+        && this.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {	// videoPlayerがフルスクリーンではない
         this.videoInfoView.nativeWindow.x = lastRect.x + lastRect.width;
         this.videoInfoView.nativeWindow.y = lastRect.y;
     }
@@ -499,7 +488,7 @@ public function getCommentListProvider(): ArrayCollection {
 public function label_playSourceStatusInit(event: Event): void {
 
     label_playSourceStatus.setStyle("color", new int("0xFFFFFF"));
-    label_playSourceStatus.setStyle("fontAntiAliasType", flash.text.AntiAliasType.ADVANCED);
+    label_playSourceStatus.setStyle("fontAntiAliasType", AntiAliasType.ADVANCED);
     var filterArray: Array = new Array();
     filterArray.push(new DropShadowFilter(1));
     label_playSourceStatus.filters = filterArray;
@@ -507,7 +496,7 @@ public function label_playSourceStatusInit(event: Event): void {
 
 public function label_economyStatusInit(event: Event): void {
     label_economyStatus.setStyle("color", new int("0xFFFFFF"));
-    label_economyStatus.setStyle("fontAntiAliasType", flash.text.AntiAliasType.ADVANCED);
+    label_economyStatus.setStyle("fontAntiAliasType", AntiAliasType.ADVANCED);
     var filterArray: Array = new Array();
     filterArray.push(new DropShadowFilter(1));
     label_economyStatus.filters = filterArray;
@@ -596,8 +585,7 @@ private function fullScreen(event: FullScreenEvent): void {
         vbox_videoPlayer.setConstraintValue("top", 58);
         if (!videoInfoView.useDarkColor) {
             vbox_videoPlayer.setConstraintValue("backgroundColor", new int("0xFFFFFF"));
-        }
-        else {
+        } else {
             vbox_videoPlayer.setConstraintValue("backgroundColor", new int("0x646464"));
         }
         this.showStatusBar = true;
@@ -683,7 +671,8 @@ private function keyListener(event: KeyboardEvent): void {
             showTagArea(true, false);
         }
 
-    } else if (event.keyCode == Keyboard.F11 || (event.keyCode == Keyboard.F && (event.controlKey || event.commandKey))) {
+    } else if (event.keyCode == Keyboard.F11 ||
+               (event.keyCode == Keyboard.F && (event.controlKey || event.commandKey))) {
 //		trace("Ctrl + " + event.keyCode);
         this.changeFull();
     } else if (event.keyCode == Keyboard.I) {
@@ -834,7 +823,8 @@ private function readStore(): void {
 
     } catch (error: Error) {
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.FAIL_LOAD_CONF_FILE_FOR_VIDEO_PLAYER + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_LOAD_CONF_FILE_FOR_VIDEO_PLAYER + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
         trace(error.getStackTrace());
     }
 
@@ -876,7 +866,8 @@ public function saveStore(): void {
 
     } catch (error: Error) {
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_VIDEO_PLAYER + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_VIDEO_PLAYER + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
         EncryptedLocalStore.reset();
         trace(error.getStackTrace());
     }
@@ -1006,7 +997,8 @@ public function resetWindowPosition(): void {
 
     } catch (error: Error) {
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.FAIL_LOAD_CONF_FILE_FOR_VIDEO_PLAYER + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_LOAD_CONF_FILE_FOR_VIDEO_PLAYER + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
         trace(error.getStackTrace());
     }
 
@@ -1030,8 +1022,8 @@ private function resizeNow(event: ResizeEvent): void {
 }
 
 private function canvasVideoDroped(event: NativeDragEvent): void {
-    if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
-            || event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)) {
+    if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) ||
+        event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)) {
         var url: String = (event.clipboard.getData(ClipboardFormats.TEXT_FORMAT) as String);
 
         if (url == null) {
@@ -1078,16 +1070,17 @@ private function canvasVideoDroped(event: NativeDragEvent): void {
         }
     } else if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)) {
         var array: Array = (event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array);
-        if (array != null && (array[0] as File).url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) != null) {
+        if (array != null && (array[0] as File).url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) !=
+            null) {
             playerController.playMovie(array[0].url);
         }
     }
 }
 
 private function canvasVideoDragEnter(event: NativeDragEvent): void {
-    if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
-            || event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)
-            || event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)) {
+    if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) ||
+        event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT) ||
+        event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)) {
         NativeDragManager.acceptDragDrop(canvas_video);
 
 //		if (event.allowedActions.allowCopy)
@@ -1225,12 +1218,8 @@ private function mouseOutEventHandler(event: MouseEvent): void {
 }
 
 private function infoAreaLinkClicked(event: TextEvent): void {
-    if (
-            event.text.indexOf("mylist/") !== -1 ||
-            event.text.indexOf("channel/") !== -1 ||
-            event.text.indexOf("community/") !== -1 ||
-            event.text.indexOf("user/") !== -1
-    ) {
+    if (event.text.indexOf("mylist/") !== -1 || event.text.indexOf("channel/") !== -1 ||
+        event.text.indexOf("community/") !== -1 || event.text.indexOf("user/") !== -1) {
 //		trace(event.text);
         Application.application.renewMyList(event.text);
     } else if (event.text.indexOf("watch/") !== -1) {
@@ -1245,7 +1234,10 @@ private function infoAreaLinkClicked(event: TextEvent): void {
 private function tagTextAreaLinkClikced(event: TextEvent): void {
     var word: String = String(event.text);
     Application.application.search(new SearchItem(word,
-            SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
+                                                  SearchSortString.convertSortTypeFromIndex(4),
+                                                  NNDDSearchType.TAG,
+                                                  word
+    ));
 }
 
 private function changeShowCommentClickEventHandler(event: Event): void {
@@ -1269,8 +1261,7 @@ private function controlPlayListContextMenuDisplayHandler(event: Event): void {
 
     if (playerController.isPlayListPlaying) {
         contextMenuItem.enabled = true;
-    }
-    else {
+    } else {
         contextMenuItem.enabled = false;
     }
 }
@@ -1288,8 +1279,7 @@ public function get isFileOpenDialogFocusIn(): Boolean {
     }
     if (this.videoSourceSelectWindow.isTextInputFocusIn) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -1349,8 +1339,7 @@ public function updateFrameRate(): void {
     if (this.stage != null && videoPlayer.canvas_video != null) {
         if (videoInfoView.fps > 30) {
             videoPlayer.canvas_video.stage.frameRate = int(videoInfoView.fps);
-        }
-        else {
+        } else {
             videoPlayer.canvas_video.stage.frameRate = 30;
         }
         trace("stage.frameRate:" + videoPlayer.canvas_video.stage.frameRate);

@@ -63,7 +63,12 @@ package org.mineap.nndd.model {
          * @param minites 分を指定します。0-59の値です。
          *
          */
-        public function Schedule(interval: int = Schedule.DAILY, dayOfTheWeek: int = -1, hour: int = 0, minites: int = 0) {
+        public function Schedule(
+            interval: int = Schedule.DAILY,
+            dayOfTheWeek: int = -1,
+            hour: int = 0,
+            minites: int = 0
+        ) {
             this.interval = interval;
 
             if (interval == Schedule.WEEKLY) {

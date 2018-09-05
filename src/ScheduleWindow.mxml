@@ -5,9 +5,9 @@
 
     <mx:Script>
 		<![CDATA[
-        import org.mineap.nndd.model.Schedule;
-
         import mx.events.ListEvent;
+
+        import org.mineap.nndd.model.Schedule;
 
         private var _schedule: Schedule = new Schedule();
 
@@ -53,12 +53,22 @@
         }
 
         protected function button_save_clickHandler(event: MouseEvent): void {
-            this._schedule = new Schedule(this.comboBox_Interval.selectedIndex, this.comboBox_dayOfTheWeek.selectedIndex, this.stepper_houre.value, this.stepper_minutes.value);
+            this._schedule = new Schedule(
+                    this.comboBox_Interval.selectedIndex,
+                    this.comboBox_dayOfTheWeek.selectedIndex,
+                    this.stepper_houre.value,
+                    this.stepper_minutes.value
+            );
             dispatchEvent(new Event(Event.COMPLETE));
         }
 
         protected function button_cancel_clickHandler(event: MouseEvent): void {
-            this._schedule = new Schedule(this.comboBox_Interval.selectedIndex, this.comboBox_dayOfTheWeek.selectedIndex, this.stepper_houre.value, this.stepper_minutes.value);
+            this._schedule = new Schedule(
+                    this.comboBox_Interval.selectedIndex,
+                    this.comboBox_dayOfTheWeek.selectedIndex,
+                    this.stepper_houre.value,
+                    this.stepper_minutes.value
+            );
             dispatchEvent(new Event(Event.CANCEL));
         }
 

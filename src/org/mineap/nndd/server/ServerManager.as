@@ -1,17 +1,9 @@
 package org.mineap.nndd.server {
-    import com.tilfin.airthttpd.server.HttpConnection;
     import com.tilfin.airthttpd.server.HttpListener;
 
     import flash.errors.IllegalOperationError;
-    import flash.events.ServerSocketConnectEvent;
-    import flash.net.ServerSocket;
-    import flash.net.Socket;
-    import flash.utils.ByteArray;
 
     import org.mineap.nndd.LogManager;
-    import org.mineap.nndd.model.RssType;
-    import org.mineap.nndd.myList.MyListManager;
-    import org.mineap.nndd.util.MyListUtil;
 
     /**
      * NNDDのサーバ機能を管理するクラスです
@@ -57,7 +49,12 @@ package org.mineap.nndd.server {
          * @return
          *
          */
-        public function startServer(localPort: int, allowVideo: Boolean, allowMyList: Boolean, allowSyncMyListYetPlay: Boolean): Boolean {
+        public function startServer(
+            localPort: int,
+            allowVideo: Boolean,
+            allowMyList: Boolean,
+            allowSyncMyListYetPlay: Boolean
+        ): Boolean {
             stopServer();
 
             this.allowMyList = allowMyList;
@@ -75,8 +72,7 @@ package org.mineap.nndd.server {
 
                 return true;
 
-            }
-            catch (error: Error) {
+            } catch (error: Error) {
                 LogManager.instance.addLog("他のNNDDからの通信待ち受けの開始に失敗:localPort=" + localPort + ", [" + error + "]");
                 trace(error.getStackTrace());
             }
@@ -103,8 +99,7 @@ package org.mineap.nndd.server {
                 // 既にServerSocketが動いていたら一度閉じる
                 try {
                     httpListener.shutdown();
-                }
-                catch (error: Error) {
+                } catch (error: Error) {
                     trace(error.getStackTrace());
                 }
 

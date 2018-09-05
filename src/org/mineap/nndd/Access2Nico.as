@@ -2,7 +2,6 @@ package org.mineap.nndd {
 
     import flash.events.Event;
     import flash.events.EventDispatcher;
-    import flash.events.HTMLUncaughtScriptExceptionEvent;
     import flash.events.HTTPStatusEvent;
     import flash.events.IOErrorEvent;
     import flash.events.ProgressEvent;
@@ -23,20 +22,20 @@ package org.mineap.nndd {
     import mx.formatters.DateFormatter;
     import mx.formatters.NumberFormatter;
 
-    import org.mineap.nndd.player.comment.Command;
-    import org.mineap.nndd.library.ILibraryManager;
-    import org.mineap.nndd.library.LibraryManagerBuilder;
-    import org.mineap.nndd.library.LocalVideoInfoLoader;
-    import org.mineap.nndd.model.NNDDVideo;
-    import org.mineap.nndd.player.PlayerController;
-    import org.mineap.nndd.util.NicoPattern;
-    import org.mineap.nndd.util.PathMaker;
-    import org.mineap.nndd.util.ThumbInfoAnalyzer;
     import org.mineap.nicovideo4as.analyzer.RankingAnalyzer;
     import org.mineap.nicovideo4as.model.NicoRankingUrl;
     import org.mineap.nicovideo4as.model.RankingItem;
     import org.mineap.nicovideo4as.util.HtmlUtil;
     import org.mineap.nndd.downloadedList.DownloadedListManager;
+    import org.mineap.nndd.library.ILibraryManager;
+    import org.mineap.nndd.library.LibraryManagerBuilder;
+    import org.mineap.nndd.library.LocalVideoInfoLoader;
+    import org.mineap.nndd.model.NNDDVideo;
+    import org.mineap.nndd.player.PlayerController;
+    import org.mineap.nndd.player.comment.Command;
+    import org.mineap.nndd.util.NicoPattern;
+    import org.mineap.nndd.util.PathMaker;
+    import org.mineap.nndd.util.ThumbInfoAnalyzer;
 
     /**
      * Access2Nico.as
@@ -188,13 +187,37 @@ package org.mineap.nndd {
         public static const NICOCHART_URL: String = "http://www.nicochart.jp/ranking/";
         public static const NICO_WATCH_VIDEO_URL: String = "http://www.nicovideo.jp/watch/";
 
-        public static const NICO_RANKING_URLS: Array = new Array(
-                new Array("http://www.nicovideo.jp/ranking/mylist/daily/", "http://www.nicovideo.jp/ranking/view/daily/", "http://www.nicovideo.jp/ranking/res/daily/", "http://www.nicovideo.jp/ranking/fav/daily/"),
-                new Array("http://www.nicovideo.jp/ranking/mylist/weekly/", "http://www.nicovideo.jp/ranking/view/weekly/", "http://www.nicovideo.jp/ranking/res/weekly/", "http://www.nicovideo.jp/ranking/fav/weekly/"),
-                new Array("http://www.nicovideo.jp/ranking/mylist/monthly/", "http://www.nicovideo.jp/ranking/view/monthly/", "http://www.nicovideo.jp/ranking/res/monthly/", "http://www.nicovideo.jp/ranking/fav/monthly/"),
-                new Array("http://www.nicovideo.jp/ranking/mylist/hourly/", "http://www.nicovideo.jp/ranking/view/hourly/", "http://www.nicovideo.jp/ranking/res/hourly/", "http://www.nicovideo.jp/ranking/fav/hourly/"),
-                new Array("http://www.nicovideo.jp/ranking/mylist/total/", "http://www.nicovideo.jp/ranking/view/total/all/", "http://www.nicovideo.jp/ranking/res/total/", "http://www.nicovideo.jp/ranking/fav/total/"),
-                new Array("http://www.nicovideo.jp/newarrival/")
+        public static const NICO_RANKING_URLS: Array = new Array(new Array(
+            "http://www.nicovideo.jp/ranking/mylist/daily/",
+            "http://www.nicovideo.jp/ranking/view/daily/",
+            "http://www.nicovideo.jp/ranking/res/daily/",
+            "http://www.nicovideo.jp/ranking/fav/daily/"
+                                                                 ),
+                                                                 new Array(
+                                                                     "http://www.nicovideo.jp/ranking/mylist/weekly/",
+                                                                     "http://www.nicovideo.jp/ranking/view/weekly/",
+                                                                     "http://www.nicovideo.jp/ranking/res/weekly/",
+                                                                     "http://www.nicovideo.jp/ranking/fav/weekly/"
+                                                                 ),
+                                                                 new Array(
+                                                                     "http://www.nicovideo.jp/ranking/mylist/monthly/",
+                                                                     "http://www.nicovideo.jp/ranking/view/monthly/",
+                                                                     "http://www.nicovideo.jp/ranking/res/monthly/",
+                                                                     "http://www.nicovideo.jp/ranking/fav/monthly/"
+                                                                 ),
+                                                                 new Array(
+                                                                     "http://www.nicovideo.jp/ranking/mylist/hourly/",
+                                                                     "http://www.nicovideo.jp/ranking/view/hourly/",
+                                                                     "http://www.nicovideo.jp/ranking/res/hourly/",
+                                                                     "http://www.nicovideo.jp/ranking/fav/hourly/"
+                                                                 ),
+                                                                 new Array(
+                                                                     "http://www.nicovideo.jp/ranking/mylist/total/",
+                                                                     "http://www.nicovideo.jp/ranking/view/total/all/",
+                                                                     "http://www.nicovideo.jp/ranking/res/total/",
+                                                                     "http://www.nicovideo.jp/ranking/fav/total/"
+                                                                 ),
+                                                                 new Array("http://www.nicovideo.jp/newarrival/")
         );
 
         public static const SEARCH_UP_NEW: int = 0;
@@ -211,19 +234,41 @@ package org.mineap.nndd {
         public static const SEARCH_PLAY_TIME_SHORT: int = 11;
 
         public static const NICO_SEARCH_SORT_VALUE: Array = new Array(
-                "?sort=f&order=d", "?sort=f&order=a", "?sort=v&order=d", "?sort=v&order=a", "?sort=r&order=d", "?sort=r&order=a", "?sort=n&order=d", "?sort=n&order=a", "?sort=m&order=d", "?sort=m&order=a", "?sort=l&order=d", "?sort=l&order=a"
+            "?sort=f&order=d",
+            "?sort=f&order=a",
+            "?sort=v&order=d",
+            "?sort=v&order=a",
+            "?sort=r&order=d",
+            "?sort=r&order=a",
+            "?sort=n&order=d",
+            "?sort=n&order=a",
+            "?sort=m&order=d",
+            "?sort=m&order=a",
+            "?sort=l&order=d",
+            "?sort=l&order=a"
         );
 
         public static const NICO_SEARCH_SORT_TEXT: Array = new Array(
-                "投稿が新しい順", "投稿が古い順", "再生が多い順", "再生が少ない順", "コメントが多い順", "コメントが少ない順", "コメントが新しい順", "コメントが古い順", "マイリストが多い順", "マイリストが少ない順", "再生時間が長い順", "再生時間が短い順"
+            "投稿が新しい順",
+            "投稿が古い順",
+            "再生が多い順",
+            "再生が少ない順",
+            "コメントが多い順",
+            "コメントが少ない順",
+            "コメントが新しい順",
+            "コメントが古い順",
+            "マイリストが多い順",
+            "マイリストが少ない順",
+            "再生時間が長い順",
+            "再生時間が短い順"
         );
 
-        public static const NICO_SEARCH_TYPE_TEXT: Array = new Array(
-                "キーワード", "タグ"//, "タグを"
+        public static const NICO_SEARCH_TYPE_TEXT: Array = new Array("キーワード", "タグ"//, "タグを"
         );
 
         public static const NICO_SEARCH_TYPE_URL: Array = new Array(
-                "http://www.nicovideo.jp/search/", "http://www.nicovideo.jp/tag/"//, "http://www.nicovideo.jp/related_tag/"
+            "http://www.nicovideo.jp/search/",
+            "http://www.nicovideo.jp/tag/"//, "http://www.nicovideo.jp/related_tag/"
         );
 
         public static const NICO_MY_PAGE_URL: String = "http://www.nicovideo.jp/my";
@@ -247,8 +292,12 @@ package org.mineap.nndd {
          * @param statusLabel
          * @param commentListProvider
          */
-        public function Access2Nico(downloadProvider: ArrayCollection, downLoadedListManager: DownloadedListManager,
-                                    playerController: PlayerController, logManager: LogManager, commentListProvider: ArrayCollection) {
+        public function Access2Nico(downloadProvider: ArrayCollection,
+                                    downLoadedListManager: DownloadedListManager,
+                                    playerController: PlayerController,
+                                    logManager: LogManager,
+                                    commentListProvider: ArrayCollection
+        ) {
             this.downLoadedListManager = downLoadedListManager;
             this.playerController = playerController;
             this.logManager = logManager;
@@ -348,8 +397,16 @@ package org.mineap.nndd {
          *                        ファイル名の例「videoFileName - [videoId]([Owner]).xml」
          *
          */
-        public function request_downLoad_Nicowari(topPageUrl: String, loginUrl: String, videoURL: String,
-                                                  mailAddress: String, password: String, path: String, nicowariVideoID: String, videoFileName: String, queueIndex: int): void {
+        public function request_downLoad_Nicowari(topPageUrl: String,
+                                                  loginUrl: String,
+                                                  videoURL: String,
+                                                  mailAddress: String,
+                                                  password: String,
+                                                  path: String,
+                                                  nicowariVideoID: String,
+                                                  videoFileName: String,
+                                                  queueIndex: int
+        ): void {
 
             this.videoURL = videoURL;
             this.path = path;
@@ -378,7 +435,15 @@ package org.mineap.nndd {
          * @param rankingListProvider ランキングを管理するプロバイダーです。
          * @param tagsArray タグを格納するArrayCollectionです。
          */
-        public function request_rankingRenew(period: int, target: int, category: String, rankingListProvider: ArrayCollection, pageIndex: int, tagsArray: ArrayCollection = null, label_status: Label = null): void {
+        public function request_rankingRenew(
+            period: int,
+            target: int,
+            category: String,
+            rankingListProvider: ArrayCollection,
+            pageIndex: int,
+            tagsArray: ArrayCollection = null,
+            label_status: Label = null
+        ): void {
             this.rankingListProvider = rankingListProvider;
             this.tagsArray = tagsArray;
             this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
@@ -398,7 +463,10 @@ package org.mineap.nndd {
          * @param rankingListProvider ランキングを管理するプロバイダーです。
          *
          */
-        public function request_rankingRenewOnNicoChart(rankingURL: String, rankingListProvider: ArrayCollection): void {
+        public function request_rankingRenewOnNicoChart(
+            rankingURL: String,
+            rankingListProvider: ArrayCollection
+        ): void {
             this.rankingListProvider = rankingListProvider;
 
             var request: URLRequest = new URLRequest(rankingURL);
@@ -426,8 +494,13 @@ package org.mineap.nndd {
          * @param myListGroupProvider
          *
          */
-        public function request_myListGroupRenew(topPageUrl: String, loginUrl: String,
-                                                 mailAddress: String, password: String, myPageUrl: String, myListGroupProvider: Array): void {
+        public function request_myListGroupRenew(topPageUrl: String,
+                                                 loginUrl: String,
+                                                 mailAddress: String,
+                                                 password: String,
+                                                 myPageUrl: String,
+                                                 myListGroupProvider: Array
+        ): void {
 
             this.isMyListGroupRenew = true;
             this.myPageUrl = myPageUrl;
@@ -453,8 +526,13 @@ package org.mineap.nndd {
          * @param myListProvider
          *
          */
-        public function request_myListRenew(topPageUrl: String, loginUrl: String,
-                                            mailAddress: String, password: String, myListPageUrl: String, myListProvider: ArrayCollection): void {
+        public function request_myListRenew(topPageUrl: String,
+                                            loginUrl: String,
+                                            mailAddress: String,
+                                            password: String,
+                                            myListPageUrl: String,
+                                            myListProvider: ArrayCollection
+        ): void {
 
             this.isMyListRenew = true;
             this.myListPageUrl = myListPageUrl;
@@ -483,9 +561,18 @@ package org.mineap.nndd {
          * @param tagArray タグを格納するArrayです。
          *
          */
-        public function request_search(topPageUrl: String, loginUrl: String,
-                                       mailAddress: String, password: String, searchURL: String,
-                                       searchWord: String, rankingListProvider: ArrayCollection, sortIndex: int, pageIndex: int, tagArray: Array = null, label_statusInfo: Label = null): void {
+        public function request_search(topPageUrl: String,
+                                       loginUrl: String,
+                                       mailAddress: String,
+                                       password: String,
+                                       searchURL: String,
+                                       searchWord: String,
+                                       rankingListProvider: ArrayCollection,
+                                       sortIndex: int,
+                                       pageIndex: int,
+                                       tagArray: Array = null,
+                                       label_statusInfo: Label = null
+        ): void {
             this.rankingListProvider = rankingListProvider;
             this.tagArray = tagArray;
 
@@ -504,7 +591,8 @@ package org.mineap.nndd {
                     }
                 } else {
                     if (sortIndex != -1) {
-                        this.nicoSearchURL = searchURL + searchWord + "&" + (Access2Nico.NICO_SEARCH_SORT_VALUE[sortIndex] as String).substring(1);
+                        this.nicoSearchURL = searchURL + searchWord + "&" +
+                                             (Access2Nico.NICO_SEARCH_SORT_VALUE[sortIndex] as String).substring(1);
                     } else {
                         this.nicoSearchURL = searchURL + searchWord;
                     }
@@ -537,8 +625,13 @@ package org.mineap.nndd {
          * @param tagsArray
          *
          */
-        public function request_thumbInfo(topPageUrl: String, loginUrl: String,
-                                          mailAddress: String, password: String, videoID: String, tagArray: Array): void {
+        public function request_thumbInfo(topPageUrl: String,
+                                          loginUrl: String,
+                                          mailAddress: String,
+                                          password: String,
+                                          videoID: String,
+                                          tagArray: Array
+        ): void {
 
             this.isGetThumbInfo = true;
             this.thumbVideoID = videoID;
@@ -559,7 +652,13 @@ package org.mineap.nndd {
          * @param videoID
          *
          */
-        public function request_ichiba(topPageUrl: String, loginUrl: String, mailAddress: String, password: String, videoID: String): void {
+        public function request_ichiba(
+            topPageUrl: String,
+            loginUrl: String,
+            mailAddress: String,
+            password: String,
+            videoID: String
+        ): void {
 
             this.isGetIchiba = true;
             this.videoID = videoID;
@@ -579,7 +678,16 @@ package org.mineap.nndd {
          * @return
          *
          */
-        public function postMessage(topPageUrl: String, loginUrl: String, mailAddress: String, password: String, comment: String, mail: String, videoID: String, vpos: int): void {
+        public function postMessage(
+            topPageUrl: String,
+            loginUrl: String,
+            mailAddress: String,
+            password: String,
+            comment: String,
+            mail: String,
+            videoID: String,
+            vpos: int
+        ): void {
             this.isVideoGetting = true;
             this.isCommentOnly = true;
             this.isCommentPost = true;
@@ -784,26 +892,34 @@ package org.mineap.nndd {
 
             if (downloadProvider != null && queueIndex != -1) {
                 downloadProvider.setItemAt({
-                    col_videoName: downloadProvider[queueIndex].col_videoName,
-                    col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                    col_status: "ログイン中",
-                    col_a2n: downloadProvider[queueIndex].col_a2n
-                }, queueIndex);
+                                               col_videoName: downloadProvider[queueIndex].col_videoName,
+                                               col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                               col_status: "ログイン中",
+                                               col_a2n: downloadProvider[queueIndex].col_a2n
+                                           }, queueIndex);
             }
 
             if (!this.isStreamingPlay) {
                 if (rankingListProvider != null && rankingIndex != -1 && rankingListProvider.length > rankingIndex) {
-                    if (rankingVideoName != null && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                    if (rankingVideoName != null && rankingVideoName ==
+                        rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                         this.rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                            dataGridColumn_condition: "ログイン中\n",
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                            dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                        }, rankingIndex);
+                                                               dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_ranking,
+                                                               dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_preview,
+                                                               dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoName,
+                                                               dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_Info,
+                                                               dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoInfo,
+                                                               dataGridColumn_condition: "ログイン中\n",
+                                                               dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoPath,
+                                                               dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_date
+                                                           }, rankingIndex);
                     }
                 }
             }
@@ -944,7 +1060,10 @@ package org.mineap.nndd {
 
             var max: int = 100;
 
-            var pattern: RegExp = new RegExp("<li class=\"thumbnail\"><a href=\"http://www.nicovideo.jp/watch/.*\">", "ig");
+            var pattern: RegExp = new RegExp(
+                "<li class=\"thumbnail\"><a href=\"http://www.nicovideo.jp/watch/.*\">",
+                "ig"
+            );
 
             var myUrlList: Array = oldListLoader.data.match(pattern);
 
@@ -957,17 +1076,22 @@ package org.mineap.nndd {
             //trace("List:"+list);
 
             for (var i: int = 0; max > 0 && i < myUrlList.length; max--, i++) {
-                var key: String = myUrlList[i].substring(myUrlList[i].lastIndexOf("href=\"") + 6, myUrlList[i].lastIndexOf("\">"));
-                var value: String = myTitleList[i].substring(myTitleList[i].indexOf(">") + 1, myTitleList[i].indexOf("</a>"));
+                var key: String = myUrlList[i].substring(
+                    myUrlList[i].lastIndexOf("href=\"") + 6,
+                    myUrlList[i].lastIndexOf("\">")
+                );
+                var value: String = myTitleList[i].substring(
+                    myTitleList[i].indexOf(">") + 1,
+                    myTitleList[i].indexOf("</a>")
+                );
                 //trace(i + " : " + key + " : " + value);
                 list[i] = new Array(key, value);
 
                 rankingListProvider.addItem({
-                            dataGridColumn_preview: "-",
-                            dataGridColumn_ranking: i + 1,
-                            dataGridColumn_videoName: list[i][1] + "\n" + list[i][0]
-                        }
-                );
+                                                dataGridColumn_preview: "-",
+                                                dataGridColumn_ranking: i + 1,
+                                                dataGridColumn_videoName: list[i][1] + "\n" + list[i][0]
+                                            });
             }
 
             this.urlList = list;
@@ -1125,19 +1249,21 @@ package org.mineap.nndd {
                     }
 
                     rankingListProvider.addItem({
-                        dataGridColumn_ranking: index + ((this.pageIndex - 1) * url_videoIdList.length),
-                        dataGridColumn_preview: urlList[i][1],
-                        dataGridColumn_videoName: urlList[i][0],
-                        dataGridColumn_videoInfo: "...取得中",
-                        dataGridColumn_condition: videoCondition,
-                        dataGridColumn_videoPath: localURL,
-                        dataGridColumn_nicoVideoUrl: urlList[i][0]
-                    });
+                                                    dataGridColumn_ranking: index + ((this.pageIndex - 1) *
+                                                                                     url_videoIdList.length),
+                                                    dataGridColumn_preview: urlList[i][1],
+                                                    dataGridColumn_videoName: urlList[i][0],
+                                                    dataGridColumn_videoInfo: "...取得中",
+                                                    dataGridColumn_condition: videoCondition,
+                                                    dataGridColumn_videoPath: localURL,
+                                                    dataGridColumn_nicoVideoUrl: urlList[i][0]
+                                                });
 
                     this.getThumbInfo(PathMaker.getVideoID(url), i, false);
 
                 } catch (error: Error) {
-                    logManager.addLog("検索結果ページの解析に失敗しました。:" + i + "個目の解析," + errorString + "\n" + error.getStackTrace());
+                    logManager.addLog("検索結果ページの解析に失敗しました。:" + i + "個目の解析," + errorString + "\n" +
+                                      error.getStackTrace());
                     changeNicoGUI = true;
                 }
             }
@@ -1279,14 +1405,15 @@ package org.mineap.nndd {
                     }
 
                     rankingListProvider.addItem({
-                        dataGridColumn_ranking: index,
-                        dataGridColumn_preview: PathMaker.getThumbImgUrl(PathMaker.getVideoID(item.link)),
-                        dataGridColumn_videoName: videoTitle,
-                        dataGridColumn_videoInfo: "...取得中",
-                        dataGridColumn_condition: videoCondition,
-                        dataGridColumn_videoPath: localURL,
-                        dataGridColumn_nicoVideoUrl: item.link
-                    });
+                                                    dataGridColumn_ranking: index,
+                                                    dataGridColumn_preview: PathMaker.getThumbImgUrl(PathMaker.getVideoID(
+                                                        item.link)),
+                                                    dataGridColumn_videoName: videoTitle,
+                                                    dataGridColumn_videoInfo: "...取得中",
+                                                    dataGridColumn_condition: videoCondition,
+                                                    dataGridColumn_videoPath: localURL,
+                                                    dataGridColumn_nicoVideoUrl: item.link
+                                                });
 
                     this.getThumbInfo(videoId, index - 1, false);
 
@@ -1303,14 +1430,14 @@ package org.mineap.nndd {
                 if (loader.data.indexOf("このランキングは準備中です。") != -1) {
                     logManager.addLog("このランキングは準備中です。(ニコニコ動画より)");
                     rankingListProvider.addItem({
-                        dataGridColumn_ranking: 1,
-                        dataGridColumn_preview: "",
-                        dataGridColumn_videoName: "このランキングは準備中です。(ニコニコ動画より)",
-                        dataGridColumn_videoInfo: "",
-                        dataGridColumn_condition: "",
-                        dataGridColumn_videoPath: "",
-                        dataGridColumn_nicoVideoUrl: ""
-                    });
+                                                    dataGridColumn_ranking: 1,
+                                                    dataGridColumn_preview: "",
+                                                    dataGridColumn_videoName: "このランキングは準備中です。(ニコニコ動画より)",
+                                                    dataGridColumn_videoInfo: "",
+                                                    dataGridColumn_condition: "",
+                                                    dataGridColumn_videoPath: "",
+                                                    dataGridColumn_nicoVideoUrl: ""
+                                                });
                 } else {
                     logManager.addLog("ニコニコ動画の仕様が変わっている可能性があります。検索結果が正しく取得できていない可能性があります。");
                     Alert.show("ニコニコ動画の仕様が変わっている可能性があります。\n検索結果が正しく取得できていない可能性があります。", "警告");
@@ -1320,14 +1447,14 @@ package org.mineap.nndd {
             if (index == 1) {
                 logManager.addLog("１件も取得できませんでした");
                 rankingListProvider.addItem({
-                    dataGridColumn_ranking: 1,
-                    dataGridColumn_preview: "",
-                    dataGridColumn_videoName: "１件も取得できませんでした",
-                    dataGridColumn_videoInfo: "",
-                    dataGridColumn_condition: "",
-                    dataGridColumn_videoPath: "",
-                    dataGridColumn_nicoVideoUrl: ""
-                });
+                                                dataGridColumn_ranking: 1,
+                                                dataGridColumn_preview: "",
+                                                dataGridColumn_videoName: "１件も取得できませんでした",
+                                                dataGridColumn_videoInfo: "",
+                                                dataGridColumn_condition: "",
+                                                dataGridColumn_videoPath: "",
+                                                dataGridColumn_nicoVideoUrl: ""
+                                            });
             }
 
             return urlList;
@@ -1338,10 +1465,10 @@ package org.mineap.nndd {
          *
          * <pre>
          * Array(){
-		 * 	Array("総合","all");
-		 * 	Array("音楽","music");
-		 * 	...
-		 * }
+         * 	Array("総合","all");
+         * 	Array("音楽","music");
+         * 	...
+         * }
          * </pre>
          *
          * @param urlLoader
@@ -1439,26 +1566,34 @@ package org.mineap.nndd {
 
             if (downloadProvider != null && queueIndex != -1) {
                 downloadProvider.setItemAt({
-                    col_videoName: downloadProvider[queueIndex].col_videoName,
-                    col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                    col_status: "動画へアクセス中",
-                    col_a2n: downloadProvider[queueIndex].col_a2n
-                }, queueIndex);
+                                               col_videoName: downloadProvider[queueIndex].col_videoName,
+                                               col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                               col_status: "動画へアクセス中",
+                                               col_a2n: downloadProvider[queueIndex].col_a2n
+                                           }, queueIndex);
             }
 
             if (!this.isStreamingPlay) {
                 if (rankingListProvider != null && rankingIndex != -1 && rankingListProvider.length > rankingIndex) {
-                    if (rankingVideoName != null && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                    if (rankingVideoName != null && rankingVideoName ==
+                        rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                         this.rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                            dataGridColumn_condition: "動画へアクセス中\n",
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                            dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                        }, rankingIndex);
+                                                               dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_ranking,
+                                                               dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_preview,
+                                                               dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoName,
+                                                               dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_Info,
+                                                               dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoInfo,
+                                                               dataGridColumn_condition: "動画へアクセス中\n",
+                                                               dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoPath,
+                                                               dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_date
+                                                           }, rankingIndex);
                     }
                 }
             }
@@ -1552,7 +1687,8 @@ package org.mineap.nndd {
 
             //trace("loader.data:"+loader.data);
 
-            if (isCommentOnly && !isVideoGet || isNicowariGetting && (this.downloadedVideoFileName != null && this.downloadedVideoFileName != "")) {
+            if (isCommentOnly && !isVideoGet || isNicowariGetting &&
+                (this.downloadedVideoFileName != null && this.downloadedVideoFileName != "")) {
                 videoName = this.downloadedVideoFileName + " - [" + videoID + "]";
             } else {
                 //<title>タグからページの名前を取得する。これを使って保存するファイル名を決定する。
@@ -1596,26 +1732,34 @@ package org.mineap.nndd {
 
             if (downloadProvider != null && queueIndex != -1) {
                 downloadProvider.setItemAt({
-                    col_videoName: downloadProvider[queueIndex].col_videoName,
-                    col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                    col_status: "APIの応答待ち",
-                    col_a2n: downloadProvider[queueIndex].col_a2n
-                }, queueIndex);
+                                               col_videoName: downloadProvider[queueIndex].col_videoName,
+                                               col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                               col_status: "APIの応答待ち",
+                                               col_a2n: downloadProvider[queueIndex].col_a2n
+                                           }, queueIndex);
             }
 
             if (!this.isStreamingPlay) {
                 if (rankingListProvider != null && rankingListProvider.length > rankingIndex) {
-                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName ==
+                        rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                         this.rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                            dataGridColumn_condition: "APIの応答待ち\n",
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                            dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                        }, rankingIndex);
+                                                               dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_ranking,
+                                                               dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_preview,
+                                                               dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoName,
+                                                               dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_Info,
+                                                               dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoInfo,
+                                                               dataGridColumn_condition: "APIの応答待ち\n",
+                                                               dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoPath,
+                                                               dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_date
+                                                           }, rankingIndex);
                     }
                 }
             }
@@ -1660,21 +1804,29 @@ package org.mineap.nndd {
             if (isVideoGetting && !isStreamingPlay && !isOtherVideo) {
                 /* エコノミーのときのキャンセル判定 */
                 if (checkEconomy(downLoader.data) && isContactTheUser) {
-                    Alert.show(Message.M_ECONOMY_MODE_NOW, Message.M_MESSAGE, (Alert.OK | Alert.CANCEL), null, function (event: CloseEvent): void {
-                        if (event.detail == Alert.CANCEL) {
-                            videoType = "";
-                            videoDownloadCancel();
-                        } else if (event.detail == Alert.OK) {
-                            try {
-                                isEconomy = true;
-                                commentLoader = getComment(downLoader);
-                            } catch (error: Error) {
-                                logManager.addLog(Message.ERROR + ":" + error.getStackTrace());
-                                Alert.show("予期せぬ例外が発生しました。\n" + error, Message.M_ERROR);
-                                allClose(true);
+                    Alert.show(
+                        Message.M_ECONOMY_MODE_NOW,
+                        Message.M_MESSAGE,
+                        (Alert.OK | Alert.CANCEL),
+                        null,
+                        function (event: CloseEvent): void {
+                            if (event.detail == Alert.CANCEL) {
+                                videoType = "";
+                                videoDownloadCancel();
+                            } else if (event.detail == Alert.OK) {
+                                try {
+                                    isEconomy = true;
+                                    commentLoader = getComment(downLoader);
+                                } catch (error: Error) {
+                                    logManager.addLog(Message.ERROR + ":" + error.getStackTrace());
+                                    Alert.show("予期せぬ例外が発生しました。\n" + error, Message.M_ERROR);
+                                    allClose(true);
+                                }
                             }
-                        }
-                    }, null, 4);
+                        },
+                        null,
+                        4
+                    );
                 } else {
                     isEconomy = false;
                     commentLoader = getComment(downLoader);
@@ -1712,7 +1864,10 @@ package org.mineap.nndd {
             //APIから得られたデータの"&url="にあるURLを探す
             var videoURL: String = new String();
             //trace(getApiResultLoader.data);
-            videoURL = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("&url=") + 5, getApiResultLoader.data.indexOf("&", getApiResultLoader.data.indexOf("&url") + 1));
+            videoURL = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("&url=") + 5,
+                getApiResultLoader.data.indexOf("&", getApiResultLoader.data.indexOf("&url") + 1)
+            );
             videoURL = unescape(videoURL);
 
             trace(unescape(getApiResultLoader.data));
@@ -1759,12 +1914,33 @@ package org.mineap.nndd {
             trace(unescape(getApiResultLoader.data));
 
             //APIから得られたデータの"thread_ID="にあるスレッドIDを探す
-            var threadId: String = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("thread_ID=") + 11, getApiResultLoader.data.indexOf("&"));
-            var userID: String = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("user_id=") + 8, getApiResultLoader.data.indexOf("&", getApiResultLoader.data.indexOf("user_id=") + 9));
+            var threadId: String = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("thread_ID=") + 11,
+                getApiResultLoader.data.indexOf("&")
+            );
+            var userID: String = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("user_id=") + 8,
+                getApiResultLoader.data.indexOf(
+                    "&",
+                    getApiResultLoader.data.indexOf("user_id=") + 9
+                )
+            );
             //APIから得られたデータの"&ms="にあるURLを探す
-            var commentURL: String = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("&ms=") + 4, getApiResultLoader.data.indexOf("&", getApiResultLoader.data.indexOf("&ms") + 1));
+            var commentURL: String = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("&ms=") + 4,
+                getApiResultLoader.data.indexOf(
+                    "&",
+                    getApiResultLoader.data.indexOf("&ms") + 1
+                )
+            );
             //APIから得られたデータの"&is_premium="にある数字を探す
-            var isPremium: String = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("&is_premium=") + 12, getApiResultLoader.data.indexOf("&", getApiResultLoader.data.indexOf("&is_premium=") + 1));
+            var isPremium: String = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("&is_premium=") + 12,
+                getApiResultLoader.data.indexOf(
+                    "&",
+                    getApiResultLoader.data.indexOf("&is_premium=") + 1
+                )
+            );
             this.messageServerUrl = commentURL;
             this.userID = userID;
             this.isPremium = isPremium;
@@ -1814,11 +1990,11 @@ package org.mineap.nndd {
             logManager.addLog(Message.SUCCESS_DOWNLOAD_USER_COMMENT);
             if (downloadProvider != null && queueIndex != -1) {
                 downloadProvider.setItemAt({
-                    col_videoName: downloadProvider[queueIndex].col_videoName,
-                    col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                    col_status: "コメントXML\nダウンロード成功",
-                    col_a2n: downloadProvider[queueIndex].col_a2n
-                }, queueIndex);
+                                               col_videoName: downloadProvider[queueIndex].col_videoName,
+                                               col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                               col_status: "コメントXML\nダウンロード成功",
+                                               col_a2n: downloadProvider[queueIndex].col_a2n
+                                           }, queueIndex);
             }
 
             trace("ユーザーコメントXMLダウンロード成功" + evt);
@@ -1855,9 +2031,18 @@ package org.mineap.nndd {
             trace(unescape(getApiResultLoader.data));
 
             //APIから得られたデータの"thread_ID="にあるスレッドIDを探す
-            var threadId: String = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("thread_ID=") + 11, getApiResultLoader.data.indexOf("&"));
+            var threadId: String = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("thread_ID=") + 11,
+                getApiResultLoader.data.indexOf("&")
+            );
             //APIから得られたデータの"&ms="にあるURLを探す
-            var commentURL: String = getApiResultLoader.data.substring(getApiResultLoader.data.indexOf("&ms=") + 4, getApiResultLoader.data.indexOf("&", getApiResultLoader.data.indexOf("&ms") + 1));
+            var commentURL: String = getApiResultLoader.data.substring(
+                getApiResultLoader.data.indexOf("&ms=") + 4,
+                getApiResultLoader.data.indexOf(
+                    "&",
+                    getApiResultLoader.data.indexOf("&ms") + 1
+                )
+            );
 
             var getComment: URLRequest = new URLRequest(unescape(commentURL));
             getComment.method = "POST";
@@ -1866,7 +2051,8 @@ package org.mineap.nndd {
             videoType = ".xml";
 
             //var xml:String = "<thread fork=\"1\" user_id=\"" + user_id + "\" res_from=\"1000\" version=\"20061206\" thread=\"" + threadId + "\" />";
-            var xml: String = "<thread res_from=\"-1000\" fork=\"1\" version=\"20061206\" thread=\"" + threadId + "\" />";
+            var xml: String = "<thread res_from=\"-1000\" fork=\"1\" version=\"20061206\" thread=\"" + threadId +
+                              "\" />";
             getComment.data = xml;
 
             var loader: URLLoader;
@@ -1897,11 +2083,11 @@ package org.mineap.nndd {
             logManager.addLog(Message.SUCCESS_DOWNLOAD_OWNER_COMMENT);
             if (downloadProvider != null && queueIndex != -1) {
                 downloadProvider.setItemAt({
-                    col_videoName: downloadProvider[queueIndex].col_videoName,
-                    col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                    col_status: "投稿者コメントXML\nダウンロード成功",
-                    col_a2n: downloadProvider[queueIndex].col_a2n
-                }, queueIndex);
+                                               col_videoName: downloadProvider[queueIndex].col_videoName,
+                                               col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                               col_status: "投稿者コメントXML\nダウンロード成功",
+                                               col_a2n: downloadProvider[queueIndex].col_a2n
+                                           }, queueIndex);
             }
             trace("投稿者コメントXMLダウンロード成功" + evt);
 
@@ -1910,27 +2096,31 @@ package org.mineap.nndd {
                 logManager.addLog(Message.SUCCESS_SAVE_OWNER_COMMENT);
                 if (downloadProvider != null && queueIndex != -1) {
                     downloadProvider.setItemAt({
-                        col_videoName: downloadProvider[queueIndex].col_videoName,
-                        col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                        col_status: "投稿者コメントXML\n保存成功",
-                        col_a2n: downloadProvider[queueIndex].col_a2n
-                    }, queueIndex);
+                                                   col_videoName: downloadProvider[queueIndex].col_videoName,
+                                                   col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                   col_status: "投稿者コメントXML\n保存成功",
+                                                   col_a2n: downloadProvider[queueIndex].col_a2n
+                                               }, queueIndex);
                 }
             } else {
                 logManager.addLog(Message.FAIL_SAVE_OWNER_COMMENT);
                 if (downloadProvider != null && queueIndex != -1) {
                     downloadProvider.setItemAt({
-                        col_videoName: downloadProvider[queueIndex].col_videoName,
-                        col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                        col_status: "投稿者コメントXML\n保存失敗",
-                        col_a2n: downloadProvider[queueIndex].col_a2n
-                    }, queueIndex);
+                                                   col_videoName: downloadProvider[queueIndex].col_videoName,
+                                                   col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                   col_status: "投稿者コメントXML\n保存失敗",
+                                                   col_a2n: downloadProvider[queueIndex].col_a2n
+                                               }, queueIndex);
                 }
             }
 
             if (!isCommentOnly) {
                 //サムネイルを取得しにいく
-                this.getThumbInfoByNomalDLProcess(videoURL.substring(videoURL.lastIndexOf("/") + 1), rankingIndex, !this.isStreamingPlay);
+                this.getThumbInfoByNomalDLProcess(
+                    videoURL.substring(videoURL.lastIndexOf("/") + 1),
+                    rankingIndex,
+                    !this.isStreamingPlay
+                );
 
             } else {
 
@@ -2026,7 +2216,17 @@ package org.mineap.nndd {
                     }
 
                 });
-                a2n.request_downLoad_Nicowari(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, videoURL, mailAddress, password, this.path, myNicowariVideoID, this.downloadedVideoFileName, queueIndex);
+                a2n.request_downLoad_Nicowari(
+                    Access2Nico.TOP_PAGE_URL,
+                    Access2Nico.LOGIN_URL,
+                    videoURL,
+                    mailAddress,
+                    password,
+                    this.path,
+                    myNicowariVideoID,
+                    this.downloadedVideoFileName,
+                    queueIndex
+                );
             }
         }
 
@@ -2037,17 +2237,25 @@ package org.mineap.nndd {
          */
         private function videoLoadSuccess(evt: Event): void {
             if (rankingListProvider != null) {
-                if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName ==
+                    rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                     this.rankingListProvider.setItemAt({
-                        dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                        dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                        dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                        dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                        dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                        dataGridColumn_condition: "DL済\n100%",
-                        dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                        dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                    }, rankingIndex);
+                                                           dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_ranking,
+                                                           dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_preview,
+                                                           dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_videoName,
+                                                           dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_Info,
+                                                           dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_videoInfo,
+                                                           dataGridColumn_condition: "DL済\n100%",
+                                                           dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_videoPath,
+                                                           dataGridColumn_date: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_date
+                                                       }, rankingIndex);
                 }
             }
 
@@ -2061,59 +2269,80 @@ package org.mineap.nndd {
             if (this.saveVideo(videoLoader) && !isNicowariGetting) {
 
                 if (rankingListProvider != null) {
-                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName ==
+                        rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                         this.rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                            dataGridColumn_condition: "動画保存済\n右クリックから再生できます。",
-                            dataGridColumn_downloadedItemUrl: path + FileIO.getSafeFileName(videoTitle) + videoType,
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                            dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                        }, rankingIndex);
+                                                               dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_ranking,
+                                                               dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_preview,
+                                                               dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoName,
+                                                               dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_Info,
+                                                               dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoInfo,
+                                                               dataGridColumn_condition: "動画保存済\n右クリックから再生できます。",
+                                                               dataGridColumn_downloadedItemUrl: path +
+                                                                                                 FileIO.getSafeFileName(
+                                                                                                     videoTitle) +
+                                                                                                 videoType,
+                                                               dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoPath,
+                                                               dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_date
+                                                           }, rankingIndex);
                     }
                 }
 
                 if (downloadProvider != null) {
                     if (downloadProvider.length > queueIndex && downloadProvider[queueIndex] != null) {
                         downloadProvider.setItemAt({
-                            col_videoName: videoTitle,
-                            col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                            col_status: "動画保存済\n右クリックから再生できます。",
-                            col_a2n: downloadProvider[queueIndex].col_a2n,
-                            col_downloadedPath: path + FileIO.getSafeFileName(videoTitle) + videoType
-                        }, queueIndex);
+                                                       col_videoName: videoTitle,
+                                                       col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                       col_status: "動画保存済\n右クリックから再生できます。",
+                                                       col_a2n: downloadProvider[queueIndex].col_a2n,
+                                                       col_downloadedPath: path + FileIO.getSafeFileName(videoTitle) +
+                                                                           videoType
+                                                   }, queueIndex);
                     }
                 }
 
                 logManager.addLog(Message.SUCCESS_SAVE_VIDEO + ":" + videoTitle + videoType);
             } else if (!isNicowariGetting) {
                 if (rankingListProvider != null) {
-                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName ==
+                        rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                         this.rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                            dataGridColumn_condition: "動画保存失敗",
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                            dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                        }, rankingIndex);
+                                                               dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_ranking,
+                                                               dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_preview,
+                                                               dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoName,
+                                                               dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_Info,
+                                                               dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoInfo,
+                                                               dataGridColumn_condition: "動画保存失敗",
+                                                               dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_videoPath,
+                                                               dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                   rankingIndex).dataGridColumn_date
+                                                           }, rankingIndex);
                     }
                 }
 
                 if (downloadProvider != null) {
-                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName == downloadProvider[queueIndex].col_videoName) {
+                    if (rankingVideoName != null && rankingIndex != -1 && rankingVideoName ==
+                        downloadProvider[queueIndex].col_videoName) {
                         downloadProvider.setItemAt({
-                            col_videoName: downloadProvider[queueIndex].col_videoName,
-                            col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                            col_status: "動画保存失敗",
-                            col_a2n: downloadProvider[queueIndex].col_a2n,
-                            col_downloadedPath: ""
-                        }, queueIndex);
+                                                       col_videoName: downloadProvider[queueIndex].col_videoName,
+                                                       col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                       col_status: "動画保存失敗",
+                                                       col_a2n: downloadProvider[queueIndex].col_a2n,
+                                                       col_downloadedPath: ""
+                                                   }, queueIndex);
                     }
                 }
 
@@ -2133,7 +2362,8 @@ package org.mineap.nndd {
             if (videoLoader.dataFormat != URLLoaderDataFormat.BINARY) {
 
                 trace(videoLoader.dataFormat);
-                logManager.addLog("動画が正常にダウンロードできていませんでした。ダウンロードしたデータがバイナリではありません。（フォーマット:" + videoLoader.dataFormat + ",ファイル名:" + this.videoTitle + this.videoType + "）");
+                logManager.addLog("動画が正常にダウンロードできていませんでした。ダウンロードしたデータがバイナリではありません。（フォーマット:" + videoLoader.dataFormat +
+                                  ",ファイル名:" + this.videoTitle + this.videoType + "）");
 
                 return false;
             }
@@ -2157,7 +2387,8 @@ package org.mineap.nndd {
                                     oldFile.deleteFile();
                                 }
                             } catch (error: Error) {
-                                logManager.addLog("ダウンロード済みの古いファイルを削除しようとしましたが、失敗しました。:" + oldVideo.getDecodeUrl() + "\nError:" + error.getStackTrace());
+                                logManager.addLog("ダウンロード済みの古いファイルを削除しようとしましたが、失敗しました。:" + oldVideo.getDecodeUrl() +
+                                                  "\nError:" + error.getStackTrace());
                             }
                         }
                     }
@@ -2246,31 +2477,51 @@ package org.mineap.nndd {
                         fileIO.closeFileStream();
                         ioErrorHandler(event);
                     });
-                    fileIO.addFileStreamEventListener(SecurityErrorEvent.SECURITY_ERROR, function (event: SecurityErrorEvent): void {
-                        fileIO.closeFileStream();
-                        securityErrorHandler(event);
-                    });
-                    fileIO.saveComment(commentLoader.data, fileName + videoType, filePath, false, Application.application.getSaveCommentMaxCount());
+                    fileIO.addFileStreamEventListener(
+                        SecurityErrorEvent.SECURITY_ERROR,
+                        function (event: SecurityErrorEvent): void {
+                            fileIO.closeFileStream();
+                            securityErrorHandler(event);
+                        }
+                    );
+                    fileIO.saveComment(
+                        commentLoader.data,
+                        fileName + videoType,
+                        filePath,
+                        false,
+                        Application.application.getSaveCommentMaxCount()
+                    );
                     fileIO.closeFileStream();
                     lastSaveComment = fileName + videoType;
-                    logManager.addLog("[" + fileName + videoType + "]のダウンロードが完了しました。\nファイル:" + filePath + fileName + videoType);
+                    logManager.addLog("[" + fileName + videoType + "]のダウンロードが完了しました。\nファイル:" + filePath + fileName +
+                                      videoType);
 
                 } else {
                     fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                         fileIO.closeFileStream();
                         ioErrorHandler(event);
                     });
-                    fileIO.addFileStreamEventListener(SecurityErrorEvent.SECURITY_ERROR, function (event: SecurityErrorEvent): void {
-                        fileIO.closeFileStream();
-                        securityErrorHandler(event);
-                    });
+                    fileIO.addFileStreamEventListener(
+                        SecurityErrorEvent.SECURITY_ERROR,
+                        function (event: SecurityErrorEvent): void {
+                            fileIO.closeFileStream();
+                            securityErrorHandler(event);
+                        }
+                    );
 
                     fileName = fileName + "[Owner]";
 
-                    fileIO.saveComment(commentLoader.data, fileName + videoType, filePath, false, Application.application.getSaveCommentMaxCount());
+                    fileIO.saveComment(
+                        commentLoader.data,
+                        fileName + videoType,
+                        filePath,
+                        false,
+                        Application.application.getSaveCommentMaxCount()
+                    );
 
                     fileIO.closeFileStream();
-                    logManager.addLog("[" + fileName + videoType + "]のダウンロードが完了しました。\nファイル:" + filePath + fileName + videoType);
+                    logManager.addLog("[" + fileName + videoType + "]のダウンロードが完了しました。\nファイル:" + filePath + fileName +
+                                      videoType);
                     lastSaveOwnerComment = fileName + videoType;
 
                 }
@@ -2310,7 +2561,8 @@ package org.mineap.nndd {
                 var postKey: String = (event.target.data as String).substring(event.target.data.indexOf("=") + 1);
                 postComment(postKey, userID, ticket, mail, String(vpos), threadID, isPremium);
             });
-            var url: String = "http://flapi.nicovideo.jp/api/getpostkey/?block_no=" + block_no + "&thread=" + threadID + "&yugi=";
+            var url: String = "http://flapi.nicovideo.jp/api/getpostkey/?block_no=" + block_no + "&thread=" + threadID +
+                              "&yugi=";
             trace(url);
             loader.load(new URLRequest(url));
 
@@ -2328,7 +2580,15 @@ package org.mineap.nndd {
          * @param isPremium
          *
          */
-        private function postComment(postKey: String, user_id: String, ticket: String, mail: String, vpos: String, thread: String, isPremium: String): void {
+        private function postComment(
+            postKey: String,
+            user_id: String,
+            ticket: String,
+            mail: String,
+            vpos: String,
+            thread: String,
+            isPremium: String
+        ): void {
 
             trace(postKey + ", " + user_id + ", " + ticket + ", " + mail + ", " + vpos + ", " + thread);
 
@@ -2367,7 +2627,8 @@ package org.mineap.nndd {
                         logManager.addLog("コメントを投稿:" + videoURL);
                         postCommentXML = chat;
                     } else {
-                        logManager.addLog("コメントの投稿に失敗:" + videoURL + ":status=[" + String(resXml.chat_result.@status) + "]");
+                        logManager.addLog("コメントの投稿に失敗:" + videoURL + ":status=[" + String(resXml.chat_result.@status) +
+                                          "]");
                         Alert.show("コメントの投稿に失敗\nstatus=[" + String(resXml.chat_result.@status) + "]", Message.M_ERROR);
                     }
                     trace("コメントを投稿:" + videoURL + ":" + chat.toXMLString() + ":" + loader.data);
@@ -2404,16 +2665,18 @@ package org.mineap.nndd {
                     dispatchEvent(new Event(Access2Nico.NICO_ICHIBA_INFO_GET_COMPLETE));
                 }
                 if (index != -1) {
-                    if (videoName != null && videoName == rankingListProvider.getItemAt(index).dataGridColumn_videoName) {
+                    if (videoName != null && videoName ==
+                        rankingListProvider.getItemAt(index).dataGridColumn_videoName) {
                         rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(index).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(index).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(index).dataGridColumn_videoName,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(index).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: "市場情報の取得に失敗。",
-                            dataGridColumn_condition: rankingListProvider.getItemAt(index).dataGridColumn_condition,
-                            dataGridColumn_downloadedItemUrl: rankingListProvider.getItemAt(index).dataGridColumn_downloadedItemUrl
-                        }, index);
+                                                          dataGridColumn_ranking: rankingListProvider.getItemAt(index).dataGridColumn_ranking,
+                                                          dataGridColumn_preview: rankingListProvider.getItemAt(index).dataGridColumn_preview,
+                                                          dataGridColumn_videoName: rankingListProvider.getItemAt(index).dataGridColumn_videoName,
+                                                          dataGridColumn_Info: rankingListProvider.getItemAt(index).dataGridColumn_Info,
+                                                          dataGridColumn_videoInfo: "市場情報の取得に失敗。",
+                                                          dataGridColumn_condition: rankingListProvider.getItemAt(index).dataGridColumn_condition,
+                                                          dataGridColumn_downloadedItemUrl: rankingListProvider.getItemAt(
+                                                              index).dataGridColumn_downloadedItemUrl
+                                                      }, index);
                     }
                     dispatchEvent(new Event(Access2Nico.NICO_ICHIBA_INFO_GET_COMPLETE));
                 }
@@ -2430,9 +2693,16 @@ package org.mineap.nndd {
                         var filePath: String = path;
                         var fileName: String = videoTitle;
 
-                        fileIO.saveComment(loader.data, fileName + "[IchibaInfo].html", filePath, false, Application.application.getSaveCommentMaxCount());
+                        fileIO.saveComment(
+                            loader.data,
+                            fileName + "[IchibaInfo].html",
+                            filePath,
+                            false,
+                            Application.application.getSaveCommentMaxCount()
+                        );
                         fileIO.closeFileStream();
-                        logManager.addLog("[" + fileName + "[IchibaInfo].html" + "]のダウンロードが完了しました。\nファイル:" + path + fileName + "[IchibaInfo].html");
+                        logManager.addLog("[" + fileName + "[IchibaInfo].html" + "]のダウンロードが完了しました。\nファイル:" + path +
+                                          fileName + "[IchibaInfo].html");
                     }
                     loader = null;
                     ichibaInfo = (event.target as URLLoader).data;
@@ -2448,7 +2718,8 @@ package org.mineap.nndd {
             if (balance == 0) {
                 balance++;
             }
-            var url: String = "http://ichiba" + balance + ".nicovideo.jp/embed/?action=showMain&v=" + videoID + "&rev=20090122";
+            var url: String = "http://ichiba" + balance + ".nicovideo.jp/embed/?action=showMain&v=" + videoID +
+                              "&rev=20090122";
             trace(url);
             loader.load(new URLRequest(url));
 
@@ -2471,17 +2742,20 @@ package org.mineap.nndd {
             loader = new URLLoader();
             loader.addEventListener(IOErrorEvent.IO_ERROR, function (event: Event): void {
                 if (index != -1) {
-                    if (videoID != null && videoID == PathMaker.getVideoID(rankingListProvider.getItemAt(index).dataGridColumn_nicoVideoUrl)) {
+                    if (videoID != null && videoID ==
+                        PathMaker.getVideoID(rankingListProvider.getItemAt(index).dataGridColumn_nicoVideoUrl)) {
                         rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(index).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(index).dataGridColumn_preview,
-                            dataGridColumn_videoName: rankingListProvider.getItemAt(index).dataGridColumn_videoName + "\n    サムネイル情報の取得に失敗",
-                            dataGridColumn_Info: rankingListProvider.getItemAt(index).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: "サムネイル情報の取得に失敗",
-                            dataGridColumn_condition: rankingListProvider.getItemAt(index).dataGridColumn_condition,
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(index).dataGridColumn_videoPath,
-                            dataGridColumn_nicoVideoUrl: rankingListProvider.getItemAt(index).dataGridColumn_nicoVideoUrl
-                        }, index);
+                                                          dataGridColumn_ranking: rankingListProvider.getItemAt(index).dataGridColumn_ranking,
+                                                          dataGridColumn_preview: rankingListProvider.getItemAt(index).dataGridColumn_preview,
+                                                          dataGridColumn_videoName: rankingListProvider.getItemAt(index).dataGridColumn_videoName +
+                                                                                    "\n    サムネイル情報の取得に失敗",
+                                                          dataGridColumn_Info: rankingListProvider.getItemAt(index).dataGridColumn_Info,
+                                                          dataGridColumn_videoInfo: "サムネイル情報の取得に失敗",
+                                                          dataGridColumn_condition: rankingListProvider.getItemAt(index).dataGridColumn_condition,
+                                                          dataGridColumn_videoPath: rankingListProvider.getItemAt(index).dataGridColumn_videoPath,
+                                                          dataGridColumn_nicoVideoUrl: rankingListProvider.getItemAt(
+                                                              index).dataGridColumn_nicoVideoUrl
+                                                      }, index);
                     }
                     dispatchEvent(new Event(Access2Nico.NICO_THUMB_INFO_GET_COMPLETE));
 
@@ -2504,16 +2778,13 @@ package org.mineap.nndd {
                 dateFormatter.formatString = "YYYY/MM/DD JJ:NN:SS";
 
                 if (analyzer.status == "ok") {
-                    status = "再生:" + analyzer.viewCounter +
-                            " コメント:" + analyzer.commentNum +
-                            "\nマイリスト:" + analyzer.myListNum +
-                            "\n" + analyzer.lastResBody;
-                    videoNameFooter = "\n    再生時間 " + analyzer.length +
-                            "\n    投稿日時 " + dateFormatter.format(analyzer.getDateByFirst_retrieve());
+                    status = "再生:" + analyzer.viewCounter + " コメント:" + analyzer.commentNum + "\nマイリスト:" +
+                             analyzer.myListNum + "\n" + analyzer.lastResBody;
+                    videoNameFooter = "\n    再生時間 " + analyzer.length + "\n    投稿日時 " +
+                                      dateFormatter.format(analyzer.getDateByFirst_retrieve());
 
-                    videoStatus = "再生:" + analyzer.viewCounter +
-                            " コメント:" + analyzer.commentNum +
-                            " マイリスト:" + analyzer.myListNum;
+                    videoStatus =
+                        "再生:" + analyzer.viewCounter + " コメント:" + analyzer.commentNum + " マイリスト:" + analyzer.myListNum;
 
                     owner_description = analyzer.description;
 
@@ -2545,17 +2816,19 @@ package org.mineap.nndd {
                 }
 
                 if (index != -1) {
-                    if (videoID != null && rankingListProvider.length > index && videoID == PathMaker.getVideoID(rankingListProvider.getItemAt(index).dataGridColumn_nicoVideoUrl)) {
+                    if (videoID != null && rankingListProvider.length > index && videoID ==
+                        PathMaker.getVideoID(rankingListProvider.getItemAt(index).dataGridColumn_nicoVideoUrl)) {
                         rankingListProvider.setItemAt({
-                            dataGridColumn_ranking: rankingListProvider.getItemAt(index).dataGridColumn_ranking,
-                            dataGridColumn_preview: rankingListProvider.getItemAt(index).dataGridColumn_preview,
-                            dataGridColumn_videoName: videoName + videoNameFooter,
-                            dataGridColumn_Info: rankingListProvider.getItemAt(index).dataGridColumn_Info,
-                            dataGridColumn_videoInfo: status,
-                            dataGridColumn_condition: rankingListProvider.getItemAt(index).dataGridColumn_condition,
-                            dataGridColumn_videoPath: rankingListProvider.getItemAt(index).dataGridColumn_videoPath,
-                            dataGridColumn_nicoVideoUrl: rankingListProvider.getItemAt(index).dataGridColumn_nicoVideoUrl
-                        }, index);
+                                                          dataGridColumn_ranking: rankingListProvider.getItemAt(index).dataGridColumn_ranking,
+                                                          dataGridColumn_preview: rankingListProvider.getItemAt(index).dataGridColumn_preview,
+                                                          dataGridColumn_videoName: videoName + videoNameFooter,
+                                                          dataGridColumn_Info: rankingListProvider.getItemAt(index).dataGridColumn_Info,
+                                                          dataGridColumn_videoInfo: status,
+                                                          dataGridColumn_condition: rankingListProvider.getItemAt(index).dataGridColumn_condition,
+                                                          dataGridColumn_videoPath: rankingListProvider.getItemAt(index).dataGridColumn_videoPath,
+                                                          dataGridColumn_nicoVideoUrl: rankingListProvider.getItemAt(
+                                                              index).dataGridColumn_nicoVideoUrl
+                                                      }, index);
                     }
                 }
                 loader.close();
@@ -2568,13 +2841,21 @@ package org.mineap.nndd {
                     try {
 
                         //ThumbInfo.xmlを保存
-                        fileIO.saveComment(loader.data, fileName + "[ThumbInfo].xml", filePath, false, Application.application.getSaveCommentMaxCount());
+                        fileIO.saveComment(
+                            loader.data,
+                            fileName + "[ThumbInfo].xml",
+                            filePath,
+                            false,
+                            Application.application.getSaveCommentMaxCount()
+                        );
                         fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
-                            logManager.addLog("サムネイル情報の保存に失敗しました。:" + event.target + ":" + event + "\n" + path + fileName + "[ThumbInfo]" + videoType);
+                            logManager.addLog("サムネイル情報の保存に失敗しました。:" + event.target + ":" + event + "\n" + path +
+                                              fileName + "[ThumbInfo]" + videoType);
                             Alert.show("サムネイル情報の保存に失敗しました。\n" + event);
                         });
                         fileIO.closeFileStream();
-                        logManager.addLog("[" + fileName + "[ThumbInfo].xml" + "]のダウンロードが完了しました。\nファイル:" + path + fileName + "[ThumbInfo]" + videoType);
+                        logManager.addLog("[" + fileName + "[ThumbInfo].xml" + "]のダウンロードが完了しました。\nファイル:" + path +
+                                          fileName + "[ThumbInfo]" + videoType);
 
                         //thumbImgを保存。
                         var thumbImgUrl: String = "";
@@ -2632,7 +2913,8 @@ package org.mineap.nndd {
                         file.deleteFile();
                     }
                     fileIO.addFileStreamEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
-                        logManager.addLog("サムネイル画像の保存に失敗しました。:" + event.target + ":" + event + "\n" + decodeURIComponent(file.url));
+                        logManager.addLog("サムネイル画像の保存に失敗しました。:" + event.target + ":" + event + "\n" +
+                                          decodeURIComponent(file.url));
                         Alert.show("サムネイル画像の保存に失敗しました。\n" + event);
                     });
                     fileIO.saveByteArray(fileName, path, imgLoader.data);
@@ -2680,31 +2962,58 @@ package org.mineap.nndd {
 
             if (!this.isStreamingPlay) {
                 if (rankingListProvider != null && rankingIndex != -1 && rankingListProvider.length > rankingIndex) {
-                    if (rankingVideoName != null && rankingVideoName.indexOf(rankingListProvider[rankingIndex].dataGridColumn_videoName) != -1) {
+                    if (rankingVideoName != null &&
+                        rankingVideoName.indexOf(rankingListProvider[rankingIndex].dataGridColumn_videoName) != -1) {
                         if (evt.currentTarget == this.commentLoader) {
                             this.rankingListProvider.setItemAt({
-                                dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                                dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                                dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                                dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                                dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                                dataGridColumn_condition: "コメントをDL中\n" + new int((evt.bytesLoaded / evt.bytesTotal) * 100) + "%\n" +
-                                formatter.format(loadedValue) + "MB/" + formatter.format(totalValue) + "MB",
-                                dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                                dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                            }, rankingIndex);
+                                                                   dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_ranking,
+                                                                   dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_preview,
+                                                                   dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_videoName,
+                                                                   dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_Info,
+                                                                   dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_videoInfo,
+                                                                   dataGridColumn_condition: "コメントをDL中\n" +
+                                                                                             new int((evt.bytesLoaded /
+                                                                                                      evt.bytesTotal) *
+                                                                                                     100) + "%\n" +
+                                                                                             formatter.format(
+                                                                                                 loadedValue) + "MB/" +
+                                                                                             formatter.format(totalValue) +
+                                                                                             "MB",
+                                                                   dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_videoPath,
+                                                                   dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_date
+                                                               }, rankingIndex);
                         } else {
                             this.rankingListProvider.setItemAt({
-                                dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                                dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                                dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                                dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                                dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                                dataGridColumn_condition: "動画をDL中\n" + new int((evt.bytesLoaded / evt.bytesTotal) * 100) + "%\n" +
-                                formatter.format(loadedValue) + "MB/" + formatter.format(totalValue) + "MB",
-                                dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                                dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                            }, rankingIndex);
+                                                                   dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_ranking,
+                                                                   dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_preview,
+                                                                   dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_videoName,
+                                                                   dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_Info,
+                                                                   dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_videoInfo,
+                                                                   dataGridColumn_condition: "動画をDL中\n" +
+                                                                                             new int((evt.bytesLoaded /
+                                                                                                      evt.bytesTotal) *
+                                                                                                     100) + "%\n" +
+                                                                                             formatter.format(
+                                                                                                 loadedValue) + "MB/" +
+                                                                                             formatter.format(totalValue) +
+                                                                                             "MB",
+                                                                   dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_videoPath,
+                                                                   dataGridColumn_date: rankingListProvider.getItemAt(
+                                                                       rankingIndex).dataGridColumn_date
+                                                               }, rankingIndex);
                         }
                     }
                 }
@@ -2714,20 +3023,24 @@ package org.mineap.nndd {
                 if (downloadProvider != null && downloadProvider.length > queueIndex && queueIndex >= 0) {
                     if (evt.currentTarget == this.commentLoader) {
                         downloadProvider.setItemAt({
-                            col_videoName: downloadProvider[queueIndex].col_videoName,
-                            col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                            col_status: "コメントをDL中\n" + new int((evt.bytesLoaded / evt.bytesTotal) * 100) + "%\n" +
-                            formatter.format(loadedValue) + "MB/" + formatter.format(totalValue) + "MB",
-                            col_a2n: downloadProvider[queueIndex].col_a2n
-                        }, queueIndex);
+                                                       col_videoName: downloadProvider[queueIndex].col_videoName,
+                                                       col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                       col_status: "コメントをDL中\n" +
+                                                                   new int((evt.bytesLoaded / evt.bytesTotal) * 100) +
+                                                                   "%\n" + formatter.format(loadedValue) + "MB/" +
+                                                                   formatter.format(totalValue) + "MB",
+                                                       col_a2n: downloadProvider[queueIndex].col_a2n
+                                                   }, queueIndex);
                     } else {
                         downloadProvider.setItemAt({
-                            col_videoName: downloadProvider[queueIndex].col_videoName,
-                            col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                            col_status: "動画をDL中\n" + new int((evt.bytesLoaded / evt.bytesTotal) * 100) + "%\n" +
-                            formatter.format(loadedValue) + "MB/" + formatter.format(totalValue) + "MB",
-                            col_a2n: downloadProvider[queueIndex].col_a2n
-                        }, queueIndex);
+                                                       col_videoName: downloadProvider[queueIndex].col_videoName,
+                                                       col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                       col_status: "動画をDL中\n" +
+                                                                   new int((evt.bytesLoaded / evt.bytesTotal) * 100) +
+                                                                   "%\n" + formatter.format(loadedValue) + "MB/" +
+                                                                   formatter.format(totalValue) + "MB",
+                                                       col_a2n: downloadProvider[queueIndex].col_a2n
+                                                   }, queueIndex);
                     }
                 }
             }
@@ -2757,7 +3070,8 @@ package org.mineap.nndd {
             trace(evt);
 
             if (this.isVideoGetting) {
-                this.logManager.addLog("次のファイルがダウンロードできませんでした。\n対象のWebサービスが現在利用可能かどうか確認してください。\n" + this.videoTitle + this.videoType + "\nErrorCode:" + decodeURIComponent(evt.text));
+                this.logManager.addLog("次のファイルがダウンロードできませんでした。\n対象のWebサービスが現在利用可能かどうか確認してください。\n" + this.videoTitle +
+                                       this.videoType + "\nErrorCode:" + decodeURIComponent(evt.text));
             } else if (this.isRankingListGetting) {
                 this.logManager.addLog("ランキングリストの取得に失敗。\n" + evt.target + ":" + evt);
                 Alert.show("エラー：ランキングリストの取得に失敗。\n対象のWebサービスが現在利用可能かどうか確認してください。", "Error");
@@ -2800,30 +3114,39 @@ package org.mineap.nndd {
          */
         public function videoDownloadCancel(): void {
             if (rankingListProvider != null && rankingIndex != -1 && rankingListProvider.length > rankingIndex) {
-                if (rankingVideoName != null && rankingVideoName == rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
+                if (rankingVideoName != null && rankingVideoName ==
+                    rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName) {
                     this.rankingListProvider.setItemAt({
-                        dataGridColumn_ranking: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_ranking,
-                        dataGridColumn_preview: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_preview,
-                        dataGridColumn_videoName: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoName,
-                        dataGridColumn_Info: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_Info,
-                        dataGridColumn_videoInfo: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoInfo,
-                        dataGridColumn_condition: "キャンセル",
-                        dataGridColumn_videoPath: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_videoPath,
-                        dataGridColumn_date: rankingListProvider.getItemAt(rankingIndex).dataGridColumn_date
-                    }, rankingIndex);
+                                                           dataGridColumn_ranking: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_ranking,
+                                                           dataGridColumn_preview: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_preview,
+                                                           dataGridColumn_videoName: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_videoName,
+                                                           dataGridColumn_Info: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_Info,
+                                                           dataGridColumn_videoInfo: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_videoInfo,
+                                                           dataGridColumn_condition: "キャンセル",
+                                                           dataGridColumn_videoPath: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_videoPath,
+                                                           dataGridColumn_date: rankingListProvider.getItemAt(
+                                                               rankingIndex).dataGridColumn_date
+                                                       }, rankingIndex);
                 }
             }
 
             if (downloadProvider != null) {
                 if (rankingVideoName != null && queueIndex < downloadProvider.length && queueIndex >= 0 &&
-                        downloadProvider[queueIndex] != null && rankingVideoName == downloadProvider[queueIndex].col_videoName) {
+                    downloadProvider[queueIndex] != null && rankingVideoName ==
+                    downloadProvider[queueIndex].col_videoName) {
                     downloadProvider.setItemAt({
-                        col_videoName: downloadProvider[queueIndex].col_videoName,
-                        col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
-                        col_status: "待機中",
-                        col_a2n: downloadProvider[queueIndex].col_a2n,
-                        col_downloadedPath: ""
-                    }, queueIndex);
+                                                   col_videoName: downloadProvider[queueIndex].col_videoName,
+                                                   col_videoUrl: downloadProvider[queueIndex].col_videoUrl,
+                                                   col_status: "待機中",
+                                                   col_a2n: downloadProvider[queueIndex].col_a2n,
+                                                   col_downloadedPath: ""
+                                               }, queueIndex);
                 }
             }
 

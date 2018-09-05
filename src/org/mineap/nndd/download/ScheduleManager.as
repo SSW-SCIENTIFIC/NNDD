@@ -6,9 +6,8 @@ package org.mineap.nndd.download {
 
     import mx.controls.Alert;
 
-    import org.mineap.nndd.Message;
     import org.mineap.nndd.LogManager;
-    import org.mineap.nndd.model.NNDDVideo;
+    import org.mineap.nndd.Message;
     import org.mineap.nndd.model.Schedule;
 
     /**
@@ -293,7 +292,8 @@ package org.mineap.nndd.download {
                 this._logManager.addLog("スケジュールの読み込みに失敗:" + error + ":" + error.getStackTrace());
             }
 
-            if (interval != -1 && ((interval == Schedule.WEEKLY && day != -1) || interval == Schedule.DAILY) && hours != -1 && minuites != -1) {
+            if (interval != -1 && ((interval == Schedule.WEEKLY && day != -1) || interval == Schedule.DAILY) && hours !=
+                -1 && minuites != -1) {
                 this._schedule = new Schedule(interval, day, hours, minuites);
             }
 

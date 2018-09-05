@@ -124,14 +124,20 @@ private function videoEditButtonClicked(): void {
 
     if (newSafeTitle != newTitle) {
         // タイトルを保存可能な形式に変更
-        Alert.show("保存できない文字列が含まれていたため、次のように置き換えます。よろしいですか？\n\n" + newSafeTitle, Message.M_MESSAGE, (Alert.OK | Alert.CANCEL), null, function (event: CloseEvent): void {
-            if (event.detail == Alert.OK) {
-                _videoFile = oldFile.parent.resolvePath(newSafeTitle);
-                createNewVideo();
-            } else {
-                // 何もしない
+        Alert.show(
+            "保存できない文字列が含まれていたため、次のように置き換えます。よろしいですか？\n\n" + newSafeTitle,
+            Message.M_MESSAGE,
+            (Alert.OK | Alert.CANCEL),
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.OK) {
+                    _videoFile = oldFile.parent.resolvePath(newSafeTitle);
+                    createNewVideo();
+                } else {
+                    // 何もしない
+                }
             }
-        });
+        );
     } else {
 
         _videoFile = oldFile.parent.resolvePath(newSafeTitle);
@@ -198,10 +204,18 @@ private function createNewVideo(): void {
         thumbImgPath = textInput_thumbImgPath.text;
     }
 
-    this._newVideo = new NNDDVideo(_videoFile.url, _videoFile.name,
-            isEconomy, _oldVideo.tagStrings, _oldVideo.modificationDate,
-            _oldVideo.creationDate, thumbImgPath, _oldVideo.playCount,
-            _oldVideo.time, _oldVideo.lastPlayDate, _oldVideo.pubDate);
+    this._newVideo = new NNDDVideo(_videoFile.url,
+                                   _videoFile.name,
+                                   isEconomy,
+                                   _oldVideo.tagStrings,
+                                   _oldVideo.modificationDate,
+                                   _oldVideo.creationDate,
+                                   thumbImgPath,
+                                   _oldVideo.playCount,
+                                   _oldVideo.time,
+                                   _oldVideo.lastPlayDate,
+                                   _oldVideo.pubDate
+    );
 
     dispatchEvent(new Event(Event.COMPLETE));
 }

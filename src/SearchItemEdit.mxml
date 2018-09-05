@@ -46,7 +46,8 @@
             this.textInput_name.text = searchItem.name;
             this._oldSearchItemName = searchItem.name;
             this.textInput_word.text = searchItem.searchWord;
-            this.comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
+            this.comboBox_sortType.selectedIndex =
+                    SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
             this.comboBox_searchType.selectedIndex = searchItem.searchType;
         }
 
@@ -66,9 +67,13 @@
                 return;
             }
 
-            this._searchItem = new SearchItem(this.textInput_name.text,
+            this._searchItem = new SearchItem(
+                    this.textInput_name.text,
                     SearchSortString.convertSortTypeFromIndex(this.comboBox_sortType.selectedIndex),
-                    this.comboBox_searchType.selectedIndex, this.textInput_word.text, this._isDir);
+                    this.comboBox_searchType.selectedIndex,
+                    this.textInput_word.text,
+                    this._isDir
+            );
             dispatchEvent(new Event(Event.COMPLETE));
         }
 

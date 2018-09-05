@@ -33,7 +33,8 @@ package org.mineap.nndd.server.process {
             httpResponse.body = nnddResponse.toXMLString();
             httpResponse.statusCode = 200;
 
-            LogManager.instance.addLog("マイリスト一覧取得要求:list.len=" + myLists.length + ", resCode=" + httpResponse.statusCode);
+            LogManager.instance.addLog("マイリスト一覧取得要求:list.len=" + myLists.length + ", resCode=" +
+                                       httpResponse.statusCode);
 
         }
     }

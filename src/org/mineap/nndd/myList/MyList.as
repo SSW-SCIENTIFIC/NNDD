@@ -1,8 +1,6 @@
 package org.mineap.nndd.myList {
-    import org.mineap.nndd.model.NNDDVideo;
     import org.mineap.nndd.model.RssType;
     import org.mineap.nndd.util.MyListUtil;
-
 
     /**
      * マイリストを表現するクラスです。
@@ -51,7 +49,12 @@ package org.mineap.nndd.myList {
          * @param isDir
          * @param videoIds
          */
-        public function MyList(myListUrl: String, myListName: String, isDir: Boolean = false, videoIds: Vector.<String> = null) {
+        public function MyList(
+            myListUrl: String,
+            myListName: String,
+            isDir: Boolean = false,
+            videoIds: Vector.<String> = null
+        ) {
             if (myListUrl != null) {
                 this.myListUrl = myListUrl;
                 this.type = MyListManager.checkType(myListUrl);

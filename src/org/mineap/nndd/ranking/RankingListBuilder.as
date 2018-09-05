@@ -1,5 +1,4 @@
 package org.mineap.nndd.ranking {
-    import flash.errors.IOError;
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.IOErrorEvent;
@@ -98,14 +97,14 @@ package org.mineap.nndd.ranking {
                 }
 
                 arrayCollection.addItem({
-                    dataGridColumn_preview: thumbImgUrl,
-                    dataGridColumn_ranking: ranking,
-                    dataGridColumn_videoName: title + "\n" + length + "\n" + date,
-                    dataGridColumn_videoInfo: "...取得中",
-                    dataGridColumn_condition: condition,
-                    dataGridColumn_downloadedItemUrl: downloadedItemUrl,
-                    dataGridColumn_nicoVideoUrl: nicoVideoUrl
-                });
+                                            dataGridColumn_preview: thumbImgUrl,
+                                            dataGridColumn_ranking: ranking,
+                                            dataGridColumn_videoName: title + "\n" + length + "\n" + date,
+                                            dataGridColumn_videoInfo: "...取得中",
+                                            dataGridColumn_condition: condition,
+                                            dataGridColumn_downloadedItemUrl: downloadedItemUrl,
+                                            dataGridColumn_nicoVideoUrl: nicoVideoUrl
+                                        });
 
                 getThumbInfoAsync(videoId, arrayCollection, arrayCollection.length - 1);
 
@@ -131,16 +130,17 @@ package org.mineap.nndd.ranking {
 
                 var videoStatus: String = "サムネイル情報の取得に失敗";
 
-                if (arrayCollection.length > index && arrayCollection[index].dataGridColumn_nicoVideoUrl.indexOf(videoId) != -1) {
+                if (arrayCollection.length > index &&
+                    arrayCollection[index].dataGridColumn_nicoVideoUrl.indexOf(videoId) != -1) {
                     arrayCollection.setItemAt({
-                        dataGridColumn_preview: arrayCollection[index].dataGridColumn_preview,
-                        dataGridColumn_ranking: arrayCollection[index].dataGridColumn_ranking,
-                        dataGridColumn_videoName: arrayCollection[index].dataGridColumn_videoName,
-                        dataGridColumn_videoInfo: videoStatus,
-                        dataGridColumn_condition: arrayCollection[index].dataGridColumn_condition,
-                        dataGridColumn_downloadedItemUrl: arrayCollection[index].dataGridColumn_downloadedItemUrl,
-                        dataGridColumn_nicoVideoUrl: arrayCollection[index].dataGridColumn_nicoVideoUrl
-                    }, index);
+                                                  dataGridColumn_preview: arrayCollection[index].dataGridColumn_preview,
+                                                  dataGridColumn_ranking: arrayCollection[index].dataGridColumn_ranking,
+                                                  dataGridColumn_videoName: arrayCollection[index].dataGridColumn_videoName,
+                                                  dataGridColumn_videoInfo: videoStatus,
+                                                  dataGridColumn_condition: arrayCollection[index].dataGridColumn_condition,
+                                                  dataGridColumn_downloadedItemUrl: arrayCollection[index].dataGridColumn_downloadedItemUrl,
+                                                  dataGridColumn_nicoVideoUrl: arrayCollection[index].dataGridColumn_nicoVideoUrl
+                                              }, index);
                 }
 
             });
@@ -163,27 +163,26 @@ package org.mineap.nndd.ranking {
 
                 if (thumbInfoAnalyzer == null) {
                     videoStatus = "サムネイル情報の取得に失敗";
-                }
-                else if (thumbInfoAnalyzer.errorCode != null) {
+                } else if (thumbInfoAnalyzer.errorCode != null) {
                     videoStatus = Message.L_VIDEO_DELETED;
-                }
-                else {
-                    videoStatus = "再生:" + NumberUtil.addComma(String(thumbInfoAnalyzer.viewCounter)) +
-                            " コメント:" + NumberUtil.addComma(String(thumbInfoAnalyzer.commentNum)) +
-                            "\nマイリスト:" + NumberUtil.addComma(String(thumbInfoAnalyzer.myListNum)) +
-                            "\n" + thumbInfoAnalyzer.lastResBody;
+                } else {
+                    videoStatus = "再生:" + NumberUtil.addComma(String(thumbInfoAnalyzer.viewCounter)) + " コメント:" +
+                                  NumberUtil.addComma(String(thumbInfoAnalyzer.commentNum)) + "\nマイリスト:" +
+                                  NumberUtil.addComma(String(thumbInfoAnalyzer.myListNum)) + "\n" +
+                                  thumbInfoAnalyzer.lastResBody;
                 }
 
-                if (arrayCollection.length > index && arrayCollection[index].dataGridColumn_nicoVideoUrl.indexOf(videoId) != -1) {
+                if (arrayCollection.length > index &&
+                    arrayCollection[index].dataGridColumn_nicoVideoUrl.indexOf(videoId) != -1) {
                     arrayCollection.setItemAt({
-                        dataGridColumn_preview: arrayCollection[index].dataGridColumn_preview,
-                        dataGridColumn_ranking: arrayCollection[index].dataGridColumn_ranking,
-                        dataGridColumn_videoName: arrayCollection[index].dataGridColumn_videoName,
-                        dataGridColumn_videoInfo: videoStatus,
-                        dataGridColumn_condition: arrayCollection[index].dataGridColumn_condition,
-                        dataGridColumn_downloadedItemUrl: arrayCollection[index].dataGridColumn_downloadedItemUrl,
-                        dataGridColumn_nicoVideoUrl: arrayCollection[index].dataGridColumn_nicoVideoUrl
-                    }, index);
+                                                  dataGridColumn_preview: arrayCollection[index].dataGridColumn_preview,
+                                                  dataGridColumn_ranking: arrayCollection[index].dataGridColumn_ranking,
+                                                  dataGridColumn_videoName: arrayCollection[index].dataGridColumn_videoName,
+                                                  dataGridColumn_videoInfo: videoStatus,
+                                                  dataGridColumn_condition: arrayCollection[index].dataGridColumn_condition,
+                                                  dataGridColumn_downloadedItemUrl: arrayCollection[index].dataGridColumn_downloadedItemUrl,
+                                                  dataGridColumn_nicoVideoUrl: arrayCollection[index].dataGridColumn_nicoVideoUrl
+                                              }, index);
                 }
             });
 

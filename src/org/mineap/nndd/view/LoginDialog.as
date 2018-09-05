@@ -53,7 +53,12 @@ private var password: String = null;
 private var otp: String = null;
 
 
-public function initLoginDialog(topURL: String, loginURL: String, logManager: LogManager, isLogout: Boolean = false): void {
+public function initLoginDialog(
+    topURL: String,
+    loginURL: String,
+    logManager: LogManager,
+    isLogout: Boolean = false
+): void {
     TOP_PAGE_URL = topURL;
     LOGIN_URL = loginURL;
     loginButton.enabled = true;
@@ -147,8 +152,7 @@ private function saveStore(): void {
 
         ConfigManager.getInstance().removeItem("storePass");
         ConfigManager.getInstance().setItem("storePass", true);
-    }
-    else {
+    } else {
         removePass();
 
         ConfigManager.getInstance().removeItem("storePass");
@@ -172,18 +176,13 @@ private function loginFail(event: ErrorEvent): void {
 
     if (event.text != Login.LOGIN_FAIL_MESSAGE) {
 
-        Alert.show("ログインに失敗しました。以下の原因が考えられます。\n" +
-                "\t1.インターネットに接続されていない。\n" +
-                "\t2.ニコニコ動画へのアクセスが制限されている。\n" +
-                "\t3.ニコニコ動画のログインサーバーが応答しない。\n\n" +
-                event.text, Message.M_ERROR);
+        Alert.show("ログインに失敗しました。以下の原因が考えられます。\n" + "\t1.インターネットに接続されていない。\n" + "\t2.ニコニコ動画へのアクセスが制限されている。\n" +
+                   "\t3.ニコニコ動画のログインサーバーが応答しない。\n\n" + event.text, Message.M_ERROR);
         logManager.addLog("ログイン失敗:ニコニコ動画にアクセスできない:" + event);
 
     } else {
 
-        Alert.show("ログインできませんでした。\n" +
-                "メールアドレス、もしくはパスワードが間違っています。\n" +
-                event.text, Message.M_ERROR);
+        Alert.show("ログインできませんでした。\n" + "メールアドレス、もしくはパスワードが間違っています。\n" + event.text, Message.M_ERROR);
         logManager.addLog("ログイン失敗:メールアドレスもしくはパスワードの設定ミス:" + event);
     }
 

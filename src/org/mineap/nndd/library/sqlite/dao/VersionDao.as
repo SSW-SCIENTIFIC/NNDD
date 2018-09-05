@@ -3,8 +3,6 @@ package org.mineap.nndd.library.sqlite.dao {
     import flash.data.SQLStatement;
     import flash.errors.SQLError;
 
-    import mx.controls.Text;
-
     import org.mineap.nndd.library.sqlite.DbAccessHelper;
     import org.mineap.nndd.library.sqlite.Queries;
 

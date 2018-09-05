@@ -1,18 +1,14 @@
 package org.mineap.nndd.player {
     import flash.events.Event;
-    import flash.events.IOErrorEvent;
-    import flash.events.SecurityErrorEvent;
     import flash.filesystem.File;
 
     import mx.controls.Alert;
 
-    import org.mineap.nicovideo4as.model.Comment;
     import org.mineap.nndd.FileIO;
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.Message;
     import org.mineap.nndd.library.ILibraryManager;
     import org.mineap.nndd.library.LibraryManagerBuilder;
-    import org.mineap.nndd.player.comment.Command;
     import org.mineap.nndd.player.comment.Comments;
 
     /**
@@ -50,7 +46,12 @@ package org.mineap.nndd.player {
          * @param logManager
          *
          */
-        public function NGListManager(playerController: PlayerController, videoPlayer: VideoPlayer, videoInfoView: VideoInfoView, logManager: LogManager) {
+        public function NGListManager(
+            playerController: PlayerController,
+            videoPlayer: VideoPlayer,
+            videoInfoView: VideoInfoView,
+            logManager: LogManager
+        ) {
             this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
             this.playerController = playerController;
             this.videoPlayer = videoPlayer;
@@ -90,18 +91,17 @@ package org.mineap.nndd.player {
 
                 for each(var ng: XML in ngList) {
                     var kind: String = ng.@kind;
-                    if (kind != Comments.NG_KIND_ARRAY[Comments.NG_ID] &&
-                            kind != Comments.NG_KIND_ARRAY[Comments.NG_WORD] &&
-                            kind != Comments.NG_KIND_ARRAY[Comments.PERMISSION_ID] &&
-                            kind != Comments.NG_KIND_ARRAY[Comments.NG_COMMAND]) {
+                    if (kind != Comments.NG_KIND_ARRAY[Comments.NG_ID] && kind !=
+                        Comments.NG_KIND_ARRAY[Comments.NG_WORD] && kind !=
+                        Comments.NG_KIND_ARRAY[Comments.PERMISSION_ID] && kind !=
+                        Comments.NG_KIND_ARRAY[Comments.NG_COMMAND]) {
                         kind = Comments.NG_KIND_ARRAY[Comments.NG_ID];
                     }
                     var string: String = decodeURIComponent(ng.text());
 
                     videoInfoView.ngListProvider.addItem({
-                        ng_kind_column: kind,
-                        ng_word_column: string
-                    });
+                                                             ng_kind_column: kind, ng_word_column: string
+                                                         });
                 }
                 if (logManager != null) {
                     logManager.addLog("NGリストの読み込み完了:" + (new File(libraryFile.url + "/ngList.xml")).nativePath);
@@ -223,7 +223,8 @@ package org.mineap.nndd.player {
                 for each(var com: String in commands) {
                     // 184、iPhone、docomo以外のコメントを見つけたらこのコマンドはNG
                     // DEVICE:3DS、DEVICE:WIIU、DEVICE:SWITCH を追加　2017/09/21
-                    if ("184" != com && "IPHONE" != com && "DOCOMO" != com && "DEVICE:3DS" != com && "DEVICE:WIIU" != com && "DEVICE:SWITCH" != com) {
+                    if ("184" != com && "IPHONE" != com && "DOCOMO" != com && "DEVICE:3DS" != com && "DEVICE:WIIU" !=
+                        com && "DEVICE:SWITCH" != com) {
                         return true;
                     }
                 }
@@ -334,14 +335,14 @@ package org.mineap.nndd.player {
 
             if (ng.length > 0) {
                 for (var index: int = 0; index < videoInfoView.ngListProvider.length; index++) {
-                    if (videoInfoView.ngListProvider[index][0] == ngKind && videoInfoView.ngListProvider[index][1] == ng) {
+                    if (videoInfoView.ngListProvider[index][0] == ngKind && videoInfoView.ngListProvider[index][1] ==
+                        ng) {
                         return;
                     }
                 }
                 videoInfoView.ngListProvider.addItem({
-                    ng_kind_column: ngKind,
-                    ng_word_column: ng
-                });
+                                                         ng_kind_column: ngKind, ng_word_column: ng
+                                                     });
                 videoInfoView.dataGrid_NG.dataProvider = videoInfoView.ngListProvider;
             }
 
@@ -361,14 +362,15 @@ package org.mineap.nndd.player {
          */
         public function addNgID(id: String): void {
             for (var index: int = 0; index < videoInfoView.ngListProvider.length; index++) {
-                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.NG_ID] && videoInfoView.ngListProvider[index][1] == id) {
+                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.NG_ID] &&
+                    videoInfoView.ngListProvider[index][1] == id) {
                     return;
                 }
             }
             this.videoInfoView.ngListProvider.addItem({
-                ng_kind_column: Comments.NG_KIND_ARRAY[Comments.NG_ID],
-                ng_word_column: id
-            });
+                                                          ng_kind_column: Comments.NG_KIND_ARRAY[Comments.NG_ID],
+                                                          ng_word_column: id
+                                                      });
 
             refreshNgMap();
 
@@ -384,14 +386,15 @@ package org.mineap.nndd.player {
          */
         public function addPermissionId(id: String): void {
             for (var index: int = 0; index < videoInfoView.ngListProvider.length; index++) {
-                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.PERMISSION_ID] && videoInfoView.ngListProvider[index][1] == id) {
+                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.PERMISSION_ID] &&
+                    videoInfoView.ngListProvider[index][1] == id) {
                     return;
                 }
             }
             this.videoInfoView.ngListProvider.addItem({
-                ng_kind_column: Comments.NG_KIND_ARRAY[Comments.PERMISSION_ID],
-                ng_word_column: id
-            });
+                                                          ng_kind_column: Comments.NG_KIND_ARRAY[Comments.PERMISSION_ID],
+                                                          ng_word_column: id
+                                                      });
 
             refreshNgMap();
 
@@ -407,14 +410,15 @@ package org.mineap.nndd.player {
          */
         public function addNgWord(word: String): void {
             for (var index: int = 0; index < videoInfoView.ngListProvider.length; index++) {
-                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.NG_WORD] && videoInfoView.ngListProvider[index][1] == word) {
+                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.NG_WORD] &&
+                    videoInfoView.ngListProvider[index][1] == word) {
                     return;
                 }
             }
             this.videoInfoView.ngListProvider.addItem({
-                ng_kind_column: Comments.NG_KIND_ARRAY[Comments.NG_WORD],
-                ng_word_column: word
-            });
+                                                          ng_kind_column: Comments.NG_KIND_ARRAY[Comments.NG_WORD],
+                                                          ng_word_column: word
+                                                      });
 
             refreshNgMap();
 
@@ -430,14 +434,15 @@ package org.mineap.nndd.player {
          */
         public function addNgCommand(command: String): void {
             for (var index: int = 0; index < videoInfoView.ngListProvider.length; index++) {
-                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] && videoInfoView.ngListProvider[index][1] == command) {
+                if (videoInfoView.ngListProvider[index][0] == Comments.NG_KIND_ARRAY[Comments.NG_COMMAND] &&
+                    videoInfoView.ngListProvider[index][1] == command) {
                     return;
                 }
             }
             this.videoInfoView.ngListProvider.addItem({
-                ng_kind_column: Comments.NG_KIND_ARRAY[Comments.NG_COMMAND],
-                ng_word_column: command
-            });
+                                                          ng_kind_column: Comments.NG_KIND_ARRAY[Comments.NG_COMMAND],
+                                                          ng_word_column: command
+                                                      });
 
             refreshNgMap();
 

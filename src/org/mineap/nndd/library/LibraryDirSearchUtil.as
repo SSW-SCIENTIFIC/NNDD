@@ -1,8 +1,6 @@
 package org.mineap.nndd.library {
     import flash.filesystem.File;
 
-    import mx.logging.Log;
-
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.model.VideoType;
 

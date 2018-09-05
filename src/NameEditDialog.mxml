@@ -9,7 +9,6 @@
     <mx:Script>
 		<![CDATA[
         import mx.controls.Alert;
-        import mx.events.IndexChangedEvent;
         import mx.managers.PopUpManager;
 
         import org.mineap.nndd.FileIO;
@@ -17,8 +16,6 @@
         import org.mineap.nndd.Message;
         import org.mineap.nndd.library.ILibraryManager;
         import org.mineap.nndd.library.LibraryManagerBuilder;
-        import org.mineap.nndd.myList.MyListBuilder;
-        import org.mineap.nndd.util.PathMaker;
 
         private var logManager: LogManager;
         private var libraryManager: ILibraryManager;
@@ -72,8 +69,11 @@
                             }
                             logManager.addLog("フォルダの名前を編集:" + file.nativePath);
                         } catch (error: Error) {
-                            logManager.addLog("フォルダ名の変更をライブラリに反映できませんでした。「設定 > 更新」からライブラリを更新し直してください。\n" + error.getStackTrace());
-                            Alert.show("フォルダ名の変更をライブラリに反映できませんでした。「設定 > 更新」からライブラリを更新し直してください。:" + error, Message.M_ERROR);
+                            logManager.addLog("フォルダ名の変更をライブラリに反映できませんでした。「設定 > 更新」からライブラリを更新し直してください。\n" +
+                                              error.getStackTrace());
+                            Alert.show("フォルダ名の変更をライブラリに反映できませんでした。「設定 > 更新」からライブラリを更新し直してください。:" + error,
+                                       Message.M_ERROR
+                            );
                         }
                     } else {
                         logManager.addLog("プレイリストの名前を編集:" + file.nativePath);

@@ -6,7 +6,6 @@
 <s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
           xmlns:s="library://ns.adobe.com/flex/spark"
           xmlns:mx="library://ns.adobe.com/flex/mx"
-          xmlns:ns1="*"
           xmlns:view="org.mineap.nndd.view.*"
           width="400" height="580" minWidth="300" minHeight="300"
           windowActivate="window1_activateHandler(event)"
@@ -20,8 +19,6 @@
 
     <fx:Script>
 		<![CDATA[
-        import flash.net.navigateToURL;
-
         import mx.events.DropdownEvent;
         import mx.events.IndexChangedEvent;
         import mx.events.ResizeEvent;
@@ -75,7 +72,14 @@
             thumbImgMenuItem6 = new ContextMenuItem(Message.L_OPEN_NICO_SOUND, true);
             thumbImgMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openNicoSound);
 
-            thumbImgMenu.customItems.push(thumbImgMenuItem1, thumbImgMenuItem2, thumbImgMenuItem3, thumbImgMenuItem6, thumbImgMenuItem4, thumbImgMenuItem5);
+            thumbImgMenu.customItems.push(
+                    thumbImgMenuItem1,
+                    thumbImgMenuItem2,
+                    thumbImgMenuItem3,
+                    thumbImgMenuItem6,
+                    thumbImgMenuItem4,
+                    thumbImgMenuItem5
+            );
 
             image_thumbImg.contextMenu = thumbImgMenu;
 

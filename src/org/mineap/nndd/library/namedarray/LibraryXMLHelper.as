@@ -4,7 +4,6 @@ package org.mineap.nndd.library.namedarray {
 
     import org.mineap.nndd.model.NNDDVideo;
     import org.mineap.nndd.util.LibraryUtil;
-    import org.mineap.nndd.util.PathMaker;
 
     public class LibraryXMLHelper {
         public function LibraryXMLHelper() {

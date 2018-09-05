@@ -1,15 +1,11 @@
 package org.mineap.nndd.nativeProcessPlayer {
-    import flash.desktop.NativeApplication;
     import flash.desktop.NativeProcess;
     import flash.desktop.NativeProcessStartupInfo;
-    import flash.events.Event;
     import flash.events.IOErrorEvent;
-    import flash.events.ProgressEvent;
     import flash.filesystem.File;
     import flash.system.Capabilities;
 
     import mx.controls.Alert;
-    import mx.messaging.Producer;
 
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.Message;
@@ -95,8 +91,7 @@ package org.mineap.nndd.nativeProcessPlayer {
                     args.push(path);
                     nativeProcessStartupInfo.arguments = args;
 
-                }
-                else {
+                } else {
                     //macだけどappファイルじゃなくて実行ファイルを直接指定されたときはそのまま実行
                     nativeProcessStartupInfo.executable = executeFile;
 
@@ -104,8 +99,7 @@ package org.mineap.nndd.nativeProcessPlayer {
                     nativeProcessStartupInfo.arguments = args;
                 }
 
-            }
-            else {
+            } else {
                 // win,linuxの時は実行ファイルをそのまま実行
                 nativeProcessStartupInfo.executable = executeFile;
 

@@ -123,8 +123,7 @@ package org.mineap.nndd.library.sqlite {
         public function get systemFileDir(): File {
             if (!_useAppDirSystemFile) {
                 return new File(libraryDir.resolvePath("system/").url);
-            }
-            else {
+            } else {
                 return new File(File.applicationStorageDirectory.resolvePath("system/").url);
             }
         }
@@ -262,7 +261,8 @@ package org.mineap.nndd.library.sqlite {
 
                     Alert.show(message, Message.M_MESSAGE, Alert.OK, null, function (event: CloseEvent): void {
 
-                        var loadWindow: LoadWindow = PopUpManager.createPopUp(FlexGlobals.topLevelApplication as DisplayObject, LoadWindow, true) as LoadWindow;
+                        var loadWindow: LoadWindow = PopUpManager.createPopUp(FlexGlobals.topLevelApplication as
+                                                     DisplayObject, LoadWindow, true) as LoadWindow;
                         if (createNewLibrary) {
                             loadWindow.label_loadingInfo.text = "データベースを作成中";
                             loadWindow.progressBar_loading.label = "作成中...";
@@ -281,7 +281,13 @@ package org.mineap.nndd.library.sqlite {
                             }
                             _converting = false;
 
-                            dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, 0, 0));
+                            dispatchEvent(new LibraryLoadEvent(
+                                LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                                false,
+                                false,
+                                0,
+                                0
+                            ));
 
                             PopUpManager.removePopUp(loadWindow);
 
@@ -359,16 +365,16 @@ package org.mineap.nndd.library.sqlite {
 
                 if (failVideos.length == 0) {
                     Alert.show("再構築が完了しました。", Message.M_MESSAGE);
-                }
-                else {
+                } else {
                     Alert.show("再構築が完了しましたが、データベースに追加できなかった動画があります。\n(詳細はログを参照してください。))", Message.M_MESSAGE);
                 }
             } catch (error: Error) {
                 trace(error.getStackTrace());
                 _logger.addLog("ライブラリの変換に失敗:" + error);
-                Alert.show("ライブラリの変換に失敗しました。\n" +
-                        "手動でライブラリを更新してください。\n" +
-                        "(設定>全般>ライブラリを更新)\n\n" + error, Message.M_ERROR);
+                Alert.show(
+                    "ライブラリの変換に失敗しました。\n" + "手動でライブラリを更新してください。\n" + "(設定>全般>ライブラリを更新)\n\n" + error,
+                    Message.M_ERROR
+                );
             }
 
         }
@@ -402,8 +408,7 @@ package org.mineap.nndd.library.sqlite {
             } catch (error: Error) {
                 trace(error.getStackTrace());
                 _logger.addLog("ライブラリの変換に失敗:" + error);
-                Alert.show("ライブラリの変換に失敗しました。\n" +
-                        "手動でライブラリを更新してください。" + error, Message.M_ERROR);
+                Alert.show("ライブラリの変換に失敗しました。\n" + "手動でライブラリを更新してください。" + error, Message.M_ERROR);
             }
         }
 
@@ -440,7 +445,13 @@ package org.mineap.nndd.library.sqlite {
 
             if (videoList.length == 0) {
                 updateVersion();
-                dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
+                dispatchEvent(new LibraryLoadEvent(
+                    LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                    false,
+                    false,
+                    _totalVideoCount,
+                    _videoCount
+                ));
             }
 
             trace("complete");
@@ -486,9 +497,17 @@ package org.mineap.nndd.library.sqlite {
                 _tempLibraryMap[key] = nnddVideo;
 
                 if (_videoCount % 10 == 0) {
-                    dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOADING, false, false, _totalVideoCount, _videoCount, file));
+                    dispatchEvent(new LibraryLoadEvent(
+                        LibraryLoadEvent.LIBRARY_LOADING,
+                        false,
+                        false,
+                        _totalVideoCount,
+                        _videoCount,
+                        file
+                    ));
                     trace(_videoCount + "/" + array.length + ":" + file.nativePath);
-                    _logger.addLog("動画情報を収集中... :" + _videoCount + "/" + array.length + ":" + file.name + " (" + file.nativePath + ")");
+                    _logger.addLog("動画情報を収集中... :" + _videoCount + "/" + array.length + ":" + file.name + " (" +
+                                   file.nativePath + ")");
                 }
 
                 if (_videoCount >= _totalVideoCount) {
@@ -552,7 +571,13 @@ package org.mineap.nndd.library.sqlite {
 
                     _logger.addLog("ライブラリの更新が完了");
 
-                    dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
+                    dispatchEvent(new LibraryLoadEvent(
+                        LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                        false,
+                        false,
+                        _totalVideoCount,
+                        _videoCount
+                    ));
                 }
 
             } catch (error: Error) {
@@ -569,7 +594,13 @@ package org.mineap.nndd.library.sqlite {
 
                     _logger.addLog("ライブラリの更新が完了");
 
-                    dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
+                    dispatchEvent(new LibraryLoadEvent(
+                        LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                        false,
+                        false,
+                        _totalVideoCount,
+                        _videoCount
+                    ));
                 }
             }
 
@@ -708,7 +739,16 @@ package org.mineap.nndd.library.sqlite {
                         //そのまま
                     }
 
-                    var newVideo: NNDDVideo = new NNDDVideo(encodeURI(url), video.videoName, video.isEconomy, video.tagStrings, video.modificationDate, video.creationDate, video.thumbUrl, video.playCount);
+                    var newVideo: NNDDVideo = new NNDDVideo(
+                        encodeURI(url),
+                        video.videoName,
+                        video.isEconomy,
+                        video.tagStrings,
+                        video.modificationDate,
+                        video.creationDate,
+                        video.thumbUrl,
+                        video.playCount
+                    );
                     add(newVideo, false, true);
                 }
             }
@@ -820,7 +860,12 @@ package org.mineap.nndd.library.sqlite {
                 saveDir = libraryDir;
             }
 
-            var vector: Vector.<NNDDVideo> = NNDDVideoDao.instance.selectNNDDVideoByFile(saveDir, true, false, isShowAll);
+            var vector: Vector.<NNDDVideo> = NNDDVideoDao.instance.selectNNDDVideoByFile(
+                saveDir,
+                true,
+                false,
+                isShowAll
+            );
 
             var count: int = 0;
             if (vector != null) {

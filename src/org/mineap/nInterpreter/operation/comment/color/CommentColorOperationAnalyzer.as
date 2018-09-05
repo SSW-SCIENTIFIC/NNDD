@@ -9,7 +9,8 @@ package org.mineap.nInterpreter.operation.comment.color {
         /**
          *
          */
-        public static const COMMENT_COLOR_OPERATION_PATTERN: RegExp = new RegExp("commentColor=(0x[A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9])");
+        public static const COMMENT_COLOR_OPERATION_PATTERN: RegExp = new RegExp(
+            "commentColor=(0x[A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9])");
 
         /**
          *

@@ -122,7 +122,14 @@ package org.mineap.nndd.myList {
          * @return 上書きしたマイリストに対応するツリー表示用のオブジェクト
          *
          */
-        public function updateMyList(myListUrl: String, myListName: String, isDir: Boolean, isSave: Boolean, oldName: String, children: Array = null): Object {
+        public function updateMyList(
+            myListUrl: String,
+            myListName: String,
+            isDir: Boolean,
+            isSave: Boolean,
+            oldName: String,
+            children: Array = null
+        ): Object {
 
             var myList: MyList = new MyList(myListUrl, myListName, isDir);
             var object: Object = searchByName(oldName, this._tree_MyList);
@@ -208,7 +215,14 @@ package org.mineap.nndd.myList {
          * @return
          *
          */
-        public function addMyList(myListUrl: String, myListName: String, isDir: Boolean, isSave: Boolean, index: int = -1, children: Array = null): Object {
+        public function addMyList(
+            myListUrl: String,
+            myListName: String,
+            isDir: Boolean,
+            isSave: Boolean,
+            index: int = -1,
+            children: Array = null
+        ): Object {
             var exsits: Boolean = false;
             var myList: MyList = new MyList(myListUrl, myListName, isDir);
 
@@ -458,15 +472,16 @@ package org.mineap.nndd.myList {
                     file.unPlayVideoCount = MyListManager.instance.getMyListUnPlayVideoCount(name);
 
                     myList = new MyList(url, name);
-                    if ((temp.@isChannel != null && temp.@isChannel == "true") || (url != null && url.indexOf("channel/") != -1)) {
+                    if ((temp.@isChannel != null && temp.@isChannel == "true") ||
+                        (url != null && url.indexOf("channel/") != -1)) {
                         myList.type = RssType.CHANNEL;
                     }
-                    if ((temp.@type != null && temp.@type == RssType.CHANNEL.toString())
-                            || (url != null && url.indexOf("channel/") != -1)) {
+                    if ((temp.@type != null && temp.@type == RssType.CHANNEL.toString()) ||
+                        (url != null && url.indexOf("channel/") != -1)) {
                         myList.type = RssType.CHANNEL;
                     }
-                    if ((temp.@type != null && temp.@type == RssType.USER_UPLOAD_VIDEO.toString())
-                            || (url != null && url.indexOf("user/") != -1)) {
+                    if ((temp.@type != null && temp.@type == RssType.USER_UPLOAD_VIDEO.toString()) ||
+                        (url != null && url.indexOf("user/") != -1)) {
                         myList.type = RssType.USER_UPLOAD_VIDEO;
                     }
 
@@ -901,8 +916,7 @@ package org.mineap.nndd.myList {
                         if (tempVector != null && tempVector.length > 0) {
                             updatePlayed(tempVector, xml, false);
                         }
-                    }
-                    else {
+                    } else {
                         // 新しく渡したXMLの既読/未読を使う
                     }
                 }
@@ -1056,7 +1070,12 @@ package org.mineap.nndd.myList {
          * @param isPlayed
          *
          */
-        public function updatePlayedAndSave(myListId: String, type: RssType, videoIds: Vector.<String>, isPlayed: Boolean): void {
+        public function updatePlayedAndSave(
+            myListId: String,
+            type: RssType,
+            videoIds: Vector.<String>,
+            isPlayed: Boolean
+        ): void {
 
             var xml: XML = readLocalMyList(myListId, type);
 
@@ -1068,7 +1087,8 @@ package org.mineap.nndd.myList {
                 }
 
                 if (!updatePlayed(videoIds, xml, isPlayed)) {
-                    _logManager.addLog(str + "は isPlayed = " + isPlayed + " に設定済(" + type.toString() + ":" + myListId + ")");
+                    _logManager.addLog(str + "は isPlayed = " + isPlayed + " に設定済(" + type.toString() + ":" + myListId +
+                                       ")");
                     return;
                 }
                 saveMyList(myListId, type, xml, false);
@@ -1231,7 +1251,11 @@ package org.mineap.nndd.myList {
          * @return
          *
          */
-        private function searchUnPlaydItem(xml: XML, onlyIsPlayFalse: Boolean = false, withOutDownloadedVideo: Boolean = false): Vector.<String> {
+        private function searchUnPlaydItem(
+            xml: XML,
+            onlyIsPlayFalse: Boolean = false,
+            withOutDownloadedVideo: Boolean = false
+        ): Vector.<String> {
             var videoIds: Vector.<String> = new Vector.<String>();
 
             if (xml != null) {
@@ -1246,8 +1270,7 @@ package org.mineap.nndd.myList {
                         var videoId: String = null;
                         if (!onlyIsPlayFalse && (items == null || (items != null && items.length() == 0))) {
                             videoId = PathMaker.getVideoID(tempXML.link);
-                        }
-                        else if (items != null && items.length() > 0) {
+                        } else if (items != null && items.length() > 0) {
                             if ((items[0] as XML).text().toString() == "false") {
                                 videoId = PathMaker.getVideoID(tempXML.link);
                             }
@@ -1327,8 +1350,7 @@ package org.mineap.nndd.myList {
             var str: String = ConfigManager.getInstance().getItem("withOutDownloadedVideo");
             if (str != null) {
                 withOutDownloadedVideo = ConfUtil.parseBoolean(str);
-            }
-            else {
+            } else {
                 ConfigManager.getInstance().setItem("withOutDownloadedVideo", "false");
                 ConfigManager.getInstance().save();
             }
@@ -1415,8 +1437,7 @@ package org.mineap.nndd.myList {
 
             if (myListIds == null) {
                 return new Vector.<String>();
-            }
-            else {
+            } else {
                 for each(var id: String in myListIds) {
                     vector.push(id);
                 }

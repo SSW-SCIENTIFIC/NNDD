@@ -77,8 +77,7 @@ package org.mineap.nndd.server {
             } catch (error: Error) {
                 try {
                     fileStream.close();
-                }
-                catch (error: Error) {
+                } catch (error: Error) {
                     // nothing
                 }
                 trace(error.getStackTrace());

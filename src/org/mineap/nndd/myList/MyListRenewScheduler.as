@@ -3,7 +3,6 @@ package org.mineap.nndd.myList {
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.IOErrorEvent;
-    import flash.events.ProgressEvent;
     import flash.events.TimerEvent;
     import flash.utils.Timer;
 
@@ -16,7 +15,6 @@ package org.mineap.nndd.myList {
     import org.mineap.nndd.library.LibraryManagerBuilder;
     import org.mineap.nndd.model.MyListRenewResultType;
     import org.mineap.nndd.model.RssType;
-    import org.mineap.nndd.util.MyListUtil;
 
     [Event(name="complete", type="Event")]
     [Event(name="mylistRenewProgress", type="MyListRenewProgressEvent")]
@@ -26,8 +24,7 @@ package org.mineap.nndd.myList {
      *
      * @author shiraminekeisuke(MineAP)
      *
-     */
-    public class MyListRenewScheduler extends EventDispatcher {
+     */ public class MyListRenewScheduler extends EventDispatcher {
 
         /**
          * スケジューリング対象のマイリストの一覧を保持します
@@ -270,8 +267,7 @@ package org.mineap.nndd.myList {
                 if (_nnddMyListsLoader != null) {
                     try {
                         _nnddMyListsLoader.close();
-                    }
-                    catch (error: Error) {
+                    } catch (error: Error) {
                     }
                 }
 
@@ -281,8 +277,7 @@ package org.mineap.nndd.myList {
                 _nnddMyListsLoader.addEventListener(NNDDMyListsLoader.GET_MYLISTS_COMPLETE, myListsLoadCompleteHandler);
                 _nnddMyListsLoader.addEventListener(IOErrorEvent.IO_ERROR, myListsLoadErrorHandler);
                 _nnddMyListsLoader.getMyLists(nnddServerAddress, nnddServerPort);
-            }
-            else {
+            } else {
                 next(0);
             }
         }
@@ -309,8 +304,7 @@ package org.mineap.nndd.myList {
                     // 更新対象に追加
                     this.addMyList(myList);
 
-                }
-                else {
+                } else {
                     trace("このマイリストはある:" + myList.id + "," + myList.type);
                 }
             }
@@ -355,7 +349,8 @@ package org.mineap.nndd.myList {
          */
         private function myListRenew(myList: MyList, enableNext: Boolean = true): void {
 
-            if (this._mailAddress != null && this._mailAddress != "" && this._password != null && this._password != "") {
+            if (this._mailAddress != null && this._mailAddress != "" && this._password != null && this._password !=
+                "") {
 
                 var nnddMyListLoader: NNDDMyListLoader = new NNDDMyListLoader();
 
@@ -372,9 +367,17 @@ package org.mineap.nndd.myList {
                     myListStr = "mylist/" + myList.id + " " + myList.myListName;
                 }
 
-                LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新開始(" + (this._index + 1) + "/" + this._myLists.length + "):" + myListStr);
+                LogManager.instance.addLog("マイリスト/チャンネルのスケジュール更新開始(" + (this._index + 1) + "/" + this._myLists.length +
+                                           "):" + myListStr);
 
-                dispatchEvent(new MyListRenewProgressEvent(MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS, false, false, this._index + 1, this._myLists.length, myListStr));
+                dispatchEvent(new MyListRenewProgressEvent(
+                    MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS,
+                    false,
+                    false,
+                    this._index + 1,
+                    this._myLists.length,
+                    myListStr
+                ));
 
                 nnddMyListLoader.enableNNDDServer = enableNNDDServerAccess;
                 nnddMyListLoader.nnddServerAddress = nnddServerAddress;
@@ -420,9 +423,12 @@ package org.mineap.nndd.myList {
 
                 function myListGetFail(event: Event): void {
 
-                    if (event.type == NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD
-                            || event.type == NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR) {
-                        nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, myListGetComplete);
+                    if (event.type == NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD || event.type ==
+                        NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR) {
+                        nnddMyListLoader.removeEventListener(
+                            NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE,
+                            myListGetComplete
+                        );
                         nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, myListGetFail);
                         nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, myListGetFail);
                         nnddMyListLoader.removeEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, myListGetFail);
@@ -470,7 +476,11 @@ package org.mineap.nndd.myList {
          * @param nnddServerPort
          *
          */
-        public function updateNNDDServerAccessSetting(enableNNDDServerAccess: Boolean, nnddServerAddress: String, nnddServerPort: int): void {
+        public function updateNNDDServerAccessSetting(
+            enableNNDDServerAccess: Boolean,
+            nnddServerAddress: String,
+            nnddServerPort: int
+        ): void {
             this.enableNNDDServerAccess = enableNNDDServerAccess;
             this.nnddServerAddress = nnddServerAddress;
             this.nnddServerPort = nnddServerPort;

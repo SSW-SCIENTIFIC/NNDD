@@ -42,8 +42,8 @@ package org.mineap.util.config {
          */
         public static function movePrefToAppSupport(): void {
 
-            if (Capabilities.os.toLowerCase().indexOf("mac") != -1
-                    && File.applicationStorageDirectory.getDirectoryListing().length == 0) {
+            if (Capabilities.os.toLowerCase().indexOf("mac") != -1 &&
+                File.applicationStorageDirectory.getDirectoryListing().length == 0) {
 
                 // AIR3.2以前
                 var oldDir: File = File.userDirectory.resolvePath("Library/Preferences/org.mineap.nndd/Local Store/");

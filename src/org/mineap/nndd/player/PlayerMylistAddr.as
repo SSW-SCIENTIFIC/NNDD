@@ -57,7 +57,13 @@ package org.mineap.nndd.player {
          * @param videoTitle
          *
          */
-        public function addMyList(mailAddress: String, password: String, myListId: String, videoId: String, videoTitle: String): void {
+        public function addMyList(
+            mailAddress: String,
+            password: String,
+            myListId: String,
+            videoId: String,
+            videoTitle: String
+        ): void {
 
             _logger.addLog("***マイリストへの追加***");
 
@@ -172,8 +178,7 @@ package org.mineap.nndd.player {
         public function get isAdding(): Boolean {
             if (_myListAddr == null) {
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
         }

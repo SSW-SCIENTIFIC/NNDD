@@ -85,7 +85,8 @@ package org.mineap.nndd.util {
                     this._commentNum = NumberUtil.addComma(xml.thumb.comment_num);
                     this._myListNum = NumberUtil.addComma(xml.thumb.mylist_counter);
                     this._firstRetrieve = xml.thumb.first_retrieve;
-                    this._lastResBody = HtmlUtil.convertSpecialCharacterNotIncludedString(xml.thumb.last_res_body.text());
+                    this._lastResBody =
+                        HtmlUtil.convertSpecialCharacterNotIncludedString(xml.thumb.last_res_body.text());
                     this._length = xml.thumb.length;
                     this._thumbnailUrl = xml.thumb.thumbnail_url;
 
@@ -111,8 +112,7 @@ package org.mineap.nndd.util {
                         //タグが一つも無い。削除されている模様。
                         this._tagArray.push(Message.L_VIDEO_DELETED);
                     }
-                }
-                else if (this._status == STATUS_FAIL) {
+                } else if (this._status == STATUS_FAIL) {
 
                     if (xml.error != null && xml.error.code != null) {
                         this._errorCode = xml.error.code;
@@ -155,7 +155,10 @@ package org.mineap.nndd.util {
                 thumbInfoDateFormatString = this._firstRetrieve;
             }
             //2009-04-24T22:25:46+09:00
-            var pattern: RegExp = new RegExp("(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d).(\\d\\d):(\\d\\d):(\\d\\d)([+|-])(\\d\\d):(\\d\\d)", "ig");
+            var pattern: RegExp = new RegExp(
+                "(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d).(\\d\\d):(\\d\\d):(\\d\\d)([+|-])(\\d\\d):(\\d\\d)",
+                "ig"
+            );
             var array: Array = pattern.exec(thumbInfoDateFormatString);
             if (array != null && array.length > 0) {
                 //1 年
@@ -170,8 +173,8 @@ package org.mineap.nndd.util {
 
                 //Date#parse()で有効な文字列表現
                 //YYYY/MM/DD HH:MM:SS TZD
-                var dateString: String = array[1] + "/" + array[2] + "/" + array[3] + " " +
-                        array[4] + ":" + array[5] + ":" + array[6] + " GMT" + array[7] + array[8] + array[9];
+                var dateString: String = array[1] + "/" + array[2] + "/" + array[3] + " " + array[4] + ":" + array[5] +
+                                         ":" + array[6] + " GMT" + array[7] + array[8] + array[9];
 
                 var date: Date = new Date(dateString);
                 return date;
@@ -197,7 +200,8 @@ package org.mineap.nndd.util {
          */
         public function get htmlTitle(): String {
             if (this._status == "ok") {
-                return "<a href=\"http://www.nicovideo.jp/watch/" + _videoId + "\"><u><font color=\"#0000ff\">" + _title + "</font></u></a>";
+                return "<a href=\"http://www.nicovideo.jp/watch/" + _videoId + "\"><u><font color=\"#0000ff\">" +
+                       _title + "</font></u></a>";
             } else {
                 return "(削除されています)";
             }

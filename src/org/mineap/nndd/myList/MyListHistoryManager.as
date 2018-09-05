@@ -1,7 +1,4 @@
 package org.mineap.nndd.myList {
-    import org.mineap.nndd.model.RssType;
-    import org.mineap.nndd.util.MyListUtil;
-    import org.mineap.util.config.ConfigIO;
     import org.mineap.util.config.ConfigManager;
 
     /**

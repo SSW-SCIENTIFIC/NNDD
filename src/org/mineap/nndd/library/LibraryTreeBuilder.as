@@ -40,7 +40,8 @@ package org.mineap.nndd.library {
             }
 
             for (var index: int = 0; index < libraryFolder.children.length; index++) {
-                if ((libraryFolder.children[index] as TreeFolderItem).file.nativePath == libraryManager.systemFileDir.nativePath) {
+                if ((libraryFolder.children[index] as TreeFolderItem).file.nativePath ==
+                    libraryManager.systemFileDir.nativePath) {
                     libraryFolder.children.splice(index, 1);
                     break;
                 }

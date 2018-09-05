@@ -1,6 +1,4 @@
 package org.mineap.nndd.util {
-    import spark.components.supportClasses.RegExPatterns;
-
     public class MyListUtil {
 
         public function MyListUtil() {

@@ -70,9 +70,18 @@ package org.mineap.nndd.model {
          * @param pubDate
          *
          */
-        public function NNDDVideo(uri: String, videoName: String = null, isEconomy: Boolean = false, tags: Vector.<String> = null,
-                                  modificationDate: Date = null, creationDate: Date = null, thumbUrl: String = null, playCount: Number = 0, time: Number = 0,
-                                  lastPlayDate: Date = null, pubDate: Date = null) {
+        public function NNDDVideo(uri: String,
+                                  videoName: String = null,
+                                  isEconomy: Boolean = false,
+                                  tags: Vector.<String> = null,
+                                  modificationDate: Date = null,
+                                  creationDate: Date = null,
+                                  thumbUrl: String = null,
+                                  playCount: Number = 0,
+                                  time: Number = 0,
+                                  lastPlayDate: Date = null,
+                                  pubDate: Date = null
+        ) {
             if (uri.indexOf("%") == -1) {
                 this._uri = encodeURI(uri);
             } else {

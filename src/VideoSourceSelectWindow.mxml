@@ -95,9 +95,9 @@
 
 
         protected function textInput_source_nativeDragEnterHandler(event: NativeDragEvent): void {
-            if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
-                    || event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)
-                    || event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)) {
+            if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) ||
+                event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT) ||
+                event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)) {
                 NativeDragManager.acceptDragDrop(textInput_source);
 
                 if (event.allowedActions.allowCopy) {

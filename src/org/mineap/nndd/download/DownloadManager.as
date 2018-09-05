@@ -105,7 +105,8 @@ package org.mineap.nndd.download {
                                         rankingProvider: ArrayCollection,
                                         searchProvider: ArrayCollection,
                                         myListProvider: ArrayCollection,
-                                        logManager: LogManager) {
+                                        logManager: LogManager
+        ) {
             this.downloadProvider = downloadProvider;
             this.myListProvider = myListProvider;
             this.searchProvider = searchProvider;
@@ -123,8 +124,7 @@ package org.mineap.nndd.download {
                 if (temp >= 100 && temp <= 10000) {
                     this._maxDlListCount = temp;
                 }
-            }
-            else {
+            } else {
                 ConfigManager.getInstance().setItem("dlListMaxCount", DEFAULT_MAX_DLLIST_COUNT);
                 ConfigManager.getInstance().save();
             }
@@ -162,13 +162,13 @@ package org.mineap.nndd.download {
             var url: String = "http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl());
 
             downloadProvider.addItem({
-                col_preview: video.thumbUrl,
-                col_videoName: video.videoName,
-                col_videoUrl: url,
-                col_status: "待機中",
-                col_id: item.getDownloadID(),
-                col_statusType: DownloadStatusType.NOT_START
-            });
+                                         col_preview: video.thumbUrl,
+                                         col_videoName: video.videoName,
+                                         col_videoUrl: url,
+                                         col_status: "待機中",
+                                         col_id: item.getDownloadID(),
+                                         col_statusType: DownloadStatusType.NOT_START
+                                     });
 
             showCountRest();
 
@@ -240,9 +240,9 @@ package org.mineap.nndd.download {
                         }
 
                         // DL処理開始
-                        if (downloadProvider[i].col_statusType == DownloadStatusType.NOT_START
-                                || downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER
-                                || downloadProvider[i].col_statusType == DownloadStatusType.ECONOMY_SKIP) {
+                        if (downloadProvider[i].col_statusType == DownloadStatusType.NOT_START ||
+                            downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER ||
+                            downloadProvider[i].col_statusType == DownloadStatusType.ECONOMY_SKIP) {
 
                             this.queueId = downloadProvider[i].col_id;
                             this.queueVideoName = downloadProvider[i].col_videoName;
@@ -256,14 +256,14 @@ package org.mineap.nndd.download {
                             if (retryCount >= retryMaxCount) {
                                 // リトライオーバー
                                 downloadProvider.setItemAt({
-                                    col_preview: downloadProvider[i].col_preview,
-                                    col_videoName: downloadProvider[i].col_videoName,
-                                    col_videoUrl: downloadProvider[i].col_videoUrl,
-                                    col_status: downloadProvider[i].col_status,
-                                    col_id: downloadProvider[i].col_id,
-                                    col_downloadedPath: downloadProvider[i].col_downloadedPath,
-                                    col_statusType: DownloadStatusType.RETRY_OVER
-                                }, i);
+                                                               col_preview: downloadProvider[i].col_preview,
+                                                               col_videoName: downloadProvider[i].col_videoName,
+                                                               col_videoUrl: downloadProvider[i].col_videoUrl,
+                                                               col_status: downloadProvider[i].col_status,
+                                                               col_id: downloadProvider[i].col_id,
+                                                               col_downloadedPath: downloadProvider[i].col_downloadedPath,
+                                                               col_statusType: DownloadStatusType.RETRY_OVER
+                                                           }, i);
 
                                 retryCount = 0;
                                 isDownloading = false;
@@ -283,26 +283,26 @@ package org.mineap.nndd.download {
 
                             timer = new Timer(1000, timerCount);
                             downloadProvider.setItemAt({
-                                col_preview: downloadProvider[i].col_preview,
-                                col_videoName: downloadProvider[i].col_videoName,
-                                col_videoUrl: downloadProvider[i].col_videoUrl,
-                                col_status: timerCount + "秒後にDL開始" + retry,
-                                col_id: downloadProvider[i].col_id,
-                                col_downloadedPath: downloadProvider[i].col_downloadedPath,
-                                col_statusType: DownloadStatusType.NOT_START
-                            }, i);
+                                                           col_preview: downloadProvider[i].col_preview,
+                                                           col_videoName: downloadProvider[i].col_videoName,
+                                                           col_videoUrl: downloadProvider[i].col_videoUrl,
+                                                           col_status: timerCount + "秒後にDL開始" + retry,
+                                                           col_id: downloadProvider[i].col_id,
+                                                           col_downloadedPath: downloadProvider[i].col_downloadedPath,
+                                                           col_statusType: DownloadStatusType.NOT_START
+                                                       }, i);
                             timer.addEventListener(TimerEvent.TIMER, function (event: TimerEvent): void {
                                 timerCount--;
                                 var index: int = searchQueueIndexByQueueId(queueId);
                                 downloadProvider.setItemAt({
-                                    col_preview: downloadProvider[i].col_preview,
-                                    col_videoName: downloadProvider[index].col_videoName,
-                                    col_videoUrl: downloadProvider[index].col_videoUrl,
-                                    col_status: timerCount + "秒後にDL開始" + retry,
-                                    col_id: downloadProvider[index].col_id,
-                                    col_downloadedPath: downloadProvider[index].col_downloadedPath,
-                                    col_statusType: DownloadStatusType.NOT_START
-                                }, index);
+                                                               col_preview: downloadProvider[i].col_preview,
+                                                               col_videoName: downloadProvider[index].col_videoName,
+                                                               col_videoUrl: downloadProvider[index].col_videoUrl,
+                                                               col_status: timerCount + "秒後にDL開始" + retry,
+                                                               col_id: downloadProvider[index].col_id,
+                                                               col_downloadedPath: downloadProvider[index].col_downloadedPath,
+                                                               col_statusType: DownloadStatusType.NOT_START
+                                                           }, index);
                             });
                             timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: TimerEvent): void {
                                 download(queueId);
@@ -345,48 +345,192 @@ package org.mineap.nndd.download {
 
                 //失敗系ハンドラ登録
                 this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.GETFLV_API_ACCESS_FAIL,
+                    getFailListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.ICHIBA_INFO_GET_FAIL,
+                    getFailListener,
+                    false,
+                    0,
+                    true
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.NICOWARI_GET_FAIL,
+                    getFailListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.OWNER_COMMENT_GET_FAIL,
+                    getFailListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.THUMB_IMG_GET_FAIL,
+                    getFailListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.THUMB_INFO_GET_FAIL,
+                    getFailListener,
+                    false,
+                    0,
+                    true
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener, false, 0, true);
                 this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener, false, 0, true);
 
                 //成功系ハンドラ登録
-                this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.COMMENT_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.GETFLV_API_ACCESS_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.ICHIBA_INFO_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getSuccessListener, false, 0, true);
                 this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_SKIP, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getSuccessListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getSuccessListener, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.NICOWARI_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.OWNER_COMMENT_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.THUMB_IMG_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.THUMB_INFO_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.VIDEO_GET_SUCCESS,
+                    getSuccessListener,
+                    false,
+                    0,
+                    true
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_SUCCESS, getSuccessListener, false, 0, true);
 
-                this._nnddDownloader.addEventListener(NNDDDownloader.COMMENT_GET_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_START, getProgressListener, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.COMMENT_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.GETFLV_API_ACCESS_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.ICHIBA_INFO_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.LOGIN_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.NICOWARI_GET_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener, false, 0, true);
-                this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.NICOWARI_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.OWNER_COMMENT_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.THUMB_IMG_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.THUMB_INFO_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.VIDEO_GET_START,
+                    getProgressListener,
+                    false,
+                    0,
+                    true
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.WATCH_START, getProgressListener, false, 0, true);
 
                 //プログレスハンドラ登録
-                this._nnddDownloader.addEventListener(NNDDDownloader.VIDEO_DOWNLOAD_PROGRESS, downloadProgressHandler, false, 0, true);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.VIDEO_DOWNLOAD_PROGRESS,
+                    downloadProgressHandler,
+                    false,
+                    0,
+                    true
+                );
 
                 //完了系ハンドラ登録
-                this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP, downlaodFailListener);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP,
+                    downlaodFailListener
+                );
                 this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
                 this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, downlaodFailListener);
-                this._nnddDownloader.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
+                this._nnddDownloader.addEventListener(
+                    NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
+                    downloadCompleteListener
+                );
 
                 logManager.addLog("***ニコニコ動画へ動画取得のリクエスト***");
 
@@ -428,14 +572,14 @@ package org.mineap.nndd.download {
                     continue;
                 }
                 downloadProvider.setItemAt({
-                    col_preview: downloadProvider[i].col_preview,
-                    col_videoName: downloadProvider[i].col_videoName,
-                    col_videoUrl: downloadProvider[i].col_videoUrl,
-                    col_status: downloadProvider[i].col_status,
-                    col_id: downloadProvider[i].col_id,
-                    col_downloadedPath: downloadProvider[i].col_downloadedPath,
-                    col_statusType: DownloadStatusType.NOT_START
-                }, i);
+                                               col_preview: downloadProvider[i].col_preview,
+                                               col_videoName: downloadProvider[i].col_videoName,
+                                               col_videoUrl: downloadProvider[i].col_videoUrl,
+                                               col_status: downloadProvider[i].col_status,
+                                               col_id: downloadProvider[i].col_id,
+                                               col_downloadedPath: downloadProvider[i].col_downloadedPath,
+                                               col_statusType: DownloadStatusType.NOT_START
+                                           }, i);
             }
 
         }
@@ -446,14 +590,22 @@ package org.mineap.nndd.download {
          */
         public function emptyList(): void {
 
-            Alert.show(Message.M_DOWNLOAD_PROCESSING, Message.M_MESSAGE, Alert.OK | Alert.CANCEL, null, function (event: CloseEvent): void {
-                if (event.detail == Alert.OK) {
-                    stop();
-                    downloadItemMap = new Object();
-                    downloadProvider.removeAll();
-                    showCountRest();
-                }
-            }, null, Alert.CANCEL);
+            Alert.show(
+                Message.M_DOWNLOAD_PROCESSING,
+                Message.M_MESSAGE,
+                Alert.OK | Alert.CANCEL,
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.OK) {
+                        stop();
+                        downloadItemMap = new Object();
+                        downloadProvider.removeAll();
+                        showCountRest();
+                    }
+                },
+                null,
+                Alert.CANCEL
+            );
         }
 
         /**
@@ -461,27 +613,35 @@ package org.mineap.nndd.download {
          *
          */
         public function removeDownloadedVideo(): void {
-            Alert.show(Message.M_ALL_DOWNLOADED_VIDEO_DELETE, Message.M_MESSAGE, Alert.OK | Alert.CANCEL, null, function (event: CloseEvent): void {
-                if (event.detail == Alert.OK) {
+            Alert.show(
+                Message.M_ALL_DOWNLOADED_VIDEO_DELETE,
+                Message.M_MESSAGE,
+                Alert.OK | Alert.CANCEL,
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.OK) {
 
-                    var index: int = 0;
-                    if (downloadProvider.length > 0) {
-                        while (true) {
-                            var object: Object = downloadProvider[index];
-                            if (DownloadStatusType.COMPLETE == object.col_statusType) {
-                                downloadProvider.removeItemAt(index);
-                            } else {
-                                index++;
-                            }
-                            if (index >= downloadProvider.length) {
-                                break;
+                        var index: int = 0;
+                        if (downloadProvider.length > 0) {
+                            while (true) {
+                                var object: Object = downloadProvider[index];
+                                if (DownloadStatusType.COMPLETE == object.col_statusType) {
+                                    downloadProvider.removeItemAt(index);
+                                } else {
+                                    index++;
+                                }
+                                if (index >= downloadProvider.length) {
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    showCountRest();
-                }
-            }, null, Alert.CANCEL);
+                        showCountRest();
+                    }
+                },
+                null,
+                Alert.CANCEL
+            );
         }
 
         /**
@@ -509,26 +669,34 @@ package org.mineap.nndd.download {
                     showCountRest();
 
                 } else {
-                    Alert.show(Message.M_THIS_ITEM_IS_DOWNLOADING, Message.M_MESSAGE, Alert.OK | Alert.CANCEL, null, function (event: CloseEvent): void {
-                        if (event.detail == Alert.OK) {
+                    Alert.show(
+                        Message.M_THIS_ITEM_IS_DOWNLOADING,
+                        Message.M_MESSAGE,
+                        Alert.OK | Alert.CANCEL,
+                        null,
+                        function (event: CloseEvent): void {
+                            if (event.detail == Alert.OK) {
 
-                            delete downloadItemMap[downloadProvider[index].col_id];
+                                delete downloadItemMap[downloadProvider[index].col_id];
 
-                            downloadProvider.removeItemAt(index);
-                            if (_nnddDownloader != null) {
-                                _nnddDownloader.close(true, false);
+                                downloadProvider.removeItemAt(index);
+                                if (_nnddDownloader != null) {
+                                    _nnddDownloader.close(true, false);
+                                }
+                                isDownloading = false;
+                                if (timer != null) {
+                                    timer.stop();
+                                }
+                                qIndex = searchQueueIndexByQueueId(queueId);
+                                if (qIndex != -1) {
+                                    queueVideoName = downloadProvider[qIndex].col_videoName;
+                                }
+                                showCountRest();
                             }
-                            isDownloading = false;
-                            if (timer != null) {
-                                timer.stop();
-                            }
-                            qIndex = searchQueueIndexByQueueId(queueId);
-                            if (qIndex != -1) {
-                                queueVideoName = downloadProvider[qIndex].col_videoName;
-                            }
-                            showCountRest();
-                        }
-                    }, null, Alert.CANCEL);
+                        },
+                        null,
+                        Alert.CANCEL
+                    );
                 }
 
             }
@@ -545,9 +713,9 @@ package org.mineap.nndd.download {
 //				count++;
 //			}
             for (var i: int = 0; i < downloadProvider.length; i++) {
-                if (downloadProvider[i].col_statusType == DownloadStatusType.DOWNLOADEING
-                        || downloadProvider[i].col_statusType == DownloadStatusType.NOT_START
-                        || downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER) {
+                if (downloadProvider[i].col_statusType == DownloadStatusType.DOWNLOADEING ||
+                    downloadProvider[i].col_statusType == DownloadStatusType.NOT_START ||
+                    downloadProvider[i].col_statusType == DownloadStatusType.RETRY_OVER) {
                     count++;
                 }
             }
@@ -592,17 +760,18 @@ package org.mineap.nndd.download {
                 myLibrary = defLibrary;
             }
             nnddDownloader.requestDownload(this.mailaddress,
-                    this.password,
-                    PathMaker.getVideoID(video.getDecodeUrl()),
-                    null,
-                    myLibrary,
-                    false,
-                    this.isContactTheUser,
-                    this.isAlwaysEconomy,
-                    this.isAppendComment,
-                    FlexGlobals.topLevelApplication.getSaveCommentMaxCount(),
-                    FlexGlobals.topLevelApplication.getUseOldTypeCommentGet(),
-                    this.isSkipEconomy);
+                                           this.password,
+                                           PathMaker.getVideoID(video.getDecodeUrl()),
+                                           null,
+                                           myLibrary,
+                                           false,
+                                           this.isContactTheUser,
+                                           this.isAlwaysEconomy,
+                                           this.isAppendComment,
+                                           FlexGlobals.topLevelApplication.getSaveCommentMaxCount(),
+                                           FlexGlobals.topLevelApplication.getUseOldTypeCommentGet(),
+                                           this.isSkipEconomy
+            );
 
             return nnddDownloader;
         }
@@ -619,7 +788,8 @@ package org.mineap.nndd.download {
                 if (downloadProvider[i].col_videoUrl == video.getDecodeUrl()) {
                     return true;
                 }
-                if (PathMaker.getVideoID(downloadProvider[i].col_videoUrl) == PathMaker.getVideoID(video.getDecodeUrl())) {
+                if (PathMaker.getVideoID(downloadProvider[i].col_videoUrl) ==
+                    PathMaker.getVideoID(video.getDecodeUrl())) {
                     return true;
                 }
             }
@@ -798,8 +968,14 @@ package org.mineap.nndd.download {
                     trace(value);
 
                     var index: int = searchQueueIndexByQueueId(queueId);
-                    setStatus("動画をDL中\n" + new int((event.bytesLoaded / event.bytesTotal) * 100) + "% (" + formatter2.format(value) + " MB/s)\n" +
-                            formatter.format(loadedValue) + "MB/" + formatter.format(totalValue) + "MB", DownloadStatusType.DOWNLOADEING, queueVideoName, index);
+                    setStatus(
+                        "動画をDL中\n" + new int((event.bytesLoaded / event.bytesTotal) * 100) + "% (" +
+                        formatter2.format(value) + " MB/s)\n" + formatter.format(loadedValue) + "MB/" +
+                        formatter.format(totalValue) + "MB",
+                        DownloadStatusType.DOWNLOADEING,
+                        queueVideoName,
+                        index
+                    );
                 }
             }
         }
@@ -833,7 +1009,8 @@ package org.mineap.nndd.download {
                             oldFile.deleteFile();
                         }
                     } catch (error: Error) {
-                        logManager.addLog("ダウンロード済みの古いファイルを削除しようとしましたが、失敗しました。:" + oldVideo.getDecodeUrl() + "\nError:" + error.getStackTrace());
+                        logManager.addLog("ダウンロード済みの古いファイルを削除しようとしましたが、失敗しました。:" + oldVideo.getDecodeUrl() +
+                                          "\nError:" + error.getStackTrace());
                     }
                 } else {
                     nnddVideo.creationDate = new Date();
@@ -854,8 +1031,7 @@ package org.mineap.nndd.download {
             video.isEconomy = nnddVideo.isEconomy;
             if (oldVideo != null) {
                 video.playCount = oldVideo.playCount;
-            }
-            else {
+            } else {
                 video.playCount = nnddVideo.playCount;
             }
 
@@ -864,7 +1040,13 @@ package org.mineap.nndd.download {
 
             logManager.addLog("動画のダウンロード完了:" + video.getDecodeUrl());
             var index: int = searchQueueIndexByQueueId(queueId);
-            setStatus("動画保存済\n右クリックから再生できます。", DownloadStatusType.COMPLETE, queueVideoName, index, video.getDecodeUrl());
+            setStatus(
+                "動画保存済\n右クリックから再生できます。",
+                DownloadStatusType.COMPLETE,
+                queueVideoName,
+                index,
+                video.getDecodeUrl()
+            );
 
             logManager.addLog("***動画取得完了***");
 
@@ -962,7 +1144,14 @@ package org.mineap.nndd.download {
          * @param newVideoName
          *
          */
-        public function setStatus(status: String, statusType: DownloadStatusType, videoName: String, qIndex: int, path: String = "", newVideoName: String = null): void {
+        public function setStatus(
+            status: String,
+            statusType: DownloadStatusType,
+            videoName: String,
+            qIndex: int,
+            path: String = "",
+            newVideoName: String = null
+        ): void {
 
             if (qIndex == -1) {
                 return;
@@ -974,16 +1163,17 @@ package org.mineap.nndd.download {
             }
 
             if (downloadProvider != null) {
-                if (downloadProvider.length > qIndex && downloadProvider[qIndex] != undefined && downloadProvider[qIndex].col_videoName.indexOf(videoName) != -1) {
+                if (downloadProvider.length > qIndex && downloadProvider[qIndex] != undefined &&
+                    downloadProvider[qIndex].col_videoName.indexOf(videoName) != -1) {
                     downloadProvider.setItemAt({
-                        col_preview: downloadProvider[qIndex].col_preview,
-                        col_videoName: downloadingVideoName,
-                        col_videoUrl: downloadProvider[qIndex].col_videoUrl,
-                        col_status: status,
-                        col_id: downloadProvider[qIndex].col_id,
-                        col_downloadedPath: path,
-                        col_statusType: statusType
-                    }, qIndex);
+                                                   col_preview: downloadProvider[qIndex].col_preview,
+                                                   col_videoName: downloadingVideoName,
+                                                   col_videoUrl: downloadProvider[qIndex].col_videoUrl,
+                                                   col_status: status,
+                                                   col_id: downloadProvider[qIndex].col_id,
+                                                   col_downloadedPath: path,
+                                                   col_statusType: statusType
+                                               }, qIndex);
                 }
             }
 
@@ -1011,18 +1201,19 @@ package org.mineap.nndd.download {
             }
 
             if (rankingProvider != null && rankingVideoIndex != -1 && rankingProvider.length > rankingVideoIndex) {
-                if (videoName != null && rankingProvider[rankingVideoIndex].dataGridColumn_videoName.indexOf(videoName) != -1) {
+                if (videoName != null &&
+                    rankingProvider[rankingVideoIndex].dataGridColumn_videoName.indexOf(videoName) != -1) {
                     this.rankingProvider.setItemAt({
-                        dataGridColumn_ranking: rankingProvider[rankingVideoIndex].dataGridColumn_ranking,
-                        dataGridColumn_preview: rankingProvider[rankingVideoIndex].dataGridColumn_preview,
-                        dataGridColumn_videoName: rankingProvider[rankingVideoIndex].dataGridColumn_videoName,
-                        dataGridColumn_Info: rankingProvider[rankingVideoIndex].dataGridColumn_Info,
-                        dataGridColumn_videoInfo: rankingProvider[rankingVideoIndex].dataGridColumn_videoInfo,
-                        dataGridColumn_condition: status,
-                        dataGridColumn_videoPath: path,
-                        dataGridColumn_date: rankingProvider[rankingVideoIndex].dataGridColumn_date,
-                        dataGridColumn_nicoVideoUrl: rankingProvider[rankingVideoIndex].dataGridColumn_nicoVideoUrl
-                    }, rankingVideoIndex);
+                                                       dataGridColumn_ranking: rankingProvider[rankingVideoIndex].dataGridColumn_ranking,
+                                                       dataGridColumn_preview: rankingProvider[rankingVideoIndex].dataGridColumn_preview,
+                                                       dataGridColumn_videoName: rankingProvider[rankingVideoIndex].dataGridColumn_videoName,
+                                                       dataGridColumn_Info: rankingProvider[rankingVideoIndex].dataGridColumn_Info,
+                                                       dataGridColumn_videoInfo: rankingProvider[rankingVideoIndex].dataGridColumn_videoInfo,
+                                                       dataGridColumn_condition: status,
+                                                       dataGridColumn_videoPath: path,
+                                                       dataGridColumn_date: rankingProvider[rankingVideoIndex].dataGridColumn_date,
+                                                       dataGridColumn_nicoVideoUrl: rankingProvider[rankingVideoIndex].dataGridColumn_nicoVideoUrl
+                                                   }, rankingVideoIndex);
                 }
             }
 
@@ -1038,18 +1229,19 @@ package org.mineap.nndd.download {
             }
 
             if (searchProvider != null && searchVideoIndex != -1 && searchProvider.length > searchVideoIndex) {
-                if (videoName != null && searchProvider[searchVideoIndex].dataGridColumn_videoName.indexOf(videoName) != -1) {
+                if (videoName != null && searchProvider[searchVideoIndex].dataGridColumn_videoName.indexOf(videoName) !=
+                    -1) {
                     this.searchProvider.setItemAt({
-                        dataGridColumn_ranking: searchProvider[searchVideoIndex].dataGridColumn_ranking,
-                        dataGridColumn_preview: searchProvider[searchVideoIndex].dataGridColumn_preview,
-                        dataGridColumn_videoName: searchProvider[searchVideoIndex].dataGridColumn_videoName,
-                        dataGridColumn_Info: searchProvider[searchVideoIndex].dataGridColumn_Info,
-                        dataGridColumn_videoInfo: searchProvider[searchVideoIndex].dataGridColumn_videoInfo,
-                        dataGridColumn_condition: status,
-                        dataGridColumn_videoPath: path,
-                        dataGridColumn_date: searchProvider[searchVideoIndex].dataGridColumn_date,
-                        dataGridColumn_nicoVideoUrl: searchProvider[searchVideoIndex].dataGridColumn_nicoVideoUrl
-                    }, searchVideoIndex);
+                                                      dataGridColumn_ranking: searchProvider[searchVideoIndex].dataGridColumn_ranking,
+                                                      dataGridColumn_preview: searchProvider[searchVideoIndex].dataGridColumn_preview,
+                                                      dataGridColumn_videoName: searchProvider[searchVideoIndex].dataGridColumn_videoName,
+                                                      dataGridColumn_Info: searchProvider[searchVideoIndex].dataGridColumn_Info,
+                                                      dataGridColumn_videoInfo: searchProvider[searchVideoIndex].dataGridColumn_videoInfo,
+                                                      dataGridColumn_condition: status,
+                                                      dataGridColumn_videoPath: path,
+                                                      dataGridColumn_date: searchProvider[searchVideoIndex].dataGridColumn_date,
+                                                      dataGridColumn_nicoVideoUrl: searchProvider[searchVideoIndex].dataGridColumn_nicoVideoUrl
+                                                  }, searchVideoIndex);
                 }
             }
 
@@ -1065,16 +1257,17 @@ package org.mineap.nndd.download {
             }
 
             if (myListProvider != null && myListVideoIndex != -1 && myListProvider.length > myListVideoIndex) {
-                if (videoName != null && myListProvider[myListVideoIndex].dataGridColumn_videoName.indexOf(videoName) != -1) {
+                if (videoName != null && myListProvider[myListVideoIndex].dataGridColumn_videoName.indexOf(videoName) !=
+                    -1) {
                     this.myListProvider.setItemAt({
-                        dataGridColumn_index: myListProvider[myListVideoIndex].dataGridColumn_index,
-                        dataGridColumn_preview: myListProvider[myListVideoIndex].dataGridColumn_preview,
-                        dataGridColumn_videoName: myListProvider[myListVideoIndex].dataGridColumn_videoName,
-                        dataGridColumn_videoInfo: myListProvider[myListVideoIndex].dataGridColumn_videoInfo,
-                        dataGridColumn_condition: status,
-                        dataGridColumn_videoUrl: myListProvider[myListVideoIndex].dataGridColumn_videoUrl,
-                        dataGridColumn_videoLocalPath: path
-                    }, myListVideoIndex);
+                                                      dataGridColumn_index: myListProvider[myListVideoIndex].dataGridColumn_index,
+                                                      dataGridColumn_preview: myListProvider[myListVideoIndex].dataGridColumn_preview,
+                                                      dataGridColumn_videoName: myListProvider[myListVideoIndex].dataGridColumn_videoName,
+                                                      dataGridColumn_videoInfo: myListProvider[myListVideoIndex].dataGridColumn_videoInfo,
+                                                      dataGridColumn_condition: status,
+                                                      dataGridColumn_videoUrl: myListProvider[myListVideoIndex].dataGridColumn_videoUrl,
+                                                      dataGridColumn_videoLocalPath: path
+                                                  }, myListVideoIndex);
                 }
             }
         }
@@ -1084,10 +1277,16 @@ package org.mineap.nndd.download {
          *
          */
         public function removeHandler(): void {
-            this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, downloadCompleteListener);
+            this._nnddDownloader.removeEventListener(
+                NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
+                downloadCompleteListener
+            );
             this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, downlaodFailListener);
             this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, downlaodFailListener);
-            this._nnddDownloader.removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP, downlaodFailListener);
+            this._nnddDownloader.removeEventListener(
+                NNDDDownloader.DOWNLOAD_PROCESS_ECONOMY_MODE_SKIP,
+                downlaodFailListener
+            );
 
         }
 
@@ -1129,12 +1328,14 @@ package org.mineap.nndd.download {
 
                 } catch (error: IOError) {
                     Alert.show("ダウンロードリストの保存に失敗しました。\n" + error);
-                    logManager.addLog("ダウンロードリストの保存に失敗:" + saveFile.nativePath + "\n" + error + ":" + error.getStackTrace());
+                    logManager.addLog("ダウンロードリストの保存に失敗:" + saveFile.nativePath + "\n" + error + ":" +
+                                      error.getStackTrace());
                 }
 
             } catch (error: Error) {
                 Alert.show("ダウンロードリストの保存に失敗しました。\n" + error);
-                logManager.addLog("ダウンロードリストの保存に失敗:" + saveFile.nativePath + "\n" + error + ":" + error.getStackTrace());
+                logManager.addLog("ダウンロードリストの保存に失敗:" + saveFile.nativePath + "\n" + error + ":" +
+                                  error.getStackTrace());
             }
 
         }
@@ -1161,7 +1362,8 @@ package org.mineap.nndd.download {
                         var loadXML: XML = fileIO.loadXMLSync(loadFile.url, true);
                     } catch (error: IOError) {
                         Alert.show("ダウンロードリストの読み込みに失敗しました。\n" + loadFile.url + "/downloadList.xml", Message.M_ERROR);
-                        logManager.addLog("ダウンロードリストの読み込みに失敗:" + loadFile.url + "/downloadList.xml\n" + error + ":" + error.getStackTrace());
+                        logManager.addLog("ダウンロードリストの読み込みに失敗:" + loadFile.url + "/downloadList.xml\n" + error + ":" +
+                                          error.getStackTrace());
                     }
                     var xmlList: XMLList = loadXML.children();
                     for (var i: int = 0; i < xmlList.length(); i++) {
@@ -1187,24 +1389,22 @@ package org.mineap.nndd.download {
                         if ("0" == xmlList[i].statusType) {
                             statusType = DownloadStatusType.COMPLETE;
                             status = "動画保存済\n右クリックから再生できます。";
-                        } else if ("1" == xmlList[i].statusType
-                                || "2" == xmlList[i].statusType
-                                || "3" == xmlList[i].statusType
-                                || "4" == xmlList[i].statusType) {
+                        } else if ("1" == xmlList[i].statusType || "2" == xmlList[i].statusType || "3" ==
+                                   xmlList[i].statusType || "4" == xmlList[i].statusType) {
                             statusType = DownloadStatusType.NOT_START;
                             status = "待機中";
                         }
 
 
                         downloadProvider.addItem({
-                            col_preview: PathMaker.getThumbImgUrl(decodeURIComponent(xmlList[i].videoUrl)),
-                            col_videoName: name,
-                            col_videoUrl: decodeURIComponent(xmlList[i].videoUrl),
-                            col_status: status,
-                            col_id: id,
-                            col_downloadedPath: decodeURIComponent(xmlList[i].downloadedPath),
-                            col_statusType: statusType
-                        });
+                                                     col_preview: PathMaker.getThumbImgUrl(decodeURIComponent(xmlList[i].videoUrl)),
+                                                     col_videoName: name,
+                                                     col_videoUrl: decodeURIComponent(xmlList[i].videoUrl),
+                                                     col_status: status,
+                                                     col_id: id,
+                                                     col_downloadedPath: decodeURIComponent(xmlList[i].downloadedPath),
+                                                     col_statusType: statusType
+                                                 });
                     }
 
                     logManager.addLog("ダウンロードリストを読み込み:" + loadFile.nativePath);
@@ -1214,8 +1414,12 @@ package org.mineap.nndd.download {
                 }
 
             } catch (error: Error) {
-                Alert.show("ダウンロードリストの読み込みに失敗しました。\n" + libraryManager.libraryDir.url + "/downloadList.xml", Message.M_ERROR);
-                logManager.addLog("ダウンロードリストの読み込みに失敗:" + libraryManager.libraryDir.url + "/downloadList.xml\n" + error + ":" + error.getStackTrace());
+                Alert.show(
+                    "ダウンロードリストの読み込みに失敗しました。\n" + libraryManager.libraryDir.url + "/downloadList.xml",
+                    Message.M_ERROR
+                );
+                logManager.addLog("ダウンロードリストの読み込みに失敗:" + libraryManager.libraryDir.url + "/downloadList.xml\n" + error +
+                                  ":" + error.getStackTrace());
             }
 
         }

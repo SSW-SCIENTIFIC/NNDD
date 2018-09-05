@@ -27,20 +27,17 @@ package org.mineap.nndd.player {
     import mx.controls.videoClasses.VideoError;
     import mx.core.FlexGlobals;
     import mx.core.UIComponent;
+    import mx.core.mx_internal;
     import mx.events.AIREvent;
     import mx.events.FlexEvent;
     import mx.events.VideoEvent;
     import mx.formatters.DateFormatter;
     import mx.formatters.NumberFormatter;
 
+    import org.libspark.utils.ForcibleLoader;
     import org.mangui.hls.HLSSettings;
     import org.mangui.hls.constant.HLSSeekMode;
-
-    import org.mineap.nndd.player.PatchedVideoDisplay;
-    import org.osmf.events.MediaFactoryEvent;
-    import org.osmf.media.MediaFactory;
-
-    import org.libspark.utils.ForcibleLoader;
+    import org.mangui.osmf.plugins.HLSPlugin;
     import org.mineap.nicovideo4as.CommentPost;
     import org.mineap.nicovideo4as.MyListLoader;
     import org.mineap.nicovideo4as.WatchVideoPage;
@@ -82,19 +79,15 @@ package org.mineap.nndd.player {
     import org.mineap.util.config.ConfigIO;
     import org.mineap.util.config.ConfigManager;
     import org.mineap.util.font.FontUtil;
-    import org.osmf.elements.VideoElement;
     import org.osmf.events.LoadEvent;
+    import org.osmf.events.MediaFactoryEvent;
     import org.osmf.events.MediaPlayerStateChangeEvent;
     import org.osmf.events.TimeEvent;
+    import org.osmf.media.MediaFactory;
     import org.osmf.media.MediaPlayerState;
-    import org.osmf.net.DynamicStreamingItem;
+    import org.osmf.media.PluginInfoResource;
     import org.osmf.net.DynamicStreamingResource;
     import org.osmf.utils.OSMFSettings;
-
-    import org.osmf.media.PluginInfoResource;
-    import org.mangui.osmf.plugins.HLSPlugin;
-
-    import mx.core.mx_internal;
 
     /**
      * ニコニコ動画からのダウンロードを処理およびその他のGUI関連処理を行う。
@@ -411,9 +404,16 @@ package org.mineap.nndd.player {
          * @param isPlayListingPlay
          *
          */
-        private function init(videoPath: String, windowType: int, comments: Comments, thumbInfoPath: String,
-                              autoPlay: Boolean = false, isStreamingPlay: Boolean = false,
-                              downLoadedURL: String = null, isPlayListingPlay: Boolean = false, videoId: String = ""): void {
+        private function init(videoPath: String,
+                              windowType: int,
+                              comments: Comments,
+                              thumbInfoPath: String,
+                              autoPlay: Boolean = false,
+                              isStreamingPlay: Boolean = false,
+                              downLoadedURL: String = null,
+                              isPlayListingPlay: Boolean = false,
+                              videoId: String = ""
+        ): void {
             this.destructor();
 
             if (videoPlayer != null) {
@@ -454,8 +454,7 @@ package org.mineap.nndd.player {
             var value: String = ConfigManager.getInstance().getItem("isLengthwisePreferred");
             if (value != null) {
                 this.isLengthwisePreferred = ConfUtil.parseBoolean(value);
-            }
-            else {
+            } else {
                 this.isLengthwisePreferred = true;
                 ConfigManager.getInstance().setItem("isLengthwisePreferred", this._isLengthwisePreferred);
             }
@@ -511,10 +510,8 @@ package org.mineap.nndd.player {
                 }
 
                 if (this._videoID != null && PathMaker.getVideoID(videoPath) == LibraryUtil.getVideoKey(videoPath)) {
-                    if (
-                            (UserManager.instance.user == null || UserManager.instance.password == null) ||
-                            (UserManager.instance.user == "" || UserManager.instance.password == "")
-                    ) {
+                    if ((UserManager.instance.user == null || UserManager.instance.password == null) ||
+                        (UserManager.instance.user == "" || UserManager.instance.password == "")) {
                         /* ログインしていないとき*/
                         logManager.addLog(Message.FAIL_PLAY_EACH_COMMENT_DOWNLOAD + "(ログインしていません)");
                     }
@@ -552,7 +549,7 @@ package org.mineap.nndd.player {
                 if (this._videoID != null && this._videoID != "") {
 
                     if (UserManager.instance.user != null && UserManager.instance.user != "" &&
-                            UserManager.instance.password != null && UserManager.instance.password != "") {
+                        UserManager.instance.password != null && UserManager.instance.password != "") {
 
                         myListGroupUpdate(PathMaker.getVideoID(this._videoID));
 
@@ -610,9 +607,15 @@ package org.mineap.nndd.player {
 
                 if (isStreamingPlay) {
                     //最新の情報はDL済みなのでそれを使う
-                    setInfo(downLoadedURL, thumbInfoPath, thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[IchibaInfo].html", true);
+                    setInfo(
+                        downLoadedURL,
+                        thumbInfoPath,
+                        thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[IchibaInfo].html",
+                        true
+                    );
 
-                    videoInfoView.image_thumbImg.source = thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[ThumbImg].jpeg";
+                    videoInfoView.image_thumbImg.source =
+                        thumbInfoPath.substring(0, thumbInfoPath.lastIndexOf("/")) + "/nndd[ThumbImg].jpeg";
                 } else {
                     setInfo(videoPath, thumbInfoPath, PathMaker.createNicoIchibaInfoPathByVideoPath(videoPath), false);
 
@@ -643,8 +646,13 @@ package org.mineap.nndd.player {
                     HistoryManager.instance.addVideoByNNDDVideo(video);
                 } else {
                     video = new NNDDVideo("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(_videoID),
-                            videoPlayer.title, false, null, null, null,
-                            PathMaker.getThumbImgUrl(PathMaker.getVideoID(_videoID)));
+                                          videoPlayer.title,
+                                          false,
+                                          null,
+                                          null,
+                                          null,
+                                          PathMaker.getThumbImgUrl(PathMaker.getVideoID(_videoID))
+                    );
 
                     HistoryManager.instance.addVideoByNNDDVideo(video, null, false);
                 }
@@ -660,7 +668,10 @@ package org.mineap.nndd.player {
 
                     if (isStreamingPlay) {
                         videoPlayer.label_downloadStatus.text = "バッファ中...";
-                        videoDisplay.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
+                        videoDisplay.addEventListener(
+                            MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE,
+                            mediaPlayerStateChanged
+                        );
                     }
 
                     videoPlayer.canvas_video.removeAllChildren();
@@ -671,7 +682,8 @@ package org.mineap.nndd.player {
                     videoDisplay.setConstraintValue("right", 0);
                     videoDisplay.setConstraintValue("top", 0);
 
-                    if (videoPath.length > 4 && (videoPath.substr(0, 4) == "http" || videoPath.substr(0, 4) == "rtmp")) {
+                    if (videoPath.length > 4 &&
+                        (videoPath.substr(0, 4) == "http" || videoPath.substr(0, 4) == "rtmp")) {
                         // http or rtmp
                         videoInfoView.videoServerUrl = videoPath.substring(0, videoPath.lastIndexOf("/"));
                     } else {
@@ -701,34 +713,32 @@ package org.mineap.nndd.player {
 //						videoDisplay.source = element;
 
 //						(videoDisplay.mx_internal::videoPlayer as MediaPlayer).authenticateWithToken(this._fmsToken);
-                    }
-                    else {
+                    } else {
                         var factory: MediaFactory = this.videoDisplay.mx_internal::mediaFactory;
 
-                        factory.addEventListener(
-                                MediaFactoryEvent.PLUGIN_LOAD,
-                                function (event: MediaFactoryEvent): void {
-                                    if (isStreamingPlay && _dmcHeartbeartTimer !== null) {
-                                        videoDisplay.source = new DynamicStreamingResource(videoPath);
-                                    } else {
-                                        videoDisplay.source = videoPath;
-                                    }
-                                }
+                        factory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD,
+                                                 function (event: MediaFactoryEvent): void {
+                                                     if (isStreamingPlay && _dmcHeartbeartTimer !== null) {
+                                                         videoDisplay.source = new DynamicStreamingResource(videoPath);
+                                                     } else {
+                                                         videoDisplay.source = videoPath;
+                                                     }
+                                                 }
                         );
 
-                        factory.addEventListener(
-                                MediaFactoryEvent.PLUGIN_LOAD_ERROR,
-                                function (event: MediaFactoryEvent): void {
-                                    trace("Error: OSFM HLS Plugin Load Failure.");
-                                    throw new Error("OSFM HLS Plugin Load Failure.");
-                                }
+                        factory.addEventListener(MediaFactoryEvent.PLUGIN_LOAD_ERROR,
+                                                 function (event: MediaFactoryEvent): void {
+                                                     trace("Error: OSFM HLS Plugin Load Failure.");
+                                                     throw new Error("OSFM HLS Plugin Load Failure.");
+                                                 }
                         );
 
                         factory.loadPlugin(new PluginInfoResource(new HLSPlugin()));
                     }
                     videoDisplay.autoRewind = false;
                     videoDisplay.volume = videoPlayer.videoController.slider_volume.value;
-                    videoPlayer.videoController_under.slider_volume.value = videoPlayer.videoController.slider_volume.value;
+                    videoPlayer.videoController_under.slider_volume.value =
+                        videoPlayer.videoController.slider_volume.value;
 
                     addVideoDisplayEventListeners(videoDisplay);
 
@@ -888,7 +898,12 @@ package org.mineap.nndd.player {
          * @param autoPlay
          *
          */
-        private function renewCommentAtStart(videoId: String, videoPath: String, thumbInfoPath: String, autoPlay: Boolean): void {
+        private function renewCommentAtStart(
+            videoId: String,
+            videoPath: String,
+            thumbInfoPath: String,
+            autoPlay: Boolean
+        ): void {
 
             var videoName: String = PathMaker.getVideoName(videoPath);
 
@@ -898,78 +913,82 @@ package org.mineap.nndd.player {
             }
 
             renewDownloadManager = new RenewDownloadManager(null, logManager);
-            renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_COMPLETE, function (event: Event): void {
-                var video: NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(renewDownloadManager.savedVideoFile.url));
-                if (video == null) {
+            renewDownloadManager.addEventListener(
+                RenewDownloadManager.PROCCESS_COMPLETE,
+                function (event: Event): void {
+                    var video: NNDDVideo = libraryManager.isExist(PathMaker.getVideoID(renewDownloadManager.savedVideoFile.url));
+                    if (video == null) {
+                        try {
+                            video = new LocalVideoInfoLoader().loadInfo(videoPath);
+                            video.creationDate = new File(videoPath).creationDate;
+                            video.modificationDate = new File(videoPath).modificationDate;
+                        } catch (error: Error) {
+                            video = new NNDDVideo(videoPath);
+                        }
+                        libraryManager.add(video, false);
+                        video = libraryManager.isExist(video.key);
+                    }
+                    videoPath = video.file.url;
+                    if (videoPlayer != null) {
+                        videoPlayer.title = video.file.name;
+                    }
+                    var thumbUrl: String = (event.currentTarget as RenewDownloadManager).localThumbUri;
+                    var isLocal: Boolean = false;
                     try {
-                        video = new LocalVideoInfoLoader().loadInfo(videoPath);
-                        video.creationDate = new File(videoPath).creationDate;
-                        video.modificationDate = new File(videoPath).modificationDate;
-                    } catch (error: Error) {
-                        video = new NNDDVideo(videoPath);
+                        //すでにローカルのファイルが設定されてるなら再設定しない。
+                        var file: File = new File(video.thumbUrl);
+                        if (file.exists) {
+                            isLocal = true;
+                        }
+                    } catch (e: Error) {
+                        trace(e);
                     }
-                    libraryManager.add(video, false);
-                    video = libraryManager.isExist(video.key);
-                }
-                videoPath = video.file.url;
-                if (videoPlayer != null) {
-                    videoPlayer.title = video.file.name;
-                }
-                var thumbUrl: String = (event.currentTarget as RenewDownloadManager).localThumbUri;
-                var isLocal: Boolean = false;
-                try {
-                    //すでにローカルのファイルが設定されてるなら再設定しない。
-                    var file: File = new File(video.thumbUrl);
-                    if (file.exists) {
-                        isLocal = true;
-                    }
-                } catch (e: Error) {
-                    trace(e);
-                }
 
-                //thumbUrlのURLがローカルで無ければ無条件で上書き
-                if (!isLocal) {
-                    if (thumbUrl != null) {
-                        //新しく取得したthumbUrlを設定
-                        video.thumbUrl = thumbUrl;
-                    } else if (video.thumbUrl == null || video.thumbUrl == "") {
-                        //thumbUrlが取れない==動画は削除済
-                        var videoId: String = PathMaker.getVideoID(_videoID);
-                        if (videoId != null) {
-                            video.thumbUrl = PathMaker.getThumbImgUrl(videoId);
-                        } else {
-                            video.thumbUrl = "";
+                    //thumbUrlのURLがローカルで無ければ無条件で上書き
+                    if (!isLocal) {
+                        if (thumbUrl != null) {
+                            //新しく取得したthumbUrlを設定
+                            video.thumbUrl = thumbUrl;
+                        } else if (video.thumbUrl == null || video.thumbUrl == "") {
+                            //thumbUrlが取れない==動画は削除済
+                            var videoId: String = PathMaker.getVideoID(_videoID);
+                            if (videoId != null) {
+                                video.thumbUrl = PathMaker.getThumbImgUrl(videoId);
+                            } else {
+                                video.thumbUrl = "";
+                            }
                         }
                     }
-                }
 
-                libraryManager.update(video, false);
+                    libraryManager.update(video, false);
 
 
-                var videoMin: int = video.time / 60;
-                ++videoMin;
+                    var videoMin: int = video.time / 60;
+                    ++videoMin;
 
-                var commentPath: String = PathMaker.createNomalCommentPathByVideoPath(video.getDecodeUrl());
-                var ownerCommentPath: String = PathMaker.createOwnerCommentPathByVideoPath(video.getDecodeUrl());
-                comments = new Comments(commentPath,
-                        ownerCommentPath,
-                        getCommentListProvider(),
-                        getOwnerCommentListProvider(),
-                        ngListManager,
-                        videoInfoView.isShowOnlyPermissionComment,
-                        videoInfoView.isHideSekaShinComment,
-                        videoInfoView.showCommentCountPerMin * videoMin,
-                        videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                        videoInfoView.isNgUpEnable);
+                    var commentPath: String = PathMaker.createNomalCommentPathByVideoPath(video.getDecodeUrl());
+                    var ownerCommentPath: String = PathMaker.createOwnerCommentPathByVideoPath(video.getDecodeUrl());
+                    comments = new Comments(commentPath,
+                                            ownerCommentPath,
+                                            getCommentListProvider(),
+                                            getOwnerCommentListProvider(),
+                                            ngListManager,
+                                            videoInfoView.isShowOnlyPermissionComment,
+                                            videoInfoView.isHideSekaShinComment,
+                                            videoInfoView.showCommentCountPerMin * videoMin,
+                                            videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                                            videoInfoView.isNgUpEnable
+                    );
 
 //				renewDownloadManager.close();
 
-                renewDownloadManager = null;
+                    renewDownloadManager = null;
 
-                myListGroupUpdate(PathMaker.getVideoID(_videoID));
+                    myListGroupUpdate(PathMaker.getVideoID(_videoID));
 
-                initStart(videoPath, thumbInfoPath, autoPlay);
-            });
+                    initStart(videoPath, thumbInfoPath, autoPlay);
+                }
+            );
 //			renewDownloadManager.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
 //			renewDownloadManager.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
 //			renewDownloadManager.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
@@ -993,10 +1012,13 @@ package org.mineap.nndd.player {
 //			renewDownloadManager.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
 //			renewDownloadManager.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
 
-            renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_STATUS_UPDATE, function (event: Event): void {
-                trace(event);
-                logManager.addLog(RenewDownloadManager.PROCCESS_STATUS_UPDATE + ":" + event);
-            });
+            renewDownloadManager.addEventListener(
+                RenewDownloadManager.PROCCESS_STATUS_UPDATE,
+                function (event: Event): void {
+                    trace(event);
+                    logManager.addLog(RenewDownloadManager.PROCCESS_STATUS_UPDATE + ":" + event);
+                }
+            );
             renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_FAIL, function (event: Event): void {
                 renewDownloadManager = null;
                 videoPlayer.label_downloadStatus.text = Message.FAIL_PLAY_EACH_COMMENT_DOWNLOAD;
@@ -1024,16 +1046,34 @@ package org.mineap.nndd.player {
 
             if (this.videoInfoView.isRenewOtherCommentWithCommentEachPlay) {
                 renewDownloadManager.renewForOtherVideo(UserManager.instance.user,
-                        UserManager.instance.password, PathMaker.getVideoID(videoId), videoName,
-                        new File(videoPath.substring(0, videoPath.lastIndexOf("/") + 1)),
-                        videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount(),
-                        FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
+                                                        UserManager.instance.password,
+                                                        PathMaker.getVideoID(videoId),
+                                                        videoName,
+                                                        new File(videoPath.substring(
+                                                            0,
+                                                            videoPath.lastIndexOf("/") + 1
+                                                        )),
+                                                        videoInfoView.isAppendComment,
+                                                        null,
+                                                        (FlexGlobals.topLevelApplication as
+                                                         NNDD).getSaveCommentMaxCount(),
+                                                        FlexGlobals.topLevelApplication.getUseOldTypeCommentGet()
+                );
             } else {
                 renewDownloadManager.renewForCommentOnly(UserManager.instance.user,
-                        UserManager.instance.password, PathMaker.getVideoID(videoId), videoName,
-                        new File(videoPath.substring(0, videoPath.lastIndexOf("/") + 1)),
-                        videoInfoView.isAppendComment, null, (FlexGlobals.topLevelApplication as NNDD).getSaveCommentMaxCount(),
-                        FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
+                                                         UserManager.instance.password,
+                                                         PathMaker.getVideoID(videoId),
+                                                         videoName,
+                                                         new File(videoPath.substring(
+                                                             0,
+                                                             videoPath.lastIndexOf("/") + 1
+                                                         )),
+                                                         videoInfoView.isAppendComment,
+                                                         null,
+                                                         (FlexGlobals.topLevelApplication as
+                                                          NNDD).getSaveCommentMaxCount(),
+                                                         FlexGlobals.topLevelApplication.getUseOldTypeCommentGet()
+                );
             }
         }
 
@@ -1058,39 +1098,61 @@ package org.mineap.nndd.player {
                 logManager.addLog("過去ログの取得を開始:" + DateUtil.getDateString(date));
 
                 renewDownloadManagerForOldComment = new RenewDownloadManager(null, LogManager.instance);
-                renewDownloadManagerForOldComment.addEventListener(NNDDDownloader.GETWAYBACKKEY_API_ACCESS_FAIL, function (event: Event): void {
-                    videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
-                    logManager.addLog("過去ログの取得に失敗:" + event);
+                renewDownloadManagerForOldComment.addEventListener(
+                    NNDDDownloader.GETWAYBACKKEY_API_ACCESS_FAIL,
+                    function (event: Event): void {
+                        videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
+                        logManager.addLog("過去ログの取得に失敗:" + event);
 
-                    FlexGlobals.topLevelApplication.activate();
-                    Alert.show("過去ログの取得に失敗しました。\nご利用のアカウントでは過去ログを取得できない可能性があります。\n(この機能はプレミアムアカウントでのみ利用可能です。)", Message.M_ERROR, 4, this.videoPlayer);
-                });
-                renewDownloadManagerForOldComment.addEventListener(RenewDownloadManager.PROCCESS_CANCEL, function (event: Event): void {
-                    videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
-                    logManager.addLog("過去ログの取得をキャンセル:" + event);
+                        FlexGlobals.topLevelApplication.activate();
+                        Alert.show(
+                            "過去ログの取得に失敗しました。\nご利用のアカウントでは過去ログを取得できない可能性があります。\n(この機能はプレミアムアカウントでのみ利用可能です。)",
+                            Message.M_ERROR,
+                            4,
+                            this.videoPlayer
+                        );
+                    }
+                );
+                renewDownloadManagerForOldComment.addEventListener(
+                    RenewDownloadManager.PROCCESS_CANCEL,
+                    function (event: Event): void {
+                        videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
+                        logManager.addLog("過去ログの取得をキャンセル:" + event);
 
-                    renewDownloadManagerForOldComment = null;
-                });
-                renewDownloadManagerForOldComment.addEventListener(RenewDownloadManager.PROCCESS_COMPLETE, function (event: Event): void {
-                    logManager.addLog("過去ログの取得に成功:" + event);
-                    //コメントを再読み込み
-                    reloadLocalComment(date);
+                        renewDownloadManagerForOldComment = null;
+                    }
+                );
+                renewDownloadManagerForOldComment.addEventListener(
+                    RenewDownloadManager.PROCCESS_COMPLETE,
+                    function (event: Event): void {
+                        logManager.addLog("過去ログの取得に成功:" + event);
+                        //コメントを再読み込み
+                        reloadLocalComment(date);
 
-                    renewDownloadManagerForOldComment.close();
-                    renewDownloadManagerForOldComment = null;
+                        renewDownloadManagerForOldComment.close();
+                        renewDownloadManagerForOldComment = null;
 
-                    videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
+                        videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
 
-                });
-                renewDownloadManagerForOldComment.addEventListener(RenewDownloadManager.PROCCESS_FAIL, function (event: Event): void {
-                    videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
-                    logManager.addLog("過去ログの取得に失敗:" + event);
+                    }
+                );
+                renewDownloadManagerForOldComment.addEventListener(
+                    RenewDownloadManager.PROCCESS_FAIL,
+                    function (event: Event): void {
+                        videoInfoView.button_oldComment_reloadFromNico.label = "更新(ニコニコ動画)";
+                        logManager.addLog("過去ログの取得に失敗:" + event);
 
-                    renewDownloadManagerForOldComment = null;
+                        renewDownloadManagerForOldComment = null;
 
-                    FlexGlobals.topLevelApplication.activate();
-                    Alert.show("過去ログの取得に失敗しました。", Message.M_ERROR, 4, this.videoPlayer);
-                });
+                        FlexGlobals.topLevelApplication.activate();
+                        Alert.show(
+                            "過去ログの取得に失敗しました。",
+                            Message.M_ERROR,
+                            4,
+                            this.videoPlayer
+                        );
+                    }
+                );
 
                 var videoId: String = PathMaker.getVideoID(this._videoID);
                 var videoName: String = null;
@@ -1111,8 +1173,15 @@ package org.mineap.nndd.player {
 
                 // 過去コメント取得時のコメント更新は一律で追記。
                 renewDownloadManagerForOldComment.renewForCommentOnly(UserManager.instance.user,
-                        UserManager.instance.password, videoId, videoName, videoPath, true,
-                        date, maxCount, FlexGlobals.topLevelApplication.getUseOldTypeCommentGet());
+                                                                      UserManager.instance.password,
+                                                                      videoId,
+                                                                      videoName,
+                                                                      videoPath,
+                                                                      true,
+                                                                      date,
+                                                                      maxCount,
+                                                                      FlexGlobals.topLevelApplication.getUseOldTypeCommentGet()
+                );
 
             }
 
@@ -1192,7 +1261,10 @@ package org.mineap.nndd.player {
             if (videoDisplay != null && !isPlayerClosing) {
                 if (event.state != MediaPlayerState.BUFFERING) {
                     videoPlayer.label_downloadStatus.text = "";
-                    videoDisplay.removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
+                    videoDisplay.removeEventListener(
+                        MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE,
+                        mediaPlayerStateChanged
+                    );
                     if (commentTimer != null && !commentTimer.running) {
                         time = (new Date).time;
                         commentTimer.start();
@@ -1200,7 +1272,10 @@ package org.mineap.nndd.player {
                 }
             } else {
                 (event.currentTarget as PatchedVideoDisplay).stop();
-                (event.currentTarget as PatchedVideoDisplay).removeEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, mediaPlayerStateChanged);
+                (event.currentTarget as PatchedVideoDisplay).removeEventListener(
+                    MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE,
+                    mediaPlayerStateChanged
+                );
                 destructor();
             }
         }
@@ -1263,8 +1338,18 @@ package org.mineap.nndd.player {
          * @return
          *
          */
-        private function initWithPlayList(videoPath: String, windowType: int, comments: Comments, playList: Array, videoNameList: Array, playListName: String, playingIndex: int,
-                                          autoPlay: Boolean = false, isStreamingPlay: Boolean = false, downLoadedURL: String = null, videoTitle: String = null): void {
+        private function initWithPlayList(videoPath: String,
+                                          windowType: int,
+                                          comments: Comments,
+                                          playList: Array,
+                                          videoNameList: Array,
+                                          playListName: String,
+                                          playingIndex: int,
+                                          autoPlay: Boolean = false,
+                                          isStreamingPlay: Boolean = false,
+                                          downLoadedURL: String = null,
+                                          videoTitle: String = null
+        ): void {
 
 //			this.streamingRetryCount = 0;
 
@@ -1288,7 +1373,17 @@ package org.mineap.nndd.player {
 
             trace("\t" + playList);
 
-            this.init(videoPath, windowType, comments, PathMaker.createThmbInfoPathByVideoPath(downLoadedURL), autoPlay, isStreamingPlay, videoTitle, true, LibraryUtil.getVideoKey(videoTitle));
+            this.init(
+                videoPath,
+                windowType,
+                comments,
+                PathMaker.createThmbInfoPathByVideoPath(downLoadedURL),
+                autoPlay,
+                isStreamingPlay,
+                videoTitle,
+                true,
+                LibraryUtil.getVideoKey(videoTitle)
+            );
         }
 
         /**
@@ -1300,7 +1395,12 @@ package org.mineap.nndd.player {
          *
          */
         public function initForVideoPlayer(url: String, index: int): void {
-            playMovie(url, this.videoInfoView.playList, index, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(index)));
+            playMovie(
+                url,
+                this.videoInfoView.playList,
+                index,
+                PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(index))
+            );
         }
 
         /**
@@ -1320,19 +1420,16 @@ package org.mineap.nndd.player {
                         if (videoInfoView.isSmoothingOnlyNotPixelIdenticalDimensions) {
                             // ピクセル等倍のときはスムージングしない
                             videoDisplay.videoSurfaceObject.smoothing = false;
-                        }
-                        else {
+                        } else {
                             // ピクセル等倍のときもスムージングする
                             videoDisplay.videoSurfaceObject.smoothing = true;
                         }
-                    }
-                    else {
+                    } else {
                         // 動画がピクセル等倍以外で表示されている
                         videoDisplay.videoSurfaceObject.smoothing = true;
                     }
 
-                }
-                else {
+                } else {
                     // スムージングしない
                     videoDisplay.videoSurfaceObject.smoothing = false;
                 }
@@ -1417,21 +1514,25 @@ package org.mineap.nndd.player {
                 }
 
                 //フルスクリーンではないか？
-                if (this.videoPlayer.stage != null && this.videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {
+                if (this.videoPlayer.stage != null && this.videoPlayer.stage.displayState !=
+                    StageDisplayState.FULL_SCREEN_INTERACTIVE) {
                     //再生ごとのリサイズが有効か？ 有効でなくてもレートが指定されているか？
                     if (this.videoInfoView.isResizePlayerEachPlay || windowSizeRatio != -1) {
 
-                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoSurfaceObject != null) {
+                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null &&
+                            this.videoDisplay.videoSurfaceObject != null) {
                             //FLV再生か？
 
                             // スムージングを設定
                             this.setVideoSmoothing(videoInfoView.isSmoothing);
 
-                            if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO && this.videoDisplay.videoSurfaceObject.videoHeight > 0) {
+                            if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO &&
+                                this.videoDisplay.videoSurfaceObject.videoHeight > 0) {
 
                                 //動画の大きさがニコ動の表示窓より小さいとき && ウィンドウの大きさを動画に合わせる (動画の高さが０の時は読み込み終わっていないのでスキップ)
                                 var isWideVideo: Boolean = false;
-                                if (WIDE_MODE_ASPECT_RATIO < Number(this.videoDisplay.videoSurfaceObject.videoWidth) / Number(this.videoDisplay.videoSurfaceObject.videoHeight)) {
+                                if (WIDE_MODE_ASPECT_RATIO < Number(this.videoDisplay.videoSurfaceObject.videoWidth) /
+                                    Number(this.videoDisplay.videoSurfaceObject.videoHeight)) {
                                     // この動画は16:9だ
                                     isWideVideo = true;
                                     trace("enable 16:9 mode");
@@ -1441,17 +1542,20 @@ package org.mineap.nndd.player {
                                 if (_useOldVersionVideoSize) {
                                     videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
                                     if (this.videoInfoView.isEnableWideMode && isWideVideo) {
-                                        videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE + PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
+                                        videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH_WIDE_MODE +
+                                                            PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
                                     } else {
-                                        videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH + PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
+                                        videoWindowWidth = (PlayerController.NICO_VIDEO_WINDOW_WIDTH +
+                                                            PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
                                     }
-                                }
-                                else {
+                                } else {
                                     videoWindowHeight = PlayerController.NICO_VIDEO_NEW_WINDOW_HEIGHT * ratio;
                                     if (this.videoInfoView.isEnableWideMode && isWideVideo) {
-                                        videoWindowWidth = (PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH_WIDE_MODE + PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
+                                        videoWindowWidth = (PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH_WIDE_MODE +
+                                                            PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
                                     } else {
-                                        videoWindowWidth = (PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH + PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
+                                        videoWindowWidth = (PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH +
+                                                            PlayerController.NICO_VIDEO_PADDING * 2) * ratio;
                                     }
                                 }
 
@@ -1463,23 +1567,33 @@ package org.mineap.nndd.player {
 
                                 trace(videoDisplay.width + "," + videoDisplay.height);
 
-                                logManager.addLog("オリジナルの動画サイズ:" + this.videoDisplay.videoSurfaceObject.videoWidth + " x " + this.videoDisplay.videoSurfaceObject.videoHeight);
+                                logManager.addLog("オリジナルの動画サイズ:" + this.videoDisplay.videoSurfaceObject.videoWidth +
+                                                  " x " + this.videoDisplay.videoSurfaceObject.videoHeight);
 
                                 if (videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)) {
                                     //init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
-                                    videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
+                                    videoDisplay.removeEventListener(
+                                        LoadEvent.BYTES_LOADED_CHANGE,
+                                        byteloadedChangedEventHandler
+                                    );
 //									resizePlayerJustVideoSize(windowSizeRatio);
                                 }
                                 if (videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)) {
-                                    videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
+                                    videoDisplay.removeEventListener(
+                                        TimeEvent.CURRENT_TIME_CHANGE,
+                                        osmfCurrentTimeChangeEventHandler
+                                    );
                                 }
 
-                            } else if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO && this.videoDisplay.videoSurfaceObject.videoHeight > 0) {
+                            } else if (this.videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_VIDEO &&
+                                       this.videoDisplay.videoSurfaceObject.videoHeight > 0) {
 
                                 //動画の大きさにウィンドウの大きさを合わせるとき(videoHeightが0の時は動画がまだ読み込まれていないのでスキップ)
 
-                                videoWindowHeight = (this.videoDisplay.videoSurfaceObject.videoHeight * ratio) + PlayerController.NICO_VIDEO_PADDING * 2;
-                                videoWindowWidth = (this.videoDisplay.videoSurfaceObject.videoWidth * ratio) + PlayerController.NICO_VIDEO_PADDING * 2;
+                                videoWindowHeight = (this.videoDisplay.videoSurfaceObject.videoHeight * ratio) +
+                                                    PlayerController.NICO_VIDEO_PADDING * 2;
+                                videoWindowWidth = (this.videoDisplay.videoSurfaceObject.videoWidth * ratio) +
+                                                   PlayerController.NICO_VIDEO_PADDING * 2;
 
                                 this.videoDisplay.setConstraintValue("bottom", NICO_VIDEO_PADDING);
                                 this.videoDisplay.setConstraintValue("left", NICO_VIDEO_PADDING);
@@ -1488,11 +1602,17 @@ package org.mineap.nndd.player {
 
                                 if (videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)) {
                                     //init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
-                                    videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
+                                    videoDisplay.removeEventListener(
+                                        LoadEvent.BYTES_LOADED_CHANGE,
+                                        byteloadedChangedEventHandler
+                                    );
 //									resizePlayerJustVideoSize(windowSizeRatio);
                                 }
                                 if (videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)) {
-                                    videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
+                                    videoDisplay.removeEventListener(
+                                        TimeEvent.CURRENT_TIME_CHANGE,
+                                        osmfCurrentTimeChangeEventHandler
+                                    );
                                 }
                             } else {
                                 //中断。後で呼ばれる事を期待する。
@@ -1506,8 +1626,7 @@ package org.mineap.nndd.player {
                             if (_useOldVersionVideoSize) {
                                 videoWindowHeight = PlayerController.NICO_VIDEO_WINDOW_HEIGHT * ratio;
                                 videoWindowWidth = PlayerController.NICO_VIDEO_WINDOW_WIDTH * ratio;
-                            }
-                            else {
+                            } else {
                                 videoWindowHeight = PlayerController.NICO_VIDEO_NEW_WINDOW_HEIGHT * ratio;
                                 videoWindowWidth = PlayerController.NICO_VIDEO_NEW_WINDOW_WIDTH * ratio;
                             }
@@ -1521,11 +1640,14 @@ package org.mineap.nndd.player {
                             videoWindowHeight += NICO_VIDEO_PADDING;
                         }
 
-                        this.videoPlayer.nativeWindow.height += int(videoWindowHeight - this.videoPlayer.canvas_video_back.height);
-                        this.videoPlayer.nativeWindow.width += int(videoWindowWidth - this.videoPlayer.canvas_video_back.width);
+                        this.videoPlayer.nativeWindow.height +=
+                            int(videoWindowHeight - this.videoPlayer.canvas_video_back.height);
+                        this.videoPlayer.nativeWindow.width +=
+                            int(videoWindowWidth - this.videoPlayer.canvas_video_back.width);
 
                         if (this.videoDisplay != null) {
-                            logManager.addLog("表示中の動画サイズ:" + this.videoDisplay.width + " x " + this.videoDisplay.height);
+                            logManager.addLog("表示中の動画サイズ:" + this.videoDisplay.width + " x " +
+                                              this.videoDisplay.height);
                         }
 
 //						(this.videoPlayer as Window).validateDisplayList();
@@ -1535,10 +1657,10 @@ package org.mineap.nndd.player {
 //						var diffH:int = this.videoPlayer.nativeWindow.height - this.videoPlayer.stage.stageHeight;
 //						var diffW:int = this.videoPlayer.nativeWindow.width - this.videoPlayer.stage.stageWidth;
 
-                    }
-                    else {
+                    } else {
                         // ウィンドウの大きさ調整が無効
-                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null && this.videoDisplay.videoSurfaceObject != null) {
+                        if (this.windowType == PlayerController.WINDOW_TYPE_FLV && this.videoDisplay != null &&
+                            this.videoDisplay.videoSurfaceObject != null) {
                             //FLV再生か？
 
                             // スムージングを設定
@@ -1546,18 +1668,23 @@ package org.mineap.nndd.player {
 
                             if (videoDisplay.hasEventListener(LoadEvent.BYTES_LOADED_CHANGE)) {
                                 //init後の初回の大きさ合わせが出来れば良いので以降のシークでは呼ばれないようにする
-                                videoDisplay.removeEventListener(LoadEvent.BYTES_LOADED_CHANGE, byteloadedChangedEventHandler);
+                                videoDisplay.removeEventListener(
+                                    LoadEvent.BYTES_LOADED_CHANGE,
+                                    byteloadedChangedEventHandler
+                                );
                             }
                             if (videoDisplay.hasEventListener(TimeEvent.CURRENT_TIME_CHANGE)) {
-                                videoDisplay.removeEventListener(TimeEvent.CURRENT_TIME_CHANGE, osmfCurrentTimeChangeEventHandler);
+                                videoDisplay.removeEventListener(
+                                    TimeEvent.CURRENT_TIME_CHANGE,
+                                    osmfCurrentTimeChangeEventHandler
+                                );
                             }
 
                         }
 
                     }
 
-                }
-                else {
+                } else {
                     if (PlayerController.WINDOW_TYPE_FLV == this.windowType) {
                         if (videoInfoView != null) {
                             this.setVideoSmoothing(videoInfoView.isSmoothing);
@@ -1953,8 +2080,8 @@ package org.mineap.nndd.player {
                 formatter.precision = 2;
                 var str: String = formatter.format(speed) + "MB/s";
 
-                this.videoPlayer.label_playSourceStatus.text = "Streaming:" + formatter.format(
-                    value) + "% (" + str + ")";
+                this.videoPlayer.label_playSourceStatus.text =
+                    "Streaming:" + formatter.format(value) + "% (" + str + ")";
 
                 return;
             }
@@ -2111,8 +2238,7 @@ package org.mineap.nndd.player {
                         if (this.videoDisplay != null) {
                             this.videoDisplay.play();
                         }
-                    }
-                    else {
+                    } else {
                         logManager.addLog("***動画のリピート(ローカル)***");
                         this.stop();
 
@@ -2122,28 +2248,21 @@ package org.mineap.nndd.player {
                             url = video.getDecodeUrl();
                         }
 
-                        playMovie(
-                                url,
-                                this.videoInfoView.playList,
-                                playingIndex,
-                                this.videoPlayer.title);
+                        playMovie(url, this.videoInfoView.playList, playingIndex, this.videoPlayer.title);
 
                     }
-                }
-                else if (isStreamingPlay) {
+                } else if (isStreamingPlay) {
                     logManager.addLog("***動画のリピート(ストリーミング)***");
                     this.seek(0);
                     if (this.videoDisplay != null) {
                         this.videoDisplay.play();
                     }
-                }
-                else {
+                } else {
                     logManager.addLog("***動画のリピート(ローカル)***");
                     this.stop();
                     this.play();
                 }
-            }
-            else {
+            } else {
 
                 /* 動画のリピートは無効 */
 
@@ -2165,14 +2284,13 @@ package org.mineap.nndd.player {
                                 url = video.getDecodeUrl();
                             }
 
-                            playMovie(
-                                    url,
-                                    this.videoInfoView.playList,
-                                    playingIndex,
-                                    PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                            playMovie(url,
+                                      this.videoInfoView.playList,
+                                      playingIndex,
+                                      PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                            );
                         }
-                    }
-                    else {
+                    } else {
                         /* プレイリストの次の項目へ */
                         playingIndex++;
 
@@ -2182,11 +2300,11 @@ package org.mineap.nndd.player {
                             url = video.getDecodeUrl();
                         }
 
-                        playMovie(
-                                url,
-                                this.videoInfoView.playList,
-                                playingIndex,
-                                PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                        playMovie(url,
+                                  this.videoInfoView.playList,
+                                  playingIndex,
+                                  PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                        );
                     }
                 }
             }
@@ -2245,8 +2363,11 @@ package org.mineap.nndd.player {
                         logManager.addLog("***動画のリピート(ローカル)***");
                         this.stop();
                         mc.gotoAndStop(0);
-                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                                playingIndex, this.videoPlayer.title);
+                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                                  this.videoInfoView.playList,
+                                  playingIndex,
+                                  this.videoPlayer.title
+                        );
                     }
                 } else if (isStreamingPlay) {
                     logManager.addLog("***動画のリピート(ストリーミング)***");
@@ -2266,13 +2387,19 @@ package org.mineap.nndd.player {
                     if (playingIndex >= this.videoInfoView.getPlayList().length - 1) {
                         playingIndex = 0;
                         if (this.videoPlayer.videoInfoView.isRepeatAll()) {
-                            playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                                    playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                            playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                                      this.videoInfoView.playList,
+                                      playingIndex,
+                                      PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                            );
                         }
                     } else {
                         playingIndex++;
-                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                                playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                                  this.videoInfoView.playList,
+                                  playingIndex,
+                                  PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                        );
                     }
                 }
             }
@@ -2305,21 +2432,22 @@ package org.mineap.nndd.player {
 
             if (videoDisplay != null && videoInfoView != null) {
                 if (videoDisplay.videoSurfaceObject != null) {
-                    videoInfoView.format = videoDisplay.videoSurfaceObject.videoWidth + " × " + videoDisplay.videoSurfaceObject.videoHeight;
-                    videoInfoView.currentWindowSize = videoDisplay.videoSurfaceObject.width + " × " + videoDisplay.videoSurfaceObject.height;
-                }
-                else {
+                    videoInfoView.format = videoDisplay.videoSurfaceObject.videoWidth + " × " +
+                                           videoDisplay.videoSurfaceObject.videoHeight;
+                    videoInfoView.currentWindowSize =
+                        videoDisplay.videoSurfaceObject.width + " × " + videoDisplay.videoSurfaceObject.height;
+                } else {
                     videoInfoView.format = "-";
                     videoInfoView.currentWindowSize = "-";
                 }
 
                 videoInfoView.videoSize = formatter.format((videoDisplay.bytesTotal / (1024 * 1024))) + " MB";
-            }
-            else if (loader != null) {
+            } else if (loader != null) {
                 if (loader.contentLoaderInfo != null) {
                     videoInfoView.format = loader.contentLoaderInfo.width + " × " + loader.contentLoaderInfo.height;
                     videoInfoView.currentWindowSize = loader.width + " × " + loader.height;
-                    videoInfoView.videoSize = formatter.format((loader.contentLoaderInfo.bytesTotal / (1024 * 1024))) + " MB";
+                    videoInfoView.videoSize =
+                        formatter.format((loader.contentLoaderInfo.bytesTotal / (1024 * 1024))) + " MB";
                 }
             }
 
@@ -2422,7 +2550,12 @@ package org.mineap.nndd.player {
             }
 
             //コメントを更新
-            var commentArray: Vector.<NNDDComment> = this.commentManager.setComment(commentTimerVpos, (tempTime - this.time) * 3, this.videoPlayer.isShowComment, this._isLengthwisePreferred);
+            var commentArray: Vector.<NNDDComment> = this.commentManager.setComment(
+                commentTimerVpos,
+                (tempTime - this.time) * 3,
+                this.videoPlayer.isShowComment,
+                this._isLengthwisePreferred
+            );
             this.commentManager.moveComment(tempTime / 1000 - this.time / 1000, videoInfoView.showCommentSec);
             this.commentManager.removeComment(commentTimerVpos, videoInfoView.showCommentSec * 1000);
             this.time = tempTime;
@@ -2480,7 +2613,8 @@ package org.mineap.nndd.player {
                                 if (index < this.videoPlayer.videoInfoView.dataGrid_comment.maxVerticalScrollPosition) {
                                     this.videoPlayer.videoInfoView.dataGrid_comment.verticalScrollPosition = index;
                                 } else {
-                                    this.videoPlayer.videoInfoView.dataGrid_comment.verticalScrollPosition = this.videoPlayer.videoInfoView.dataGrid_comment.maxVerticalScrollPosition;
+                                    this.videoPlayer.videoInfoView.dataGrid_comment.verticalScrollPosition =
+                                        this.videoPlayer.videoInfoView.dataGrid_comment.maxVerticalScrollPosition;
                                 }
                             }
                         }
@@ -2490,10 +2624,12 @@ package org.mineap.nndd.player {
                         if (this.videoPlayer.videoInfoView.dataGrid_oldComment.verticalScrollPosition < index) {
                             index = index - (this.videoPlayer.videoInfoView.dataGrid_oldComment.rowCount) + 2;
                             if (index > 0) {
-                                if (index < this.videoPlayer.videoInfoView.dataGrid_oldComment.maxVerticalScrollPosition) {
+                                if (index <
+                                    this.videoPlayer.videoInfoView.dataGrid_oldComment.maxVerticalScrollPosition) {
                                     this.videoPlayer.videoInfoView.dataGrid_oldComment.verticalScrollPosition = index;
                                 } else {
-                                    this.videoPlayer.videoInfoView.dataGrid_oldComment.verticalScrollPosition = this.videoPlayer.videoInfoView.dataGrid_oldComment.maxVerticalScrollPosition;
+                                    this.videoPlayer.videoInfoView.dataGrid_oldComment.verticalScrollPosition =
+                                        this.videoPlayer.videoInfoView.dataGrid_oldComment.maxVerticalScrollPosition;
                                 }
                             }
                         }
@@ -2613,11 +2749,15 @@ package org.mineap.nndd.player {
                     (nicowariSwfLoader.getChildAt(0) as Loader).x = 0;
                     (nicowariSwfLoader.getChildAt(0) as Loader).y = 0;
 
-                    var nicowariDistX: Number = (nicowariSwfLoader.getChildAt(0) as Loader).width - PlayerController.NICO_WARI_WIDTH;
-                    var nicowariDistY: Number = (nicowariSwfLoader.getChildAt(0) as Loader).height - PlayerController.NICO_WARI_HEIGHT;
+                    var nicowariDistX: Number = (nicowariSwfLoader.getChildAt(0) as Loader).width -
+                                                PlayerController.NICO_WARI_WIDTH;
+                    var nicowariDistY: Number = (nicowariSwfLoader.getChildAt(0) as Loader).height -
+                                                PlayerController.NICO_WARI_HEIGHT;
 
-                    var nicowariScaleX: Number = nicowariSwfLoader.width / ((nicowariSwfLoader.getChildAt(0) as Loader).width - nicowariDistX);
-                    var nicowariScaleY: Number = nicowariSwfLoader.height / ((nicowariSwfLoader.getChildAt(0) as Loader).height - nicowariDistY);
+                    var nicowariScaleX: Number = nicowariSwfLoader.width /
+                                                 ((nicowariSwfLoader.getChildAt(0) as Loader).width - nicowariDistX);
+                    var nicowariScaleY: Number = nicowariSwfLoader.height /
+                                                 ((nicowariSwfLoader.getChildAt(0) as Loader).height - nicowariDistY);
                     if (nicowariScaleX < nicowariScaleY) {
                         (nicowariSwfLoader.getChildAt(0) as Loader).scaleX = nicowariScaleX;
                         (nicowariSwfLoader.getChildAt(0) as Loader).scaleY = nicowariScaleX;
@@ -2660,8 +2800,8 @@ package org.mineap.nndd.player {
             trace(seekTime);
             if (this.windowReady) {
                 if ((new Date().time) - lastSeekTime > 1000) {
-                    if ((videoDisplay != null && videoDisplay.initialized && videoDisplay.duration > 0)
-                            || (swfLoader != null && swfLoader.initialized)) {
+                    if ((videoDisplay != null && videoDisplay.initialized && videoDisplay.duration > 0) ||
+                        (swfLoader != null && swfLoader.initialized)) {
 
 
                         trace("seekStart:" + seekTime);
@@ -2680,8 +2820,7 @@ package org.mineap.nndd.player {
                         } else if (this.windowType == PlayerController.WINDOW_TYPE_SWF) {
                             if (pausing) {
                                 mc.gotoAndStop(int(seekTime));
-                            }
-                            else {
+                            } else {
                                 mc.gotoAndPlay(int(seekTime));
                             }
                             commentTimerVpos = (seekTime / swfFrameRate) * 1000;
@@ -2767,8 +2906,7 @@ package org.mineap.nndd.player {
 
             if (isStreamingPlay || nnddVideo == null) {
                 playMovie("http://www.nicovideo.jp/watch/" + videoId);
-            }
-            else {
+            } else {
                 playMovie(nnddVideo.getDecodeUrl());
             }
 
@@ -2812,29 +2950,34 @@ package org.mineap.nndd.player {
                 ++videoMin;
 
                 if (!this.isStreamingPlay && this.source != null && this.source != "") {
-                    comments = new Comments(
-                            PathMaker.createNomalCommentPathByVideoPath(source),
-                            PathMaker.createOwnerCommentPathByVideoPath(source),
-                            this.videoPlayer.getCommentListProvider(),
-                            this.videoPlayer.videoInfoView.ownerCommentProvider,
-                            this.ngListManager,
-                            this.videoInfoView.isShowOnlyPermissionComment,
-                            this.videoInfoView.isHideSekaShinComment,
-                            this.videoInfoView.showCommentCountPerMin * videoMin,
-                            this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                            this.videoInfoView.isNgUpEnable, date);
+                    comments = new Comments(PathMaker.createNomalCommentPathByVideoPath(source),
+                                            PathMaker.createOwnerCommentPathByVideoPath(source),
+                                            this.videoPlayer.getCommentListProvider(),
+                                            this.videoPlayer.videoInfoView.ownerCommentProvider,
+                                            this.ngListManager,
+                                            this.videoInfoView.isShowOnlyPermissionComment,
+                                            this.videoInfoView.isHideSekaShinComment,
+                                            this.videoInfoView.showCommentCountPerMin * videoMin,
+                                            this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                                            this.videoInfoView.isNgUpEnable,
+                                            date
+                    );
                 } else if (this.isStreamingPlay) {
-                    comments = new Comments(
-                            PathMaker.createNomalCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"),
-                            PathMaker.createOwnerCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"),
-                            this.videoPlayer.getCommentListProvider(),
-                            this.videoPlayer.videoInfoView.ownerCommentProvider,
-                            this.ngListManager,
-                            this.videoInfoView.isShowOnlyPermissionComment,
-                            this.videoInfoView.isHideSekaShinComment,
-                            this.videoInfoView.showCommentCountPerMin * videoMin,
-                            this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                            this.videoInfoView.isNgUpEnable, date);
+                    comments =
+                        new Comments(PathMaker.createNomalCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url +
+                                                                                 "/nndd.flv"),
+                                     PathMaker.createOwnerCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url +
+                                                                                 "/nndd.flv"),
+                                     this.videoPlayer.getCommentListProvider(),
+                                     this.videoPlayer.videoInfoView.ownerCommentProvider,
+                                     this.ngListManager,
+                                     this.videoInfoView.isShowOnlyPermissionComment,
+                                     this.videoInfoView.isHideSekaShinComment,
+                                     this.videoInfoView.showCommentCountPerMin * videoMin,
+                                     this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                                     this.videoInfoView.isNgUpEnable,
+                                     date
+                        );
                 }
                 commentManager.setComments(comments);
             }
@@ -2848,7 +2991,12 @@ package org.mineap.nndd.player {
          * @param videoPath
          *
          */
-        private function setInfo(videoPath: String, thumbInfoPath: String, ichibaInfoPath: String, isStreaming: Boolean): void {
+        private function setInfo(
+            videoPath: String,
+            thumbInfoPath: String,
+            ichibaInfoPath: String,
+            isStreaming: Boolean
+        ): void {
 
             var videoID: String = PathMaker.getVideoID(videoPath);
 
@@ -2858,18 +3006,16 @@ package org.mineap.nndd.player {
 
                     //初期化
                     videoInfoView.ichibaNicoProvider.addItem({
-                        col_image: "",
-                        col_info: "市場情報を取得中です",
-                        col_link: ""
-                    });
+                                                                 col_image: "", col_info: "市場情報を取得中です", col_link: ""
+                                                             });
                     videoPlayer.videoInfoView.owner_text_nico = "";
 
                 } else {
                     videoInfoView.ichibaNicoProvider.addItem({
-                        col_image: "",
-                        col_info: "市場情報を取得できませんでした。",
-                        col_link: ""
-                    });
+                                                                 col_image: "",
+                                                                 col_info: "市場情報を取得できませんでした。",
+                                                                 col_link: ""
+                                                             });
 
                     var thumbInfoAnalyzer: ThumbInfoAnalyzer = null;
 
@@ -2900,7 +3046,8 @@ package org.mineap.nndd.player {
                                 dateString = "投稿日:" + dateFormatter.format(date);
                             }
 
-                            htmlInfo = thumbInfoAnalyzer.htmlTitle + "<br />" + dateString + "<br />" + thumbInfoAnalyzer.playCountAndCommentCountAndMyListCount;
+                            htmlInfo = thumbInfoAnalyzer.htmlTitle + "<br />" + dateString + "<br />" +
+                                       thumbInfoAnalyzer.playCountAndCommentCountAndMyListCount;
 
                             ownerText = thumbInfoAnalyzer.thumbInfoHtml + "\n(ローカルのデータを使用)";
                         } else {
@@ -2927,7 +3074,8 @@ package org.mineap.nndd.player {
 
                     } else {
 
-                        videoPlayer.videoInfoView.text_info.htmlText = "(タイトルの取得に失敗)<br />(投稿日時の取得に失敗)<br />(再生回数等の取得に失敗)";
+                        videoPlayer.videoInfoView.text_info.htmlText =
+                            "(タイトルの取得に失敗)<br />(投稿日時の取得に失敗)<br />(再生回数等の取得に失敗)";
                         videoPlayer.videoInfoView.owner_text_nico = "(取得できませんでした)";
 
                         videoPlayer.videoInfoView.nicoTagProvider = videoPlayer.videoInfoView.localTagProvider;
@@ -3011,14 +3159,15 @@ package org.mineap.nndd.player {
                     for each(var item: RelationResultItem in analyzer.videos) {
                         var pubDate: Date = new Date(item.time * 1000);
                         var info: String = HtmlUtil.convertSpecialCharacterNotIncludedString(item.title) + "\n" +
-                                "\t再生回数:" + NumberUtil.addComma(String(item.view)) + "\n" +
-                                "\tマイリスト:" + NumberUtil.addComma(String(item.mylist)) + ", コメント数:" + NumberUtil.addComma(String(item.comment)) + "\n" +
-                                "\t投稿日:" + DateUtil.getDateString(pubDate);
+                                           "\t再生回数:" + NumberUtil.addComma(String(item.view)) + "\n" + "\tマイリスト:" +
+                                           NumberUtil.addComma(String(item.mylist)) + ", コメント数:" +
+                                           NumberUtil.addComma(String(item.comment)) + "\n" + "\t投稿日:" +
+                                           DateUtil.getDateString(pubDate);
                         (videoInfoView.relationDataProvider as ArrayCollection).addItem({
-                            col_image: item.thumbnail,
-                            col_info: info,
-                            col_link: item.url
-                        });
+                                                                                            col_image: item.thumbnail,
+                                                                                            col_info: info,
+                                                                                            col_link: item.url
+                                                                                        });
                     }
                     if (videoInfoView.datagrid_relation != null) {
                         (videoInfoView.datagrid_relation as DataGrid).validateDisplayList();
@@ -3030,10 +3179,11 @@ package org.mineap.nndd.player {
                 } else {
                     logManager.addLog("オススメ動画の取得失敗:status=" + analyzer.status + "," + event);
                     (videoInfoView.relationDataProvider as ArrayCollection).addItem({
-                        col_image: "",
-                        col_info: "オススメ動画の取得に失敗(status=" + analyzer.status + ")",
-                        col_link: null
-                    });
+                                                                                        col_image: "",
+                                                                                        col_info: "オススメ動画の取得に失敗(status=" +
+                                                                                                  analyzer.status + ")",
+                                                                                        col_link: null
+                                                                                    });
                     if (videoInfoView.datagrid_relation != null) {
                         (videoInfoView.datagrid_relation as DataGrid).validateDisplayList();
                         (videoInfoView.datagrid_relation as DataGrid).validateNow();
@@ -3042,16 +3192,19 @@ package org.mineap.nndd.player {
                 }
 
             });
-            nicoRelationInfoLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                logManager.addLog("\t" + event.toString());
-            });
+            nicoRelationInfoLoader.addEventListener(
+                HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                function (event: HTTPStatusEvent): void {
+                    logManager.addLog("\t" + event.toString());
+                }
+            );
             nicoRelationInfoLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                 (videoInfoView.relationDataProvider as ArrayCollection).removeAll();
                 (videoInfoView.relationDataProvider as ArrayCollection).addItem({
-                    col_image: "",
-                    col_info: "オススメ動画の取得に失敗(通信エラー)",
-                    col_link: null
-                });
+                                                                                    col_image: "",
+                                                                                    col_info: "オススメ動画の取得に失敗(通信エラー)",
+                                                                                    col_link: null
+                                                                                });
                 logManager.addLog("オススメ動画の取得に失敗:" + event);
                 try {
                     event.currentTarget.close();
@@ -3067,10 +3220,10 @@ package org.mineap.nndd.player {
             nicoRelationInfoLoader.getRelation(videoID, 1, sort, order);
 
             (videoInfoView.relationDataProvider as ArrayCollection).addItem({
-                col_image: "",
-                col_info: "オススメ動画を取得しています...",
-                col_link: null
-            });
+                                                                                col_image: "",
+                                                                                col_info: "オススメ動画を取得しています...",
+                                                                                col_link: null
+                                                                            });
             if (videoInfoView.datagrid_relation != null) {
                 (videoInfoView.datagrid_relation as DataGrid).validateDisplayList();
                 (videoInfoView.datagrid_relation as DataGrid).validateNow();
@@ -3149,27 +3302,29 @@ package org.mineap.nndd.player {
                         if (videoInfoView != null) {
                             if (watchVideoPage.watcher.getPubUserId() != null) {
 
-                                trace(watchVideoPage.watcher.getPubUserName() + ", "
-                                        + watchVideoPage.watcher.getPubUserId() + ", "
-                                        + watchVideoPage.watcher.getPubUserIconUrl());
+                                trace(watchVideoPage.watcher.getPubUserName() + ", " +
+                                      watchVideoPage.watcher.getPubUserId() + ", " +
+                                      watchVideoPage.watcher.getPubUserIconUrl());
 
                                 videoInfoView.pubUserId = "user/" + watchVideoPage.watcher.getPubUserId();
-                                videoInfoView.pubUserLinkButtonText = "http://www.nicovideo.jp/" + videoInfoView.pubUserId;
+                                videoInfoView.pubUserLinkButtonText =
+                                    "http://www.nicovideo.jp/" + videoInfoView.pubUserId;
                                 videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getPubUserIconUrl();
                                 videoInfoView.pubUserName = watchVideoPage.watcher.getPubUserName();
 
                             } else {
 
-                                trace(watchVideoPage.watcher.getChannelName() + ", "
-                                        + watchVideoPage.watcher.getChannel() + ", "
-                                        + watchVideoPage.watcher.getChannelIconUrl());
+                                trace(watchVideoPage.watcher.getChannelName() + ", " +
+                                      watchVideoPage.watcher.getChannel() + ", " +
+                                      watchVideoPage.watcher.getChannelIconUrl());
 
                                 var id: String = watchVideoPage.watcher.getChannel();
                                 if (id.match(/^[1-9][0-9]*$/)) {
                                     id = "ch" + id;
                                 }
                                 videoInfoView.pubUserId = "channel/" + id;
-                                videoInfoView.pubUserLinkButtonText = "http://ch.nicovideo.jp/" + videoInfoView.pubUserId;
+                                videoInfoView.pubUserLinkButtonText =
+                                    "http://ch.nicovideo.jp/" + videoInfoView.pubUserId;
                                 videoInfoView.pubUserNameIconUrl = watchVideoPage.watcher.getChannelIconUrl();
                                 videoInfoView.pubUserName = watchVideoPage.watcher.getChannelName();
 
@@ -3199,8 +3354,7 @@ package org.mineap.nndd.player {
 
                                         if (analyzer.errorCode == ThumbInfoAnalyzer.ERROR_CODE_DELETED) {
                                             setVideoDeleted(true);
-                                        }
-                                        else {
+                                        } else {
                                             setVideoDeleted(false);
                                         }
 
@@ -3230,10 +3384,10 @@ package org.mineap.nndd.player {
                                 videoInfoView.ichibaNicoProvider.refresh();
                             } else {
                                 videoInfoView.ichibaNicoProvider.addItem({
-                                    col_image: "",
-                                    col_info: "市場情報を取得できませんでした(リトライします)",
-                                    col_link: ""
-                                });
+                                                                             col_image: "",
+                                                                             col_info: "市場情報を取得できませんでした(リトライします)",
+                                                                             col_link: ""
+                                                                         });
                                 fail = true;
                             }
                         }
@@ -3256,7 +3410,12 @@ package org.mineap.nndd.player {
                     logManager.addLog("動画ページ詳細情報の取得に失敗:" + _videoID + ":" + event.text);
                     trace("動画ページ詳細情報の取得に失敗:" + _videoID + ":" + event.text);
                 });
-                watchVideoPage.watch(UserManager.instance.user, UserManager.instance.password, PathMaker.getVideoID(videoId), onlyOwnerText);
+                watchVideoPage.watch(
+                    UserManager.instance.user,
+                    UserManager.instance.password,
+                    PathMaker.getVideoID(videoId),
+                    onlyOwnerText
+                );
             }
         }
 
@@ -3293,7 +3452,8 @@ package org.mineap.nndd.player {
             if (date != null) {
                 dateString = "投稿日:" + dateFormatter.format(date);
             }
-            htmlInfo = analyzer.htmlTitle + "<br />" + dateString + "<br />" + analyzer.playCountAndCommentCountAndMyListCount;
+            htmlInfo =
+                analyzer.htmlTitle + "<br />" + dateString + "<br />" + analyzer.playCountAndCommentCountAndMyListCount;
 
             ownerText = analyzer.thumbInfoHtml;
 
@@ -3310,8 +3470,7 @@ package org.mineap.nndd.player {
                 videoInfoView.label_deletedInfo.toolTip = "ニコニコ動画上では削除されていますが、ダウンロード済みの動画/情報を使用して再生しています。";
                 videoInfoView.label_deletedInfo.visible = true;
                 videoInfoView.ownertext_comment_dividedbox.top = (videoInfoView.hgroup_thumbInfo.height + 24);
-            }
-            else {
+            } else {
                 videoInfoView.label_deletedInfo.text = "";
                 videoInfoView.label_deletedInfo.toolTip = null;
                 videoInfoView.label_deletedInfo.visible = false;
@@ -3356,15 +3515,13 @@ package org.mineap.nndd.player {
                 if (isStreaming) {
                     videoInfoView.ichibaNicoProvider.removeAll();
                     videoInfoView.ichibaNicoProvider.addItem({
-                        col_image: "",
-                        col_info: "(市場情報の取得に失敗)",
-                        col_link: ""
-                    });
+                                                                 col_image: "", col_info: "(市場情報の取得に失敗)", col_link: ""
+                                                             });
                 } else {
                     videoInfoView.ichibaLocalProvider.removeAll();
                     videoInfoView.ichibaLocalProvider.addItem({
-                        col_info: "(ローカルに市場情報が存在しません)"
-                    });
+                                                                  col_info: "(ローカルに市場情報が存在しません)"
+                                                              });
                 }
             }
 
@@ -3436,7 +3593,9 @@ package org.mineap.nndd.player {
                         }
 
                         videoPlayer.setTagArray(thumbInfoAnalyzer.tagStrings);
-                        videoPlayer.videoInfoView.text_info.htmlText = thumbInfoAnalyzer.htmlTitle + "<br />" + dateString + "<br />" + thumbInfoAnalyzer.playCountAndCommentCountAndMyListCount;
+                        videoPlayer.videoInfoView.text_info.htmlText =
+                            thumbInfoAnalyzer.htmlTitle + "<br />" + dateString + "<br />" +
+                            thumbInfoAnalyzer.playCountAndCommentCountAndMyListCount;
                     }
 
                 }
@@ -3448,7 +3607,8 @@ package org.mineap.nndd.player {
 
             if (fail) {
                 if (isStreaming) {
-                    videoPlayer.videoInfoView.text_info.htmlText = videoPlayer.title + "<br />(投稿日の取得に失敗)<br />(再生回数等の取得に失敗)";
+                    videoPlayer.videoInfoView.text_info.htmlText =
+                        videoPlayer.title + "<br />(投稿日の取得に失敗)<br />(再生回数等の取得に失敗)";
                     videoPlayer.videoInfoView.nicoTagProvider = new Array("タグ情報の取得に失敗");
                     videoPlayer.videoInfoView.owner_text_nico = "(投稿者説明文の取得に失敗)";
 
@@ -3508,7 +3668,8 @@ package org.mineap.nndd.player {
                 videoPlayer.canvas_nicowari.removeAllChildren();
                 videoPlayer.canvas_nicowari.setConstraintValue("backgroundColor", new int("0x969696"));
                 var text: Text = new Text();
-                text.text = "ユーザーニコ割がダウンロードされていません。(次のファイルを探しましたが発見できませんでした。)\n" + decodeURIComponent(file.url).substring(decodeURIComponent(file.url).lastIndexOf("/") + 1);
+                text.text = "ユーザーニコ割がダウンロードされていません。(次のファイルを探しましたが発見できませんでした。)\n" +
+                            decodeURIComponent(file.url).substring(decodeURIComponent(file.url).lastIndexOf("/") + 1);
                 text.setConstraintValue("left", 10);
                 text.setConstraintValue("top", 10);
                 videoPlayer.canvas_nicowari.addChild(text);
@@ -3522,7 +3683,10 @@ package org.mineap.nndd.player {
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function (event: Event): void {
                 nicowariMC = loader.content as MovieClip;
                 if (nicowariMC != null) {
-                    var transForm: SoundTransform = new SoundTransform(videoPlayer.videoController.slider_volume.value, 0);
+                    var transForm: SoundTransform = new SoundTransform(
+                        videoPlayer.videoController.slider_volume.value,
+                        0
+                    );
                     nicowariMC.soundTransform = transForm;
                     windowResized(false);
                     nicowariTimer.start();
@@ -3555,9 +3719,13 @@ package org.mineap.nndd.player {
 
                 //ニコ割終了判定
                 if (nicowariMC != null) {
-                    var transForm: SoundTransform = new SoundTransform(videoPlayer.videoController.slider_volume.value, 0);
+                    var transForm: SoundTransform = new SoundTransform(
+                        videoPlayer.videoController.slider_volume.value,
+                        0
+                    );
                     nicowariMC.soundTransform = transForm;
-                    if (nicowariMC.currentFrame >= nicowariMC.totalFrames - 1 || nicowariMC.currentFrame == lastNicowariFrame) {
+                    if (nicowariMC.currentFrame >= nicowariMC.totalFrames - 1 || nicowariMC.currentFrame ==
+                        lastNicowariFrame) {
                         lastNicowariFrame = nicowariMC.currentFrame;
                         //ニコ割終了
                         pauseByNicowari(true);
@@ -3807,9 +3975,12 @@ package org.mineap.nndd.player {
                 logManager.addLog("\tvpos:" + commentTimerVpos / 10);
 
                 var commentPost: CommentPost = new CommentPost();
-                commentPost.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                    logManager.addLog("\t\t" + event);
-                });
+                commentPost.addEventListener(
+                    HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                    function (event: HTTPStatusEvent): void {
+                        logManager.addLog("\t\t" + event);
+                    }
+                );
                 commentPost.addEventListener(CommentPost.COMMENT_POST_FAIL, function (event: IOErrorEvent): void {
                     trace(event);
                     logManager.addLog("\t" + CommentPost.COMMENT_POST_FAIL + ":" + event);
@@ -3831,11 +4002,26 @@ package org.mineap.nndd.player {
                 });
 
                 // コメントを投稿
-                commentPost.postCommentWithLogin(UserManager.instance.user, UserManager.instance.password,
-                        videoID, comment, command, commentTimerVpos / 10, videoInfoView.is184);
+                commentPost.postCommentWithLogin(UserManager.instance.user,
+                                                 UserManager.instance.password,
+                                                 videoID,
+                                                 comment,
+                                                 command,
+                                                 commentTimerVpos / 10,
+                                                 videoInfoView.is184
+                );
 
                 // とりあえずコメントを表示。通し番号をマイナスにして正規のコメントと区別する。
-                commentManager.addPostComment(new NNDDComment(commentTimerVpos / 10, comment, command, "", -1, "", -1, true), this._isLengthwisePreferred);
+                commentManager.addPostComment(new NNDDComment(
+                    commentTimerVpos / 10,
+                    comment,
+                    command,
+                    "",
+                    -1,
+                    "",
+                    -1,
+                    true
+                ), this._isLengthwisePreferred);
 
             } else {
                 //動画IDがついてないのでPostできなかった
@@ -3855,7 +4041,13 @@ package org.mineap.nndd.player {
          * @param isEconomy エコノミーモードで再生するかどうかです。デフォルトではfalseで、エコノミーモードで再生しません。
          *
          */
-        public function playMovie(url: String, playList: PlayList = null, playListIndex: int = -1, videoTitle: String = "", isEconomy: Boolean = false): void {
+        public function playMovie(
+            url: String,
+            playList: PlayList = null,
+            playListIndex: int = -1,
+            videoTitle: String = "",
+            isEconomy: Boolean = false
+        ): void {
             _playMovie(url, null, playList, playListIndex, videoTitle, isEconomy);
         }
 
@@ -3870,7 +4062,14 @@ package org.mineap.nndd.player {
          * @param isEconomy エコノミーモードで再生するかどうかです。デフォルトではfalseで、エコノミーモードで再生しません。
          *
          */
-        public function _playMovie(url: String, token: String = null, playList: PlayList = null, playListIndex: int = -1, videoTitle: String = "", isEconomy: Boolean = false): void {
+        public function _playMovie(
+            url: String,
+            token: String = null,
+            playList: PlayList = null,
+            playListIndex: int = -1,
+            videoTitle: String = "",
+            isEconomy: Boolean = false
+        ): void {
 
             try {
 
@@ -3956,7 +4155,8 @@ package org.mineap.nndd.player {
 
                                 //動画の時間が0ならサムネイル情報を見に行って更新する
                                 if (video.time == 0) {
-                                    var tempVideo: NNDDVideo = new LocalVideoInfoLoader().loadInfo(decodeURIComponent(file.url));
+                                    var tempVideo: NNDDVideo = new LocalVideoInfoLoader().loadInfo(decodeURIComponent(
+                                        file.url));
                                     if (tempVideo != null) {
                                         video.time = tempVideo.time;
                                     }
@@ -3989,52 +4189,106 @@ package org.mineap.nndd.player {
                     }
 
                     if (!file.exists) {
-                        Alert.show(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath, Message.M_ERROR, 4, this.videoPlayer);
+                        Alert.show(
+                            Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath,
+                            Message.M_ERROR,
+                            4,
+                            this.videoPlayer
+                        );
                         logManager.addLog(Message.M_FILE_NOT_FOUND_REFRESH + "\n" + file.nativePath);
                         return;
                     }
 
                     var commentPath: String = PathMaker.createNomalCommentPathByVideoPath(url);
                     var ownerCommentPath: String = PathMaker.createOwnerCommentPathByVideoPath(url);
-                    var comments: Comments = new Comments(
-                            commentPath,
-                            ownerCommentPath,
-                            this.getCommentListProvider(),
-                            this.getOwnerCommentListProvider(),
-                            this.ngListManager,
-                            this.videoInfoView.isShowOnlyPermissionComment,
-                            this.videoInfoView.isHideSekaShinComment,
-                            this.videoInfoView.showCommentCountPerMin * videoMin,
-                            this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                            this.videoInfoView.isNgUpEnable);
+                    var comments: Comments = new Comments(commentPath,
+                                                          ownerCommentPath,
+                                                          this.getCommentListProvider(),
+                                                          this.getOwnerCommentListProvider(),
+                                                          this.ngListManager,
+                                                          this.videoInfoView.isShowOnlyPermissionComment,
+                                                          this.videoInfoView.isHideSekaShinComment,
+                                                          this.videoInfoView.showCommentCountPerMin * videoMin,
+                                                          this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                                                          this.videoInfoView.isNgUpEnable
+                    );
 
                     if (url.indexOf(".swf") != -1 || url.indexOf(".SWF") != -1) {
                         if (playList != null && playListIndex != -1) {
-                            this.initWithPlayList(url, PlayerController.WINDOW_TYPE_SWF, comments, urlArray, videoNameArray, playListName, playListIndex, true, false, null, videoTitle);
+                            this.initWithPlayList(
+                                url,
+                                PlayerController.WINDOW_TYPE_SWF,
+                                comments,
+                                urlArray,
+                                videoNameArray,
+                                playListName,
+                                playListIndex,
+                                true,
+                                false,
+                                null,
+                                videoTitle
+                            );
                         } else {
                             this.isPlayListingPlay = false;
-                            this.init(url, PlayerController.WINDOW_TYPE_SWF, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
+                            this.init(
+                                url,
+                                PlayerController.WINDOW_TYPE_SWF,
+                                comments,
+                                PathMaker.createThmbInfoPathByVideoPath(url, false),
+                                true,
+                                false,
+                                null,
+                                false,
+                                videoTitle
+                            );
                         }
-                    } else if (url.indexOf(".mp4") != -1 || url.indexOf(".MP4") != -1 || url.indexOf(".flv") != -1 || url.indexOf(".FLV") != -1) {
+                    } else if (url.indexOf(".mp4") != -1 || url.indexOf(".MP4") != -1 || url.indexOf(".flv") != -1 ||
+                               url.indexOf(".FLV") != -1) {
                         if (playList != null && playListIndex != -1) {
-                            this.initWithPlayList(url, PlayerController.WINDOW_TYPE_FLV, comments, urlArray, videoNameArray, playListName, playListIndex, true, false, null, videoTitle);
+                            this.initWithPlayList(
+                                url,
+                                PlayerController.WINDOW_TYPE_FLV,
+                                comments,
+                                urlArray,
+                                videoNameArray,
+                                playListName,
+                                playListIndex,
+                                true,
+                                false,
+                                null,
+                                videoTitle
+                            );
                         } else {
                             this.isPlayListingPlay = false;
-                            this.init(url, PlayerController.WINDOW_TYPE_FLV, comments, PathMaker.createThmbInfoPathByVideoPath(url, false), true, false, null, false, videoTitle);
+                            this.init(
+                                url,
+                                PlayerController.WINDOW_TYPE_FLV,
+                                comments,
+                                PathMaker.createThmbInfoPathByVideoPath(url, false),
+                                true,
+                                false,
+                                null,
+                                false,
+                                videoTitle
+                            );
                         }
                     }
-                } else if ((url.match(new RegExp("https?://smile.*")) != null)
-                        || (url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null)
-                        || (url.match(new RegExp("rtmp[^:]*://smile.*")) != null)
-                        || (url.match(new RegExp("https?://[a-z0-9]+\.dmc\.nico")) != null)
-                ) {
+                } else if ((url.match(new RegExp("https?://smile.*")) != null) ||
+                           (url.match(new RegExp("http://[^/]+/NNDDServer/.*")) != null) ||
+                           (url.match(new RegExp("rtmp[^:]*://smile.*")) != null) ||
+                           (url.match(new RegExp("https?://[a-z0-9]+\.dmc\.nico")) != null)) {
 
                     /* ストリーミング再生(接続先動画サーバがわかっている時) */
 
                     logManager.addLog("***動画の再生(ストリーミング)***");
 
                     if (url.indexOf("rtmp") == 0) {
-                        Alert.show(videoPlayer.title + " を再生できませんでした。\n\nこの動画はrtmp形式で配信されていますが、NNDDはrtmp形式の動画の再生に対応していません。", "エラー", 4, this.videoPlayer);
+                        Alert.show(
+                            videoPlayer.title + " を再生できませんでした。\n\nこの動画はrtmp形式で配信されていますが、NNDDはrtmp形式の動画の再生に対応していません。",
+                            "エラー",
+                            4,
+                            this.videoPlayer
+                        );
                         logManager.addLog("rtmp形式の動画の再生には非対応:" + url);
 
                         return;
@@ -4051,17 +4305,17 @@ package org.mineap.nndd.player {
                         ++videoMin;
                     }
 
-                    var comments: Comments = new Comments(
-                            commentPath,
-                            ownerCommentPath,
-                            this.getCommentListProvider(),
-                            this.getOwnerCommentListProvider(),
-                            this.ngListManager,
-                            this.videoInfoView.isShowOnlyPermissionComment,
-                            this.videoInfoView.isHideSekaShinComment,
-                            this.videoInfoView.showCommentCountPerMin * videoMin,
-                            this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                            this.videoInfoView.isNgUpEnable);
+                    var comments: Comments = new Comments(commentPath,
+                                                          ownerCommentPath,
+                                                          this.getCommentListProvider(),
+                                                          this.getOwnerCommentListProvider(),
+                                                          this.ngListManager,
+                                                          this.videoInfoView.isShowOnlyPermissionComment,
+                                                          this.videoInfoView.isHideSekaShinComment,
+                                                          this.videoInfoView.showCommentCountPerMin * videoMin,
+                                                          this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                                                          this.videoInfoView.isNgUpEnable
+                    );
 
                     videoPlayer.label_downloadStatus.text = "";
 
@@ -4069,17 +4323,62 @@ package org.mineap.nndd.player {
                     if (videoTitle.indexOf(".swf") != -1 || videoTitle.indexOf(".SWF") != -1) {
 
                         if (playList != null && playListIndex != -1) {
-                            this.initWithPlayList(url, PlayerController.WINDOW_TYPE_SWF, comments, urlArray, videoNameArray, playListName, playListIndex, true, true, libraryManager.tempDir.url + "/nndd.flv", videoTitle);
+                            this.initWithPlayList(
+                                url,
+                                PlayerController.WINDOW_TYPE_SWF,
+                                comments,
+                                urlArray,
+                                videoNameArray,
+                                playListName,
+                                playListIndex,
+                                true,
+                                true,
+                                libraryManager.tempDir.url + "/nndd.flv",
+                                videoTitle
+                            );
                         } else {
                             this.isPlayListingPlay = false;
-                            this.init(url, WINDOW_TYPE_SWF, comments, libraryManager.tempDir.url + "/nndd[ThumbInfo].xml", true, true, videoTitle, false, videoTitle);
+                            this.init(
+                                url,
+                                WINDOW_TYPE_SWF,
+                                comments,
+                                libraryManager.tempDir.url + "/nndd[ThumbInfo].xml",
+                                true,
+                                true,
+                                videoTitle,
+                                false,
+                                videoTitle
+                            );
                         }
-                    } else if (videoTitle.indexOf(".mp4") != -1 || videoTitle.indexOf(".MP4") != -1 || videoTitle.indexOf(".flv") != -1 || videoTitle.indexOf(".FLV") != -1) {
+                    } else if (videoTitle.indexOf(".mp4") != -1 || videoTitle.indexOf(".MP4") != -1 ||
+                               videoTitle.indexOf(".flv") != -1 || videoTitle.indexOf(".FLV") != -1) {
                         if (playList != null && playListIndex != -1) {
-                            this.initWithPlayList(url, PlayerController.WINDOW_TYPE_FLV, comments, urlArray, videoNameArray, playListName, playListIndex, true, true, libraryManager.tempDir.url + "/nndd.flv", videoTitle);
+                            this.initWithPlayList(
+                                url,
+                                PlayerController.WINDOW_TYPE_FLV,
+                                comments,
+                                urlArray,
+                                videoNameArray,
+                                playListName,
+                                playListIndex,
+                                true,
+                                true,
+                                libraryManager.tempDir.url + "/nndd.flv",
+                                videoTitle
+                            );
                         } else {
                             this.isPlayListingPlay = false;
-                            this.init(url, WINDOW_TYPE_FLV, comments, libraryManager.tempDir.url + "/nndd[ThumbInfo].xml", true, true, videoTitle, false, videoTitle);
+                            this.init(
+                                url,
+                                WINDOW_TYPE_FLV,
+                                comments,
+                                libraryManager.tempDir.url + "/nndd[ThumbInfo].xml",
+                                true,
+                                true,
+                                videoTitle,
+                                false,
+                                videoTitle
+                            );
                         }
                     }
                 } else if (url.match(new RegExp("http://www.nicovideo.jp/watch/")) != null) {
@@ -4127,84 +4426,167 @@ package org.mineap.nndd.player {
                         nnddDownloaderForStreaming._isEnableGetVideoFromOtherNNDDServer = searchNNDDServerVideo;
                         nnddDownloaderForStreaming._otherNNDDServerAddress = nnddServerAddress;
                         nnddDownloaderForStreaming._otherNNDDServerPort = nnddServerPortNum;
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, function (event: Event): void {
-                            _dmcHeartbeartTimer = nnddDownloaderForStreaming.createDmcBeatingTimer();
-                            if (_dmcHeartbeartTimer !== null) {
-                                _dmcHeartbeartTimer.start();
-                            }
-                            _playMovie(
-                                (event.target as NNDDDownloader).streamingUrl,
-                                (event.target as NNDDDownloader).fmsToken,
-                                playList, playListIndex,
-                                FileIO.getSafeFileName((event.target as NNDDDownloader).nicoVideoName),
-                                nnddDownloaderForStreaming.isEconomyMode
-                            );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
+                            function (event: Event): void {
+                                _dmcHeartbeartTimer = nnddDownloaderForStreaming.createDmcBeatingTimer();
+                                if (_dmcHeartbeartTimer !== null) {
+                                    _dmcHeartbeartTimer.start();
+                                }
+                                _playMovie((event.target as NNDDDownloader).streamingUrl,
+                                           (event.target as NNDDDownloader).fmsToken,
+                                           playList,
+                                           playListIndex,
+                                           FileIO.getSafeFileName((event.target as NNDDDownloader).nicoVideoName),
+                                           nnddDownloaderForStreaming.isEconomyMode
+                                );
 
-                            removeStreamingPlayHandler(event);
-                            nnddDownloaderForStreaming = null;
+                                removeStreamingPlayHandler(event);
+                                nnddDownloaderForStreaming = null;
 
-                            var downloader: NNDDDownloader = (event.currentTarget as NNDDDownloader);
-                            if (downloader != null && videoInfoView != null) {
-                                if (downloader.messageServerURL != null) {
-                                    videoInfoView.messageServerUrl = downloader.messageServerURL;
+                                var downloader: NNDDDownloader = (event.currentTarget as NNDDDownloader);
+                                if (downloader != null && videoInfoView != null) {
+                                    if (downloader.messageServerURL != null) {
+                                        videoInfoView.messageServerUrl = downloader.messageServerURL;
+                                    }
+
+                                    if (downloader.getFlvResultAnalyzer != null) {
+                                        videoInfoView.economyMode = String(downloader.getFlvResultAnalyzer.economyMode);
+                                        videoInfoView.nickName = downloader.getFlvResultAnalyzer.nickName;
+                                        videoInfoView.isPremium = String(downloader.getFlvResultAnalyzer.isPremium);
+                                    }
                                 }
 
-                                if (downloader.getFlvResultAnalyzer != null) {
-                                    videoInfoView.economyMode = String(downloader.getFlvResultAnalyzer.economyMode);
-                                    videoInfoView.nickName = downloader.getFlvResultAnalyzer.nickName;
-                                    videoInfoView.isPremium = String(downloader.getFlvResultAnalyzer.isPremium);
-                                }
                             }
+                        );
 
-                        });
-
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_START, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.COMMENT_GET_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.GETFLV_API_ACCESS_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.ICHIBA_INFO_GET_START,
+                            getProgressListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.NICOWARI_GET_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.NICOWARI_GET_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.OWNER_COMMENT_GET_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.THUMB_IMG_GET_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.THUMB_INFO_GET_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.VIDEO_GET_START,
+                            getProgressListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_START, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.CREATE_DMC_SESSION_START,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS,
+                            getProgressListener
+                        );
 
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.COMMENT_GET_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.GETFLV_API_ACCESS_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.ICHIBA_INFO_GET_SUCCESS,
+                            getProgressListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_SKIP, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.NICOWARI_GET_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.OWNER_COMMENT_GET_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.THUMB_IMG_GET_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.THUMB_INFO_GET_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.VIDEO_GET_SUCCESS,
+                            getProgressListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_SUCCESS, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.CREATE_DMC_SESSION_SUCCESS,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
+                            getProgressListener
+                        );
 
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.GETFLV_API_ACCESS_FAIL,
+                            getFailListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.ICHIBA_INFO_GET_FAIL,
+                            getFailListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener);
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.OWNER_COMMENT_GET_FAIL,
+                            getFailListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener);
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.THUMB_INFO_GET_FAIL,
+                            getFailListener
+                        );
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
                         nnddDownloaderForStreaming.addEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.CREATE_DMC_SESSION_FAIL, getProgressListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, streamingPlayFailListener);
-                        nnddDownloaderForStreaming.addEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, streamingPlayFailListener);
-                        nnddDownloaderForStreaming.requestDownloadForStreaming(
-                            UserManager.instance.user,
-                            UserManager.instance.password,
-                            PathMaker.getVideoID(url),
-                            tempDir,
-                            videoInfoView.isAlwaysEconomyForStreaming,
-                            FlexGlobals.topLevelApplication.getUseOldTypeCommentGet()
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.CREATE_DMC_SESSION_FAIL,
+                            getProgressListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.DOWNLOAD_PROCESS_ERROR,
+                            streamingPlayFailListener
+                        );
+                        nnddDownloaderForStreaming.addEventListener(
+                            NNDDDownloader.DOWNLOAD_PROCESS_CANCELD,
+                            streamingPlayFailListener
+                        );
+                        nnddDownloaderForStreaming.requestDownloadForStreaming(UserManager.instance.user,
+                                                                               UserManager.instance.password,
+                                                                               PathMaker.getVideoID(url),
+                                                                               tempDir,
+                                                                               videoInfoView.isAlwaysEconomyForStreaming,
+                                                                               FlexGlobals.topLevelApplication.getUseOldTypeCommentGet()
                         );
 
                     } catch (e: Error) {
@@ -4329,8 +4711,7 @@ package org.mineap.nndd.player {
             trace(status);
             if ("成功" == status) {
                 videoPlayer.label_downloadStatus.text = videoPlayer.label_downloadStatus.text + " " + status;
-            }
-            else {
+            } else {
                 videoPlayer.label_downloadStatus.text = videoPlayer.label_downloadStatus.text + "\n\t" + status;
             }
         }
@@ -4348,8 +4729,10 @@ package org.mineap.nndd.player {
                 logManager.addLog("***ストリーミング再生をキャンセル***");
             } else if (event.type == NNDDDownloader.DOWNLOAD_PROCESS_ERROR) {
                 stop();
-                videoPlayer.label_downloadStatus.text = tempStr + "\n\n動画を取得できませんでした。\n" + (event as IOErrorEvent).text + "\n" + event;
-                logManager.addLog(NNDDDownloader.DOWNLOAD_PROCESS_ERROR + ":" + event + ":" + (event as IOErrorEvent).text);
+                videoPlayer.label_downloadStatus.text =
+                    tempStr + "\n\n動画を取得できませんでした。\n" + (event as IOErrorEvent).text + "\n" + event;
+                logManager.addLog(NNDDDownloader.DOWNLOAD_PROCESS_ERROR + ":" + event + ":" +
+                                  (event as IOErrorEvent).text);
                 logManager.addLog("***ストリーミング再生に失敗***");
             }
 
@@ -4386,46 +4769,112 @@ package org.mineap.nndd.player {
          */
         public function removeStreamingPlayHandler(event: Event): void {
 //			(event.target as NNDDDownloader).removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, stremaingPlayStartSuccess);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_CANCELD, streamingPlayFailListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_ERROR, streamingPlayFailListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.DOWNLOAD_PROCESS_CANCELD,
+                streamingPlayFailListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.DOWNLOAD_PROCESS_ERROR,
+                streamingPlayFailListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.COMMENT_GET_FAIL, getFailListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.GETFLV_API_ACCESS_FAIL, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_FAIL,
+                getFailListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.ICHIBA_INFO_GET_FAIL, getFailListener);
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_FAIL, getFailListener);
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.NICOWARI_GET_FAIL, getFailListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.OWNER_COMMENT_GET_FAIL, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_FAIL,
+                getFailListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_FAIL, getFailListener);
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_FAIL, getFailListener);
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_FAIL, getFailListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.CREATE_DMC_SESSION_FAIL, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.CREATE_DMC_SESSION_FAIL,
+                getFailListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_FAIL, getFailListener);
 
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.COMMENT_GET_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.GETFLV_API_ACCESS_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.ICHIBA_INFO_GET_SUCCESS, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.COMMENT_GET_SUCCESS,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_SUCCESS,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.ICHIBA_INFO_GET_SUCCESS,
+                getProgressListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_SUCCESS, getProgressListener);
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_SKIP, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.NICOWARI_GET_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.OWNER_COMMENT_GET_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_SUCCESS, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.NICOWARI_GET_SUCCESS,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_SUCCESS,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.THUMB_IMG_GET_SUCCESS,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.THUMB_INFO_GET_SUCCESS,
+                getProgressListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.CREATE_DMC_SESSION_SUCCESS, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.CREATE_DMC_SESSION_SUCCESS,
+                getFailListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_SUCCESS, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
+                getProgressListener
+            );
 
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.COMMENT_GET_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.GETFLV_API_ACCESS_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.ICHIBA_INFO_GET_START, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.GETFLV_API_ACCESS_START,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.ICHIBA_INFO_GET_START,
+                getProgressListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.LOGIN_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.NICOWARI_GET_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.OWNER_COMMENT_GET_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_IMG_GET_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.THUMB_INFO_GET_START, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.NICOWARI_GET_START,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.OWNER_COMMENT_GET_START,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.THUMB_IMG_GET_START,
+                getProgressListener
+            );
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.THUMB_INFO_GET_START,
+                getProgressListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.VIDEO_GET_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.CREATE_DMC_SESSION_START, getFailListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.CREATE_DMC_SESSION_START,
+                getFailListener
+            );
             (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.WATCH_START, getProgressListener);
-            (event.target as NNDDDownloader).removeEventListener(NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS, getProgressListener);
+            (event.target as NNDDDownloader).removeEventListener(
+                NNDDDownloader.REMOTE_NNDD_SERVER_ACCESS_SUCCESS,
+                getProgressListener
+            );
         }
 
         /**
@@ -4575,7 +5024,10 @@ package org.mineap.nndd.player {
             var thumbUrl: String = (videoInfoView.image_thumbImg.source as String);
 
             if (videoId != null) {
-                var video: NNDDVideo = new NNDDVideo(WatchVideoPage.WATCH_VIDEO_PAGE_URL + videoId, this.videoPlayer.title);
+                var video: NNDDVideo = new NNDDVideo(
+                    WatchVideoPage.WATCH_VIDEO_PAGE_URL + videoId,
+                    this.videoPlayer.title
+                );
                 if (thumbUrl != null) {
                     video.thumbUrl = thumbUrl;
                 }
@@ -4607,7 +5059,13 @@ package org.mineap.nndd.player {
             var videoId: String = PathMaker.getVideoID(videoTitle);
 
             if (!PlayerMylistAddr.instance.isAdding) {
-                PlayerMylistAddr.instance.addMyList(UserManager.instance.user, UserManager.instance.password, myListId, videoId, videoTitle);
+                PlayerMylistAddr.instance.addMyList(
+                    UserManager.instance.user,
+                    UserManager.instance.password,
+                    myListId,
+                    videoId,
+                    videoTitle
+                );
             } else {
                 PlayerMylistAddr.instance.close();
             }
@@ -4673,13 +5131,19 @@ package org.mineap.nndd.player {
                     if (playingIndex >= this.videoInfoView.getPlayList().length - 1) {
                         playingIndex = this.videoInfoView.getPlayList().length - 1;
                         if (this.videoPlayer.videoInfoView.isRepeatAll()) {
-                            playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                                    playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                            playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                                      this.videoInfoView.playList,
+                                      playingIndex,
+                                      PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                            );
                         }
                     } else {
                         playingIndex--;
-                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                                playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                                  this.videoInfoView.playList,
+                                  playingIndex,
+                                  PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                        );
                     }
                 } else {
                     isPlayListingPlay = false;
@@ -4697,16 +5161,21 @@ package org.mineap.nndd.player {
                 if (playingIndex >= this.videoInfoView.getPlayList().length - 1) {
                     playingIndex = 0;
                     if (this.videoPlayer.videoInfoView.isRepeatAll()) {
-                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                                playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                        playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                                  this.videoInfoView.playList,
+                                  playingIndex,
+                                  PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                        );
                     }
                 } else {
                     playingIndex++;
-                    playMovie(this.videoInfoView.getPlayListUrl(playingIndex), this.videoInfoView.playList,
-                            playingIndex, PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex)));
+                    playMovie(this.videoInfoView.getPlayListUrl(playingIndex),
+                              this.videoInfoView.playList,
+                              playingIndex,
+                              PathMaker.getVideoName(this.videoInfoView.getPlayListUrl(playingIndex))
+                    );
                 }
-            }
-            else {
+            } else {
                 isPlayListingPlay = false;
             }
         }

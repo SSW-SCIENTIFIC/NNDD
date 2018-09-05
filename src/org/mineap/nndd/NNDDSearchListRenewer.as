@@ -1,5 +1,4 @@
 package org.mineap.nndd {
-    import flash.errors.IOError;
     import flash.events.ErrorEvent;
     import flash.events.Event;
     import flash.events.EventDispatcher;
@@ -8,13 +7,8 @@ package org.mineap.nndd {
 
     import mx.collections.ArrayCollection;
 
-    import flashx.textLayout.operations.InsertInlineGraphicOperation;
-
     import org.mineap.nicovideo4as.Login;
     import org.mineap.nicovideo4as.analyzer.SearchResultAnalyzer;
-    import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
-    import org.mineap.nicovideo4as.loader.ThumbImgLoader;
-    import org.mineap.nicovideo4as.loader.ThumbInfoLoader;
     import org.mineap.nicovideo4as.loader.api.ApiSearchAccess;
     import org.mineap.nicovideo4as.model.search.SearchOrderType;
     import org.mineap.nicovideo4as.model.search.SearchResultItem;
@@ -23,10 +17,7 @@ package org.mineap.nndd {
     import org.mineap.nndd.library.LibraryManagerBuilder;
     import org.mineap.nndd.model.NNDDSearchSortType;
     import org.mineap.nndd.model.NNDDVideo;
-    import org.mineap.nndd.util.NicoPattern;
     import org.mineap.nndd.util.NumberUtil;
-    import org.mineap.nndd.util.PathMaker;
-    import org.mineap.nndd.util.ThumbInfoUtil;
 
     /**
      *
@@ -63,9 +54,18 @@ package org.mineap.nndd {
         }
 
 
-        public function renew(user: String, password: String, word: String, searchType: SearchType, sort: int, order: int, page: int): void {
+        public function renew(
+            user: String,
+            password: String,
+            word: String,
+            searchType: SearchType,
+            sort: int,
+            order: int,
+            page: int
+        ): void {
 
-            LogManager.instance.addLog("検索を開始します(word:" + word + ", sort:" + sort + ", order:" + order + ", page:" + page + ")");
+            LogManager.instance.addLog("検索を開始します(word:" + word + ", sort:" + sort + ", order:" + order + ", page:" +
+                                       page + ")");
 
             this._user = user;
             this._password = password;
@@ -91,10 +91,13 @@ package org.mineap.nndd {
         private function loginSuccessEventHandler(event: Event): void {
 
             this._searchLoader.addEventListener(Event.COMPLETE, loadCompleteEventHandler);
-            this._searchLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                trace(event);
-                LogManager.instance.addLog("\t\t" + event.type + ", status=" + event.status);
-            });
+            this._searchLoader.addEventListener(
+                HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                function (event: HTTPStatusEvent): void {
+                    trace(event);
+                    LogManager.instance.addLog("\t\t" + event.type + ", status=" + event.status);
+                }
+            );
             this._searchLoader.addEventListener(IOErrorEvent.IO_ERROR, failEventHandler);
 
             var sort: SearchSortType = NNDDSearchSortType.convertSortTypeNumToN4A(this._sort);
@@ -102,12 +105,7 @@ package org.mineap.nndd {
 
             LogManager.instance.addLog("検索APIへアクセス中...");
 
-            this._searchLoader.search(
-                    _searchType,
-                    encodeURIComponent(_word),
-                    _page,
-                    sort,
-                    order);
+            this._searchLoader.search(_searchType, encodeURIComponent(_word), _page, sort, order);
         }
 
         private function loadCompleteEventHandler(event: Event): void {
@@ -179,20 +177,23 @@ package org.mineap.nndd {
                     }
                 }
 
-                var videoStatus: String = "再生:" + NumberUtil.addComma(String(searchItem.playCount)) +
-                        " コメント:" + NumberUtil.addComma(String(searchItem.commentCount)) +
-                        "\nマイリスト:" + NumberUtil.addComma(String(searchItem.myListCount)) +
-                        "\n" + searchItem.lastResBody;
+                var videoStatus: String = "再生:" + NumberUtil.addComma(String(searchItem.playCount)) + " コメント:" +
+                                          NumberUtil.addComma(String(searchItem.commentCount)) + "\nマイリスト:" +
+                                          NumberUtil.addComma(String(searchItem.myListCount)) + "\n" +
+                                          searchItem.lastResBody;
 
                 arrayCollection.addItem({
-                    dataGridColumn_ranking: index + 32 * (this._page - 1),
-                    dataGridColumn_preview: searchItem.thumbImgUrl,
-                    dataGridColumn_videoName: searchItem.title + "\n    再生時間 " + searchItem.videoLength + "\n    投稿日時 " + searchItem.contribute,
-                    dataGridColumn_videoInfo: videoStatus,
-                    dataGridColumn_condition: videoCondition,
-                    dataGridColumn_videoPath: localURL,
-                    dataGridColumn_nicoVideoUrl: "http://www.nicovideo.jp/watch/" + searchItem.videoId
-                });
+                                            dataGridColumn_ranking: index + 32 * (this._page - 1),
+                                            dataGridColumn_preview: searchItem.thumbImgUrl,
+                                            dataGridColumn_videoName: searchItem.title + "\n    再生時間 " +
+                                                                      searchItem.videoLength + "\n    投稿日時 " +
+                                                                      searchItem.contribute,
+                                            dataGridColumn_videoInfo: videoStatus,
+                                            dataGridColumn_condition: videoCondition,
+                                            dataGridColumn_videoPath: localURL,
+                                            dataGridColumn_nicoVideoUrl: "http://www.nicovideo.jp/watch/" +
+                                                                         searchItem.videoId
+                                        });
 
             }
 

@@ -8,8 +8,6 @@
 		<![CDATA[
         import mx.events.FlexEvent;
 
-        import org.mineap.nndd.util.MyListUtil;
-
         private function changeBold(): void {
             if (this.label != null) {
                 var str: String = this.label.text;

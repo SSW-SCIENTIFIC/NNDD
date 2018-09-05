@@ -9,10 +9,10 @@ package org.mineap.nndd.util {
     import flash.net.URLRequest;
     import flash.utils.Timer;
 
+    import mx.controls.Label;
+
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.player.comment.Command;
-
-    import mx.controls.Label;
 
     /**
      *
@@ -78,33 +78,38 @@ package org.mineap.nndd.util {
             this._time = new Date();
 
             this._loader = new URLLoader();
-            this._loader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                URLLoader(event.currentTarget).close();
+            this._loader.addEventListener(
+                HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                function (event: HTTPStatusEvent): void {
+                    URLLoader(event.currentTarget).close();
 
-                var time: Date = new Date();
-                var diff: Number = time.getTime() - _time.getTime();
-                _diffArray.push(diff);
+                    var time: Date = new Date();
+                    var diff: Number = time.getTime() - _time.getTime();
+                    _diffArray.push(diff);
 
-                label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms]";
-                label.toolTip = label.text;
+                    label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms]";
+                    label.toolTip = label.text;
 
-                if (event.status >= 500) {
-                    label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms, ステータス: " + event.status + "]";
-                    _logManager.addLog("サーバーがエラーを報告しています [status: " + event.status + ", url: " + event.responseURL + "]");
-                } else {
-                    if (diff > 1000) {
-                        _logManager.addLog("\t応答に１秒以上かかったサーバー [応答時間: " + diff + " ms, url:" + event.responseURL + "]");
+                    if (event.status >= 500) {
+                        label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms, ステータス: " + event.status + "]";
+                        _logManager.addLog("サーバーがエラーを報告しています [status: " + event.status + ", url: " + event.responseURL +
+                                           "]");
+                    } else {
+                        if (diff > 1000) {
+                            _logManager.addLog("\t応答に１秒以上かかったサーバー [応答時間: " + diff + " ms, url:" + event.responseURL +
+                                               "]");
+                        }
+                        _successCount++;
                     }
-                    _successCount++;
+
+                    var timer: Timer = new Timer(1000, 1);
+                    timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (): void {
+                        next(label, header);
+                    });
+                    timer.start();
+
                 }
-
-                var timer: Timer = new Timer(1000, 1);
-                timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (): void {
-                    next(label, header);
-                });
-                timer.start();
-
-            });
+            );
             this._loader.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                 URLLoader(event.currentTarget).close();
 
@@ -115,7 +120,8 @@ package org.mineap.nndd.util {
                 label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms, エラー: " + event.text + "]";
                 label.toolTip = label.text;
 
-                _logManager.addLog("サーバーに接続できませんでした(入出力エラー) [text: " + event.text + ", url: " + decodeURIComponent(url) + "]");
+                _logManager.addLog("サーバーに接続できませんでした(入出力エラー) [text: " + event.text + ", url: " +
+                                   decodeURIComponent(url) + "]");
 
                 var timer: Timer = new Timer(500, 1);
                 timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (): void {
@@ -124,24 +130,28 @@ package org.mineap.nndd.util {
                 timer.start();
 
             });
-            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function (event: SecurityErrorEvent): void {
-                URLLoader(event.currentTarget).close();
+            this._loader.addEventListener(
+                SecurityErrorEvent.SECURITY_ERROR,
+                function (event: SecurityErrorEvent): void {
+                    URLLoader(event.currentTarget).close();
 
-                var time: Date = new Date();
-                var diff: Number = time.getTime() - _time.getTime();
-                _diffArray.push(diff);
+                    var time: Date = new Date();
+                    var diff: Number = time.getTime() - _time.getTime();
+                    _diffArray.push(diff);
 
-                label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms, エラー: " + event.text + "]";
-                label.toolTip = label.text;
-                _logManager.addLog("サーバーに接続できませんでした(セキュリティエラー) [text: " + event.text + ", url: " + decodeURIComponent(url) + "]");
+                    label.text = _count + "/" + _maxCount + "完了 [応答: " + diff + " ms, エラー: " + event.text + "]";
+                    label.toolTip = label.text;
+                    _logManager.addLog("サーバーに接続できませんでした(セキュリティエラー) [text: " + event.text + ", url: " +
+                                       decodeURIComponent(url) + "]");
 
-                var timer: Timer = new Timer(1000, 1);
-                timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (): void {
-                    next(label, header);
-                });
-                timer.start();
+                    var timer: Timer = new Timer(1000, 1);
+                    timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (): void {
+                        next(label, header);
+                    });
+                    timer.start();
 
-            });
+                }
+            );
 
             this._loader.load(new URLRequest(url));
         }

@@ -2,11 +2,7 @@ package org.mineap.nndd.server.process {
     import com.tilfin.airthttpd.server.HttpResponse;
 
     import flash.filesystem.File;
-    import flash.filesystem.FileMode;
-    import flash.filesystem.FileStream;
-    import flash.utils.ByteArray;
 
-    import org.mineap.nndd.FileIO;
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.library.ILibraryManager;
     import org.mineap.nndd.library.LibraryManagerBuilder;
@@ -66,7 +62,8 @@ package org.mineap.nndd.server.process {
             httpResponse.body = resXML.toXMLString();
             httpResponse.statusCode = 200;
 
-            LogManager.instance.addLog("ID指定動画取得要求:id=" + videoId + ", videoUrl:" + videoUrl + ", resCode=" + httpResponse.statusCode);
+            LogManager.instance.addLog("ID指定動画取得要求:id=" + videoId + ", videoUrl:" + videoUrl + ", resCode=" +
+                                       httpResponse.statusCode);
 
         }
     }

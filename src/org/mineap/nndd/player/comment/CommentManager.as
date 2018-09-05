@@ -2,7 +2,6 @@ package org.mineap.nndd.player.comment {
     import flash.display.DisplayObjectContainer;
     import flash.events.MouseEvent;
     import flash.filters.DropShadowFilter;
-    import flash.system.Capabilities;
 
     import mx.controls.Text;
     import mx.events.FlexEvent;
@@ -40,7 +39,8 @@ package org.mineap.nndd.player.comment {
 
         private var _isCommentBold: Boolean = false;
 
-        private var commentNomalTextArray: Vector.<Vector.<NNDDText>> = new Vector.<Vector.<NNDDText>>(COMMENT_MULTIPLEX_COUNT);
+        private var commentNomalTextArray: Vector.<Vector.<NNDDText>> = new Vector.<Vector.<NNDDText>>(
+            COMMENT_MULTIPLEX_COUNT);
 
         private var commentUeTextArray: Vector.<NNDDText> = new Vector.<NNDDText>(12);
 
@@ -59,7 +59,11 @@ package org.mineap.nndd.player.comment {
          * @param playerController
          *
          */
-        public function CommentManager(videoPlayer: VideoPlayer, videoInfoView: VideoInfoView, playerController: PlayerController) {
+        public function CommentManager(
+            videoPlayer: VideoPlayer,
+            videoInfoView: VideoInfoView,
+            playerController: PlayerController
+        ) {
 
             for (var i: int = 0; i < commentNomalTextArray.length; i++) {
                 commentNomalTextArray[i] = new Vector.<NNDDText>(MAX_NORMAL_COMMENT_STEP_COUNT);
@@ -166,7 +170,12 @@ package org.mineap.nndd.player.comment {
          * @return
          *
          */
-        public function setComment(vpos: Number, interval: int, isShow: Boolean, isLengthwisePreferred: Boolean = true): Vector.<NNDDComment> {
+        public function setComment(
+            vpos: Number,
+            interval: int,
+            isShow: Boolean,
+            isLengthwisePreferred: Boolean = true
+        ): Vector.<NNDDComment> {
             var commentArray: Vector.<NNDDComment> = comments.getComment(vpos, interval);
             var command: Command = new Command();
             var result: Boolean = false;
@@ -198,12 +207,10 @@ package org.mineap.nndd.player.comment {
                             if (iAnalyzeResult.resultType == ResultType.JUMP) {
                                 var jumpResult: JumpResult = JumpResult(iAnalyzeResult);
                                 playerController.jump(jumpResult.id, jumpResult.msg);
-                            }
-                            else if (iAnalyzeResult.resultType == ResultType.SEEK) {
+                            } else if (iAnalyzeResult.resultType == ResultType.SEEK) {
                                 var seekResul: SeekResult = SeekResult(iAnalyzeResult);
                                 playerController.seekOperation(Number(seekResul.vpos));
-                            }
-                            else if (iAnalyzeResult.resultType == ResultType.ADD_MARKER) {
+                            } else if (iAnalyzeResult.resultType == ResultType.ADD_MARKER) {
                                 var addMarkerResult: AddMarkerResult = AddMarkerResult(iAnalyzeResult);
                                 JumpMarkerManager.instance.addMarker(addMarkerResult.name, addMarkerResult.vpos);
                             }
@@ -234,12 +241,10 @@ package org.mineap.nndd.player.comment {
                             if (iAnalyzeResult.resultType == ResultType.JUMP) {
                                 var jumpResult: JumpResult = JumpResult(iAnalyzeResult);
                                 playerController.jump(jumpResult.id, jumpResult.msg);
-                            }
-                            else if (iAnalyzeResult.resultType == ResultType.SEEK) {
+                            } else if (iAnalyzeResult.resultType == ResultType.SEEK) {
                                 var seekResul: SeekResult = SeekResult(iAnalyzeResult);
                                 playerController.seekOperation(Number(seekResul.vpos));
-                            }
-                            else if (iAnalyzeResult.resultType == ResultType.ADD_MARKER) {
+                            } else if (iAnalyzeResult.resultType == ResultType.ADD_MARKER) {
                                 var addMarkerResult: AddMarkerResult = AddMarkerResult(iAnalyzeResult);
                                 JumpMarkerManager.instance.addMarker(addMarkerResult.name, addMarkerResult.vpos);
                             }
@@ -265,14 +270,36 @@ package org.mineap.nndd.player.comment {
 
                             switch (commandPosition) {
                                 case Command.UE:
-                                    this.addUeComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail);
+                                    this.addUeComment(
+                                        comment.vpos,
+                                        comment.text,
+                                        command.getSize(comment.mail),
+                                        color,
+                                        comment.no,
+                                        comment.mail
+                                    );
                                     break;
                                 case Command.SHITA:
-                                    this.addShitaComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail);
+                                    this.addShitaComment(
+                                        comment.vpos,
+                                        comment.text,
+                                        command.getSize(comment.mail),
+                                        color,
+                                        comment.no,
+                                        comment.mail
+                                    );
                                     break;
                                 case Command.NAKA:
                                 default:
-                                    this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), color, comment.no, comment.mail, isLengthwisePreferred);
+                                    this.addNomalComment(
+                                        comment.vpos,
+                                        comment.text,
+                                        command.getSize(comment.mail),
+                                        color,
+                                        comment.no,
+                                        comment.mail,
+                                        isLengthwisePreferred
+                                    );
                                     break;
                             }
                         }
@@ -341,14 +368,36 @@ package org.mineap.nndd.player.comment {
             var commandPosition: int = command.getPosition(comment.mail);
             switch (commandPosition) {
                 case Command.UE:
-                    this.addUeComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail);
+                    this.addUeComment(
+                        comment.vpos,
+                        comment.text,
+                        command.getSize(comment.mail),
+                        command.getColorByCommand(comment.mail),
+                        comment.no,
+                        comment.mail
+                    );
                     break;
                 case Command.SHITA:
-                    this.addShitaComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail);
+                    this.addShitaComment(
+                        comment.vpos,
+                        comment.text,
+                        command.getSize(comment.mail),
+                        command.getColorByCommand(comment.mail),
+                        comment.no,
+                        comment.mail
+                    );
                     break;
                 case Command.NAKA:
                 default:
-                    this.addNomalComment(comment.vpos, comment.text, command.getSize(comment.mail), command.getColorByCommand(comment.mail), comment.no, comment.mail, isLengthwisePreferred);
+                    this.addNomalComment(
+                        comment.vpos,
+                        comment.text,
+                        command.getSize(comment.mail),
+                        command.getColorByCommand(comment.mail),
+                        comment.no,
+                        comment.mail,
+                        isLengthwisePreferred
+                    );
                     break;
             }
         }
@@ -366,7 +415,15 @@ package org.mineap.nndd.player.comment {
          * @param isLengthwisePreferred
          *
          */
-        private function addNomalComment(vpos: int, comment: String, size: int, color: int, no: Number, mail: String, isLengthwisePreferred: Boolean): void {
+        private function addNomalComment(
+            vpos: int,
+            comment: String,
+            size: int,
+            color: int,
+            no: Number,
+            mail: String,
+            isLengthwisePreferred: Boolean
+        ): void {
 
             var nnddText: NNDDText = searchNextNNDDText(isLengthwisePreferred);
 
@@ -432,29 +489,32 @@ package org.mineap.nndd.player.comment {
                     for (var i: int = 0; i < MAX_NORMAL_COMMENT_STEP_COUNT; i++) {
                         if (commentNomalTextArray[j][i].vpos == -1) {
 
-                            if ((j == 0 &&
-                                    ((commentNomalTextArray[commentNomalTextArray.length - 1][i].vpos == -1)
-                                            || commentNomalTextArray[commentNomalTextArray.length - 1][i].x + commentNomalTextArray[commentNomalTextArray.length - 1][i].width
-                                            < commentNomalTextArray[commentNomalTextArray.length - 1][i].parent.width * 0.5))
-                                    || (j != 0 && commentNomalTextArray[j - 1][i].x + commentNomalTextArray[j - 1][i].width < commentNomalTextArray[j - 1][i].parent.width * 0.5)) {
+                            if ((j == 0 && ((commentNomalTextArray[commentNomalTextArray.length - 1][i].vpos == -1) ||
+                                            commentNomalTextArray[commentNomalTextArray.length - 1][i].x +
+                                            commentNomalTextArray[commentNomalTextArray.length - 1][i].width <
+                                            commentNomalTextArray[commentNomalTextArray.length - 1][i].parent.width *
+                                            0.5)) ||
+                                (j != 0 && commentNomalTextArray[j - 1][i].x + commentNomalTextArray[j - 1][i].width <
+                                 commentNomalTextArray[j - 1][i].parent.width * 0.5)) {
 
                                 return commentNomalTextArray[j][i];
                             }
                         }
                     }
                 }
-            }
-            else {
+            } else {
 
                 for (var i: int = 0; i < MAX_NORMAL_COMMENT_STEP_COUNT; i++) {
                     for (var j: int = 0; j < COMMENT_MULTIPLEX_COUNT; j++) {
                         if (commentNomalTextArray[j][i].vpos == -1) {
 
-                            if ((j == 0 &&
-                                    ((commentNomalTextArray[commentNomalTextArray.length - 1][i].vpos == -1)
-                                            || commentNomalTextArray[commentNomalTextArray.length - 1][i].x + commentNomalTextArray[commentNomalTextArray.length - 1][i].width
-                                            < commentNomalTextArray[commentNomalTextArray.length - 1][i].parent.width * 0.6))
-                                    || (j != 0 && commentNomalTextArray[j - 1][i].x + commentNomalTextArray[j - 1][i].width < commentNomalTextArray[j - 1][i].parent.width * 0.7)) {
+                            if ((j == 0 && ((commentNomalTextArray[commentNomalTextArray.length - 1][i].vpos == -1) ||
+                                            commentNomalTextArray[commentNomalTextArray.length - 1][i].x +
+                                            commentNomalTextArray[commentNomalTextArray.length - 1][i].width <
+                                            commentNomalTextArray[commentNomalTextArray.length - 1][i].parent.width *
+                                            0.6)) ||
+                                (j != 0 && commentNomalTextArray[j - 1][i].x + commentNomalTextArray[j - 1][i].width <
+                                 commentNomalTextArray[j - 1][i].parent.width * 0.7)) {
 
                                 return commentNomalTextArray[j][i];
                             }
@@ -496,7 +556,10 @@ package org.mineap.nndd.player.comment {
 
                 } else {
 
-                    (event.target as Text).removeEventListener(FlexEvent.UPDATE_COMPLETE, yCoordinateUpdateCompleteHandler);
+                    (event.target as Text).removeEventListener(
+                        FlexEvent.UPDATE_COMPLETE,
+                        yCoordinateUpdateCompleteHandler
+                    );
 
                 }
 
@@ -512,7 +575,14 @@ package org.mineap.nndd.player.comment {
          * @param color
          *
          */
-        private function addUeComment(vpos: int, comment: String, size: int, color: int, no: Number, mail: String): void {
+        private function addUeComment(
+            vpos: int,
+            comment: String,
+            size: int,
+            color: int,
+            no: Number,
+            mail: String
+        ): void {
             for (var i: int = 0; i < commentUeTextArray.length; i++) {
                 if (commentUeTextArray[i].vpos == -1) {
 //					trace("コメント[" + comment + "](" + vpos + ")を追加");
@@ -583,7 +653,14 @@ package org.mineap.nndd.player.comment {
          * @param color
          *
          */
-        private function addShitaComment(vpos: int, comment: String, size: int, color: int, no: Number, mail: String): void {
+        private function addShitaComment(
+            vpos: int,
+            comment: String,
+            size: int,
+            color: int,
+            no: Number,
+            mail: String
+        ): void {
             for (var i: int = 0; i < commentShitaTextArray.length; i++) {
                 if (commentShitaTextArray[i].vpos == -1) {
                     commentShitaTextArray[i].text = comment;
@@ -639,7 +716,10 @@ package org.mineap.nndd.player.comment {
                     (commentShitaTextArray[i]).addEventListener(MouseEvent.CLICK, commentClickEventHandler);
 
                     (commentShitaTextArray[i]).alpha = 0;
-                    (commentShitaTextArray[i]).addEventListener(FlexEvent.UPDATE_COMPLETE, fontSizeUpdateCompleteHandler);
+                    (commentShitaTextArray[i]).addEventListener(
+                        FlexEvent.UPDATE_COMPLETE,
+                        fontSizeUpdateCompleteHandler
+                    );
 
                     break;
                 }
@@ -679,8 +759,10 @@ package org.mineap.nndd.player.comment {
             videoPlayer.videoController.commentPostView.textInput_comment.text = (event.currentTarget as NNDDText).text;
             videoPlayer.videoController.commentPostView.textinput_command.text = (event.currentTarget as NNDDText).mail;
 
-            videoPlayer.videoController_under.commentPostView.textInput_comment.text = (event.currentTarget as NNDDText).text;
-            videoPlayer.videoController_under.commentPostView.textinput_command.text = (event.currentTarget as NNDDText).mail;
+            videoPlayer.videoController_under.commentPostView.textInput_comment.text =
+                (event.currentTarget as NNDDText).text;
+            videoPlayer.videoController_under.commentPostView.textinput_command.text =
+                (event.currentTarget as NNDDText).mail;
         }
 
         /**
@@ -700,7 +782,7 @@ package org.mineap.nndd.player.comment {
 
             if (this.videoPlayer.canvas_video.getChildren().length > 0) {
                 if ((event.target as Text).textHeight > this.videoPlayer.canvas_video.getChildAt(0).height ||
-                        (event.target as Text).textWidth > this.videoPlayer.canvas_video.getChildAt(0).width) {
+                    (event.target as Text).textWidth > this.videoPlayer.canvas_video.getChildAt(0).width) {
 
                     if ((event.target as Text).y > 0) {
                         var nowUnderY: int = (event.target as Text).height + (event.target as Text).y;
@@ -726,14 +808,20 @@ package org.mineap.nndd.player.comment {
                         (event.target as Text).visible = false;
                     } else {
                         (event.target as Text).alpha = this._commentAlpha;
-                        (event.target as Text).removeEventListener(FlexEvent.UPDATE_COMPLETE, fontSizeUpdateCompleteHandler);
+                        (event.target as Text).removeEventListener(
+                            FlexEvent.UPDATE_COMPLETE,
+                            fontSizeUpdateCompleteHandler
+                        );
                         (event.target as Text).setConstraintValue("horizontalCenter", 0);
                         (event.target as Text).visible = true;
                     }
 
                 } else {
                     (event.target as Text).alpha = this._commentAlpha;
-                    (event.target as Text).removeEventListener(FlexEvent.UPDATE_COMPLETE, fontSizeUpdateCompleteHandler);
+                    (event.target as Text).removeEventListener(
+                        FlexEvent.UPDATE_COMPLETE,
+                        fontSizeUpdateCompleteHandler
+                    );
                     (event.target as Text).setConstraintValue("horizontalCenter", 0);
                     (event.target as Text).visible = true;
                 }
@@ -755,26 +843,30 @@ package org.mineap.nndd.player.comment {
 
             for (var j: int = 0; j < commentNomalTextArray.length; j++) {
                 for (i = 0; i < commentNomalTextArray[j].length; i++) {
-                    if (commentNomalTextArray[j][i].vpos != -1 && (commentNomalTextArray[j][i].x + commentNomalTextArray[j][i].width) < 0) {
+                    if (commentNomalTextArray[j][i].vpos != -1 &&
+                        (commentNomalTextArray[j][i].x + commentNomalTextArray[j][i].width) < 0) {
                         commentNomalTextArray[j][i].vpos = -1;
                         commentNomalTextArray[j][i].text = "";
                         commentNomalTextArray[j][i].no = 0;
                         commentNomalTextArray[j][i].visible = false;
                         commentNomalTextArray[j][i].x = videoPlayer.canvas_video.width;
-                        commentNomalTextArray[j][i].y = ((commentNomalTextArray[j][i] as Text).parent.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i;
+                        commentNomalTextArray[j][i].y =
+                            ((commentNomalTextArray[j][i] as Text).parent.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i;
                     }
                 }
             }
 
             for (i = 0; i < commentShitaTextArray.length; i++) {
-                if (commentShitaTextArray[i].vpos != -1 && commentShitaTextArray[i].vpos * 10 < nowvpos - showInterval) {
+                if (commentShitaTextArray[i].vpos != -1 && commentShitaTextArray[i].vpos * 10 < nowvpos -
+                    showInterval) {
                     commentShitaTextArray[i].vpos = -1;
                     commentShitaTextArray[i].text = "";
                     commentShitaTextArray[i].no = 0;
                     commentShitaTextArray[i].visible = false;
                     commentShitaTextArray[i].x = videoPlayer.canvas_video.width;
 //					commentShitaTextArray[i].y = videoPlayer.canvas_video.height - (videoPlayer.canvas_video.height/12)*(i+2);
-                    commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i + 5;
+                    commentShitaTextArray[i].bottom =
+                        (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i + 5;
                 }
             }
 
@@ -820,7 +912,8 @@ package org.mineap.nndd.player.comment {
 
                     commentNomalTextArray[l][i].text = "";
                     commentNomalTextArray[l][i].x = displayObjectContainer.width;
-                    commentNomalTextArray[l][i].y = (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
+                    commentNomalTextArray[l][i].y =
+                        (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
 
                 }
             }
@@ -846,7 +939,8 @@ package org.mineap.nndd.player.comment {
                 commentShitaTextArray[j].text = "";
                 commentShitaTextArray[j].x = displayObjectContainer.width;
 //				commentShitaTextArray[j].y = displayObjectContainer.height - (displayObjectContainer.height/15)*(j+2);
-                commentShitaTextArray[j].bottom = (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * j + 5;
+                commentShitaTextArray[j].bottom =
+                    (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * j + 5;
 
             }
 
@@ -909,7 +1003,8 @@ package org.mineap.nndd.player.comment {
                             if (!commentNomalTextArray[j][i].visible || commentNomalTextArray[j][i].text == "") {
                                 commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
                             }
-                            commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
+                            commentNomalTextArray[j][i].y =
+                                (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
                         }
                     }
                 }
@@ -938,7 +1033,8 @@ package org.mineap.nndd.player.comment {
                         }
 
                         commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
-                        commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i + 5;
+                        commentShitaTextArray[i].bottom =
+                            (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i + 5;
                     }
                 }
             }
@@ -966,7 +1062,8 @@ package org.mineap.nndd.player.comment {
                         }
 
                         commentUeTextArray[i].x = this.videoPlayer.canvas_video.width;
-                        commentUeTextArray[i].top = (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
+                        commentUeTextArray[i].top =
+                            (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
                     }
                 }
             }
@@ -990,7 +1087,8 @@ package org.mineap.nndd.player.comment {
                             commentNomalTextArray[j][i].no = 0;
                             commentNomalTextArray[j][i].visible = false;
                             commentNomalTextArray[j][i].x = this.videoPlayer.canvas_video.width;
-                            commentNomalTextArray[j][i].y = (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
+                            commentNomalTextArray[j][i].y =
+                                (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
                         }
                     }
                 }
@@ -1004,7 +1102,8 @@ package org.mineap.nndd.player.comment {
                         commentShitaTextArray[i].no = 0;
                         commentShitaTextArray[i].visible = false;
                         commentShitaTextArray[i].x = this.videoPlayer.canvas_video.width;
-                        commentShitaTextArray[i].bottom = (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i + 5;
+                        commentShitaTextArray[i].bottom =
+                            (videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * i + 5;
                     }
                 }
             }
@@ -1017,7 +1116,8 @@ package org.mineap.nndd.player.comment {
                         commentUeTextArray[i].no = 0;
                         commentUeTextArray[i].visible = false;
                         commentUeTextArray[i].x = this.videoPlayer.canvas_video.width;
-                        commentUeTextArray[i].top = (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
+                        commentUeTextArray[i].top =
+                            (this.videoPlayer.canvas_video.height / MAX_NORMAL_COMMENT_STEP_COUNT) * (i);
                     }
                 }
             }

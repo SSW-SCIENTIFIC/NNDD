@@ -54,7 +54,32 @@ package org.mineap.nndd.util {
         public static const so: VideoPrefix = new VideoPrefix("so");
 
 
-        public static const PREFIX_ARRAY: Array = new Array(sm, nm, am, fz, ut, ax, ca, cd, cw, fx, ig, na, nl, om, sd, sk, yk, yo, za, zb, zc, zd, ze, so);
+        public static const PREFIX_ARRAY: Array = new Array(
+            sm,
+            nm,
+            am,
+            fz,
+            ut,
+            ax,
+            ca,
+            cd,
+            cw,
+            fx,
+            ig,
+            na,
+            nl,
+            om,
+            sd,
+            sk,
+            yk,
+            yo,
+            za,
+            zb,
+            zc,
+            zd,
+            ze,
+            so
+        );
 
 
         public var prefix: String = "sm";

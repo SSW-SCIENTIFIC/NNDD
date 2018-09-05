@@ -1,6 +1,5 @@
 package org.mineap.nndd.versionCheck {
     import flash.desktop.NativeProcess;
-    import flash.system.Capabilities;
 
     /**
      *
@@ -23,8 +22,7 @@ package org.mineap.nndd.versionCheck {
             if (NativeProcess.isSupported) {
                 // ネイティブプロセス用
                 return VersionCheckerForNativeApplication.instance;
-            }
-            else {
+            } else {
                 // AIR用
                 return VersionChecker.instance;
             }

@@ -5,7 +5,6 @@ package org.mineap.nndd.downloadedList {
 
     import mx.collections.ArrayCollection;
     import mx.controls.DataGrid;
-    import mx.controls.List;
     import mx.controls.TileList;
 
     import org.mineap.nndd.LogManager;
@@ -117,18 +116,22 @@ package org.mineap.nndd.downloadedList {
          * @param searchDir 指定されたディレクトリを毎回探索するかどうか
          * @param showSubDirItem サブディレクトリの項目を表示するかどうか
          */
-        public function addDownLoadedItems(saveDir: File, searchDir: Boolean = false, showSubDirItem: Boolean = false): void {
+        public function addDownLoadedItems(
+            saveDir: File,
+            searchDir: Boolean = false,
+            showSubDirItem: Boolean = false
+        ): void {
 
             this.downloadedListArray.addItem({
-                dataGridColumn_thumbImage: "",
-                dataGridColumn_videoName: "loading...",
-                dataGridColumn_date: "",
-                dataGridColumn_pubdate: "",
-                dataGridColumn_count: "",
-                dataGridColumn_videoPath: "",
-                dataGridColumn_time: "",
-                dataGridColumn_condition: ""
-            });
+                                                 dataGridColumn_thumbImage: "",
+                                                 dataGridColumn_videoName: "loading...",
+                                                 dataGridColumn_date: "",
+                                                 dataGridColumn_pubdate: "",
+                                                 dataGridColumn_count: "",
+                                                 dataGridColumn_videoPath: "",
+                                                 dataGridColumn_time: "",
+                                                 dataGridColumn_condition: ""
+                                             });
 
             var number: Number = new Date().time;
 
@@ -185,8 +188,7 @@ package org.mineap.nndd.downloadedList {
                 try {
                     var file: File = new File(thumbUrl);
                     thumbUrl = file.nativePath;
-                }
-                catch (error: Error) {
+                } catch (error: Error) {
                     trace(error);
                 }
             }
@@ -227,15 +229,16 @@ package org.mineap.nndd.downloadedList {
             }
 
             this.downloadedListArray.addItem({
-                dataGridColumn_thumbImage: thumbUrl,
-                dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf("/") + 1),
-                dataGridColumn_date: createDateString,
-                dataGridColumn_pubdate: pubDateString,
-                dataGridColumn_count: playCount,
-                dataGridColumn_videoPath: decodedUrl,
-                dataGridColumn_time: timeString,
-                dataGridColumn_condition: status
-            });
+                                                 dataGridColumn_thumbImage: thumbUrl,
+                                                 dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf(
+                                                     "/") + 1),
+                                                 dataGridColumn_date: createDateString,
+                                                 dataGridColumn_pubdate: pubDateString,
+                                                 dataGridColumn_count: playCount,
+                                                 dataGridColumn_videoPath: decodedUrl,
+                                                 dataGridColumn_time: timeString,
+                                                 dataGridColumn_condition: status
+                                             });
 
         }
 
@@ -249,7 +252,10 @@ package org.mineap.nndd.downloadedList {
             var targetFileList: Vector.<File> = new Vector.<File>();
 //			var targetFileList:Array = new Array();
 
-            (event.currentTarget as File).removeEventListener(FileListEvent.DIRECTORY_LISTING, directoryListingEventHandler);
+            (event.currentTarget as File).removeEventListener(
+                FileListEvent.DIRECTORY_LISTING,
+                directoryListingEventHandler
+            );
 
             var oldDate: Date = new Date();
             var newDate: Date = new Date();
@@ -269,8 +275,8 @@ package org.mineap.nndd.downloadedList {
                 extension = file.extension;
                 if (extension != null) {
                     extension = extension.toLocaleLowerCase();
-                    if (extension == VideoType.XML_S || extension == VideoType.HTML_S
-                            || extension == VideoType.JPEG_S) {
+                    if (extension == VideoType.XML_S || extension == VideoType.HTML_S || extension ==
+                        VideoType.JPEG_S) {
                         fileIndex++;
                     } else if (extension == VideoType.FLV_S || extension == VideoType.MP4_S) {
 
@@ -347,15 +353,16 @@ package org.mineap.nndd.downloadedList {
                     }
 
                     this.downloadedListArray.addItem({
-                        dataGridColumn_thumbImage: thumbUrl,
-                        dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf("/") + 1),
-                        dataGridColumn_date: DateUtil.getDateString(creationDate),
-                        dataGridColumn_pubdate: pubDateString,
-                        dataGridColumn_count: playCount,
-                        dataGridColumn_videoPath: decodedUrl,
-                        dataGridColumn_time: timeString,
-                        dataGridColumn_condition: status
-                    });
+                                                         dataGridColumn_thumbImage: thumbUrl,
+                                                         dataGridColumn_videoName: decodedUrl.substring(decodedUrl.lastIndexOf(
+                                                             "/") + 1),
+                                                         dataGridColumn_date: DateUtil.getDateString(creationDate),
+                                                         dataGridColumn_pubdate: pubDateString,
+                                                         dataGridColumn_count: playCount,
+                                                         dataGridColumn_videoPath: decodedUrl,
+                                                         dataGridColumn_time: timeString,
+                                                         dataGridColumn_condition: status
+                                                     });
 
                 }
 
@@ -418,12 +425,14 @@ package org.mineap.nndd.downloadedList {
                         var jSize: int = array.length;
                         for (var j: uint = 0; j < jSize; j++) {
                             if (j < 1) {
-                                if (String(dataGrid.dataProvider[i].dataGridColumn_videoName).toUpperCase().indexOf(String(array[j]).toUpperCase()) != -1) {
+                                if (String(dataGrid.dataProvider[i].dataGridColumn_videoName).toUpperCase().indexOf(
+                                    String(array[j]).toUpperCase()) != -1) {
                                     existCount++;
                                 }
                             } else if (array[j] != " ") {
                                 var tempWord: String = (array[j] as String).substring(1);
-                                if (String(dataGrid.dataProvider[i].dataGridColumn_videoName).toUpperCase().indexOf(String(tempWord).toUpperCase()) != -1) {
+                                if (String(dataGrid.dataProvider[i].dataGridColumn_videoName).toUpperCase().indexOf(
+                                    String(tempWord).toUpperCase()) != -1) {
                                     existCount++;
                                 }
                             } else {
@@ -432,16 +441,16 @@ package org.mineap.nndd.downloadedList {
                         }
                         if (existCount >= jSize) {
                             searchArray.addItem({
-                                dataGridColumn_thumbImage: downloadedListArray[i].dataGridColumn_thumbImage,
-                                dataGridColumn_videoName: dataGrid.dataProvider[i].dataGridColumn_videoName,
-                                dataGridColumn_date: dataGrid.dataProvider[i].dataGridColumn_date,
-                                dataGridColumn_pubdate: downloadedListArray[j].dataGridColumn_pubdate,
-                                dataGridColumn_condition: dataGrid.dataProvider[i].dataGridColumn_condition,
-                                dataGridColumn_count: dataGrid.dataProvider[i].dataGridColumn_count,
-                                dataGridColumn_videoPath: dataGrid.dataProvider[i].dataGridColumn_videoPath,
-                                dataGridColumn_time: dataGrid.dataProvider[i].dataGridColumn_time,
-                                dataGridColumn_nicoVideoUrl: dataGrid.dataProvider[i].dataGridColumn_nicoVideoUrl
-                            });
+                                                    dataGridColumn_thumbImage: downloadedListArray[i].dataGridColumn_thumbImage,
+                                                    dataGridColumn_videoName: dataGrid.dataProvider[i].dataGridColumn_videoName,
+                                                    dataGridColumn_date: dataGrid.dataProvider[i].dataGridColumn_date,
+                                                    dataGridColumn_pubdate: downloadedListArray[j].dataGridColumn_pubdate,
+                                                    dataGridColumn_condition: dataGrid.dataProvider[i].dataGridColumn_condition,
+                                                    dataGridColumn_count: dataGrid.dataProvider[i].dataGridColumn_count,
+                                                    dataGridColumn_videoPath: dataGrid.dataProvider[i].dataGridColumn_videoPath,
+                                                    dataGridColumn_time: dataGrid.dataProvider[i].dataGridColumn_time,
+                                                    dataGridColumn_nicoVideoUrl: dataGrid.dataProvider[i].dataGridColumn_nicoVideoUrl
+                                                });
                         }
                     }
 
@@ -522,16 +531,16 @@ package org.mineap.nndd.downloadedList {
                     // and 検索
                     if (count >= tags.length) {
                         searchArray.addItem({
-                            dataGridColumn_thumbImage: downloadedListArray[j].dataGridColumn_thumbImage,
-                            dataGridColumn_videoName: downloadedListArray[j].dataGridColumn_videoName,
-                            dataGridColumn_date: downloadedListArray[j].dataGridColumn_date,
-                            dataGridColumn_pubdate: downloadedListArray[j].dataGridColumn_pubdate,
-                            dataGridColumn_condition: downloadedListArray[j].dataGridColumn_condition,
-                            dataGridColumn_count: downloadedListArray[j].dataGridColumn_count,
-                            dataGridColumn_videoPath: downloadedListArray[j].dataGridColumn_videoPath,
-                            dataGridColumn_time: downloadedListArray[j].dataGridColumn_time,
-                            dataGridColumn_nicoVideoUrl: downloadedListArray[j].dataGridColumn_nicoVideoUrl
-                        });
+                                                dataGridColumn_thumbImage: downloadedListArray[j].dataGridColumn_thumbImage,
+                                                dataGridColumn_videoName: downloadedListArray[j].dataGridColumn_videoName,
+                                                dataGridColumn_date: downloadedListArray[j].dataGridColumn_date,
+                                                dataGridColumn_pubdate: downloadedListArray[j].dataGridColumn_pubdate,
+                                                dataGridColumn_condition: downloadedListArray[j].dataGridColumn_condition,
+                                                dataGridColumn_count: downloadedListArray[j].dataGridColumn_count,
+                                                dataGridColumn_videoPath: downloadedListArray[j].dataGridColumn_videoPath,
+                                                dataGridColumn_time: downloadedListArray[j].dataGridColumn_time,
+                                                dataGridColumn_nicoVideoUrl: downloadedListArray[j].dataGridColumn_nicoVideoUrl
+                                            });
                     }
 
                 }

@@ -7,8 +7,8 @@ package org.mineap.nndd.search {
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.library.ILibraryManager;
     import org.mineap.nndd.library.LibraryManagerBuilder;
-    import org.mineap.nndd.model.SearchItem;
     import org.mineap.nndd.model.NNDDSearchType;
+    import org.mineap.nndd.model.SearchItem;
     import org.mineap.nndd.model.SearchSortString;
     import org.mineap.nndd.util.TreeDataBuilder;
 
@@ -26,32 +26,156 @@ package org.mineap.nndd.search {
         /**
          * デフォルトの検索項目です
          */
-        public static const DEF_SEARCH_ITEMS: Array = new Array(
-                new SearchItem("#音楽", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "音楽"),
-                new SearchItem("#エンターテイメント", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "エンターテイメント"),
-                new SearchItem("#アニメ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "アニメ"),
-                new SearchItem("#ゲーム", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ゲーム"),
-                new SearchItem("#ラジオ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ラジオ"),
-                new SearchItem("#スポーツ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "スポーツ"),
-                new SearchItem("#科学", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "科学"),
-                new SearchItem("#料理", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "料理"),
-                new SearchItem("#政治", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "政治"),
-                new SearchItem("#動物", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "動物"),
-                new SearchItem("#歴史", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "歴史"),
-                new SearchItem("#自然", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "自然"),
-                new SearchItem("#ニコニコ動画講座", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ニコニコ動画講座"),
-                new SearchItem("#演奏してみた", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "演奏してみた"),
-                new SearchItem("#歌ってみた", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "歌ってみた"),
-                new SearchItem("#踊ってみた", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "踊ってみた"),
-                new SearchItem("#投稿者コメント", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "投稿者コメント"),
-                new SearchItem("#日記", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "日記"),
-                new SearchItem("#アンケート", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "アンケート"),
-                new SearchItem("#チャット", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "チャット"),
-                new SearchItem("#テスト", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "テスト"),
-                new SearchItem("#ニコニ・コモンズ", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ニコニ・コモンズ"),
-                new SearchItem("#ひとこと動画", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "ひとこと動画"),
-                new SearchItem("#その他", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "その他"),
-                new SearchItem("#R-18", SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, "R-18")
+        public static const DEF_SEARCH_ITEMS: Array = new Array(new SearchItem(
+            "#音楽",
+            SearchSortString.convertSortTypeFromIndex(4),
+            NNDDSearchType.TAG,
+            "音楽"
+                                                                ),
+                                                                new SearchItem("#エンターテイメント",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "エンターテイメント"
+                                                                ),
+                                                                new SearchItem("#アニメ",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "アニメ"
+                                                                ),
+                                                                new SearchItem("#ゲーム",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "ゲーム"
+                                                                ),
+                                                                new SearchItem("#ラジオ",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "ラジオ"
+                                                                ),
+                                                                new SearchItem("#スポーツ",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "スポーツ"
+                                                                ),
+                                                                new SearchItem("#科学",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "科学"
+                                                                ),
+                                                                new SearchItem("#料理",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "料理"
+                                                                ),
+                                                                new SearchItem("#政治",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "政治"
+                                                                ),
+                                                                new SearchItem("#動物",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "動物"
+                                                                ),
+                                                                new SearchItem("#歴史",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "歴史"
+                                                                ),
+                                                                new SearchItem("#自然",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "自然"
+                                                                ),
+                                                                new SearchItem("#ニコニコ動画講座",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "ニコニコ動画講座"
+                                                                ),
+                                                                new SearchItem("#演奏してみた",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "演奏してみた"
+                                                                ),
+                                                                new SearchItem("#歌ってみた",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "歌ってみた"
+                                                                ),
+                                                                new SearchItem("#踊ってみた",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "踊ってみた"
+                                                                ),
+                                                                new SearchItem("#投稿者コメント",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "投稿者コメント"
+                                                                ),
+                                                                new SearchItem("#日記",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "日記"
+                                                                ),
+                                                                new SearchItem("#アンケート",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "アンケート"
+                                                                ),
+                                                                new SearchItem("#チャット",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "チャット"
+                                                                ),
+                                                                new SearchItem("#テスト",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "テスト"
+                                                                ),
+                                                                new SearchItem("#ニコニ・コモンズ",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "ニコニ・コモンズ"
+                                                                ),
+                                                                new SearchItem("#ひとこと動画",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "ひとこと動画"
+                                                                ),
+                                                                new SearchItem("#その他",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "その他"
+                                                                ),
+                                                                new SearchItem("#R-18",
+                                                                               SearchSortString.convertSortTypeFromIndex(
+                                                                                   4),
+                                                                               NNDDSearchType.TAG,
+                                                                               "R-18"
+                                                                )
         );
 
         /**
@@ -82,8 +206,7 @@ package org.mineap.nndd.search {
          */
         public function SearchItemManager(searchItemProvider: Array, logManager: LogManager) {
             this._libraryManager = LibraryManagerBuilder.instance.libraryManager;
-            ;
-            this._searchItemMap = new Object();
+            ;this._searchItemMap = new Object();
             this._searchItemProvider = searchItemProvider;
             this._logManager = logManager;
         }
@@ -98,7 +221,13 @@ package org.mineap.nndd.search {
          * @return
          *
          */
-        public function updateMyList(searchItem: SearchItem, isDir: Boolean, isSave: Boolean, oldName: String, children: Array = null): Object {
+        public function updateMyList(
+            searchItem: SearchItem,
+            isDir: Boolean,
+            isSave: Boolean,
+            oldName: String,
+            children: Array = null
+        ): Object {
 
             var object: Object = searchByName(oldName, this._searchItemProvider);
 
@@ -131,7 +260,13 @@ package org.mineap.nndd.search {
          * @param children ディレクトリを追加した際に同時に追加する子。
          *
          */
-        public function addSearchItem(searchItem: SearchItem, isDir: Boolean, isSave: Boolean, index: int = -1, children: Array = null): Object {
+        public function addSearchItem(
+            searchItem: SearchItem,
+            isDir: Boolean,
+            isSave: Boolean,
+            index: int = -1,
+            children: Array = null
+        ): Object {
             var exsits: Boolean = false;
             var item: SearchItem = this._searchItemMap[searchItem.name];
             var addedTreeObject: Object = null;
@@ -354,9 +489,9 @@ package org.mineap.nndd.search {
                     //ディレクトリの時
                     var folder: Object = builder.getFolderObject(name);
 
-                    searchItem = new SearchItem(name,
-                            SearchSortString.convertSortTypeFromIndex(4), 	// コメントが新しい順
-                            NNDDSearchType.KEY_WORD, "", true);
+                    searchItem = new SearchItem(name, SearchSortString.convertSortTypeFromIndex(4), 	// コメントが新しい順
+                                                NNDDSearchType.KEY_WORD, "", true
+                    );
 
                     if (temp.children().length() > 0) {
                         addSearchItemFromXML(temp, folder.children, searchItemMap);
@@ -387,8 +522,11 @@ package org.mineap.nndd.search {
 
                     var file: Object = builder.getFileObject(name);
 
-                    searchItem = new SearchItem(name, SearchSortString.convertSortTypeFromIndex(sortType),
-                            searchType, searchWord);
+                    searchItem = new SearchItem(name,
+                                                SearchSortString.convertSortTypeFromIndex(sortType),
+                                                searchType,
+                                                searchWord
+                    );
                     searchItemArray.push(file);
                     searchItemMap[searchItem.name] = searchItem;
                 }
@@ -424,7 +562,8 @@ package org.mineap.nndd.search {
 
             } catch (error: Error) {
                 Alert.show("検索条件ファイルの読み込みに失敗しました:" + dir.url + "/searchItems.xml" + "\n" + error);
-                this._logManager.addLog("検索条件ファイルの読み込みに失敗" + dir.url + "/searchItems.xml" + "\n" + error + ":" + error.getStackTrace());
+                this._logManager.addLog("検索条件ファイルの読み込みに失敗" + dir.url + "/searchItems.xml" + "\n" + error + ":" +
+                                        error.getStackTrace());
             }
             return false;
         }
@@ -458,7 +597,8 @@ package org.mineap.nndd.search {
                     } else {
                         var name: String = searchItemArray[i].label;
                         xml.@name = encodeURIComponent(searchItemMap[name].name);
-                        xml.@sortType = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItemMap[name].sortType);
+                        xml.@sortType =
+                            SearchSortString.convertTextArrayIndexFromSearchSortType(searchItemMap[name].sortType);
                         xml.@searchType = searchItemMap[name].searchType;
                         xml.@searchWord = encodeURIComponent(searchItemMap[name].searchWord);
                         xml.@isDir = false;
@@ -491,7 +631,8 @@ package org.mineap.nndd.search {
 
             } catch (error: Error) {
                 Alert.show("検索条件ファイルの保存に失敗しました:" + dir.url + "/searchItems.xml" + "\n" + error);
-                this._logManager.addLog("検索条件ファイルの保存に失敗" + dir.url + "/searchItems.xml" + "\n" + error + ":" + error.getStackTrace());
+                this._logManager.addLog("検索条件ファイルの保存に失敗" + dir.url + "/searchItems.xml" + "\n" + error + ":" +
+                                        error.getStackTrace());
             }
 
         }

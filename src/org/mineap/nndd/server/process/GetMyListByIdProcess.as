@@ -42,13 +42,13 @@ package org.mineap.nndd.server.process {
             if (xml != null) {
                 httpResponse.body = xml.toXMLString();
                 httpResponse.statusCode = 200;
-            }
-            else {
+            } else {
                 // NOT_FOUND
                 httpResponse.statusCode = 404;
             }
 
-            LogManager.instance.addLog("ID指定マイリスト取得要求:type=" + rssType + ", id=" + rssId + ", resCode=" + httpResponse.statusCode);
+            LogManager.instance.addLog("ID指定マイリスト取得要求:type=" + rssType + ", id=" + rssId + ", resCode=" +
+                                       httpResponse.statusCode);
 
         }
     }

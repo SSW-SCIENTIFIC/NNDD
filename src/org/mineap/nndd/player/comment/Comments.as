@@ -8,7 +8,6 @@ package org.mineap.nndd.player.comment {
     import org.mineap.nicovideo4as.model.NgUp;
     import org.mineap.nndd.FileIO;
     import org.mineap.nndd.LogManager;
-    import org.mineap.nndd.library.ILibraryManager;
     import org.mineap.nndd.library.LibraryManagerBuilder;
     import org.mineap.nndd.model.NNDDComment;
     import org.mineap.nndd.player.NGListManager;
@@ -70,7 +69,8 @@ package org.mineap.nndd.player.comment {
                                  loadCommentCount: int,
                                  loadOwnerCommentCount: int,
                                  isNgUpEnable: Boolean,
-                                 loadStartDate: Date = null) {
+                                 loadStartDate: Date = null
+        ) {
             _isShowOnlyPermissionIdComment = showOnlyPermissionIDComment;
             _hideSekaShinComment = hideSekaShinComment;
             _ngListManager = ngListManager;
@@ -97,7 +97,13 @@ package org.mineap.nndd.player.comment {
                 trace("maxCommentCount:" + loadCommentCount);
                 LogManager.instance.addLog("通常コメントをロード:" + commentArray.length + " 件 (最大:" + loadCommentCount + " 件)");
                 if (commentListProvider != null) {
-                    addCommentToArrayCollection(commentListProvider, ngListManager, showOnlyPermissionIDComment, hideSekaShinComment, isNgUpEnable);
+                    addCommentToArrayCollection(
+                        commentListProvider,
+                        ngListManager,
+                        showOnlyPermissionIDComment,
+                        hideSekaShinComment,
+                        isNgUpEnable
+                    );
                 }
                 this._commentnum_count_map = loadNumClickByXML(comments);
                 LogManager.instance.addLog("コメント内ボタンのクリック回数をロード");
@@ -110,11 +116,13 @@ package org.mineap.nndd.player.comment {
                 this.ownerComments = ownerCommentFileIO.loadXMLSync(ownerCommentXMLPath, false);
                 trace("Comments:投稿者コメントロード完了");
                 ownerCommentArray = new Vector.<NNDDComment>();
-                ownerCommentArray = loadCommentByXML(ownerComments, ownerCommentArray, loadOwnerCommentCount, loadStartDate);
+                ownerCommentArray =
+                    loadCommentByXML(ownerComments, ownerCommentArray, loadOwnerCommentCount, loadStartDate);
                 ngupArray = loadNgWord(ownerComments);
                 trace("commentCount:" + ownerCommentArray.length);
                 trace("maxCommentCount:" + loadOwnerCommentCount);
-                LogManager.instance.addLog("投稿者コメントをロード:" + ownerCommentArray.length + " 件 (最大:" + loadOwnerCommentCount + " 件)");
+                LogManager.instance.addLog("投稿者コメントをロード:" + ownerCommentArray.length + " 件 (最大:" +
+                                           loadOwnerCommentCount + " 件)");
                 if (commentListProvider != null && ownerCommentListProvider != null) {
                     addOwnerCommentToArrayCollection(commentListProvider, ownerCommentListProvider, isNgUpEnable);
                 } else if (commentListProvider != null) {
@@ -188,7 +196,12 @@ package org.mineap.nndd.player.comment {
          * @param commentArray
          *
          */
-        private function loadCommentByXML(xml: XML, commentArray: Vector.<NNDDComment>, loadCommentCount: int = 250, loadStartDate: Date = null): Vector.<NNDDComment> {
+        private function loadCommentByXML(
+            xml: XML,
+            commentArray: Vector.<NNDDComment>,
+            loadCommentCount: int = 250,
+            loadStartDate: Date = null
+        ): Vector.<NNDDComment> {
             trace("Comments.loadCommentByXML:コメントをXMLから配列に格納");
             var items: XMLList = xml.chat;
 
@@ -200,13 +213,14 @@ package org.mineap.nndd.player.comment {
                     continue;
                 }
                 commentArray.push(new NNDDComment(Number(p.attribute("vpos")),
-                        String(p.text()),
-                        String(p.attribute("mail")),
-                        String(p.attribute("user_id")),
-                        Number(p.attribute("no")),
-                        String(p.attribute("thread")),
-                        Number(p.attribute("date")),
-                        true));
+                                                  String(p.text()),
+                                                  String(p.attribute("mail")),
+                                                  String(p.attribute("user_id")),
+                                                  Number(p.attribute("no")),
+                                                  String(p.attribute("thread")),
+                                                  Number(p.attribute("date")),
+                                                  true
+                ));
 
                 if (commentArray.length >= loadCommentCount) {
 //					commentArray = commentArray.reverse();
@@ -329,7 +343,8 @@ package org.mineap.nndd.player.comment {
                                                      ngListManager: NGListManager,
                                                      showOnlyPermissionIDComment: Boolean = false,
                                                      isHideSekaShinComment: Boolean = false,
-                                                     filterEnable: Boolean = true): void {
+                                                     filterEnable: Boolean = true
+        ): void {
             var index: int = 0;
 
             //NGワード文字列
@@ -387,7 +402,8 @@ package org.mineap.nndd.player.comment {
                 }
 
                 if (isHideSekaShinComment) {
-                    if ((this.commentArray[index] as NNDDComment).mail.indexOf(Command.SEKAINO_SHINCHAKU_COMMENT) != -1) {
+                    if ((this.commentArray[index] as NNDDComment).mail.indexOf(Command.SEKAINO_SHINCHAKU_COMMENT) !=
+                        -1) {
                         this.commentArray[index].text = "";
                         comment = "#---- このコメントは表示されません(世界の新着) ----#";
                     }
@@ -432,17 +448,22 @@ package org.mineap.nndd.player.comment {
                 dateStr = DateUtil.getDateString(date);
 
                 array.addItem({
-                    vpos_column: nowMin + ":" + nowSec,
-                    comment_column: comment,
-                    user_id_column: commentArray[index].user_id,
-                    time_column: commentArray[index].vpos,
-                    no_column: commentArray[index].no,
-                    pubDate_column: dateStr,
-                    mail_column: commentArray[index].mail
-                });
+                                  vpos_column: nowMin + ":" + nowSec,
+                                  comment_column: comment,
+                                  user_id_column: commentArray[index].user_id,
+                                  time_column: commentArray[index].vpos,
+                                  no_column: commentArray[index].no,
+                                  pubDate_column: dateStr,
+                                  mail_column: commentArray[index].mail
+                              });
             }
             array.sort = new Sort();
-            array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField("no_column", false, false)];
+            array.sort.fields =
+                [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField(
+                    "no_column",
+                    false,
+                    false
+                )];
             array.refresh();
 
             commentMap = new Object();
@@ -472,7 +493,11 @@ package org.mineap.nndd.player.comment {
          * @param isNgUpEnable
          *
          */
-        private function addOwnerCommentToArrayCollection(array: ArrayCollection, ownerArray: ArrayCollection = null, isNgUpEnable: Boolean = true): void {
+        private function addOwnerCommentToArrayCollection(
+            array: ArrayCollection,
+            ownerArray: ArrayCollection = null,
+            isNgUpEnable: Boolean = true
+        ): void {
             var index: int = 0;
 
             var lastTime: int = 0;
@@ -497,7 +522,13 @@ package org.mineap.nndd.player.comment {
             }
             if (reload) {
                 array.removeAll();
-                addCommentToArrayCollection(array, _ngListManager, _isShowOnlyPermissionIdComment, _hideSekaShinComment, isNgUpEnable);
+                addCommentToArrayCollection(
+                    array,
+                    _ngListManager,
+                    _isShowOnlyPermissionIdComment,
+                    _hideSekaShinComment,
+                    isNgUpEnable
+                );
             }
 
 
@@ -528,25 +559,28 @@ package org.mineap.nndd.player.comment {
                 }
 
                 array.addItem({
-                    vpos_column: nowMin + ":" + nowSec,
-                    comment_column: ownerCommentArray[index].text,
-                    user_id_column: "OWNER",
-                    time_column: ownerCommentArray[index].vpos,
-                    no_column: ownerCommentArray[index].no
-                });
+                                  vpos_column: nowMin + ":" + nowSec,
+                                  comment_column: ownerCommentArray[index].text,
+                                  user_id_column: "OWNER",
+                                  time_column: ownerCommentArray[index].vpos,
+                                  no_column: ownerCommentArray[index].no
+                              });
                 if (ownerArray != null) {
                     ownerArray.addItem({
-                        vpos_column: nowMin + ":" + nowSec,
-                        command_column: (ownerCommentArray[index] as NNDDComment).mail,
-                        comment_column: ownerCommentArray[index].text
-                    });
+                                           vpos_column: nowMin + ":" + nowSec,
+                                           command_column: (ownerCommentArray[index] as NNDDComment).mail,
+                                           comment_column: ownerCommentArray[index].text
+                                       });
                 }
             }
 
             if (array.length >= 1) {
 
                 array.sort = new Sort();
-                array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField("no_column", false, false)];
+                array.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column",
+                                                                                               false,
+                                                                                               false
+                ), new SortField("no_column", false, false)];
                 array.refresh();
 
             }
@@ -554,7 +588,10 @@ package org.mineap.nndd.player.comment {
             if (ownerArray != null) {
                 if (ownerArray.length >= 1) {
                     ownerArray.sort = new Sort();
-                    ownerArray.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column", false, false), new SortField("no_column", false, false)];
+                    ownerArray.sort.fields = [new SortField("vpos_column", false, false), new SortField("time_column",
+                                                                                                        false,
+                                                                                                        false
+                    ), new SortField("no_column", false, false)];
                     ownerArray.refresh();
                 }
             }

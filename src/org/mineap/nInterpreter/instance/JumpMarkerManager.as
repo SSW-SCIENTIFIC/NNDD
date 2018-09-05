@@ -76,8 +76,7 @@ package org.mineap.nInterpreter.instance {
                 var vpos: int = (object as JumpMarker).vpos;
                 trace("マーカを取得:" + marker + ", " + vpos);
                 return vpos;
-            }
-            else {
+            } else {
                 return -1;
             }
 

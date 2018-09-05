@@ -5,10 +5,10 @@ package org.mineap.nndd.myList {
     import flash.events.HTTPStatusEvent;
     import flash.events.IOErrorEvent;
 
-    import org.mineap.nndd.LogManager;
     import org.mineap.nicovideo4as.Login;
     import org.mineap.nicovideo4as.analyzer.MyListGroupAnalyzer;
     import org.mineap.nicovideo4as.loader.MyListGroupLoader;
+    import org.mineap.nndd.LogManager;
 
     [Event(name="success", type="NNDDMyListGroupLoader")]
     [Event(name="failure", type="NNDDMyListGroupLoader")]
@@ -18,8 +18,7 @@ package org.mineap.nndd.myList {
      *
      * @author shiraminekeisuke(MineAP)
      *
-     */
-    public class NNDDMyListGroupLoader extends EventDispatcher {
+     */ public class NNDDMyListGroupLoader extends EventDispatcher {
 
         public static const SUCCESS: String = "Success";
         public static const FAILURE: String = "Failure";
@@ -49,7 +48,10 @@ package org.mineap.nndd.myList {
             this._myListGroupLoader = new MyListGroupLoader();
             this._myListGroupLoader.addEventListener(Event.COMPLETE, myListGroupGetSuccessEventHandler);
             this._myListGroupLoader.addEventListener(IOErrorEvent.IO_ERROR, myListGroupGetFailEventHandler);
-            this._myListGroupLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusEventHanlder);
+            this._myListGroupLoader.addEventListener(
+                HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                httpResponseStatusEventHanlder
+            );
             this._myListGroupLoader.getMyListGroup();
 
         }
@@ -127,7 +129,10 @@ package org.mineap.nndd.myList {
             if (this._myListGroupLoader != null) {
                 this._myListGroupLoader.removeEventListener(Event.COMPLETE, myListGroupGetSuccessEventHandler);
                 this._myListGroupLoader.removeEventListener(IOErrorEvent.IO_ERROR, myListGroupGetFailEventHandler);
-                this._myListGroupLoader.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, httpResponseStatusEventHanlder);
+                this._myListGroupLoader.removeEventListener(
+                    HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                    httpResponseStatusEventHanlder
+                );
             }
 
         }

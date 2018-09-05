@@ -9,8 +9,6 @@
 
 import flash.events.Event;
 
-import mx.containers.Canvas;
-
 import org.mineap.nndd.player.PlayerController;
 
 private var playerController: PlayerController;
@@ -36,8 +34,7 @@ public function changeColor(isDark: Boolean): void {
     if (isDark) {
         textinput_command.setStyle("contentBackgroundColor", "#DDDDDD");
         textInput_comment.setStyle("contentBackgroundColor", "#DDDDDD");
-    }
-    else {
+    } else {
         textinput_command.setStyle("contentBackgroundColor", "#FFFFFF");
         textInput_comment.setStyle("contentBackgroundColor", "#FFFFFF");
     }

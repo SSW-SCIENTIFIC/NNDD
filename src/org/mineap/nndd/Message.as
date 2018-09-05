@@ -94,8 +94,7 @@ package org.mineap.nndd {
         public static var M_VIDEOID_NOTFOUND: String = "この動画のファイル名には動画IDが存在しないため、コメント・サムネイル情報・ユーザーニコ割をダウンロードできません。";
         public static var M_VIDEOID_NOTFOUND_FOR_COMMENT_ONLY: String = "この動画のファイル名には動画IDが存在しないため、コメントをダウンロードできません。";
 
-        public static var M_DOWNLOAD_PROCESSING: String = "全ての項目をリストから削除しようとしています。よろしいですか？\n" +
-                "(未ダウンロードの項目も削除されます。)";
+        public static var M_DOWNLOAD_PROCESSING: String = "全ての項目をリストから削除しようとしています。よろしいですか？\n" + "(未ダウンロードの項目も削除されます。)";
 
         public static var M_ALL_DOWNLOADED_VIDEO_DELETE: String = "ダウンロード済みの項目を全てリストから削除します。よろしいですか？";
 
@@ -121,11 +120,12 @@ package org.mineap.nndd {
         public static var M_MESSAGE: String = "通知";
 
         /*主にログ出力*/
-        public static var BOOT_TIME_LOG: String = "アプリケーションの起動 - NNDD+DMC\n" +
-                "\t***** NNDD+DMCはMineAppProject作成のNNDDをフォークして作成しています。 *****\n" +
-                "\tNNDD+DMC\thttps://github.com/SSW-SCIENTIFIC/NNDD\n" +
-                "\t問題の報告などはこちらへ\thttps://github.com/SSW-SCIENTIFIC/NNDD/issues\n" +
-                "\t*********************************************";
+        public static var BOOT_TIME_LOG: String =
+            "アプリケーションの起動 - NNDD+DMC\n" +
+            "\t*****\tNNDD+DMCはMineAppProject作成のNNDDをフォークして作成しています。\t*****\n" +
+            "\tNNDD+DMC\t\t\t\t https://github.com/SSW-SCIENTIFIC/NNDD\n" +
+            "\t問題の報告などはこちらへ\t https://github.com/SSW-SCIENTIFIC/NNDD/issues\n" +
+            "\t*******************************************************************";
 
         public static var DELETE_FILE: String = "ファイルを削除";
         public static var MOVE_FILE: String = "ファイルを移動";

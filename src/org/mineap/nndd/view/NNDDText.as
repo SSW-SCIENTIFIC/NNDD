@@ -6,9 +6,6 @@ package org.mineap.nndd.view {
 
     import org.mineap.nndd.player.comment.Command;
 
-    import spark.components.Application;
-
-
     /**
      * NNDDText.as
      *

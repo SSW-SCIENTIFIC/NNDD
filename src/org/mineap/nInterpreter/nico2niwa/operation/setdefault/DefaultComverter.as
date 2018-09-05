@@ -1,6 +1,4 @@
 package org.mineap.nInterpreter.nico2niwa.operation.setdefault {
-    import flash.desktop.DockIcon;
-
     import org.mineap.nInterpreter.ScriptLine;
     import org.mineap.nInterpreter.nico2niwa.operation.Nico2NiwaConverter;
     import org.mineap.nndd.player.comment.Command;

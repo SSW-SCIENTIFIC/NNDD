@@ -454,14 +454,18 @@ public function initNNDD(nndd: NNDD): void {
             this.libraryManager.useAppDirLibFile = false;
 
             //古いライブラリファイル(SQL)をアプリケーションディレクトリにコピー
-            var oldLibFile: File = _libraryDir.resolvePath("system/").resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
-            var oldXMLLibFile: File = _libraryDir.resolvePath("system/").resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
+            var oldLibFile: File = _libraryDir.resolvePath("system/")
+                .resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
+            var oldXMLLibFile: File = _libraryDir.resolvePath("system/")
+                .resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
 
             this.libraryManager.useAppDirLibFile = true;
             var newLibFile: File = File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
             if (oldLibFile.exists && !newLibFile.exists) {
                 oldLibFile.copyTo(newLibFile);
-                logManager.addLog("ライブラリファイルの保存先を変更(新しい保存先:" + File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME).nativePath + ")");
+                logManager.addLog("ライブラリファイルの保存先を変更(新しい保存先:" +
+                                  File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME).nativePath +
+                                  ")");
             }
 
             //古いライブラリファイル(XML)をアプリケーションディレクトリにコピー
@@ -521,16 +525,27 @@ public function initNNDD(nndd: NNDD): void {
         renewMyListUnPlayCount();
     }
 
-    MyListRenewScheduler.instance.updateNNDDServerAccessSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+    MyListRenewScheduler.instance.updateNNDDServerAccessSetting(
+        this.allowGetOtherNNDDInfo,
+        this.string_remoteNNDDAddress,
+        int(this.string_remoteNNDDPort)
+    );
     MyListRenewScheduler.instance.addEventListener(Event.COMPLETE, function (event: Event): void {
         renewMyListUnPlayCount();
         var date: Date = new Date();
         myListStatusProvider = "更新完了(" + DateUtil.getDateString(date) + ")";
         myListStatsToolTip = null;
     });
-    MyListRenewScheduler.instance.addEventListener(MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS, function (event: MyListRenewProgressEvent): void {
-        myListStatusRenew(event.bytesLoaded, event.bytesTotal, event.renewingMyListId);
-    });
+    MyListRenewScheduler.instance.addEventListener(
+        MyListRenewProgressEvent.MYLIST_RENEW_PROGRESS,
+        function (event: MyListRenewProgressEvent): void {
+            myListStatusRenew(
+                event.bytesLoaded,
+                event.bytesTotal,
+                event.renewingMyListId
+            );
+        }
+    );
 
     /* 検索条件マネージャー */
     this._searchItemManager = new SearchItemManager(searchListProvider, logManager);
@@ -541,8 +556,16 @@ public function initNNDD(nndd: NNDD): void {
     }
 
     /* ダウンロードマネージャ */
-    this.downloadManager = new DownloadManager(downloadProvider, downloadedListManager, UserManager.instance.user, UserManager.instance.password, canvas_queue,
-            rankingProvider, searchProvider, myListItemProvider, logManager);
+    this.downloadManager = new DownloadManager(downloadProvider,
+                                               downloadedListManager,
+                                               UserManager.instance.user,
+                                               UserManager.instance.password,
+                                               canvas_queue,
+                                               rankingProvider,
+                                               searchProvider,
+                                               myListItemProvider,
+                                               logManager
+    );
     this.downloadManager.isAlwaysEconomy = this.isAlwaysEconomy;
     this.downloadManager.isAppendComment = this.isAppendComment;
     this.downloadManager.isUseDownloadDir = this.isUseDownloadDir;
@@ -605,7 +628,11 @@ public function initNNDD(nndd: NNDD): void {
     this.addElement(thumbImageView);
 
 
-    PlayerManager.instance.updateNNDDServerSetting(this.allowGetOtherNNDDInfo, this.string_remoteNNDDAddress, int(this.string_remoteNNDDPort));
+    PlayerManager.instance.updateNNDDServerSetting(
+        this.allowGetOtherNNDDInfo,
+        this.string_remoteNNDDAddress,
+        int(this.string_remoteNNDDPort)
+    );
     if (this.isOpenPlayerOnBoot && !this.isEnableNativePlayer) {
 //		PlayerManager.instance.getLastPlayerController();
         playerOpen();
@@ -669,11 +696,20 @@ public function renewMyListUnPlayCount(tree_myListRenew: Boolean = true): void {
 }
 
 public function askAndRenewAtBootTime(): void {
-    Alert.show("ライブラリファイルがありません。\n今すぐライブラリを更新しますか？\n(この処理は時間がかかる事があります。また、更新は「設定」タブで後からでも実行できます。)\n\n更新対象フォルダ:" + libraryManager.libraryDir.nativePath, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-        if (event.detail == Alert.YES) {
-            renewAndShowDialog(libraryManager.libraryDir, true);
-        }
-    }, null, Alert.YES);
+    Alert.show(
+        "ライブラリファイルがありません。\n今すぐライブラリを更新しますか？\n(この処理は時間がかかる事があります。また、更新は「設定」タブで後からでも実行できます。)\n\n更新対象フォルダ:" +
+        libraryManager.libraryDir.nativePath,
+        Message.M_MESSAGE,
+        (Alert.YES | Alert.NO),
+        null,
+        function (event: CloseEvent): void {
+            if (event.detail == Alert.YES) {
+                renewAndShowDialog(libraryManager.libraryDir, true);
+            }
+        },
+        null,
+        Alert.YES
+    );
 }
 
 private function renewAndShowDialog(file: File, withSubDir: Boolean): void {
@@ -919,7 +955,10 @@ private function rankingItemHandler(event: ContextMenuEvent): void {
                 var i: int = 0;
                 for each(var index: int in itemIndices) {
 
-                    var video: NNDDVideo = new NNDDVideo(rankingProvider[index].dataGridColumn_nicoVideoUrl, rankingProvider[index].dataGridColumn_videoName);
+                    var video: NNDDVideo = new NNDDVideo(
+                        rankingProvider[index].dataGridColumn_nicoVideoUrl,
+                        rankingProvider[index].dataGridColumn_videoName
+                    );
                     addDownloadList(video, itemIndices[i]);
 
                     i++;
@@ -947,7 +986,8 @@ private function searchItemHandler(event: ContextMenuEvent): void {
                 if ((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_PLAY) {
                     this.playingVideoPath = videoPath;
                     playMovie(this.playingVideoPath, -1);
-                } else if ((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY) {
+                } else if ((event.target as ContextMenuItem).label ==
+                           Message.L_RANKING_MENU_ITEM_LABEL_STREAMING_PLAY) {
                     this.playingVideoPath = obj.dataGridColumn_nicoVideoUrl;
                     this.videoStreamingPlayStart(this.playingVideoPath);
                 } else if ((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_ADD_DL_LIST) {
@@ -958,7 +998,10 @@ private function searchItemHandler(event: ContextMenuEvent): void {
                     var i: int = 0;
                     for each(var index: int in itemIndices) {
 
-                        var video: NNDDVideo = new NNDDVideo(searchProvider[index].dataGridColumn_nicoVideoUrl, searchProvider[index].dataGridColumn_videoName);
+                        var video: NNDDVideo = new NNDDVideo(
+                            searchProvider[index].dataGridColumn_nicoVideoUrl,
+                            searchProvider[index].dataGridColumn_videoName
+                        );
                         addDownloadListForSearch(video, itemIndices[i]);
 
                         i++;
@@ -983,7 +1026,8 @@ private function myListItemHandler(event: ContextMenuEvent): void {
             var type: RssType = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_type;
 
             if ((event.target as ContextMenuItem).label == Message.L_RANKING_MENU_ITEM_LABEL_PLAY) {
-                var videoLocalPath: String = (event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoLocalPath;
+                var videoLocalPath: String = (event.mouseTarget as
+                                              DataGridItemRenderer).data.dataGridColumn_videoLocalPath;
                 if (videoLocalPath != null) {
                     //マイリストの項目を既読に設定
                     if (myListId != null) {
@@ -1024,8 +1068,7 @@ private function myListItemHandler(event: ContextMenuEvent): void {
                     } else {
                         if (tree_myList.selectedItem != null) {
                             var name: String = tree_myList.selectedItem.label;
-                            ;
-                            myListRenewForName(name);
+                            ;myListRenewForName(name);
                         }
                     }
 
@@ -1035,16 +1078,15 @@ private function myListItemHandler(event: ContextMenuEvent): void {
 
                 addDownloadListButtonClickedForMyList();
 
-            } else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED
-                    || (event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY) {
+            } else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED ||
+                       (event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY) {
 
                 // 動画を既読/未読に設定
 
                 var isPlayed: Boolean = false;
                 if ((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_PLAYED) {
                     isPlayed = true;
-                }
-                else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY) {
+                } else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_MENU_ITEM_LABEL_SET_UNPLAY) {
                     isPlayed = false;
                 }
 
@@ -1116,7 +1158,8 @@ private function queueItemHandler(event: ContextMenuEvent): void {
     var dataGrid: DataGrid = DataGrid(event.contextMenuOwner);
     if (dataGrid != null && dataGrid.dataProvider.length > 0) {
         if ((event.target as ContextMenuItem).label == Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY_BY_QUEUE) {
-            if ((event.mouseTarget as DataGridItemRenderer).data != null && (event.mouseTarget as DataGridItemRenderer).data.hasOwnProperty("col_downloadedPath")) {
+            if ((event.mouseTarget as DataGridItemRenderer).data != null &&
+                (event.mouseTarget as DataGridItemRenderer).data.hasOwnProperty("col_downloadedPath")) {
                 this.playingVideoPath = (event.mouseTarget as DataGridItemRenderer).data.col_downloadedPath;
                 if (this.playingVideoPath != null) {
                     playMovie(this.playingVideoPath, -1);
@@ -1156,13 +1199,15 @@ private function downloadItemHandler(event: ContextMenuEvent): void {
 private function downloadedItemHandler(event: ContextMenuEvent): void {
     var dataGrid: DataGrid = DataGrid(event.contextMenuOwner);
     if (dataGrid != null && dataGrid.dataProvider.length > 0) {
-        if (event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null
-                && (event.mouseTarget as DataGridItemRenderer).data.hasOwnProperty("dataGridColumn_videoPath")) {
+        if (event.mouseTarget is DataGridItemRenderer && (event.mouseTarget as DataGridItemRenderer).data != null &&
+            (event.mouseTarget as DataGridItemRenderer).data.hasOwnProperty("dataGridColumn_videoPath")) {
             if ((event.target as ContextMenuItem).label == Message.L_DOWNLOADED_MENU_ITEM_LABEL_PLAY) {
                 if (this.playListManager.isSelectedPlayList) {
                     var pIndex: int = playListManager.getPlayListIndexByName(tree_library.selectedItem.label);
                     this.playMovie((event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoPath,
-                            dataGrid_downloaded.selectedIndex, playListManager.getPlayList(pIndex));
+                                   dataGrid_downloaded.selectedIndex,
+                                   playListManager.getPlayList(pIndex)
+                    );
                 } else {
                     this.playMovie((event.mouseTarget as DataGridItemRenderer).data.dataGridColumn_videoPath, -1);
                 }
@@ -1207,7 +1252,8 @@ private function downloadedItemHandler(event: ContextMenuEvent): void {
                     isExists = true;
                 }
 
-                var videoEditDialog: VideoEditDialog = PopUpManager.createPopUp(this, VideoEditDialog, true) as VideoEditDialog;
+                var videoEditDialog: VideoEditDialog = PopUpManager.createPopUp(this, VideoEditDialog, true) as
+                                                       VideoEditDialog;
                 PopUpManager.centerPopUp(videoEditDialog);
                 videoEditDialog.init(video, logManager);
 
@@ -1218,8 +1264,10 @@ private function downloadedItemHandler(event: ContextMenuEvent): void {
 //							(new File(videoEditDialog.oldVideo.uri)).moveTo(new File(videoEditDialog.newVideo.uri));
 //						}
                         if (dataGrid_downloaded.selectedItem != null) {
-                            dataGrid_downloaded.selectedItem.dataGridColumn_videoName = videoEditDialog.newVideo.file.name;
-                            dataGrid_downloaded.selectedItem.dataGridColumn_videoPath = videoEditDialog.newVideo.getDecodeUrl();
+                            dataGrid_downloaded.selectedItem.dataGridColumn_videoName =
+                                videoEditDialog.newVideo.file.name;
+                            dataGrid_downloaded.selectedItem.dataGridColumn_videoPath =
+                                videoEditDialog.newVideo.getDecodeUrl();
                         }
                         if (libraryManager.update(videoEditDialog.newVideo, true)) {
                             // 成功
@@ -1267,8 +1315,7 @@ private function myListTreeItemHandler(event: ContextMenuEvent): void {
                 textinput_mylist.text = name;
             }
         }
-    }
-    else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_TREE_RENEW_ALL) {
+    } else if ((event.target as ContextMenuItem).label == Message.L_MYLIST_TREE_RENEW_ALL) {
         myListRenewNow();
     }
 }
@@ -1280,8 +1327,8 @@ private function myListTreeItemHandler(event: ContextMenuEvent): void {
  */
 private function fileSystemTreeItemHandler(event: ContextMenuEvent): void {
 
-    if ((event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW
-            || (event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR) {
+    if ((event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW ||
+        (event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR) {
 
         var file: File = null;
 
@@ -1295,8 +1342,8 @@ private function fileSystemTreeItemHandler(event: ContextMenuEvent): void {
                 file = item.file;
             }
 
-        } else if ((event.mouseTarget as UITextField) != null && (event.mouseTarget as UITextField).owner != null
-                && ((event.mouseTarget as UITextField).owner is TreeItemRenderer)) {
+        } else if ((event.mouseTarget as UITextField) != null && (event.mouseTarget as UITextField).owner != null &&
+                   ((event.mouseTarget as UITextField).owner is TreeItemRenderer)) {
             var object: Object = ((event.mouseTarget as UITextField).owner as TreeItemRenderer).data;
             if (object != null && object is TreeFolderItem) {
                 file = (object as TreeFolderItem).file;
@@ -1305,7 +1352,8 @@ private function fileSystemTreeItemHandler(event: ContextMenuEvent): void {
 
         if (file != null) {
 
-            if ((event.target as ContextMenuItem).label == Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR) {
+            if ((event.target as ContextMenuItem).label ==
+                Message.L_FILE_SYSTEM_TREE_MENU_ITEM_LABEL_RENEW_WITH_SUBDIR) {
 
                 //サブディレクトリを更新するディレクトリ更新
                 askForDirRenew(file);
@@ -1335,8 +1383,7 @@ private function fileSystemTreeItemHandler(event: ContextMenuEvent): void {
                     playMovieByLibraryDir(itreeItem.file.name, convertDataGridItemToNNDDVideo(videoArray));
                 }
             }
-        }
-        else {
+        } else {
             // treeが選択されていない時は自分が居るディレクトリから調べる
 
             var obj: Object = dataGrid_downloaded.selectedItem;
@@ -1370,11 +1417,15 @@ private function askForDirRenew(dir: File): void {
     trace(dir.nativePath);
 
     Alert.show("指定されたフォルダ及びサブフォルダ内の情報を再収集します。よろしいですか？\n(この処理には時間がかかる事があります。)\n\n" + dir.nativePath,
-            Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                if (event.detail == Alert.YES) {
-                    renewAndShowDialog(dir, true);
-                }
-            });
+               Message.M_MESSAGE,
+               (Alert.YES | Alert.NO),
+               null,
+               function (event: CloseEvent): void {
+                   if (event.detail == Alert.YES) {
+                       renewAndShowDialog(dir, true);
+                   }
+               }
+    );
 
 }
 
@@ -1432,7 +1483,12 @@ private function addMyList(myListId: String, video: NNDDVideo): void {
         _myListAdder = null;
     });
 
-    this._myListAdder.addMyList("http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl()), myListId, UserManager.instance.user, UserManager.instance.password);
+    this._myListAdder.addMyList(
+        "http://www.nicovideo.jp/watch/" + PathMaker.getVideoID(video.getDecodeUrl()),
+        myListId,
+        UserManager.instance.user,
+        UserManager.instance.password
+    );
 }
 
 
@@ -1470,8 +1526,7 @@ private function tagListItemHandler(event: ContextMenuEvent): void {
         var label: String = (event.target as ContextMenuItem).label;
         if (tag != null && tag.length > 0 && label != null) {
             if (label == Message.L_TAB_LIST_MENU_ITEM_LABEL_SEARCH) {
-                search(new SearchItem(tag, SearchSortString.convertSortTypeFromIndex(4),
-                        NNDDSearchType.TAG, tag));
+                search(new SearchItem(tag, SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, tag));
             } else if (label == Message.L_TAB_LIST_MENU_ITEM_LABEL_JUMP_DIC) {
                 navigateToURL(new URLRequest("http://dic.nicovideo.jp/a/" + encodeURIComponent(tag)));
             } else if (label == Message.L_TAB_LIST_MENU_ITEM_LABEL_HIDE_TAG) {
@@ -1614,7 +1669,7 @@ private function invokeEventHandler(event: InvokeEvent): void {
             arguments = arguments + arg;
 
             if (arg == "-showRedrawRegions") {
-                flash.profiler.showRedrawRegions(true, 0x0000FF);
+                showRedrawRegions(true, 0x0000FF);
             }
 
         }
@@ -1653,18 +1708,24 @@ private function invokeEventHandler(event: InvokeEvent): void {
                                     //DLリストに追加
                                     var video: NNDDVideo = new NNDDVideo(checker.url, "-");
                                     var timer: Timer = new Timer(1000, 1);
-                                    timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: TimerEvent): void {
-                                        addDownloadList(video, -1);
-                                    }, false, 0, true);
+                                    timer.addEventListener(
+                                        TimerEvent.TIMER_COMPLETE,
+                                        function (event: TimerEvent): void {
+                                            addDownloadList(video, -1);
+                                        },
+                                        false,
+                                        0,
+                                        true
+                                    );
                                     timer.start();
-                                }
-                                else {
+                                } else {
                                     //これはニコ動のURL or 動画IDじゃない
-                                    logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);
-                                    Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
+                                    logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" +
+                                                      Message.ARGUMENT_FORMAT);
+                                    Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" +
+                                               Message.ARGUMENT_FORMAT, Message.M_ERROR);
                                 }
-                            }
-                            else {
+                            } else {
                                 logManager.addLog(Message.M_SHORT_URL_EXPANSION_FAIL + ":ShortUrlChecker.url is null.");
                                 Alert.show(Message.M_SHORT_URL_EXPANSION_FAIL, Message.M_ERROR);
                             }
@@ -1677,8 +1738,12 @@ private function invokeEventHandler(event: InvokeEvent): void {
                     }
                 } else {
                     //これはニコ動のURL or 動画IDじゃない
-                    logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);
-                    Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
+                    logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" +
+                                      Message.ARGUMENT_FORMAT);
+                    Alert.show(
+                        Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT,
+                        Message.M_ERROR
+                    );
                 }
             } else if (arg1.indexOf("http://") == -1) {
                 // ローカルのファイル
@@ -1721,12 +1786,19 @@ private function invokeEventHandler(event: InvokeEvent): void {
                     checker.expansion(arg1);
                 }
             } else {
-                logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + Message.ARGUMENT_FORMAT);
-                Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
+                logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" +
+                                  Message.ARGUMENT_FORMAT);
+                Alert.show(
+                    Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT,
+                    Message.M_ERROR
+                );
             }
         } catch (error: Error) {
             logManager.addLog(Message.FAIL_ARGUMENT_BOOT + ":argument=[" + arguments + "]\n" + error.getStackTrace());
-            Alert.show(Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT, Message.M_ERROR);
+            Alert.show(
+                Message.M_FAIL_ARGUMENT_BOOT + "\n\n" + arguments + "\n" + Message.ARGUMENT_FORMAT,
+                Message.M_ERROR
+            );
         }
     }
 }
@@ -1746,104 +1818,120 @@ private function deleteVideo(urls: Array, indices: Array): void {
 
         if (urls.length > 0) {
             Alert.show("次のファイルを削除してもよろしいですか？（コメント・サムネイル情報・ユーザーニコ割も同時に削除されます。）\n\n" + fileNames,
-                    Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                        if (event.detail == Alert.YES) {
-                            try {
-                                for (var i: int = indices.length - 1; -1 < i; i--) {
-                                    var url: String = urls[i];
-                                    var index: int = i;
+                       Message.M_MESSAGE,
+                       (Alert.YES | Alert.NO),
+                       null,
+                       function (event: CloseEvent): void {
+                           if (event.detail == Alert.YES) {
+                               try {
+                                   for (var i: int = indices.length - 1; -1 < i; i--) {
+                                       var url: String = urls[i];
+                                       var index: int = i;
 
-                                    //動画を削除
-                                    var movieFile: File = new File(url);
+                                       //動画を削除
+                                       var movieFile: File = new File(url);
 
-                                    var nnddVideo: NNDDVideo = libraryManager.remove(LibraryUtil.getVideoKey(decodeURIComponent(movieFile.url)), false);
-                                    if (nndd == null) {
-                                        logManager.addLog("指定された動画はNNDDの管理外です。:" + movieFile.nativePath);
-                                    }
+                                       var nnddVideo: NNDDVideo = libraryManager.remove(LibraryUtil.getVideoKey(
+                                           decodeURIComponent(movieFile.url)), false);
+                                       if (nndd == null) {
+                                           logManager.addLog("指定された動画はNNDDの管理外です。:" + movieFile.nativePath);
+                                       }
 
-                                    if (!movieFile.exists) {
-                                        //もうない。次のファイルへ。
-                                        continue;
-                                    }
-                                    movieFile.moveToTrash();
+                                       if (!movieFile.exists) {
+                                           //もうない。次のファイルへ。
+                                           continue;
+                                       }
+                                       movieFile.moveToTrash();
 //							downloadedProvider.removeItemAt(index);
-                                    logManager.addLog(Message.DELETE_FILE + ":" + movieFile.nativePath);
+                                       logManager.addLog(Message.DELETE_FILE + ":" + movieFile.nativePath);
 
-                                    try {
+                                       try {
 
-                                        var failURL: String = "";
+                                           var failURL: String = "";
 
-                                        //通常コメントを削除
-                                        var commentFile: File = new File(PathMaker.createNomalCommentPathByVideoPath(decodeURIComponent(url)));
-                                        failURL = decodeURIComponent(commentFile.url);
-                                        if (commentFile.exists) {
-                                            commentFile.moveToTrash();
-                                            logManager.addLog(Message.DELETE_FILE + ":" + commentFile.nativePath);
-                                        }
+                                           //通常コメントを削除
+                                           var commentFile: File = new File(PathMaker.createNomalCommentPathByVideoPath(
+                                               decodeURIComponent(url)));
+                                           failURL = decodeURIComponent(commentFile.url);
+                                           if (commentFile.exists) {
+                                               commentFile.moveToTrash();
+                                               logManager.addLog(Message.DELETE_FILE + ":" + commentFile.nativePath);
+                                           }
 
-                                        //投稿者コメントを削除
-                                        var ownerCommentFile: File = new File(PathMaker.createOwnerCommentPathByVideoPath(decodeURIComponent(url)));
-                                        failURL = decodeURIComponent(ownerCommentFile.url);
-                                        if (ownerCommentFile.exists) {
-                                            ownerCommentFile.moveToTrash();
-                                            logManager.addLog(Message.DELETE_FILE + ":" + ownerCommentFile.nativePath);
-                                        }
+                                           //投稿者コメントを削除
+                                           var ownerCommentFile: File = new File(PathMaker.createOwnerCommentPathByVideoPath(
+                                               decodeURIComponent(url)));
+                                           failURL = decodeURIComponent(ownerCommentFile.url);
+                                           if (ownerCommentFile.exists) {
+                                               ownerCommentFile.moveToTrash();
+                                               logManager.addLog(Message.DELETE_FILE + ":" +
+                                                                 ownerCommentFile.nativePath);
+                                           }
 
-                                        //サムネイル情報を削除
-                                        var thmbInfoFile: File = new File(PathMaker.createThmbInfoPathByVideoPath(decodeURIComponent(url)));
-                                        failURL = decodeURIComponent(thmbInfoFile.url);
-                                        if (thmbInfoFile.exists) {
-                                            thmbInfoFile.moveToTrash();
-                                            logManager.addLog(Message.DELETE_FILE + ":" + thmbInfoFile.nativePath);
-                                        }
+                                           //サムネイル情報を削除
+                                           var thmbInfoFile: File = new File(PathMaker.createThmbInfoPathByVideoPath(
+                                               decodeURIComponent(url)));
+                                           failURL = decodeURIComponent(thmbInfoFile.url);
+                                           if (thmbInfoFile.exists) {
+                                               thmbInfoFile.moveToTrash();
+                                               logManager.addLog(Message.DELETE_FILE + ":" + thmbInfoFile.nativePath);
+                                           }
 
-                                        //市場情報を削除
-                                        var iChibaFile: File = new File(PathMaker.createNicoIchibaInfoPathByVideoPath(decodeURIComponent(url)));
-                                        failURL = decodeURIComponent(iChibaFile.url);
-                                        if (iChibaFile.exists) {
-                                            iChibaFile.moveToTrash();
-                                            logManager.addLog(Message.DELETE_FILE + ":" + iChibaFile.nativePath);
-                                        }
+                                           //市場情報を削除
+                                           var iChibaFile: File = new File(PathMaker.createNicoIchibaInfoPathByVideoPath(
+                                               decodeURIComponent(url)));
+                                           failURL = decodeURIComponent(iChibaFile.url);
+                                           if (iChibaFile.exists) {
+                                               iChibaFile.moveToTrash();
+                                               logManager.addLog(Message.DELETE_FILE + ":" + iChibaFile.nativePath);
+                                           }
 
-                                        //サムネイル画像を削除（あれば）
-                                        var thumbImgFile: File = new File(PathMaker.createThumbImgFilePath(decodeURIComponent(url)));
-                                        failURL = decodeURIComponent(thumbImgFile.url);
-                                        if (thumbImgFile.exists) {
-                                            thumbImgFile.moveToTrash();
-                                            logManager.addLog(Message.DELETE_FILE + ":" + thumbImgFile.nativePath);
-                                        }
+                                           //サムネイル画像を削除（あれば）
+                                           var thumbImgFile: File = new File(PathMaker.createThumbImgFilePath(
+                                               decodeURIComponent(url)));
+                                           failURL = decodeURIComponent(thumbImgFile.url);
+                                           if (thumbImgFile.exists) {
+                                               thumbImgFile.moveToTrash();
+                                               logManager.addLog(Message.DELETE_FILE + ":" + thumbImgFile.nativePath);
+                                           }
 
-                                        //ニコ割を削除
-                                        while (true) {
-                                            var file: File = new File(PathMaker.createNicowariPathByVideoPathAndNicowariVideoID(decodeURIComponent(url)));
-                                            if (file.exists) {
-                                                failURL = decodeURIComponent(file.url);
-                                                file.moveToTrash();
-                                                logManager.addLog(Message.DELETE_FILE + ":" + file.nativePath);
-                                            } else {
-                                                break;
-                                            }
-                                        }
+                                           //ニコ割を削除
+                                           while (true) {
+                                               var file: File = new File(PathMaker.createNicowariPathByVideoPathAndNicowariVideoID(
+                                                   decodeURIComponent(url)));
+                                               if (file.exists) {
+                                                   failURL = decodeURIComponent(file.url);
+                                                   file.moveToTrash();
+                                                   logManager.addLog(Message.DELETE_FILE + ":" + file.nativePath);
+                                               } else {
+                                                   break;
+                                               }
+                                           }
 
-                                    } catch (error: Error) {
-                                        Alert.show(Message.M_FAIL_OTHER_DELETE, Message.M_ERROR);
-                                        logManager.addLog(Message.M_FAIL_OTHER_DELETE + ":" + failURL + ":" + error + "\n" + error.getStackTrace());
-                                    }
-                                }
+                                       } catch (error: Error) {
+                                           Alert.show(Message.M_FAIL_OTHER_DELETE, Message.M_ERROR);
+                                           logManager.addLog(Message.M_FAIL_OTHER_DELETE + ":" + failURL + ":" + error +
+                                                             "\n" + error.getStackTrace());
+                                       }
+                                   }
 
-                                updateLibrary(tree_library.selectedIndex);
+                                   updateLibrary(tree_library.selectedIndex);
 
-                            } catch (error: Error) {
+                               } catch (error: Error) {
 //						tree_library.refresh();
-                                updateLibrary(tree_library.selectedIndex);
-                                Alert.show(Message.M_FAIL_VIDEO_DELETE, Message.M_ERROR);
-                                logManager.addLog(Message.M_FAIL_VIDEO_DELETE + ":" + movieFile.nativePath + ":" + error + "\n" + error.getStackTrace());
-                            }
+                                   updateLibrary(tree_library.selectedIndex);
+                                   Alert.show(Message.M_FAIL_VIDEO_DELETE, Message.M_ERROR);
+                                   logManager.addLog(Message.M_FAIL_VIDEO_DELETE + ":" + movieFile.nativePath + ":" +
+                                                     error + "\n" + error.getStackTrace());
+                               }
 
-                            libraryManager.saveLibrary();
+                               libraryManager.saveLibrary();
 
-                        }
-                    }, null, Alert.NO);
+                           }
+                       },
+                       null,
+                       Alert.NO
+            );
         }
     } else {
         var index: int = playListManager.getPlayListIndexByName(tree_library.selectedItem.label);
@@ -2315,8 +2403,7 @@ private function readStore(isLogout: Boolean = false): void {
         confValue = ConfigManager.getInstance().getItem("isOpenPlayerOnBoot");
         if (confValue != null) {
             this.isOpenPlayerOnBoot = ConfUtil.parseBoolean(confValue);
-        }
-        else {
+        } else {
             this.isOpenPlayerOnBoot = false;
         }
 
@@ -2324,8 +2411,7 @@ private function readStore(isLogout: Boolean = false): void {
         confValue = ConfigManager.getInstance().getItem("downloadRetryMaxCount");
         if (confValue != null) {
             this.downloadRetryMaxCount = int(confValue);
-        }
-        else {
+        } else {
             this.downloadRetryMaxCount = 2;
         }
 
@@ -2333,8 +2419,7 @@ private function readStore(isLogout: Boolean = false): void {
         confValue = ConfigManager.getInstance().getItem("myListRenewOnBootTime");
         if (confValue != null) {
             this.myListRenewOnBootTime = ConfUtil.parseBoolean(confValue);
-        }
-        else {
+        } else {
             this.myListRenewOnBootTime = false;
         }
 
@@ -2342,8 +2427,7 @@ private function readStore(isLogout: Boolean = false): void {
         confValue = ConfigManager.getInstance().getItem("useOldTypeCommentGet");
         if (confValue != null) {
             this.useOldTypeCommentGet = ConfUtil.parseBoolean(confValue);
-        }
-        else {
+        } else {
             this.useOldTypeCommentGet = true;
         }
 
@@ -2351,8 +2435,7 @@ private function readStore(isLogout: Boolean = false): void {
         confValue = ConfigManager.getInstance().getItem("isCloseNNDDWindowWhenLogin");
         if (confValue != null) {
             this.isCloseNNDDWindowWhenLogin = ConfUtil.parseBoolean(confValue);
-        }
-        else {
+        } else {
             this.isCloseNNDDWindowWhenLogin = false;
         }
 
@@ -2360,8 +2443,7 @@ private function readStore(isLogout: Boolean = false): void {
         confValue = ConfigManager.getInstance().getItem("isSkipEconomy");
         if (confValue != null) {
             this.isSkipEconomy = ConfUtil.parseBoolean(confValue);
-        }
-        else {
+        } else {
             this.isSkipEconomy = false;
         }
 
@@ -2429,7 +2511,8 @@ private function readStore(isLogout: Boolean = false): void {
 
         /* エラーログ出力 */
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.M_CONF_FILE_IS_BROKEN + ":" + Message.FAIL_LOAD_CONF_FILE_FOR_NNDD_MAIN_WINDOW + "[" + errorName + "]:" + error + ":" + error.getStackTrace());
+        logManager.addLog(Message.M_CONF_FILE_IS_BROKEN + ":" + Message.FAIL_LOAD_CONF_FILE_FOR_NNDD_MAIN_WINDOW + "[" +
+                          errorName + "]:" + error + ":" + error.getStackTrace());
         trace(error.getStackTrace());
     }
 
@@ -2473,7 +2556,10 @@ private function loginFailEventHandler(event: Event): void {
  */
 private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
     if (!rankingDataGridComplete) {
-        DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
+        DataGridColumnWidthUtil.loadAndSet(
+            dataGrid_ranking,
+            new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition")
+        );
         rankingDataGridComplete = true;
     }
 
@@ -2490,8 +2576,7 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
 
     if (this.myListRenewOnBootTime) {
         MyListRenewScheduler.instance.startNow();
-    }
-    else {
+    } else {
         if (this.mylistRenewOnScheduleEnable) {
             MyListRenewScheduler.instance.startNow();
             MyListRenewScheduler.instance.start((this.myListRenewScheduleTime * 60) * 1000);
@@ -2536,10 +2621,9 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
                 });
                 timer.start();
             }
-        }
-        else {
-            if (this.nativeWindow != null && !this.nativeWindow.closed
-                    && this.nativeWindow.displayState != NativeWindowDisplayState.MINIMIZED) {
+        } else {
+            if (this.nativeWindow != null && !this.nativeWindow.closed && this.nativeWindow.displayState !=
+                NativeWindowDisplayState.MINIMIZED) {
                 var timer: Timer = new Timer(1000, 1);
                 timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (event: Event): void {
                     nativeWindow.minimize();
@@ -2559,7 +2643,10 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
  */
 private function noLogin(event: HTTPStatusEvent): void {
     if (!rankingDataGridComplete) {
-        DataGridColumnWidthUtil.loadAndSet(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
+        DataGridColumnWidthUtil.loadAndSet(
+            dataGrid_ranking,
+            new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition")
+        );
         rankingDataGridComplete = true;
     }
 
@@ -2725,14 +2812,26 @@ private function tabChanged(): void {
             var confValue: String = ConfigManager.getInstance().getItem("firstTimeMyListShow");
             if (confValue == null) {
                 if (UserManager.instance.user.length > 0 && UserManager.instance.password.length > 0) {
-                    Alert.show(Message.M_RENEW_MYLIST_GROUP, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                        if (event.detail == Alert.YES) {
-                            MyListManager.instance.addEventListener(MyListManager.MYLIST_RENEW_COMPLETE, myListRenewCompleteHandler);
-                            MyListManager.instance.renewMyListIds(UserManager.instance.user, UserManager.instance.password);
+                    Alert.show(
+                        Message.M_RENEW_MYLIST_GROUP,
+                        Message.M_MESSAGE,
+                        (Alert.YES | Alert.NO),
+                        null,
+                        function (event: CloseEvent): void {
+                            if (event.detail == Alert.YES) {
+                                MyListManager.instance.addEventListener(
+                                    MyListManager.MYLIST_RENEW_COMPLETE,
+                                    myListRenewCompleteHandler
+                                );
+                                MyListManager.instance.renewMyListIds(
+                                    UserManager.instance.user,
+                                    UserManager.instance.password
+                                );
+                            }
+                            ConfigManager.getInstance().setItem("firstTimeMyListShow", false);
+                            ConfigManager.getInstance().save();
                         }
-                        ConfigManager.getInstance().setItem("firstTimeMyListShow", false);
-                        ConfigManager.getInstance().save();
-                    });
+                    );
                 }
             }
 
@@ -2755,15 +2854,16 @@ private function tabChanged(): void {
 //			dataGrid_downloadList.validateNow();
 
             if (downloadManager.listLength > downloadManager.maxDlListCount) {
-                Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE_PRE +
-                        downloadManager.maxDlListCount +
-                        Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE_SUF,
-                        Message.M_MESSAGE, (Alert.YES | Alert.NO), null,
-                        function (event: CloseEvent): void {
-                            if (event.detail == Alert.YES) {
-                                downloadManager.removeDownloadedVideo();
-                            }
-                        }
+                Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE_PRE + downloadManager.maxDlListCount +
+                           Message.M_DOWNLOAD_LIST_COUNT_OVER_DELETE_SUF,
+                           Message.M_MESSAGE,
+                           (Alert.YES | Alert.NO),
+                           null,
+                           function (event: CloseEvent): void {
+                               if (event.detail == Alert.YES) {
+                                   downloadManager.removeDownloadedVideo();
+                               }
+                           }
                 );
             }
 
@@ -2835,9 +2935,12 @@ private function tabChanged(): void {
             if (textArea_log != null) {
                 logManager.showLog(textArea_log);
             } else {
-                canvas_innerConfing_log.addEventListener(FlexEvent.CREATION_COMPLETE, function (event: FlexEvent): void {
-                    logManager.showLog(textArea_log);
-                });
+                canvas_innerConfing_log.addEventListener(
+                    FlexEvent.CREATION_COMPLETE,
+                    function (event: FlexEvent): void {
+                        logManager.showLog(textArea_log);
+                    }
+                );
             }
             break;
 
@@ -2854,7 +2957,9 @@ public function updateDownloadStatusBar(): void {
     var downloadedCount: int = downloadManager.downloadedItem;
     var notDownloadedCount: int = totalCount - downloadedCount;
 
-    this.status = "DL済み " + downloadedCount + " 項目, 未DL " + notDownloadedCount + " 項目, " + formatter.formatNumber(space) + " GB空き";
+    this.status =
+        "DL済み " + downloadedCount + " 項目, 未DL " + notDownloadedCount + " 項目, " + formatter.formatNumber(space) +
+        " GB空き";
 }
 
 private function sourceTabChanged(event: IndexChangedEvent): void {
@@ -2910,7 +3015,10 @@ private function libraryTabCreationComplete(): void {
             selectedItems = this.tree_library.selectedItems;
         }
         //ダウンロード済みリストを更新する。
-        var myFile: File = new File((libraryManager.libraryDir.url.substr(0, libraryManager.libraryDir.url.lastIndexOf("/"))));
+        var myFile: File = new File((libraryManager.libraryDir.url.substr(
+            0,
+            libraryManager.libraryDir.url.lastIndexOf("/")
+        )));
 
         var selectedItem: ITreeItem = (tree_library.selectedItem as ITreeItem);
         if (selectedItem != null) {
@@ -2960,10 +3068,12 @@ private function libraryTabCreationComplete(): void {
         //ソートを反映
         if (this.libraryDataGridSortFieldName != null && this.libraryDataGridSortFieldName != "") {
             (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort = new Sort();
-            (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort.fields = [new SortField(this.libraryDataGridSortFieldName, false, this.libraryDataGridSortDescending)];
+            (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort.fields =
+                [new SortField(this.libraryDataGridSortFieldName, false, this.libraryDataGridSortDescending)];
         } else {
             (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort = new Sort();
-            (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort.fields = [new SortField("dataGridColumn_videoName", false, false)];
+            (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort.fields =
+                [new SortField("dataGridColumn_videoName", false, false)];
         }
         (this.dataGrid_downloaded.dataProvider as ArrayCollection).refresh();
     } else if (!isEnableLibrary) {
@@ -2976,7 +3086,10 @@ private function libraryTabCreationComplete(): void {
             selectedItems = this.tree_library.selectedItem.selectedItems;
         }
         //ダウンロード済みリストを更新する。
-        var myFile: File = new File((libraryManager.libraryDir.url.substr(0, libraryManager.libraryDir.url.lastIndexOf("/"))));
+        var myFile: File = new File((libraryManager.libraryDir.url.substr(
+            0,
+            libraryManager.libraryDir.url.lastIndexOf("/")
+        )));
 
         if (tree_library != null) {
 
@@ -3028,8 +3141,7 @@ private function allConfigCanvasCreationComplete(event: FlexEvent): void {
     if (this.isDisEnableAutoExit) {
         // 自動的に終了しない
         checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを閉じる";
-    }
-    else {
+    } else {
         // 自動的に終了する
         checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを最小化する";
     }
@@ -3167,7 +3279,10 @@ private function addDownloadListButtonClicked(): void {
             var itemIndices: Array = dataGrid_ranking.selectedIndices;
             for (var index: int = 0; index < items.length; index++) {
 
-                var video: NNDDVideo = new NNDDVideo(items[index].dataGridColumn_nicoVideoUrl, items[index].dataGridColumn_videoName);
+                var video: NNDDVideo = new NNDDVideo(
+                    items[index].dataGridColumn_nicoVideoUrl,
+                    items[index].dataGridColumn_videoName
+                );
                 addDownloadList(video, itemIndices[index]);
 
             }
@@ -3256,8 +3371,7 @@ private function rankingDataGridDoubleClicked(event: ListEvent): void {
             }
             if (nnddVideo == null) {
                 this.videoStreamingPlayStart(mUrl);
-            }
-            else {
+            } else {
                 this.playMovie(nnddVideo.getDecodeUrl(), -1);
             }
         } else {
@@ -3272,12 +3386,20 @@ private function rankingDataGridDoubleClicked(event: ListEvent): void {
             }
 
             if (isExistsInLibrary) {
-                Alert.show(Message.M_ALREADY_DOWNLOADED_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                    if (event.detail == Alert.YES) {
-                        var video: NNDDVideo = new NNDDVideo(mUrl, videoName);
-                        addDownloadList(video, index);
-                    }
-                }, null, Alert.NO);
+                Alert.show(
+                    Message.M_ALREADY_DOWNLOADED_VIDEO_EXIST,
+                    Message.M_MESSAGE,
+                    (Alert.YES | Alert.NO),
+                    null,
+                    function (event: CloseEvent): void {
+                        if (event.detail == Alert.YES) {
+                            var video: NNDDVideo = new NNDDVideo(mUrl, videoName);
+                            addDownloadList(video, index);
+                        }
+                    },
+                    null,
+                    Alert.NO
+                );
             } else {
                 video = new NNDDVideo(mUrl, videoName);
                 addDownloadList(video, index);
@@ -3308,8 +3430,7 @@ private function searchDataGridDoubleClicked(event: ListEvent): void {
             }
             if (nnddVideo == null) {
                 this.videoStreamingPlayStart(mUrl);
-            }
-            else {
+            } else {
                 this.playMovie(nnddVideo.getDecodeUrl(), -1);
             }
         } else {
@@ -3324,12 +3445,20 @@ private function searchDataGridDoubleClicked(event: ListEvent): void {
             }
 
             if (isExistsInLibrary) {
-                Alert.show(Message.M_ALREADY_DOWNLOADED_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                    if (event.detail == Alert.YES) {
-                        var video: NNDDVideo = new NNDDVideo(mUrl, videoName);
-                        addDownloadListForSearch(video, index);
-                    }
-                }, null, Alert.NO);
+                Alert.show(
+                    Message.M_ALREADY_DOWNLOADED_VIDEO_EXIST,
+                    Message.M_MESSAGE,
+                    (Alert.YES | Alert.NO),
+                    null,
+                    function (event: CloseEvent): void {
+                        if (event.detail == Alert.YES) {
+                            var video: NNDDVideo = new NNDDVideo(mUrl, videoName);
+                            addDownloadListForSearch(video, index);
+                        }
+                    },
+                    null,
+                    Alert.NO
+                );
             } else {
                 video = new NNDDVideo(mUrl, videoName);
                 addDownloadListForSearch(video, index);
@@ -3375,13 +3504,21 @@ private function addDownloadListForDownloadedList(event: Event): void {
     }
 
     if (videoArray.length > 0) {
-        Alert.show("動画をダウンロードし直します。よろしいですか？(DLリストに追加します。)", Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-            if (event.detail == Alert.YES) {
-                for each(var video: NNDDVideo in videoArray) {
-                    addDownloadList(video, -1);
+        Alert.show(
+            "動画をダウンロードし直します。よろしいですか？(DLリストに追加します。)",
+            Message.M_MESSAGE,
+            (Alert.YES | Alert.NO),
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.YES) {
+                    for each(var video: NNDDVideo in videoArray) {
+                        addDownloadList(video, -1);
+                    }
                 }
-            }
-        }, null, Alert.YES);
+            },
+            null,
+            Alert.YES
+        );
     }
 
     if (missVideoPath.length > 0) {
@@ -3424,38 +3561,46 @@ private function addDownloadList(video: NNDDVideo, index: int = -1): void {
     isExistsInDLList = downloadManager.isExists(video);
 
     if (isExistsInDLList) {
-        Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST + "\n\n" + video.getVideoNameWithVideoID(), Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-            if (event.detail == Alert.YES) {
-                downloadManager.add(video, isAutoDownload);
-                if (index != -1 && rankingProvider.length > index) {
-                    rankingProvider.setItemAt({
-                        dataGridColumn_preview: rankingProvider[index].dataGridColumn_preview,
-                        dataGridColumn_ranking: rankingProvider[index].dataGridColumn_ranking,
-                        dataGridColumn_videoName: rankingProvider[index].dataGridColumn_videoName,
-                        dataGridColumn_videoInfo: rankingProvider[index].dataGridColumn_videoInfo,
-                        dataGridColumn_condition: "DLリストに追加済",
-                        dataGridColumn_downloadedItemUrl: rankingProvider[index].dataGridColumn_downloadedItemUrl,
-                        dataGridColumn_nicoVideoUrl: rankingProvider[index].dataGridColumn_nicoVideoUrl
-                    }, index);
+        Alert.show(
+            Message.M_ALREADY_DLLIST_VIDEO_EXIST + "\n\n" + video.getVideoNameWithVideoID(),
+            Message.M_MESSAGE,
+            (Alert.YES | Alert.NO),
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.YES) {
+                    downloadManager.add(video, isAutoDownload);
+                    if (index != -1 && rankingProvider.length > index) {
+                        rankingProvider.setItemAt({
+                                                      dataGridColumn_preview: rankingProvider[index].dataGridColumn_preview,
+                                                      dataGridColumn_ranking: rankingProvider[index].dataGridColumn_ranking,
+                                                      dataGridColumn_videoName: rankingProvider[index].dataGridColumn_videoName,
+                                                      dataGridColumn_videoInfo: rankingProvider[index].dataGridColumn_videoInfo,
+                                                      dataGridColumn_condition: "DLリストに追加済",
+                                                      dataGridColumn_downloadedItemUrl: rankingProvider[index].dataGridColumn_downloadedItemUrl,
+                                                      dataGridColumn_nicoVideoUrl: rankingProvider[index].dataGridColumn_nicoVideoUrl
+                                                  }, index);
+                    }
+                    scrollToLastAddedDownloadItem();
+                    updateDownloadStatusBar();
                 }
-                scrollToLastAddedDownloadItem();
-                updateDownloadStatusBar();
-            }
-        }, null, Alert.NO);
+            },
+            null,
+            Alert.NO
+        );
     } else {
         if (!downloadManager.add(video, isAutoDownload)) {
             showCannotAddDlList();
         } else {
             if (index != -1 && rankingProvider.length > index) {
                 rankingProvider.setItemAt({
-                    dataGridColumn_preview: rankingProvider[index].dataGridColumn_preview,
-                    dataGridColumn_ranking: rankingProvider[index].dataGridColumn_ranking,
-                    dataGridColumn_videoName: rankingProvider[index].dataGridColumn_videoName,
-                    dataGridColumn_videoInfo: rankingProvider[index].dataGridColumn_videoInfo,
-                    dataGridColumn_condition: "DLリストに追加済",
-                    dataGridColumn_downloadedItemUrl: rankingProvider[index].dataGridColumn_downloadedItemUrl,
-                    dataGridColumn_nicoVideoUrl: rankingProvider[index].dataGridColumn_nicoVideoUrl
-                }, index);
+                                              dataGridColumn_preview: rankingProvider[index].dataGridColumn_preview,
+                                              dataGridColumn_ranking: rankingProvider[index].dataGridColumn_ranking,
+                                              dataGridColumn_videoName: rankingProvider[index].dataGridColumn_videoName,
+                                              dataGridColumn_videoInfo: rankingProvider[index].dataGridColumn_videoInfo,
+                                              dataGridColumn_condition: "DLリストに追加済",
+                                              dataGridColumn_downloadedItemUrl: rankingProvider[index].dataGridColumn_downloadedItemUrl,
+                                              dataGridColumn_nicoVideoUrl: rankingProvider[index].dataGridColumn_nicoVideoUrl
+                                          }, index);
             }
             scrollToLastAddedDownloadItem();
         }
@@ -3477,16 +3622,24 @@ public function addDownloadListForInfoView(video: NNDDVideo): void {
 
         if (isExistsInDLList) {
             this.activate();
-            Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                if (event.detail == Alert.YES) {
-                    if (!downloadManager.add(video, isAutoDownload)) {
-                        showCannotAddDlList();
-                    } else {
-                        scrollToLastAddedDownloadItem();
+            Alert.show(
+                Message.M_ALREADY_DLLIST_VIDEO_EXIST,
+                Message.M_MESSAGE,
+                (Alert.YES | Alert.NO),
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.YES) {
+                        if (!downloadManager.add(video, isAutoDownload)) {
+                            showCannotAddDlList();
+                        } else {
+                            scrollToLastAddedDownloadItem();
+                        }
+                        updateDownloadStatusBar();
                     }
-                    updateDownloadStatusBar();
-                }
-            }, null, Alert.NO);
+                },
+                null,
+                Alert.NO
+            );
         } else {
             if (!downloadManager.add(video, isAutoDownload)) {
                 showCannotAddDlList();
@@ -3509,37 +3662,45 @@ public function addDownloadListForSearch(video: NNDDVideo, index: int = -1): voi
     isExistsInDLList = downloadManager.isExists(video);
 
     if (isExistsInDLList) {
-        Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-            if (event.detail == Alert.YES) {
-                downloadManager.add(video, isAutoDownload);
-                if (index != -1 && searchProvider.length > index) {
-                    searchProvider.setItemAt({
-                        dataGridColumn_preview: searchProvider[index].dataGridColumn_preview,
-                        dataGridColumn_ranking: searchProvider[index].dataGridColumn_ranking,
-                        dataGridColumn_videoName: searchProvider[index].dataGridColumn_videoName,
-                        dataGridColumn_videoInfo: searchProvider[index].dataGridColumn_videoInfo,
-                        dataGridColumn_condition: "DLリストに追加済",
-                        dataGridColumn_downloadedItemUrl: searchProvider[index].dataGridColumn_downloadedItemUrl,
-                        dataGridColumn_nicoVideoUrl: searchProvider[index].dataGridColumn_nicoVideoUrl
-                    }, index);
+        Alert.show(
+            Message.M_ALREADY_DLLIST_VIDEO_EXIST,
+            Message.M_MESSAGE,
+            (Alert.YES | Alert.NO),
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.YES) {
+                    downloadManager.add(video, isAutoDownload);
+                    if (index != -1 && searchProvider.length > index) {
+                        searchProvider.setItemAt({
+                                                     dataGridColumn_preview: searchProvider[index].dataGridColumn_preview,
+                                                     dataGridColumn_ranking: searchProvider[index].dataGridColumn_ranking,
+                                                     dataGridColumn_videoName: searchProvider[index].dataGridColumn_videoName,
+                                                     dataGridColumn_videoInfo: searchProvider[index].dataGridColumn_videoInfo,
+                                                     dataGridColumn_condition: "DLリストに追加済",
+                                                     dataGridColumn_downloadedItemUrl: searchProvider[index].dataGridColumn_downloadedItemUrl,
+                                                     dataGridColumn_nicoVideoUrl: searchProvider[index].dataGridColumn_nicoVideoUrl
+                                                 }, index);
+                    }
+                    scrollToLastAddedDownloadItem();
                 }
-                scrollToLastAddedDownloadItem();
-            }
-        }, null, Alert.NO);
+            },
+            null,
+            Alert.NO
+        );
     } else {
         if (!downloadManager.add(video, isAutoDownload)) {
             showCannotAddDlList();
         } else {
             if (index != -1 && searchProvider.length > index) {
                 searchProvider.setItemAt({
-                    dataGridColumn_preview: searchProvider[index].dataGridColumn_preview,
-                    dataGridColumn_ranking: searchProvider[index].dataGridColumn_ranking,
-                    dataGridColumn_videoName: searchProvider[index].dataGridColumn_videoName,
-                    dataGridColumn_videoInfo: searchProvider[index].dataGridColumn_videoInfo,
-                    dataGridColumn_condition: "DLリストに追加済",
-                    dataGridColumn_downloadedItemUrl: searchProvider[index].dataGridColumn_downloadedItemUrl,
-                    dataGridColumn_nicoVideoUrl: searchProvider[index].dataGridColumn_nicoVideoUrl
-                }, index);
+                                             dataGridColumn_preview: searchProvider[index].dataGridColumn_preview,
+                                             dataGridColumn_ranking: searchProvider[index].dataGridColumn_ranking,
+                                             dataGridColumn_videoName: searchProvider[index].dataGridColumn_videoName,
+                                             dataGridColumn_videoInfo: searchProvider[index].dataGridColumn_videoInfo,
+                                             dataGridColumn_condition: "DLリストに追加済",
+                                             dataGridColumn_downloadedItemUrl: searchProvider[index].dataGridColumn_downloadedItemUrl,
+                                             dataGridColumn_nicoVideoUrl: searchProvider[index].dataGridColumn_nicoVideoUrl
+                                         }, index);
             }
             scrollToLastAddedDownloadItem();
         }
@@ -3646,9 +3807,13 @@ private function rankingRenewButtonClicked(): void {
                 loading.start(360 / 12);
 
                 rankingLoader = new RankingLoader();
-                rankingLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                    logManager.addLog("\t応答を取得, url=" + decodeURIComponent(event.responseURL) + ", status=" + event.status);
-                });
+                rankingLoader.addEventListener(
+                    HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                    function (event: HTTPStatusEvent): void {
+                        logManager.addLog("\t応答を取得, url=" + decodeURIComponent(event.responseURL) + ", status=" +
+                                          event.status);
+                    }
+                );
                 rankingLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event: IOErrorEvent): void {
                     setEnableRadioButtons(true);
                     rankingRenewButton.label = Message.L_RENEW;
@@ -3664,7 +3829,10 @@ private function rankingRenewButtonClicked(): void {
                     dataGrid_ranking.enabled = true;
 
                     var rankingListBuilder: RankingListBuilder = new RankingListBuilder();
-                    rankingProvider = rankingListBuilder.getRankingArrayCollection(new XML((event.currentTarget as RankingLoader).data), rankingPageIndex);
+                    rankingProvider = rankingListBuilder.getRankingArrayCollection(
+                        new XML((event.currentTarget as RankingLoader).data),
+                        rankingPageIndex
+                    );
 
                     if (period != 5) {
                         categoryList = RankingListBuilder.getCategoryList();
@@ -3705,8 +3873,10 @@ private function rankingRenewButtonClicked(): void {
                 setEnableRadioButtons(true);
                 rankingRenewButton.label = Message.L_RENEW;
                 list_categoryList.enabled = true;
-                Alert.show("ランキング更新中に想定外の例外が発生しました。\n" + error + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" + category, "エラー");
-                logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n" + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" + category + "\n" + error.getStackTrace());
+                Alert.show("ランキング更新中に想定外の例外が発生しました。\n" + error + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" +
+                           category, "エラー");
+                logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n" + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" +
+                                  category + "\n" + error.getStackTrace());
                 if (loading != null) {
                     loading.stop();
                     loading.remove();
@@ -3732,8 +3902,7 @@ private function rankingRenewButtonClicked(): void {
         } else {
             Alert.show(Message.M_ALREADY_UPDATE_PROCESS_EXIST, Message.M_MESSAGE);
         }
-    }
-    else if (rankingRenewButton.label == Message.L_CANCEL) {
+    } else if (rankingRenewButton.label == Message.L_CANCEL) {
         try {
             rankingLoader.close();
         } catch (e: Error) {
@@ -3832,8 +4001,7 @@ public function playMovie(url: String, startIndex: int, playList: PlayList = nul
                 var playerController: PlayerController = null;
                 if (isNewPlayer) {
                     playerController = PlayerManager.instance.getNewPlayer();
-                }
-                else {
+                } else {
                     playerController = PlayerManager.instance.getLastPlayerController();
                 }
 
@@ -3889,7 +4057,8 @@ private function playNative(url: String): void {
  */
 private function newCommentDownloadButtonClicked(isCommentOnly: Boolean = false): void {
     if (newCommentDownloadButton.enabled == true && newCommentOnlyDownloadButton.enabled == true) {
-        if (this.newCommentDownloadButton.label != Message.L_CANCEL && this.newCommentOnlyDownloadButton.label != Message.L_CANCEL) {
+        if (this.newCommentDownloadButton.label != Message.L_CANCEL && this.newCommentOnlyDownloadButton.label !=
+            Message.L_CANCEL) {
 
             if (this.dataGrid_downloaded.selectedIndex >= 0) {
 
@@ -3939,7 +4108,8 @@ private function newCommentDownloadButtonClicked(isCommentOnly: Boolean = false)
                         var videoURL: String = "http://www.nicovideo.jp/watch/" + videoID;
                         var index: int = this.dataGrid_downloaded.selectedIndex;
 
-                        if ((filePath.substring(filePath.indexOf(this.libraryManager.libraryDir.url) + this.libraryManager.libraryDir.url.length + 1)).indexOf("/") != -1) {
+                        if ((filePath.substring(filePath.indexOf(this.libraryManager.libraryDir.url) +
+                                                this.libraryManager.libraryDir.url.length + 1)).indexOf("/") != -1) {
                             var rankingListName: String = filePath.substring(0, filePath.lastIndexOf("/"));
                             rankingListName = rankingListName.substring(rankingListName.lastIndexOf("/") + 1);
                         }
@@ -3951,127 +4121,151 @@ private function newCommentDownloadButtonClicked(isCommentOnly: Boolean = false)
                         }
 
                         renewDownloadManager = new RenewDownloadManager(downloadedProvider, logManager);
-                        renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_FAIL, function (event: Event): void {
-                            newCommentOnlyDownloadButton.label = "コメント";
-                            newCommentDownloadButton.label = "動画以外";
+                        renewDownloadManager.addEventListener(
+                            RenewDownloadManager.PROCCESS_FAIL,
+                            function (event: Event): void {
+                                newCommentOnlyDownloadButton.label = "コメント";
+                                newCommentDownloadButton.label = "動画以外";
 
-                            newCommentOnlyDownloadButton.enabled = true;
-                            newCommentDownloadButton.enabled = true;
+                                newCommentOnlyDownloadButton.enabled = true;
+                                newCommentDownloadButton.enabled = true;
 
-                            renewDownloadManager = null;
+                                renewDownloadManager = null;
 
-                            dataGrid_downloaded.invalidateList();
-                            dataGrid_downloaded.validateNow();
-                        });
-                        renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_CANCEL, function (event: Event): void {
-                            newCommentOnlyDownloadButton.label = "コメント";
-                            newCommentDownloadButton.label = "動画以外";
-
-                            newCommentOnlyDownloadButton.enabled = true;
-                            newCommentDownloadButton.enabled = true;
-
-                            renewDownloadManager = null;
-
-                            dataGrid_downloaded.invalidateList();
-                            dataGrid_downloaded.validateNow();
-                        });
-                        renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_STATUS_UPDATE, function (event: Event): void {
-                            dataGrid_downloaded.invalidateList();
-                            dataGrid_downloaded.validateNow();
-                        });
-                        renewDownloadManager.addEventListener(RenewDownloadManager.PROCCESS_COMPLETE, function (event: Event): void {
-                            filePath = decodeURIComponent(renewDownloadManager.savedVideoFile.url);
-                            var video: NNDDVideo = libraryManager.remove(LibraryUtil.getVideoKey(filePath), false);
-                            if (video == null) {
-                                if (!new File(filePath).exists) {
-                                    Alert.show("ファイルが見つかりませんでした。\n" + new File(filePath).nativePath, Message.M_ERROR);
-
-                                    newCommentOnlyDownloadButton.label = "コメント";
-                                    newCommentDownloadButton.label = "動画以外";
-
-                                    newCommentOnlyDownloadButton.enabled = true;
-                                    newCommentDownloadButton.enabled = true;
-
-                                    renewDownloadManager = null;
-
-                                    dataGrid_downloaded.invalidateList();
-                                    dataGrid_downloaded.validateNow();
-
-                                    return;
-                                }
-                                video = new LocalVideoInfoLoader().loadInfo(filePath);
-                                video.modificationDate = new File(filePath).modificationDate;
-                                video.creationDate = new File(filePath).creationDate;
-                            } else {
-                                filePath = video.file.url;
-                                var tempVideo: NNDDVideo = new LocalVideoInfoLoader().loadInfo(filePath);
-                                video.time = tempVideo.time;
-                                video.pubDate = tempVideo.pubDate;
+                                dataGrid_downloaded.invalidateList();
+                                dataGrid_downloaded.validateNow();
                             }
-                            var thumbUrl: String = (event.currentTarget as RenewDownloadManager).localThumbUri;
-                            var isLocal: Boolean = false;
-                            try {
-                                //すでにローカルのファイルが設定されてるなら再設定しない。
-                                var file: File = new File(video.thumbUrl);
-                                if (file.exists) {
-                                    isLocal = true;
-                                }
-                            } catch (e: Error) {
-                                trace(e);
-                            }
+                        );
+                        renewDownloadManager.addEventListener(
+                            RenewDownloadManager.PROCCESS_CANCEL,
+                            function (event: Event): void {
+                                newCommentOnlyDownloadButton.label = "コメント";
+                                newCommentDownloadButton.label = "動画以外";
 
-                            //thumbUrlのURLがローカルで無ければ無条件で上書き
-                            if (!isLocal) {
-                                if (thumbUrl != null) {
-                                    //新しく取得したthumbUrlを設定
-                                    video.thumbUrl = thumbUrl;
-                                } else if (video.thumbUrl == null || video.thumbUrl == "") {
-                                    //thumbUrlが取れない==動画は削除済
-                                    var videoId: String = PathMaker.getVideoID(this._videoID);
-                                    if (videoId != null) {
-                                        video.thumbUrl = PathMaker.getThumbImgUrl(videoId);
-                                    } else {
-                                        video.thumbUrl = "";
+                                newCommentOnlyDownloadButton.enabled = true;
+                                newCommentDownloadButton.enabled = true;
+
+                                renewDownloadManager = null;
+
+                                dataGrid_downloaded.invalidateList();
+                                dataGrid_downloaded.validateNow();
+                            }
+                        );
+                        renewDownloadManager.addEventListener(
+                            RenewDownloadManager.PROCCESS_STATUS_UPDATE,
+                            function (event: Event): void {
+                                dataGrid_downloaded.invalidateList();
+                                dataGrid_downloaded.validateNow();
+                            }
+                        );
+                        renewDownloadManager.addEventListener(
+                            RenewDownloadManager.PROCCESS_COMPLETE,
+                            function (event: Event): void {
+                                filePath = decodeURIComponent(renewDownloadManager.savedVideoFile.url);
+                                var video: NNDDVideo = libraryManager.remove(
+                                    LibraryUtil.getVideoKey(filePath),
+                                    false
+                                );
+                                if (video == null) {
+                                    if (!new File(filePath).exists) {
+                                        Alert.show(
+                                            "ファイルが見つかりませんでした。\n" + new File(filePath).nativePath,
+                                            Message.M_ERROR
+                                        );
+
+                                        newCommentOnlyDownloadButton.label = "コメント";
+                                        newCommentDownloadButton.label = "動画以外";
+
+                                        newCommentOnlyDownloadButton.enabled = true;
+                                        newCommentDownloadButton.enabled = true;
+
+                                        renewDownloadManager = null;
+
+                                        dataGrid_downloaded.invalidateList();
+                                        dataGrid_downloaded.validateNow();
+
+                                        return;
+                                    }
+                                    video = new LocalVideoInfoLoader().loadInfo(filePath);
+                                    video.modificationDate = new File(filePath).modificationDate;
+                                    video.creationDate = new File(filePath).creationDate;
+                                } else {
+                                    filePath = video.file.url;
+                                    var tempVideo: NNDDVideo = new LocalVideoInfoLoader().loadInfo(filePath);
+                                    video.time = tempVideo.time;
+                                    video.pubDate = tempVideo.pubDate;
+                                }
+                                var thumbUrl: String = (event.currentTarget as RenewDownloadManager).localThumbUri;
+                                var isLocal: Boolean = false;
+                                try {
+                                    //すでにローカルのファイルが設定されてるなら再設定しない。
+                                    var file: File = new File(video.thumbUrl);
+                                    if (file.exists) {
+                                        isLocal = true;
+                                    }
+                                } catch (e: Error) {
+                                    trace(e);
+                                }
+
+                                //thumbUrlのURLがローカルで無ければ無条件で上書き
+                                if (!isLocal) {
+                                    if (thumbUrl != null) {
+                                        //新しく取得したthumbUrlを設定
+                                        video.thumbUrl = thumbUrl;
+                                    } else if (video.thumbUrl == null || video.thumbUrl == "") {
+                                        //thumbUrlが取れない==動画は削除済
+                                        var videoId: String = PathMaker.getVideoID(this._videoID);
+                                        if (videoId != null) {
+                                            video.thumbUrl = PathMaker.getThumbImgUrl(videoId);
+                                        } else {
+                                            video.thumbUrl = "";
+                                        }
                                     }
                                 }
+
+                                libraryManager.add(video, true);
+
+                                newCommentOnlyDownloadButton.label = "コメント";
+                                newCommentDownloadButton.label = "動画以外";
+
+                                newCommentOnlyDownloadButton.enabled = true;
+                                newCommentDownloadButton.enabled = true;
+
+                                renewDownloadManager = null;
+
+                                dataGrid_downloaded.invalidateList();
+                                dataGrid_downloaded.validateNow();
                             }
-
-                            libraryManager.add(video, true);
-
-                            newCommentOnlyDownloadButton.label = "コメント";
-                            newCommentDownloadButton.label = "動画以外";
-
-                            newCommentOnlyDownloadButton.enabled = true;
-                            newCommentDownloadButton.enabled = true;
-
-                            renewDownloadManager = null;
-
-                            dataGrid_downloaded.invalidateList();
-                            dataGrid_downloaded.validateNow();
-                        });
+                        );
 
                         if (isCommentOnly) {
-                            renewDownloadManager.renewForCommentOnly(
-                                    UserManager.instance.user,
-                                    UserManager.instance.password,
-                                    PathMaker.getVideoID(filePath),
-                                    PathMaker.getVideoName(filePath),
-                                    new File(filePath.substring(0, filePath.lastIndexOf("/") + 1)),
-                                    this.isAppendComment,
-                                    null,
-                                    this.saveCommentMaxCount,
-                                    this.useOldTypeCommentGet);
+                            renewDownloadManager.renewForCommentOnly(UserManager.instance.user,
+                                                                     UserManager.instance.password,
+                                                                     PathMaker.getVideoID(filePath),
+                                                                     PathMaker.getVideoName(filePath),
+                                                                     new File(filePath.substring(
+                                                                         0,
+                                                                         filePath.lastIndexOf("/") + 1
+                                                                     )),
+                                                                     this.isAppendComment,
+                                                                     null,
+                                                                     this.saveCommentMaxCount,
+                                                                     this.useOldTypeCommentGet
+                            );
                         } else {
-                            renewDownloadManager.renewForOtherVideo(
-                                    UserManager.instance.user,
-                                    UserManager.instance.password,
-                                    PathMaker.getVideoID(filePath),
-                                    PathMaker.getVideoName(filePath),
-                                    new File(filePath.substring(0, filePath.lastIndexOf("/") + 1)),
-                                    this.isAppendComment,
-                                    null,
-                                    this.saveCommentMaxCount,
-                                    this.useOldTypeCommentGet);
+                            renewDownloadManager.renewForOtherVideo(UserManager.instance.user,
+                                                                    UserManager.instance.password,
+                                                                    PathMaker.getVideoID(filePath),
+                                                                    PathMaker.getVideoName(filePath),
+                                                                    new File(filePath.substring(
+                                                                        0,
+                                                                        filePath.lastIndexOf("/") + 1
+                                                                    )),
+                                                                    this.isAppendComment,
+                                                                    null,
+                                                                    this.saveCommentMaxCount,
+                                                                    this.useOldTypeCommentGet
+                            );
                         }
 
                     } else {
@@ -4143,7 +4337,10 @@ private function searchTagListTextInputChange(): void {
             } else {
 
                 if (playListManager.selectedPlayListIndex > 0) {
-                    tagManager.tagRenewOnPlayList(tileList_tag, playListManager.getNNDDVideoListByIndex(playListManager.selectedPlayListIndex));
+                    tagManager.tagRenewOnPlayList(
+                        tileList_tag,
+                        playListManager.getNNDDVideoListByIndex(playListManager.selectedPlayListIndex)
+                    );
                 } else {
                     tagManager.tagRenewOnPlayList(tileList_tag, new Vector.<NNDDVideo>());
                 }
@@ -4243,7 +4440,8 @@ private function updateLibrary(index: int): void {
             searchTagListTextInputChange();
         }
         (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort = new Sort();
-        (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort.fields = [new SortField(this.libraryDataGridSortFieldName, false, this.libraryDataGridSortDescending)];
+        (this.dataGrid_downloaded.dataProvider as ArrayCollection).sort.fields =
+            [new SortField(this.libraryDataGridSortFieldName, false, this.libraryDataGridSortDescending)];
         (this.dataGrid_downloaded.dataProvider as ArrayCollection).refresh();
 
         logManager.addLog("***ライブラリ表示完了***");
@@ -4308,7 +4506,10 @@ private function playListNameEdit(): void {
 
         trace(newUrl);
 
-        playListManager.reNamePlayList(selectedIndex, decodeURIComponent(newUrl.substring(newUrl.lastIndexOf("/") + 1)));
+        playListManager.reNamePlayList(
+            selectedIndex,
+            decodeURIComponent(newUrl.substring(newUrl.lastIndexOf("/") + 1))
+        );
 
         updatePlayListSummery();
     });
@@ -4376,23 +4577,31 @@ private function deleteDirectory(): void {
     var tempFile: File = selectedItem.file;
 
     if (tempFile != null && tree_library.selectedIndex > -1 && !(tempFile.url == libraryManager.libraryDir.url)) {
-        Alert.show("フォルダ内のすべての項目も同時に削除されます。よろしいですか？", "警告", Alert.YES | Alert.NO, null, function (event: CloseEvent): void {
-            if (event.detail == Alert.YES) {
-                try {
+        Alert.show(
+            "フォルダ内のすべての項目も同時に削除されます。よろしいですか？",
+            "警告",
+            Alert.YES | Alert.NO,
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.YES) {
+                    try {
 
-                    var url: String = decodeURIComponent(tempFile.url);
-                    var file: File = new File(url);
-                    file.moveToTrash();
-                    if (selectedItem != null) {
-                        updateLibraryTree(selectedItem.parent);
+                        var url: String = decodeURIComponent(tempFile.url);
+                        var file: File = new File(url);
+                        file.moveToTrash();
+                        if (selectedItem != null) {
+                            updateLibraryTree(selectedItem.parent);
+                        }
+                    } catch (e: Error) {
+                        Alert.show("フォルダの削除に失敗しました。" + e, "エラー");
+                        logManager.addLog("フォルダの削除に失敗しました:" + e.getStackTrace());
                     }
-                } catch (e: Error) {
-                    Alert.show("フォルダの削除に失敗しました。" + e, "エラー");
-                    logManager.addLog("フォルダの削除に失敗しました:" + e.getStackTrace());
-                }
 
-            }
-        }, null, Alert.NO);
+                }
+            },
+            null,
+            Alert.NO
+        );
 
     } else if (tempFile.nativePath == libraryManager.libraryDir.nativePath) {
         Alert.show("ライブラリフォルダそのものを消す事は出来ません。", Message.M_MESSAGE, Alert.OK);
@@ -4707,7 +4916,10 @@ private function saveStore(): void {
         }
 
         if (dataGrid_ranking != null) {
-            DataGridColumnWidthUtil.save(dataGrid_ranking, new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition"));
+            DataGridColumnWidthUtil.save(
+                dataGrid_ranking,
+                new Vector.<String>("dataGridColumn_ranking", "dataGridColumn_condition")
+            );
         }
 
         if (dataGrid_search != null) {
@@ -4765,7 +4977,8 @@ private function saveStore(): void {
         ConfigManager.getInstance().save();
 
     } catch (error: Error) {
-        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_NNDD_MAIN_WINDOW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_NNDD_MAIN_WINDOW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
         trace(error.getStackTrace());
     }
 
@@ -4952,7 +5165,10 @@ private function saveSearchHistory(searchHistoryProvider: Array): void {
         if (index >= searchHistoryProvider.length) {
 
         } else {
-            ConfigManager.getInstance().setItem("searchHistory" + index, encodeURIComponent(searchHistoryProvider[index]));
+            ConfigManager.getInstance().setItem(
+                "searchHistory" + index,
+                encodeURIComponent(searchHistoryProvider[index])
+            );
         }
     }
 
@@ -5005,43 +5221,57 @@ private function searchNicoButtonClicked(pageCount: int = 1): void {
                 button_SearchNico.label = Message.L_CANCEL;
 
                 nnddSearchListRenewer = new NNDDSearchListRenewer();
-                nnddSearchListRenewer.addEventListener(NNDDSearchListRenewer.RENEW_SUCCESS, function (event: Event): void {
-                    button_SearchNico.label = "検索";
+                nnddSearchListRenewer.addEventListener(
+                    NNDDSearchListRenewer.RENEW_SUCCESS,
+                    function (event: Event): void {
+                        button_SearchNico.label = "検索";
 
-                    var analyzer: SearchResultAnalyzer = nnddSearchListRenewer.result;
-                    var pageCount: int = analyzer.totalCount / 32;
+                        var analyzer: SearchResultAnalyzer = nnddSearchListRenewer.result;
+                        var pageCount: int = analyzer.totalCount / 32;
 
-                    if (analyzer.totalCount % 32 != 0) {
-                        pageCount++;
+                        if (analyzer.totalCount % 32 != 0) {
+                            pageCount++;
+                        }
+
+                        searchProvider = nnddSearchListRenewer.createSearchList();
+
+                        //リンクリストを更新
+                        searchPageCountProvider.splice(
+                            0,
+                            searchPageCountProvider.length
+                        );
+                        searchPageCountProvider.push(searchPageIndex);
+                        for (var i: int = 1; i <= pageCount; i++) {
+                            searchPageCountProvider.push(i);
+                        }
+
+                        var combobox_index: int = searchPageCountProvider.indexOf(searchPageIndex);
+                        combobox_pageCounter_search.selectedIndex = combobox_index;
+
+                        label_totalCount.text = "(合計: " + pageCount + "ページ )";
+                        logManager.addLog("検索結果を更新:" + searchWord);
+
+                        nnddSearchListRenewer = null;
+                        loading.stop();
+                        loading.remove();
+                        loading = null;
                     }
-
-                    searchProvider = nnddSearchListRenewer.createSearchList();
-
-                    //リンクリストを更新
-                    searchPageCountProvider.splice(0, searchPageCountProvider.length);
-                    searchPageCountProvider.push(searchPageIndex);
-                    for (var i: int = 1; i <= pageCount; i++) {
-                        searchPageCountProvider.push(i);
-                    }
-
-                    var combobox_index: int = searchPageCountProvider.indexOf(searchPageIndex);
-                    combobox_pageCounter_search.selectedIndex = combobox_index;
-
-                    label_totalCount.text = "(合計: " + pageCount + "ページ )";
-                    logManager.addLog("検索結果を更新:" + searchWord);
-
-                    nnddSearchListRenewer = null;
-                    loading.stop();
-                    loading.remove();
-                    loading = null;
-                });
+                );
 
                 var nnddSearchSortType: NNDDSearchSortType = SearchSortString.convertSortTypeFromIndex(comboBox_sortType.selectedIndex);
                 var searchType: SearchType = SearchType.SEARCH;
                 if (combobox_serchType.selectedIndex == 1) {
                     searchType = SearchType.TAG;
                 }
-                nnddSearchListRenewer.renew(UserManager.instance.user, UserManager.instance.password, searchWord, searchType, nnddSearchSortType.sort, nnddSearchSortType.order, pageCount);
+                nnddSearchListRenewer.renew(
+                    UserManager.instance.user,
+                    UserManager.instance.password,
+                    searchWord,
+                    searchType,
+                    nnddSearchSortType.sort,
+                    nnddSearchSortType.order,
+                    pageCount
+                );
             } catch (error: Error) {
                 loading.stop();
                 loading.remove();
@@ -5110,85 +5340,88 @@ private function useDownloadDirCheckBoxChenged(): void {
 
 private function useAppSystemDirChanged(event: Event): void {
 
-    Alert.show("この変更を行った後、NNDDを起動しなおす必要があります。よろしいですか？", "注意", Alert.OK | Alert.CANCEL, null, function (event: CloseEvent): void {
-        if (event.detail != Alert.OK) {
-            checkBox_useLibraryDirForSystemDir.selected = !checkBox_useLibraryDirForSystemDir.selected;
-            return;
-        }
+    Alert.show(
+        "この変更を行った後、NNDDを起動しなおす必要があります。よろしいですか？",
+        "注意",
+        Alert.OK | Alert.CANCEL,
+        null,
+        function (event: CloseEvent): void {
+            if (event.detail != Alert.OK) {
+                checkBox_useLibraryDirForSystemDir.selected = !checkBox_useLibraryDirForSystemDir.selected;
+                return;
+            }
 
-        var useAppStorageDir: Boolean = !checkBox_useLibraryDirForSystemDir.selected;
+            var useAppStorageDir: Boolean = !checkBox_useLibraryDirForSystemDir.selected;
 
-        if (useAppStorageDir) {
-            // ApplicationStorageDirectoryを使うように変更
+            if (useAppStorageDir) {
+                // ApplicationStorageDirectoryを使うように変更
 
-            var newSystemDir: File = File.applicationStorageDirectory.resolvePath("system/");
+                var newSystemDir: File = File.applicationStorageDirectory.resolvePath("system/");
 
-            if (newSystemDir.exists) {
-                // フォルダがすでにある
+                if (newSystemDir.exists) {
+                    // フォルダがすでにある
 
-                if (libraryManager.systemFileDir.modificationDate.time > newSystemDir.modificationDate.time) {
+                    if (libraryManager.systemFileDir.modificationDate.time > newSystemDir.modificationDate.time) {
 
-                    //動画保存先のシステム情報のほうが新しいならバックアップ
+                        //動画保存先のシステム情報のほうが新しいならバックアップ
 
-                    var newSystemDirBackFile: File = File.applicationStorageDirectory.resolvePath("system_back/");
-                    newSystemDir.moveTo(newSystemDirBackFile, true);
+                        var newSystemDirBackFile: File = File.applicationStorageDirectory.resolvePath("system_back/");
+                        newSystemDir.moveTo(newSystemDirBackFile, true);
+
+                    }
+
+                    // 上書きでコピー
+                    libraryManager.systemFileDir.copyTo(newSystemDir, true);
+
+
+                } else {
+                    // フォルダがない
+
+                    // 現状のシステム情報を全部コピー
+                    libraryManager.systemFileDir.copyTo(newSystemDir, true);
+                }
+
+                ConfigManager.getInstance().setItem("useAppDirSystemFile", true);
+
+            } else {
+                // 動画の保存先ディレクトリを使うように変更
+
+                var librarySystemDir: File = libraryManager.libraryDir.resolvePath("system/");
+                if (librarySystemDir.exists) {
+
+                    // フォルダがすでにある
+                    if (libraryManager.systemFileDir.modificationDate.time < librarySystemDir.modificationDate.time) {
+
+                        //ApplicationStraogeDirの情報のほうが新しいなら、動画保存先のsystemをバックアップ
+                        newSystemDirBackFile = File.applicationStorageDirectory.resolvePath("system_back/");
+                        librarySystemDir.copyTo(newSystemDirBackFile, true);
+
+
+                    }
+
+                    // 上書きでコピー
+                    libraryManager.systemFileDir.copyTo(librarySystemDir, true);
+
+                } else {
+
+                    //　フォルダがない
+
+                    // 現状のシステム情報を全部コピー
+                    libraryManager.systemFileDir.copyTo(librarySystemDir, true);
 
                 }
 
-                // 上書きでコピー
-                libraryManager.systemFileDir.copyTo(newSystemDir, true);
-
+                ConfigManager.getInstance().setItem("useAppDirSystemFile", false);
 
             }
-            else {
-                // フォルダがない
 
-                // 現状のシステム情報を全部コピー
-                libraryManager.systemFileDir.copyTo(newSystemDir, true);
-            }
+            // 設定を更新したのでシステム終了。
+            downloadManager.stop();
 
-            ConfigManager.getInstance().setItem("useAppDirSystemFile", true);
+            exitButtonClicked();
 
         }
-        else {
-            // 動画の保存先ディレクトリを使うように変更
-
-            var librarySystemDir: File = libraryManager.libraryDir.resolvePath("system/");
-            if (librarySystemDir.exists) {
-
-                // フォルダがすでにある
-                if (libraryManager.systemFileDir.modificationDate.time < librarySystemDir.modificationDate.time) {
-
-                    //ApplicationStraogeDirの情報のほうが新しいなら、動画保存先のsystemをバックアップ
-                    newSystemDirBackFile = File.applicationStorageDirectory.resolvePath("system_back/");
-                    librarySystemDir.copyTo(newSystemDirBackFile, true);
-
-
-                }
-
-                // 上書きでコピー
-                libraryManager.systemFileDir.copyTo(librarySystemDir, true);
-
-            }
-            else {
-
-                //　フォルダがない
-
-                // 現状のシステム情報を全部コピー
-                libraryManager.systemFileDir.copyTo(librarySystemDir, true);
-
-            }
-
-            ConfigManager.getInstance().setItem("useAppDirSystemFile", false);
-
-        }
-
-        // 設定を更新したのでシステム終了。
-        downloadManager.stop();
-
-        exitButtonClicked();
-
-    });
+    );
 
 }
 
@@ -5199,8 +5432,7 @@ private function disEnableAutoExitCheckBoxChanged(event: Event): void {
     if (isDisEnableAutoExit && (NativeApplication.supportsSystemTrayIcon || NativeApplication.supportsDockIcon)) {
         // 自動的に終了しない
         checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを閉じる";
-    }
-    else {
+    } else {
         // 自動的に終了する
         checkBox_CloseNNDDWindowWhenLogin.label = "ログインが完了したらこのウィンドウを最小化する";
     }
@@ -5444,7 +5676,10 @@ public function updatePlayList(index: int): void {
     dataGrid_downloaded.validateDisplayList();
 
     if (index > -1) {
-        tagManager.tagRenewOnPlayList(tileList_tag, playListManager.getNNDDVideoListByIndex(playListManager.selectedPlayListIndex));
+        tagManager.tagRenewOnPlayList(
+            tileList_tag,
+            playListManager.getNNDDVideoListByIndex(playListManager.selectedPlayListIndex)
+        );
     } else {
         tagManager.tagRenewOnPlayList(tileList_tag, new Vector.<NNDDVideo>());
     }
@@ -5537,25 +5772,33 @@ private function deletePlayList(): void {
 
             var playlist: PlayList = playListManager.getPlayList(index);
 
-            Alert.show("プレイリストを削除してもよろしいですか？\n\n" + playlist.name, "確認", (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                if (event.detail == Alert.YES) {
-                    try {
-                        playListManager.removePlayListByIndex(index);
-                        updatePlayListSummery();
+            Alert.show(
+                "プレイリストを削除してもよろしいですか？\n\n" + playlist.name,
+                "確認",
+                (Alert.YES | Alert.NO),
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.YES) {
+                        try {
+                            playListManager.removePlayListByIndex(index);
+                            updatePlayListSummery();
 
-                        if (treeIndex - 1 >= 0) {
-                            tree_library.selectedIndex = treeIndex - 1;
-                        } else {
-                            tree_library.selectedIndex = 0;
+                            if (treeIndex - 1 >= 0) {
+                                tree_library.selectedIndex = treeIndex - 1;
+                            } else {
+                                tree_library.selectedIndex = 0;
+                            }
+
+                            updatePlayList(tree_library.selectedIndex);
+                        } catch (error: IOError) {
+                            Alert.show("削除できませんでした。\nファイルが開かれていない状態で再度実行してください。\n" + error, "エラー");
+                            logManager.addLog("プレイリストの削除に失敗:" + error);
                         }
-
-                        updatePlayList(tree_library.selectedIndex);
-                    } catch (error: IOError) {
-                        Alert.show("削除できませんでした。\nファイルが開かれていない状態で再度実行してください。\n" + error, "エラー");
-                        logManager.addLog("プレイリストの削除に失敗:" + error);
                     }
-                }
-            }, null, Alert.NO);
+                },
+                null,
+                Alert.NO
+            );
 
         }
 
@@ -5645,7 +5888,8 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
             // 動画を実際に移動
             oldFile.moveTo(newFile);
         }
-        logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " + decodeURIComponent(newFile.url));
+        logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " +
+                          decodeURIComponent(newFile.url));
 
         //ライブラリを更新
         var key: String = LibraryUtil.getVideoKey(decodeURIComponent(oldFile.url));
@@ -5677,7 +5921,8 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
                 newFile.deleteFile();
             }
             oldFile.moveTo(newFile);
-            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " + decodeURIComponent(newFile.url));
+            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " +
+                              decodeURIComponent(newFile.url));
         }
 
         //投稿者コメントも移動する
@@ -5689,7 +5934,8 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
                 newFile.deleteFile();
             }
             oldFile.moveTo(newFile);
-            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " + decodeURIComponent(newFile.url));
+            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " +
+                              decodeURIComponent(newFile.url));
         }
 
         //サムネイル情報も移動
@@ -5702,11 +5948,13 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
                 newFile.deleteFile();
             }
             oldFile.moveTo(newFile);
-            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " + decodeURIComponent(newFile.url));
+            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " +
+                              decodeURIComponent(newFile.url));
         }
 
         //市場情報も移動
-        var iChibaOldFile: File = new File(oldFile.url.substring(0, oldFile.url.lastIndexOf("ThumbInfo")) + "IchibaInfo].html");
+        var iChibaOldFile: File = new File(oldFile.url.substring(0, oldFile.url.lastIndexOf("ThumbInfo")) +
+                                           "IchibaInfo].html");
         moveFileName = decodeURIComponent(iChibaOldFile.url);
         if (iChibaOldFile.exists) {
             newFile.url = newFile.url.substring(0, newFile.url.lastIndexOf("ThumbInfo")) + "IchibaInfo].html";
@@ -5714,7 +5962,8 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
                 newFile.deleteFile();
             }
             iChibaOldFile.moveTo(newFile);
-            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(iChibaOldFile.url) + " -> " + decodeURIComponent(newFile.url));
+            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(iChibaOldFile.url) + " -> " +
+                              decodeURIComponent(newFile.url));
         }
 
         //サムネ画像も移動
@@ -5725,12 +5974,14 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
         }
         moveFileName = decodeURIComponent(thumbImgFile.url);
         if (thumbImgFile.exists) {
-            newFile.url = newFile.url.substring(0, newFile.url.lastIndexOf("/")) + thumbImgFile.url.substring(thumbImgFile.url.lastIndexOf("/"));
+            newFile.url = newFile.url.substring(0, newFile.url.lastIndexOf("/")) +
+                          thumbImgFile.url.substring(thumbImgFile.url.lastIndexOf("/"));
             if (newFile.exists) {
                 newFile.deleteFile();
             }
             thumbImgFile.moveTo(newFile);
-            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(thumbImgFile.url) + " -> " + decodeURIComponent(newFile.url));
+            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(thumbImgFile.url) + " -> " +
+                              decodeURIComponent(newFile.url));
 
             //ライブラリを更新
             key = LibraryUtil.getVideoKey(decodeURIComponent(video.getDecodeUrl()));
@@ -5756,22 +6007,33 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
         }
 
         //ニコ割も移動
-        var nicowariFile: File = new File(decodeURIComponent(oldFile.url).substring(0, decodeURIComponent(oldFile.url).lastIndexOf("/")));
+        var nicowariFile: File = new File(decodeURIComponent(oldFile.url).substring(
+            0,
+            decodeURIComponent(oldFile.url)
+                .lastIndexOf("/")
+        ));
         var myArray: Array = nicowariFile.getDirectoryListing();
-        var fileName: String = decodeURIComponent(oldFile.url).substring(decodeURIComponent(oldFile.url).lastIndexOf("/") + 1, decodeURIComponent(oldFile.url).lastIndexOf("[ThumbInfo]"));
+        var fileName: String = decodeURIComponent(oldFile.url).substring(
+            decodeURIComponent(oldFile.url)
+                .lastIndexOf("/") + 1,
+            decodeURIComponent(oldFile.url).lastIndexOf("[ThumbInfo]")
+        );
         for each(var file: File in myArray) {
             if (!file.isDirectory) {
                 var extensions: String = file.nativePath.substr(-4);
                 if (extensions == ".swf") {
-                    if ((decodeURIComponent(file.url).indexOf(fileName) != -1) && decodeURIComponent(file.url).match(/\[Nicowari\]/)) {
+                    if ((decodeURIComponent(file.url).indexOf(fileName) != -1) &&
+                        decodeURIComponent(file.url).match(/\[Nicowari\]/)) {
                         moveFileName = decodeURIComponent(file.url);
-                        newFile.url = newFile.url.substring(0, newFile.url.lastIndexOf("/")) + file.url.substring(file.url.lastIndexOf("/"));
+                        newFile.url = newFile.url.substring(0, newFile.url.lastIndexOf("/")) +
+                                      file.url.substring(file.url.lastIndexOf("/"));
                         if (file.exists) {
                             if (newFile.exists) {
                                 newFile.deleteFile();
                             }
                             file.moveTo(newFile);
-                            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " + decodeURIComponent(newFile.url));
+                            logManager.addLog(Message.MOVE_FILE + ":" + decodeURIComponent(oldFile.url) + " -> " +
+                                              decodeURIComponent(newFile.url));
                         }
                     }
                 }
@@ -5783,7 +6045,8 @@ private function moveFile(oldFile: File, newFile: File, isSaveLibrary: Boolean):
         }
 
     } catch (error: Error) {
-        logManager.addLog(error + ":" + moveFile + "->" + decodeURIComponent(newFile.url) + "\n" + error.getStackTrace());
+        logManager.addLog(error + ":" + moveFile + "->" + decodeURIComponent(newFile.url) + "\n" +
+                          error.getStackTrace());
         trace(error + ":" + moveFile + "->" + decodeURIComponent(newFile.url) + "\n" + error.getStackTrace());
 //		throw error;
     }
@@ -6150,8 +6413,7 @@ public function playerOpenButtonClicked(event: MouseEvent): void {
 protected function playerButtonItemHandler(event: ContextMenuEvent): void {
     if ((event.currentTarget as ContextMenuItem).label == Message.L_PLAYER_OPEN) {
         playerOpen();
-    }
-    else if ((event.currentTarget as ContextMenuItem).label == Message.L_NEW_PLAYER_OPEN) {
+    } else if ((event.currentTarget as ContextMenuItem).label == Message.L_NEW_PLAYER_OPEN) {
         newPlayerOpen();
     }
 }
@@ -6195,8 +6457,8 @@ private function dlListDroped(event: NativeDragEvent): void {
 }
 
 private function dlListDragEnter(event: NativeDragEvent): void {
-    if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT)
-            || event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)) {
+    if (event.clipboard.hasFormat(ClipboardFormats.TEXT_FORMAT) ||
+        event.clipboard.hasFormat(ClipboardFormats.URL_FORMAT)) {
         NativeDragManager.acceptDragDrop(this.dataGrid_downloadList);
     }
 }
@@ -6431,8 +6693,7 @@ private function myListItemDataGridDoubleClicked(): void {
                 }
                 if (nnddVideo == null) {
                     this.videoStreamingPlayStart(videoUrl);
-                }
-                else {
+                } else {
                     this.playMovie(nnddVideo.getDecodeUrl(), -1);
                 }
 
@@ -6465,39 +6726,47 @@ private function addDownloadListForMyList(video: NNDDVideo, index: int = -1): vo
     isExistsInDLList = downloadManager.isExists(video);
 
     if (isExistsInDLList) {
-        Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-            if (event.detail == Alert.YES) {
-                downloadManager.add(video, isAutoDownload);
-                if (index != -1 && myListItemProvider.length > index) {
-                    myListItemProvider.setItemAt({
-                        dataGridColumn_index: myListItemProvider[index].dataGridColumn_index,
-                        dataGridColumn_preview: myListItemProvider[index].dataGridColumn_preview,
-                        dataGridColumn_ranking: myListItemProvider[index].dataGridColumn_ranking,
-                        dataGridColumn_videoName: myListItemProvider[index].dataGridColumn_videoName,
-                        dataGridColumn_videoInfo: myListItemProvider[index].dataGridColumn_videoInfo,
-                        dataGridColumn_condition: "DLリストに追加済",
-                        dataGridColumn_videoUrl: myListItemProvider[index].dataGridColumn_videoUrl,
-                        dataGridColumn_downloadedItemUrl: myListItemProvider[index].dataGridColumn_downloadedItemUrl
-                    }, index);
+        Alert.show(
+            Message.M_ALREADY_DLLIST_VIDEO_EXIST,
+            Message.M_MESSAGE,
+            (Alert.YES | Alert.NO),
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.YES) {
+                    downloadManager.add(video, isAutoDownload);
+                    if (index != -1 && myListItemProvider.length > index) {
+                        myListItemProvider.setItemAt({
+                                                         dataGridColumn_index: myListItemProvider[index].dataGridColumn_index,
+                                                         dataGridColumn_preview: myListItemProvider[index].dataGridColumn_preview,
+                                                         dataGridColumn_ranking: myListItemProvider[index].dataGridColumn_ranking,
+                                                         dataGridColumn_videoName: myListItemProvider[index].dataGridColumn_videoName,
+                                                         dataGridColumn_videoInfo: myListItemProvider[index].dataGridColumn_videoInfo,
+                                                         dataGridColumn_condition: "DLリストに追加済",
+                                                         dataGridColumn_videoUrl: myListItemProvider[index].dataGridColumn_videoUrl,
+                                                         dataGridColumn_downloadedItemUrl: myListItemProvider[index].dataGridColumn_downloadedItemUrl
+                                                     }, index);
+                    }
+                    scrollToLastAddedDownloadItem();
                 }
-                scrollToLastAddedDownloadItem();
-            }
-        }, null, Alert.NO);
+            },
+            null,
+            Alert.NO
+        );
     } else {
         if (!downloadManager.add(video, isAutoDownload)) {
             showCannotAddDlList();
         } else {
             if (index != -1 && myListItemProvider.length > index) {
                 myListItemProvider.setItemAt({
-                    dataGridColumn_index: myListItemProvider[index].dataGridColumn_index,
-                    dataGridColumn_preview: myListItemProvider[index].dataGridColumn_preview,
-                    dataGridColumn_ranking: myListItemProvider[index].dataGridColumn_ranking,
-                    dataGridColumn_videoName: myListItemProvider[index].dataGridColumn_videoName,
-                    dataGridColumn_videoInfo: myListItemProvider[index].dataGridColumn_videoInfo,
-                    dataGridColumn_condition: "DLリストに追加済",
-                    dataGridColumn_videoUrl: myListItemProvider[index].dataGridColumn_videoUrl,
-                    dataGridColumn_downloadedItemUrl: myListItemProvider[index].dataGridColumn_downloadedItemUrl
-                }, index);
+                                                 dataGridColumn_index: myListItemProvider[index].dataGridColumn_index,
+                                                 dataGridColumn_preview: myListItemProvider[index].dataGridColumn_preview,
+                                                 dataGridColumn_ranking: myListItemProvider[index].dataGridColumn_ranking,
+                                                 dataGridColumn_videoName: myListItemProvider[index].dataGridColumn_videoName,
+                                                 dataGridColumn_videoInfo: myListItemProvider[index].dataGridColumn_videoInfo,
+                                                 dataGridColumn_condition: "DLリストに追加済",
+                                                 dataGridColumn_videoUrl: myListItemProvider[index].dataGridColumn_videoUrl,
+                                                 dataGridColumn_downloadedItemUrl: myListItemProvider[index].dataGridColumn_downloadedItemUrl
+                                             }, index);
             }
             scrollToLastAddedDownloadItem();
         }
@@ -6568,53 +6837,68 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                 this._nnddMyListLoader.enableNNDDServer = allowGetOtherNNDDInfo;
                 this._nnddMyListLoader.nnddServerAddress = string_remoteNNDDAddress;
                 this._nnddMyListLoader.nnddServerPort = int(string_remoteNNDDPort);
-                this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE, function (myevent: Event): void {
+                this._nnddMyListLoader.addEventListener(
+                    NNDDMyListLoader.DOWNLOAD_PROCESS_COMPLETE,
+                    function (myevent: Event): void {
 
-                    var type: RssType = RssType.MY_LIST;
-                    type = MyListManager.checkType(url);
+                        var type: RssType = RssType.MY_LIST;
+                        type = MyListManager.checkType(url);
 
-                    var myListId: String = null;
-                    switch (type) {
-                        case RssType.CHANNEL:
-                            myListId = MyListUtil.getChannelId(url);
-                            break;
-                        case RssType.COMMUNITY:
-                            myListId = MyListUtil.getCommunityId(url);
-                            break;
-                        case RssType.USER_UPLOAD_VIDEO:
-                            myListId = MyListUtil.getUserUploadVideoListId(url);
-                            break;
-                        case RssType.MY_LIST:
-                            myListId = MyListUtil.getMyListId(url);
-                            break;
-                    }
+                        var myListId: String = null;
+                        switch (type) {
+                            case RssType.CHANNEL:
+                                myListId = MyListUtil.getChannelId(url);
+                                break;
+                            case RssType.COMMUNITY:
+                                myListId = MyListUtil.getCommunityId(url);
+                                break;
+                            case RssType.USER_UPLOAD_VIDEO:
+                                myListId = MyListUtil.getUserUploadVideoListId(url);
+                                break;
+                            case RssType.MY_LIST:
+                                myListId = MyListUtil.getMyListId(url);
+                                break;
+                        }
 
-                    try {
+                        try {
 
-                        // マイリストをローカルに保存
-                        _myListManager.saveMyList(myListId, type, _nnddMyListLoader.xml, true);
+                            // マイリストをローカルに保存
+                            _myListManager.saveMyList(
+                                myListId,
+                                type,
+                                _nnddMyListLoader.xml,
+                                true
+                            );
 
-                    } catch (error: Error) {
-                        trace(error.getStackTrace());
-                    }
+                        } catch (error: Error) {
+                            trace(error.getStackTrace());
+                        }
 
-                    var myListBuilder: MyListBuilder = new MyListBuilder();
-                    myListItemProvider.removeAll();
-                    myListItemProvider.addAll(myListBuilder.getMyListArrayCollection(myListId, _nnddMyListLoader.xml));
+                        var myListBuilder: MyListBuilder = new MyListBuilder();
+                        myListItemProvider.removeAll();
+                        myListItemProvider.addAll(myListBuilder.getMyListArrayCollection(
+                            myListId,
+                            _nnddMyListLoader.xml
+                        ));
 
-                    var text: String = myListBuilder.title + " [" + myListBuilder.creator + "]\n" + myListBuilder.description;
-                    var title: String = myListBuilder.title + " [" + myListBuilder.creator + "]";
+                        var text: String = myListBuilder.title + " [" + myListBuilder.creator + "]\n" +
+                                           myListBuilder.description;
+                        var title: String = myListBuilder.title + " [" + myListBuilder.creator + "]";
 
-                    if (isSaveMyListHistory) {
-                        MyListHistoryManager.instace.addHistory(new MyList(url, title, false));
-                        refreshMyListHistoryComboBox();
-                    }
+                        if (isSaveMyListHistory) {
+                            MyListHistoryManager.instace.addHistory(new MyList(
+                                url,
+                                title,
+                                false
+                            ));
+                            refreshMyListHistoryComboBox();
+                        }
 
-                    textArea_myList.text = HtmlUtil.convertSpecialCharacterNotIncludedString(text);
-                    _myListManager.lastTitle = HtmlUtil.convertSpecialCharacterNotIncludedString(title);
+                        textArea_myList.text = HtmlUtil.convertSpecialCharacterNotIncludedString(text);
+                        _myListManager.lastTitle = HtmlUtil.convertSpecialCharacterNotIncludedString(title);
 
-                    //マイリストで動画のサムネイル情報を見せる機能。マイリスト再読み込みで消えてしまう。
-                    //保存するとかなんとか考えた方がいい
+                        //マイリストで動画のサムネイル情報を見せる機能。マイリスト再読み込みで消えてしまう。
+                        //保存するとかなんとか考えた方がいい
 
 //					var obj_index_map:Object = new Object();
 //
@@ -6683,60 +6967,70 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
 //
 //					}
 
-                    button_myListRenew.label = "更新";
-                    dataGrid_myList.validateNow();
-                    if (loading != null) {
-                        loading.stop();
-                        loading.remove();
-                        loading = null;
-                    }
+                        button_myListRenew.label = "更新";
+                        dataGrid_myList.validateNow();
+                        if (loading != null) {
+                            loading.stop();
+                            loading.remove();
+                            loading = null;
+                        }
 
-                    _nnddMyListLoader = null;
-                    tree_myList.enabled = true;
-                    dataGrid_myList.enabled = true;
-                    textinput_mylist.enabled = true;
-                });
-                this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR, function (myevent: Event): void {
-                    logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
-                    Alert.show("マイリストの更新に失敗しました。\n" + myevent, Message.M_ERROR);
-                    button_myListRenew.label = "更新";
-                    if (loading != null) {
-                        loading.stop();
-                        loading.remove();
-                        loading = null;
+                        _nnddMyListLoader = null;
+                        tree_myList.enabled = true;
+                        dataGrid_myList.enabled = true;
+                        textinput_mylist.enabled = true;
                     }
-                    _nnddMyListLoader = null;
-                    tree_myList.enabled = true;
-                    dataGrid_myList.enabled = true;
-                    textinput_mylist.enabled = true;
-                });
-                this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD, function (myevent: Event): void {
-                    logManager.addLog("マイリストの更新をキャンセル:" + url + ":" + myevent);
-                    button_myListRenew.label = "更新";
-                    if (loading != null) {
-                        loading.stop();
-                        loading.remove();
-                        loading = null;
+                );
+                this._nnddMyListLoader.addEventListener(
+                    NNDDMyListLoader.DOWNLOAD_PROCESS_ERROR,
+                    function (myevent: Event): void {
+                        logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
+                        Alert.show("マイリストの更新に失敗しました。\n" + myevent, Message.M_ERROR);
+                        button_myListRenew.label = "更新";
+                        if (loading != null) {
+                            loading.stop();
+                            loading.remove();
+                            loading = null;
+                        }
+                        _nnddMyListLoader = null;
+                        tree_myList.enabled = true;
+                        dataGrid_myList.enabled = true;
+                        textinput_mylist.enabled = true;
                     }
-                    _nnddMyListLoader = null;
-                    tree_myList.enabled = true;
-                    dataGrid_myList.enabled = true;
-                    textinput_mylist.enabled = true;
-                });
-                this._nnddMyListLoader.addEventListener(NNDDMyListLoader.DOWNLOAD_FAIL, function (myevent: Event): void {
-                    logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
-                    Alert.show("マイリストの更新に失敗しました。\nマイリストが削除されている可能性があります。\n" + myevent, Message.M_ERROR);
-                    button_myListRenew.label = "更新";
-                    if (loading != null) {
-                        loading.stop();
-                        loading.remove();
-                        loading = null;
+                );
+                this._nnddMyListLoader.addEventListener(
+                    NNDDMyListLoader.DOWNLOAD_PROCESS_CANCELD,
+                    function (myevent: Event): void {
+                        logManager.addLog("マイリストの更新をキャンセル:" + url + ":" + myevent);
+                        button_myListRenew.label = "更新";
+                        if (loading != null) {
+                            loading.stop();
+                            loading.remove();
+                            loading = null;
+                        }
+                        _nnddMyListLoader = null;
+                        tree_myList.enabled = true;
+                        dataGrid_myList.enabled = true;
+                        textinput_mylist.enabled = true;
                     }
-                    _nnddMyListLoader = null;
-                    tree_myList.enabled = true;
-                    dataGrid_myList.enabled = true;
-                    textinput_mylist.enabled = true;
-                });
+                );
+                this._nnddMyListLoader.addEventListener(
+                    NNDDMyListLoader.DOWNLOAD_FAIL,
+                    function (myevent: Event): void {
+                        logManager.addLog("マイリストの更新に失敗:" + url + ":" + myevent);
+                        Alert.show("マイリストの更新に失敗しました。\nマイリストが削除されている可能性があります。\n" + myevent, Message.M_ERROR);
+                        button_myListRenew.label = "更新";
+                        if (loading != null) {
+                            loading.stop();
+                            loading.remove();
+                            loading = null;
+                        }
+                        _nnddMyListLoader = null;
+                        tree_myList.enabled = true;
+                        dataGrid_myList.enabled = true;
+                        textinput_mylist.enabled = true;
+                    }
+                );
 
                 var type: RssType = RssType.MY_LIST;
                 type = MyListManager.checkType(url);
@@ -6751,28 +7045,44 @@ private function myListRenewButtonClicked(event: Event, addMode: Boolean = false
                     case RssType.MY_LIST:
                         var myListId: String = MyListUtil.getMyListId(url);
                         if (myListId != null) {
-                            this._nnddMyListLoader.requestDownloadForMyList(UserManager.instance.user, UserManager.instance.password, myListId);
+                            this._nnddMyListLoader.requestDownloadForMyList(
+                                UserManager.instance.user,
+                                UserManager.instance.password,
+                                myListId
+                            );
                             return;
                         }
                         break;
                     case RssType.CHANNEL:
                         var channelId: String = MyListUtil.getChannelId(url);
                         if (channelId != null) {
-                            this._nnddMyListLoader.requestDownloadForChannel(UserManager.instance.user, UserManager.instance.password, channelId);
+                            this._nnddMyListLoader.requestDownloadForChannel(
+                                UserManager.instance.user,
+                                UserManager.instance.password,
+                                channelId
+                            );
                             return;
                         }
                         break;
                     case RssType.COMMUNITY:
                         var communityId: String = MyListUtil.getCommunityId(url);
                         if (communityId != null) {
-                            this._nnddMyListLoader.requestDownloadForCommunity(UserManager.instance.user, UserManager.instance.password, communityId);
+                            this._nnddMyListLoader.requestDownloadForCommunity(
+                                UserManager.instance.user,
+                                UserManager.instance.password,
+                                communityId
+                            );
                             return;
                         }
                         break;
                     case RssType.USER_UPLOAD_VIDEO:
                         var userId: String = MyListUtil.getUserUploadVideoListId(url);
                         if (userId != null) {
-                            this._nnddMyListLoader.requestDownloadForUserVideoList(UserManager.instance.user, UserManager.instance.password, userId);
+                            this._nnddMyListLoader.requestDownloadForUserVideoList(
+                                UserManager.instance.user,
+                                UserManager.instance.password,
+                                userId
+                            );
                             return;
                         }
                         break;
@@ -6845,7 +7155,12 @@ private function addPublicMyList(event: Event): void {
     myListEditDialog.button_edit.label = "作成";
     myListEditDialog.setDir(false);
     myListEditDialog.addEventListener(Event.COMPLETE, function (event: Event): void {
-        var isSuccess: Boolean = _myListManager.addMyList(myListEditDialog.myListUrl, myListEditDialog.myListName, myListEditDialog.getIsDir(), true);
+        var isSuccess: Boolean = _myListManager.addMyList(
+            myListEditDialog.myListUrl,
+            myListEditDialog.myListName,
+            myListEditDialog.getIsDir(),
+            true
+        );
         if (!isSuccess) {
             Alert.show("同名のマイリスト/チャンネルかフォルダがすでに存在します。別な名前を設定してください。", Message.M_MESSAGE);
             return;
@@ -6871,16 +7186,24 @@ private function removePublicMyList(event: Event): void {
                 label = "このフォルダを削除してもよろしいですか？\n(フォルダ下のマイリストも削除されます。)\n";
             }
 
-            Alert.show(label + "\n" + searchItemName, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                if (event.detail == Alert.YES) {
-                    _myListManager.removeMyList(searchItemName, true);
-                    var openItems: Object = tree_myList.openItems;
-                    tree_myList.dataProvider = myListProvider;
-                    tree_myList.invalidateList();
-                    tree_myList.validateNow();
-                    tree_myList.openItems = openItems;
-                }
-            }, null, Alert.NO);
+            Alert.show(
+                label + "\n" + searchItemName,
+                Message.M_MESSAGE,
+                (Alert.YES | Alert.NO),
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.YES) {
+                        _myListManager.removeMyList(searchItemName, true);
+                        var openItems: Object = tree_myList.openItems;
+                        tree_myList.dataProvider = myListProvider;
+                        tree_myList.invalidateList();
+                        tree_myList.validateNow();
+                        tree_myList.openItems = openItems;
+                    }
+                },
+                null,
+                Alert.NO
+            );
         } else {
             var selectedItemNames: Array = new Array();
             for (var i: int = 0; i < selectedItems.length; i++) {
@@ -6891,18 +7214,26 @@ private function removePublicMyList(event: Event): void {
                 selectedItemNames.push(searchItemName);
             }
 
-            Alert.show("これらのマイリストを削除してもよろしいですか？\n" + selectedItemNames, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                if (event.detail == Alert.YES) {
-                    for (var i: int = 0; i < selectedItemNames.length; i++) {
-                        _myListManager.removeMyList(selectedItemNames[i], true);
+            Alert.show(
+                "これらのマイリストを削除してもよろしいですか？\n" + selectedItemNames,
+                Message.M_MESSAGE,
+                (Alert.YES | Alert.NO),
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.YES) {
+                        for (var i: int = 0; i < selectedItemNames.length; i++) {
+                            _myListManager.removeMyList(selectedItemNames[i], true);
+                        }
+                        var openItems: Object = tree_myList.openItems;
+                        tree_myList.dataProvider = myListProvider;
+                        tree_myList.invalidateList();
+                        tree_myList.validateNow();
+                        tree_myList.openItems = openItems;
                     }
-                    var openItems: Object = tree_myList.openItems;
-                    tree_myList.dataProvider = myListProvider;
-                    tree_myList.invalidateList();
-                    tree_myList.validateNow();
-                    tree_myList.openItems = openItems;
-                }
-            }, null, Alert.NO);
+                },
+                null,
+                Alert.NO
+            );
         }
     }
 
@@ -6914,7 +7245,8 @@ private function editPublicMyList(event: Event): void {
 
     if (object != null) {
 
-        var myListEditDialog: MyListEditDialog = PopUpManager.createPopUp(this, MyListEditDialog, true) as MyListEditDialog;
+        var myListEditDialog: MyListEditDialog = PopUpManager.createPopUp(this, MyListEditDialog, true) as
+                                                 MyListEditDialog;
         PopUpManager.centerPopUp(myListEditDialog);
         myListEditDialog.initNameEditDialog(logManager);
 
@@ -6938,9 +7270,23 @@ private function editPublicMyList(event: Event): void {
             var myList: Object = _myListManager.search(name);
 
             if (myList.hasOwnProperty("children")) {
-                _myListManager.updateMyList(myListEditDialog.myListUrl, myListEditDialog.myListName, myListEditDialog.getIsDir(), true, name, myList.children);
+                _myListManager.updateMyList(
+                    myListEditDialog.myListUrl,
+                    myListEditDialog.myListName,
+                    myListEditDialog.getIsDir(),
+                    true,
+                    name,
+                    myList.children
+                );
             } else {
-                _myListManager.updateMyList(myListEditDialog.myListUrl, myListEditDialog.myListName, myListEditDialog.getIsDir(), true, name, null);
+                _myListManager.updateMyList(
+                    myListEditDialog.myListUrl,
+                    myListEditDialog.myListName,
+                    myListEditDialog.getIsDir(),
+                    true,
+                    name,
+                    null
+                );
             }
 
             var openItems: Object = tree_myList.openItems;
@@ -6992,16 +7338,16 @@ private function myListRenewForName(name: String): void {
         } else if (url != null && url != "") {
             myListItemProvider.removeAll();
             myListItemProvider.addItem({
-                dataGridColumn_index: 1,
-                dataGridColumn_preview: "",
-                dataGridColumn_videoName: "ローカルにマイリスト/チャンネルが保存されていません。\n一度\"更新\"してください。",
-                dataGridColumn_videoInfo: "",
-                dataGridColumn_condition: "",
-                dataGridColumn_videoUrl: "",
-                dataGridColumn_videoLocalPath: "",
-                dataGridColumn_played: false,
-                dataGridColumn_videoId: ""
-            });
+                                           dataGridColumn_index: 1,
+                                           dataGridColumn_preview: "",
+                                           dataGridColumn_videoName: "ローカルにマイリスト/チャンネルが保存されていません。\n一度\"更新\"してください。",
+                                           dataGridColumn_videoInfo: "",
+                                           dataGridColumn_condition: "",
+                                           dataGridColumn_videoUrl: "",
+                                           dataGridColumn_videoLocalPath: "",
+                                           dataGridColumn_played: false,
+                                           dataGridColumn_videoId: ""
+                                       });
             logManager.addLog("ローカルにマイリスト/チャンネルが保存されていません。一度\"更新\"してください。");
         } else if (url == "") {
             // urlが空のときはフォルダ
@@ -7014,7 +7360,10 @@ private function myListRenewForName(name: String): void {
 
             myListItemProvider.removeAll();
             for each(var myList: MyList in myLists) {
-                var xml: XML = MyListManager.instance.readLocalMyList(myList.id, MyListManager.checkType(myList.myListUrl));
+                var xml: XML = MyListManager.instance.readLocalMyList(
+                    myList.id,
+                    MyListManager.checkType(myList.myListUrl)
+                );
                 var array: ArrayCollection = myListBuilder.getMyListArrayCollection(myList.id, xml, true);
                 myListItemProvider.addAll(array);
             }
@@ -7181,8 +7530,10 @@ private function addSearchItem(event: MouseEvent): void {
     var searchItemEdit: SearchItemEdit = PopUpManager.createPopUp(this, SearchItemEdit, true) as SearchItemEdit;
     PopUpManager.centerPopUp(searchItemEdit);
     searchItemEdit.initSearchItem(new SearchItem("新規検索条件",
-            SearchSortString.convertSortTypeFromIndex(comboBox_sortType.selectedIndex),
-            combobox_serchType.selectedIndex, combobox_NicoSearch.text), true);
+                                                 SearchSortString.convertSortTypeFromIndex(comboBox_sortType.selectedIndex),
+                                                 combobox_serchType.selectedIndex,
+                                                 combobox_NicoSearch.text
+    ), true);
     searchItemEdit.addEventListener(Event.COMPLETE, function (event: Event): void {
         if (!_searchItemManager.addSearchItem(searchItemEdit.searchItem, searchItemEdit.searchItem.isDir, true)) {
             Alert.show("すでに同名の検索条件が存在します。名前を変更してください。", Message.M_ERROR);
@@ -7238,17 +7589,25 @@ private function removeSearchItem(event: MouseEvent): void {
             }, null, Alert.NO);
         } else {
 
-            Alert.show("これらの検索条件・フォルダを削除してもよろしいですか？\n" + searchItemNameArray, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                if (event.detail == Alert.YES) {
-                    for (var i: int = 0; i < searchItemNameArray.length; i++) {
-                        _searchItemManager.removeSearchItem(searchItemNameArray[i], true);
+            Alert.show(
+                "これらの検索条件・フォルダを削除してもよろしいですか？\n" + searchItemNameArray,
+                Message.M_MESSAGE,
+                (Alert.YES | Alert.NO),
+                null,
+                function (event: CloseEvent): void {
+                    if (event.detail == Alert.YES) {
+                        for (var i: int = 0; i < searchItemNameArray.length; i++) {
+                            _searchItemManager.removeSearchItem(searchItemNameArray[i], true);
+                        }
+                        var object: Object = tree_SearchItem.openItems;
+                        tree_SearchItem.dataProvider = searchListProvider;
+                        tree_SearchItem.validateNow();
+                        tree_SearchItem.openItems = object;
                     }
-                    var object: Object = tree_SearchItem.openItems;
-                    tree_SearchItem.dataProvider = searchListProvider;
-                    tree_SearchItem.validateNow();
-                    tree_SearchItem.openItems = object;
-                }
-            }, null, Alert.NO);
+                },
+                null,
+                Alert.NO
+            );
         }
     }
 
@@ -7294,7 +7653,8 @@ private function editSearchItem(event: MouseEvent): void {
             tree_SearchItem.openItems = object;
 
             combobox_serchType.selectedIndex = searchItemEdit.searchItem.searchType;
-            comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItemEdit.searchItem.sortType);
+            comboBox_sortType.selectedIndex =
+                SearchSortString.convertTextArrayIndexFromSearchSortType(searchItemEdit.searchItem.sortType);
             combobox_NicoSearch.text = searchItemEdit.searchItem.searchWord;
 
             PopUpManager.removePopUp(searchItemEdit);
@@ -7315,7 +7675,8 @@ private function searchItemClicked(event: ListEvent): void {
     var searchItem: SearchItem = this._searchItemManager.getSearchItem(itemName);
     if (searchItem != null) {
         this.combobox_serchType.selectedIndex = searchItem.searchType;
-        this.comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
+        this.comboBox_sortType.selectedIndex =
+            SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
         this.combobox_NicoSearch.text = searchItem.searchWord;
     }
 }
@@ -7330,7 +7691,8 @@ private function searchItemDoubleClicked(event: ListEvent): void {
     var searchItem: SearchItem = this._searchItemManager.getSearchItem(itemName);
     if (searchItem != null) {
         this.combobox_serchType.selectedIndex = searchItem.searchType;
-        this.comboBox_sortType.selectedIndex = SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
+        this.comboBox_sortType.selectedIndex =
+            SearchSortString.convertTextArrayIndexFromSearchSortType(searchItem.sortType);
         this.combobox_NicoSearch.text = searchItem.searchWord;
         this.searchNicoButtonClicked();
     }
@@ -7516,9 +7878,12 @@ public function showSearchResultOnNico(event: Event): void {
 
         if (searchWord.indexOf("sort=") == -1 && searchWord.indexOf("order=") == -1) {
             if (searchWord.indexOf("page=") == -1) {
-                nicoSearchURL = searchURL + searchWord + Access2Nico.NICO_SEARCH_SORT_VALUE[comboBox_sortType.selectedIndex];
+                nicoSearchURL =
+                    searchURL + searchWord + Access2Nico.NICO_SEARCH_SORT_VALUE[comboBox_sortType.selectedIndex];
             } else {
-                nicoSearchURL = searchURL + searchWord + "&" + (Access2Nico.NICO_SEARCH_SORT_VALUE[comboBox_sortType.selectedIndex] as String).substring(1);
+                nicoSearchURL = searchURL + searchWord + "&" +
+                                (Access2Nico.NICO_SEARCH_SORT_VALUE[comboBox_sortType.selectedIndex] as
+                                 String).substring(1);
             }
         } else {
             nicoSearchURL = searchURL + searchWord;
@@ -7568,22 +7933,28 @@ private function historyItemHandler(event: ContextMenuEvent): void {
                 var isExistsInDLList: Boolean = downloadManager.isExists(video);
 
                 if (isExistsInDLList && items.length == 1) {
-                    Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                        if (event.detail == Alert.YES) {
-                            var success: Boolean = false;
+                    Alert.show(
+                        Message.M_ALREADY_DLLIST_VIDEO_EXIST,
+                        Message.M_MESSAGE,
+                        (Alert.YES | Alert.NO),
+                        null,
+                        function (event: CloseEvent): void {
+                            if (event.detail == Alert.YES) {
+                                var success: Boolean = false;
 
-                            for each(var item: Object in items) {
-                                video = new NNDDVideo(item.dataGridColumn_url, item.dataGridColumn_videoName);
-                                success = downloadManager.add(video, isAutoDownload);
+                                for each(var item: Object in items) {
+                                    video = new NNDDVideo(item.dataGridColumn_url, item.dataGridColumn_videoName);
+                                    success = downloadManager.add(video, isAutoDownload);
+                                }
+                                if (!success) {
+                                    showCannotAddDlList();
+                                } else {
+                                    scrollToLastAddedDownloadItem();
+                                }
+                                updateDownloadStatusBar();
                             }
-                            if (!success) {
-                                showCannotAddDlList();
-                            } else {
-                                scrollToLastAddedDownloadItem();
-                            }
-                            updateDownloadStatusBar();
                         }
-                    });
+                    );
                 } else {
                     var success: Boolean = false;
 
@@ -7600,7 +7971,8 @@ private function historyItemHandler(event: ContextMenuEvent): void {
 
                 }
 
-            } else if ((event.target as ContextMenuItem).label == Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE_BY_QUEUE) {
+            } else if ((event.target as ContextMenuItem).label ==
+                       Message.L_DOWNLOADED_MENU_ITEM_LABEL_DELETE_BY_QUEUE) {
                 var items: Array = dataGrid.selectedItems;
 
                 for (var index: int = items.length; index != 0; index--) {
@@ -7632,21 +8004,27 @@ private function historyItemDownload(event: Event): void {
     var isExistsInDLList: Boolean = downloadManager.isExists(video);
 
     if (isExistsInDLList && items.length == 1) {
-        Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-            var success: Boolean = false;
-            if (event.detail == Alert.YES) {
-                for each(var item: Object in items) {
-                    video = new NNDDVideo(item.dataGridColumn_url);
-                    success = downloadManager.add(video, isAutoDownload);
+        Alert.show(
+            Message.M_ALREADY_DLLIST_VIDEO_EXIST,
+            Message.M_MESSAGE,
+            (Alert.YES | Alert.NO),
+            null,
+            function (event: CloseEvent): void {
+                var success: Boolean = false;
+                if (event.detail == Alert.YES) {
+                    for each(var item: Object in items) {
+                        video = new NNDDVideo(item.dataGridColumn_url);
+                        success = downloadManager.add(video, isAutoDownload);
+                    }
                 }
+                if (!success) {
+                    showCannotAddDlList();
+                } else {
+                    scrollToLastAddedDownloadItem();
+                }
+                updateDownloadStatusBar();
             }
-            if (!success) {
-                showCannotAddDlList();
-            } else {
-                scrollToLastAddedDownloadItem();
-            }
-            updateDownloadStatusBar();
-        });
+        );
     } else {
         var success: Boolean = false;
 
@@ -7682,8 +8060,7 @@ private function historyItemDoubleClickEventHandler(event: ListEvent): void {
             }
             if (nnddVideo == null) {
                 this.videoStreamingPlayStart(mUrl);
-            }
-            else {
+            } else {
                 this.playMovie(nnddVideo.getDecodeUrl(), -1);
             }
         } else {
@@ -7696,16 +8073,22 @@ private function historyItemDoubleClickEventHandler(event: ListEvent): void {
             var isExistsInDLList: Boolean = downloadManager.isExists(video);
 
             if (isExistsInDLList) {
-                Alert.show(Message.M_ALREADY_DLLIST_VIDEO_EXIST, Message.M_MESSAGE, (Alert.YES | Alert.NO), null, function (event: CloseEvent): void {
-                    if (event.detail == Alert.YES) {
-                        if (!downloadManager.add(video, isAutoDownload)) {
-                            showCannotAddDlList();
-                        } else {
-                            scrollToLastAddedDownloadItem();
+                Alert.show(
+                    Message.M_ALREADY_DLLIST_VIDEO_EXIST,
+                    Message.M_MESSAGE,
+                    (Alert.YES | Alert.NO),
+                    null,
+                    function (event: CloseEvent): void {
+                        if (event.detail == Alert.YES) {
+                            if (!downloadManager.add(video, isAutoDownload)) {
+                                showCannotAddDlList();
+                            } else {
+                                scrollToLastAddedDownloadItem();
+                            }
+                            updateDownloadStatusBar();
                         }
-                        updateDownloadStatusBar();
                     }
-                });
+                );
             } else {
                 if (!downloadManager.add(video, isAutoDownload)) {
                     showCannotAddDlList();
@@ -7977,12 +8360,10 @@ private function showCannotAddDlList(): void {
     }
     cannotAddDlListIsShown = true;
 
-    Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_PRE +
-            downloadManager.maxDlListCount +
-            Message.M_DOWNLOAD_LIST_COUNT_OVER_SUF, Message.M_ERROR, 4, null, function (event: Event): void {
-                cannotAddDlListIsShown = false;
-            }
-    );
+    Alert.show(Message.M_DOWNLOAD_LIST_COUNT_OVER_PRE + downloadManager.maxDlListCount +
+               Message.M_DOWNLOAD_LIST_COUNT_OVER_SUF, Message.M_ERROR, 4, null, function (event: Event): void {
+        cannotAddDlListIsShown = false;
+    });
 }
 
 

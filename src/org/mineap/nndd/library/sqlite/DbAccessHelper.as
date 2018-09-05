@@ -1,14 +1,10 @@
 package org.mineap.nndd.library.sqlite {
     import flash.data.SQLConnection;
-    import flash.data.SQLResult;
     import flash.data.SQLStatement;
     import flash.errors.SQLError;
     import flash.filesystem.File;
 
-    import mx.charts.chartClasses.StackedSeries;
-
     import org.mineap.nndd.library.sqlite.dao.VersionDao;
-    import org.mineap.nndd.model.NNDDVideo;
 
     /**
      *

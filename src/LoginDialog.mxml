@@ -38,8 +38,7 @@
             if (userName != null && userName.length > 0) {
                 this.userName = userName;
                 (event.currentTarget as TextInput).text = userName;
-            }
-            else {
+            } else {
                 var storedValue: ByteArray = EncryptedLocalStore.getItem("userName");
                 if (storedValue != null) {
                     userName = storedValue.readUTFBytes(storedValue.length);
@@ -63,8 +62,7 @@
                     }
                 }
 
-            }
-            catch (error: Error) {
+            } catch (error: Error) {
                 trace(error.getStackTrace());
                 logManager.addLog("パスワードの読み込みに失敗:" + error + ":" + error.getStackTrace());
                 logManager.addLog("予期せぬ問題により、パスワードの読み込みに失敗しました。パスワードの保存オプションをオフにしました。");
@@ -122,13 +120,11 @@
             if (storePassStr == null && storeNameAndPass == true) {
                 this.isStorePass = true;
                 (event.currentTarget as CheckBox).selected = true;
-            }
-            else {
+            } else {
                 if (storePass) {
                     this.isStorePass = true;
                     (event.currentTarget as CheckBox).selected = true;
-                }
-                else {
+                } else {
                     this.isStorePass = false;
                     (event.currentTarget as CheckBox).selected = false;
                 }
@@ -145,13 +141,11 @@
             if (storeNameStr == null && storeNameAndPass == true) {
                 this.isStoreName = true;
                 (event.currentTarget as CheckBox).selected = true;
-            }
-            else {
+            } else {
                 if (storeName) {
                     this.isStoreName = true;
                     (event.currentTarget as CheckBox).selected = true;
-                }
-                else {
+                } else {
                     this.isStoreName = false;
                     (event.currentTarget as CheckBox).selected = false;
                 }

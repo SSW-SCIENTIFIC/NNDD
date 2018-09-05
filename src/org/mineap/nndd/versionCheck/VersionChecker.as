@@ -6,10 +6,7 @@ package org.mineap.nndd.versionCheck {
     import air.update.events.UpdateEvent;
 
     import flash.events.ErrorEvent;
-    import flash.events.Event;
     import flash.filesystem.File;
-
-    import mx.core.FlexGlobals;
 
     import org.mineap.nndd.LogManager;
 

@@ -6,11 +6,10 @@ package org.mineap.nndd {
     import flash.events.IOErrorEvent;
     import flash.net.URLLoader;
 
-    import org.mineap.nndd.util.PathMaker;
     import org.mineap.nicovideo4as.Login;
     import org.mineap.nicovideo4as.MyListAdder;
     import org.mineap.nicovideo4as.MyListLoader;
-    import org.mineap.nicovideo4as.WatchVideoPage;
+    import org.mineap.nndd.util.PathMaker;
 
     /**
      * 動画をマイリストへ追加するクラス。
@@ -100,7 +99,8 @@ package org.mineap.nndd {
                                   group_id: String,
                                   mailAddr: String,
                                   password: String,
-                                  retryEnable: Boolean = true): void {
+                                  retryEnable: Boolean = true
+        ): void {
 
             this._watchUrl = watchUrl;
             this._group_id = group_id;
@@ -139,17 +139,29 @@ package org.mineap.nndd {
 
             //リスナ追加
             this._myListLoader.addEventListener(MyListLoader.GET_MYLISTGROUP_SUCCESS, getMylistGroupSuccess);
-            this._myListLoader.addEventListener(MyListLoader.GET_MYLISTGROUP_FAILURE, function (event: ErrorEvent): void {
-                (event.target as URLLoader).close();
-                _logManager.addLog(GET_MYLISTGROUP_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" + event.text);
-                trace(GET_MYLISTGROUP_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" + event.text);
-                dispatchEvent(new IOErrorEvent(GET_MYLISTGROUP_FAIL, false, false, event.text));
-                close();
-            });
-            this._myListLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                trace(event);
-                _logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
-            });
+            this._myListLoader.addEventListener(
+                MyListLoader.GET_MYLISTGROUP_FAILURE,
+                function (event: ErrorEvent): void {
+                    (event.target as URLLoader).close();
+                    _logManager.addLog(GET_MYLISTGROUP_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" +
+                                       event.text);
+                    trace(GET_MYLISTGROUP_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" + event.text);
+                    dispatchEvent(new IOErrorEvent(
+                        GET_MYLISTGROUP_FAIL,
+                        false,
+                        false,
+                        event.text
+                    ));
+                    close();
+                }
+            );
+            this._myListLoader.addEventListener(
+                HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                function (event: HTTPStatusEvent): void {
+                    trace(event);
+                    _logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+                }
+            );
 
             this._logManager.addLog("マイリストグループの取得:" + this._watchUrl);
             this._myListLoader.getMyListGroup(PathMaker.getVideoID(this._watchUrl));
@@ -172,16 +184,20 @@ package org.mineap.nndd {
             //マイリスト登録開始
             this._myListAdder.addEventListener(MyListAdder.FAIL, function (event: ErrorEvent): void {
 
-                _logManager.addLog("\t" + ADD_MYLSIT_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" + event.text);
+                _logManager.addLog("\t" + ADD_MYLSIT_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" +
+                                   event.text);
                 trace(ADD_MYLSIT_FAIL + ":" + _watchUrl + ":" + event + ":" + event.target + ":" + event.text);
 
                 dispatchEvent(new ErrorEvent(NNDDMyListAdder.ADD_MYLSIT_FAIL, false, false, event.text));
                 close();
             });
-            this._myListAdder.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, function (event: HTTPStatusEvent): void {
-                trace(event);
-                _logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
-            });
+            this._myListAdder.addEventListener(
+                HTTPStatusEvent.HTTP_RESPONSE_STATUS,
+                function (event: HTTPStatusEvent): void {
+                    trace(event);
+                    _logManager.addLog("\t\t" + HTTPStatusEvent.HTTP_RESPONSE_STATUS + ":" + event);
+                }
+            );
             this._myListAdder.addEventListener(MyListAdder.SUCCESS, myListAddSuccess);
             this._myListAdder.addEventListener(MyListAdder.DUP_ERROR, myListAddDup);
             this._myListAdder.addEventListener(MyListAdder.NOTEXIST, myListAddNotExist);

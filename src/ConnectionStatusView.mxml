@@ -10,13 +10,37 @@
         private var loginUrl: String = "https://secure.nicovideo.jp/secure/login_form";
         private var getFlvUrl: String = "http://flapi.nicovideo.jp/api/getflv";
         private var getBgmUrl: String = "http://flapi.nicovideo.jp/api/getbgm";
-        private var messageServerUrlArray: Array = new Array("http://msg.nicovideo.jp/4/api/", "http://msg.nicovideo.jp/13/api/", "http://msg.nicovideo.jp/18/api/", "http://msg.nicovideo.jp/34/api/",
-                "http://msg.nicovideo.jp/38/api/", "http://msg.nicovideo.jp/45/api/");
-        private var videoServerUrlArray: Array = new Array("http://smile-pcm42.nicovideo.jp/smile", "http://smile-pso42.nicovideo.jp/smile", "http://smile-pso00.nicovideo.jp/smile",
-                "http://smile-pso62.nicovideo.jp/smile", "http://smile-pso62.nicovideo.jp/smile", "http://smile-pso22.nicovideo.jp/smile", "http://smile-pso52.nicovideo.jp/smile",
-                "http://smile-pcm51.nicovideo.jp/smile", "http://smile-pcm22.nicovideo.jp/smile", "http://smile-pcm11.nicovideo.jp/smile", "http://smile-pcm52.nicovideo.jp/smile",
-                "http://smile-pcm41.nicovideo.jp/smile", "http://smile-pcm51.nicovideo.jp/smile", "http://smile-pcm32.nicovideo.jp/smile", "http://smile-pcm11.nicovideo.jp/smile");
-        private var thumbImgServerUrlArray: Array = new Array("http://tn-skr1.smilevideo.jp/smile", "http://tn-skr2.smilevideo.jp/smile", "http://tn-skr3.smilevideo.jp/smile", "http://tn-skr4.smilevideo.jp/smile");
+        private var messageServerUrlArray: Array = new Array(
+                "http://msg.nicovideo.jp/4/api/",
+                "http://msg.nicovideo.jp/13/api/",
+                "http://msg.nicovideo.jp/18/api/",
+                "http://msg.nicovideo.jp/34/api/",
+                "http://msg.nicovideo.jp/38/api/",
+                "http://msg.nicovideo.jp/45/api/"
+        );
+        private var videoServerUrlArray: Array = new Array(
+                "http://smile-pcm42.nicovideo.jp/smile",
+                "http://smile-pso42.nicovideo.jp/smile",
+                "http://smile-pso00.nicovideo.jp/smile",
+                "http://smile-pso62.nicovideo.jp/smile",
+                "http://smile-pso62.nicovideo.jp/smile",
+                "http://smile-pso22.nicovideo.jp/smile",
+                "http://smile-pso52.nicovideo.jp/smile",
+                "http://smile-pcm51.nicovideo.jp/smile",
+                "http://smile-pcm22.nicovideo.jp/smile",
+                "http://smile-pcm11.nicovideo.jp/smile",
+                "http://smile-pcm52.nicovideo.jp/smile",
+                "http://smile-pcm41.nicovideo.jp/smile",
+                "http://smile-pcm51.nicovideo.jp/smile",
+                "http://smile-pcm32.nicovideo.jp/smile",
+                "http://smile-pcm11.nicovideo.jp/smile"
+        );
+        private var thumbImgServerUrlArray: Array = new Array(
+                "http://tn-skr1.smilevideo.jp/smile",
+                "http://tn-skr2.smilevideo.jp/smile",
+                "http://tn-skr3.smilevideo.jp/smile",
+                "http://tn-skr4.smilevideo.jp/smile"
+        );
         private var getThumbInfoUrl: String = "http://ext.nicovideo.jp/api/getthumbinfo";
         //			private var ichibaInfoUrlArray:Array = new Array("http://ichiba1.nicovideo.jp/embed", "http://ichiba2.nicovideo.jp/embed", "http://ichiba3.nicovideo.jp/embed", "http://ichiba4.nicovideo.jp/embed");
         private var ichibaInfoUrlArray: Array = new Array("http://ichiba.nicovideo.jp/embed/");

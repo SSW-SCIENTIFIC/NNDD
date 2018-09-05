@@ -64,8 +64,7 @@ package org.mineap.nndd.player {
 
                 players.push(playerController);
                 updateNNDDServerSetting(searchNNDDServerVideo, nnddServerAddress, nnddServerPortNum);
-            }
-            else {
+            } else {
                 if (!players[players.length - 1].isOpen()) {
                     playerController = new PlayerController();
                     playerController.open();
@@ -87,8 +86,7 @@ package org.mineap.nndd.player {
         public function getPlayerAt(index: int): PlayerController {
             if (players.length > index) {
                 return players[index];
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -105,8 +103,7 @@ package org.mineap.nndd.player {
             var player: PlayerController = null;
             if (this.players.length > 9) {
                 player = getLastPlayerController();
-            }
-            else {
+            } else {
                 player = new PlayerController();
                 player.open();
 

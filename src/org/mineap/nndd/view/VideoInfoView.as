@@ -258,8 +258,7 @@ public function checkBoxIsLengthwisePreferredChanged(event: Event): void {
 
     if (checkBox.selected) {
         ConfigManager.getInstance().setItem("isLengthwisePreferred", "true");
-    }
-    else {
+    } else {
         ConfigManager.getInstance().setItem("isLengthwisePreferred", "false");
     }
 
@@ -403,8 +402,7 @@ private function checkBoxIsNotPlayNicowariChanged(event: Event): void {
     if (isNotPlayNicowari) {
         playerController.stopNicowari();
         videoPlayer.hideNicowariArea();
-    }
-    else if (isShowAlwaysNicowariArea) {
+    } else if (isShowAlwaysNicowariArea) {
         videoPlayer.showNicowariArea();
     }
 }
@@ -570,7 +568,8 @@ private function getValueByFps(fps: Number): int {
 
 private function keyListener(event: KeyboardEvent): void {
     if (event.keyCode == Keyboard.ESCAPE) {
-    } else if (event.keyCode == Keyboard.F11 || (event.keyCode == Keyboard.F && (event.controlKey || event.commandKey))) {
+    } else if (event.keyCode == Keyboard.F11 ||
+               (event.keyCode == Keyboard.F && (event.controlKey || event.commandKey))) {
 //		trace("Ctrl + " + event.keyCode);
         this.videoPlayer.changeFull();
     } else if (event.keyCode == Keyboard.C) {
@@ -1258,7 +1257,8 @@ private function readStore(): void {
     } catch (error: Error) {
         trace(error.getStackTrace());
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.FAIL_LOAD_CONF_FILE_FOR_VIDEO_INFO_VIEW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_LOAD_CONF_FILE_FOR_VIDEO_INFO_VIEW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
     }
 
 }
@@ -1320,7 +1320,10 @@ public function saveStore(): void {
         ConfigManager.getInstance().setItem("showCommentSec", showCommentSec);
 
         ConfigManager.getInstance().removeItem("isRenewOtherCommentWithCommentEachPlay");
-        ConfigManager.getInstance().setItem("isRenewOtherCommentWithCommentEachPlay", isRenewOtherCommentWithCommentEachPlay);
+        ConfigManager.getInstance().setItem(
+            "isRenewOtherCommentWithCommentEachPlay",
+            isRenewOtherCommentWithCommentEachPlay
+        );
 
         ConfigManager.getInstance().removeItem("isAntiAlias");
         ConfigManager.getInstance().setItem("isAntiAlias", isAntiAlias);
@@ -1374,7 +1377,10 @@ public function saveStore(): void {
         ConfigManager.getInstance().setItem("isSmoothing", isSmoothing);
 
         ConfigManager.getInstance().removeItem("isSmoothingOnlyNotPixelIdenticalDimensions");
-        ConfigManager.getInstance().setItem("isSmoothingOnlyNotPixelIdenticalDimensions", isSmoothingOnlyNotPixelIdenticalDimensions);
+        ConfigManager.getInstance().setItem(
+            "isSmoothingOnlyNotPixelIdenticalDimensions",
+            isSmoothingOnlyNotPixelIdenticalDimensions
+        );
 
         ConfigManager.getInstance().removeItem("playerQuality");
         ConfigManager.getInstance().setItem("playerQuality", playerQuality);
@@ -1419,7 +1425,8 @@ public function saveStore(): void {
 
     } catch (error: Error) {
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_VIDEO_INFO_VIEW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_VIDEO_INFO_VIEW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
         trace(error.getStackTrace());
     }
 
@@ -1448,7 +1455,8 @@ public function resetWindowPosition(): void {
 
     } catch (error: Error) {
         Alert.show(Message.M_CONF_FILE_IS_BROKEN, Message.M_ERROR);
-        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_VIDEO_INFO_VIEW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" + ConfigManager.getInstance().confFileNativePath + ":" + error);
+        logManager.addLog(Message.FAIL_SAVE_CONF_FILE_FOR_VIDEO_INFO_VIEW + ":" + Message.M_CONF_FILE_IS_BROKEN + ":" +
+                          ConfigManager.getInstance().confFileNativePath + ":" + error);
         trace(error.getStackTrace());
     }
 
@@ -1760,18 +1768,24 @@ public function playListSaveButtonClicked(event: MouseEvent): void {
         playerController.addNewPlayList(urlArray, nameArray);
     } else {
         FlexGlobals.topLevelApplication.activate();
-        Alert.show("既存のプレイリスト(" + playListName + ")を上書きしますか？\n（「いいえ」を選択すると新しいプレイリストを作成します。）", Message.M_MESSAGE, Alert.YES | Alert.NO | Alert.CANCEL, null, function (event: CloseEvent): void {
-            if (event.detail == Alert.YES) {
-                // 上書き
-                playerController.updatePlayList(playListName, urlArray, nameArray);
-            } else if (event.detail == Alert.NO) {
-                // 別名で追加
-                var title: String = playerController.addNewPlayList(urlArray, nameArray);
-                label_playListTitle_dataProvider = title;
-            } else {
+        Alert.show(
+            "既存のプレイリスト(" + playListName + ")を上書きしますか？\n（「いいえ」を選択すると新しいプレイリストを作成します。）",
+            Message.M_MESSAGE,
+            Alert.YES | Alert.NO | Alert.CANCEL,
+            null,
+            function (event: CloseEvent): void {
+                if (event.detail == Alert.YES) {
+                    // 上書き
+                    playerController.updatePlayList(playListName, urlArray, nameArray);
+                } else if (event.detail == Alert.NO) {
+                    // 別名で追加
+                    var title: String = playerController.addNewPlayList(urlArray, nameArray);
+                    label_playListTitle_dataProvider = title;
+                } else {
 
+                }
             }
-        });
+        );
 
     }
 
@@ -1804,7 +1818,10 @@ public function tagListDoubleClickEventHandler(event: ListEvent): void {
         if (event.itemRenderer.data is String) {
             var word: String = String(event.itemRenderer.data);
             Application.application.search(new SearchItem(word,
-                    SearchSortString.convertSortTypeFromIndex(4), NNDDSearchType.TAG, word));
+                                                          SearchSortString.convertSortTypeFromIndex(4),
+                                                          NNDDSearchType.TAG,
+                                                          word
+            ));
         }
     }
 }
@@ -1914,12 +1931,8 @@ public function setMyLists(myListNames: Array, myListNums: Array): void {
 }
 
 private function ownerTextLinkClicked(event: TextEvent): void {
-    if (
-            event.text.indexOf("mylist/") !== -1 ||
-            event.text.indexOf("channel/") !== -1 ||
-            event.text.indexOf("community/") !== -1 ||
-            event.text.indexOf("user/") !== -1
-    ) {
+    if (event.text.indexOf("mylist/") !== -1 || event.text.indexOf("channel/") !== -1 ||
+        event.text.indexOf("community/") !== -1 || event.text.indexOf("user/") !== -1) {
 //		trace(event.text);
         FlexGlobals.topLevelApplication.renewMyList(event.text);
     } else if (event.text.indexOf("watch/") !== -1) {

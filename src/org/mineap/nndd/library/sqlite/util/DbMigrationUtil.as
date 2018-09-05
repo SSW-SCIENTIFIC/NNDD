@@ -5,7 +5,6 @@ package org.mineap.nndd.library.sqlite.util {
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.library.namedarray.LibraryXMLHelper;
     import org.mineap.nndd.library.sqlite.DbAccessHelper;
-    import org.mineap.nndd.library.sqlite.SQLiteLibraryManager;
     import org.mineap.nndd.library.sqlite.dao.NNDDVideoDao;
     import org.mineap.nndd.model.NNDDVideo;
 

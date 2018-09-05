@@ -12,7 +12,6 @@ package org.mineap.nndd.history {
     import org.mineap.nndd.util.DateUtil;
     import org.mineap.nndd.util.LibraryUtil;
     import org.mineap.nndd.util.PathMaker;
-    import org.mineap.util.config.ConfUtil;
     import org.mineap.util.config.ConfigManager;
 
     /**
@@ -69,8 +68,7 @@ package org.mineap.nndd.history {
                 if (temp >= 100 && temp <= 10000) {
                     historyMaxCount = temp;
                 }
-            }
-            else {
+            } else {
                 ConfigManager.getInstance().setItem("historyMaxCount", DEFAULT_HISTORY_MAX_COUNT);
                 ConfigManager.getInstance().save();
             }
@@ -98,7 +96,11 @@ package org.mineap.nndd.history {
          * @param nnddVideo
          *
          */
-        public function addVideoByNNDDVideo(nnddVideo: NNDDVideo, playDate: Date = null, isDownloaded: Boolean = true): void {
+        public function addVideoByNNDDVideo(
+            nnddVideo: NNDDVideo,
+            playDate: Date = null,
+            isDownloaded: Boolean = true
+        ): void {
 
             var date: Date = new Date();
 
@@ -129,33 +131,32 @@ package org.mineap.nndd.history {
                     try {
                         var file: File = new File(thumbUrl);
                         thumbUrl = file.nativePath;
-                    }
-                    catch (error: Error) {
+                    } catch (error: Error) {
                         trace(error);
                     }
                 }
 
                 historyProvider.addItemAt({
-                    dataGridColumn_thumbImage: thumbUrl,
-                    dataGridColumn_videoName: nnddVideo.getVideoNameWithVideoID(),
-                    dataGridColumn_playdate: DateUtil.getDateString(date),
-                    dataGridColumn_condition: "ダウンロード済み",
-                    dataGridColumn_count: nnddVideo.playCount,
-                    dataGridColumn_time: timeString,
-                    dataGridColumn_url: nnddVideo.getDecodeUrl()
-                }, 0);
+                                              dataGridColumn_thumbImage: thumbUrl,
+                                              dataGridColumn_videoName: nnddVideo.getVideoNameWithVideoID(),
+                                              dataGridColumn_playdate: DateUtil.getDateString(date),
+                                              dataGridColumn_condition: "ダウンロード済み",
+                                              dataGridColumn_count: nnddVideo.playCount,
+                                              dataGridColumn_time: timeString,
+                                              dataGridColumn_url: nnddVideo.getDecodeUrl()
+                                          }, 0);
 
             } else {
 
                 historyProvider.addItemAt({
-                    dataGridColumn_thumbImage: nnddVideo.thumbUrl,
-                    dataGridColumn_videoName: nnddVideo.getVideoNameWithVideoID(),
-                    dataGridColumn_playdate: DateUtil.getDateString(date),
-                    dataGridColumn_condition: "未ダウンロード",
-                    dataGridColumn_count: 0,
-                    dataGridColumn_time: timeString,
-                    dataGridColumn_url: nnddVideo.getDecodeUrl()
-                }, 0);
+                                              dataGridColumn_thumbImage: nnddVideo.thumbUrl,
+                                              dataGridColumn_videoName: nnddVideo.getVideoNameWithVideoID(),
+                                              dataGridColumn_playdate: DateUtil.getDateString(date),
+                                              dataGridColumn_condition: "未ダウンロード",
+                                              dataGridColumn_count: 0,
+                                              dataGridColumn_time: timeString,
+                                              dataGridColumn_url: nnddVideo.getDecodeUrl()
+                                          }, 0);
 
             }
 
@@ -273,14 +274,14 @@ package org.mineap.nndd.history {
                     }
 
                     historyProvider.addItem({
-                        dataGridColumn_thumbImage: decodeURIComponent(historyItem.@thumbUrl),
-                        dataGridColumn_videoName: decodeURIComponent(historyItem.@videoName),
-                        dataGridColumn_playdate: DateUtil.getDateString(playDate),
-                        dataGridColumn_count: playCount,
-                        dataGridColumn_condition: condition,
-                        dataGridColumn_time: timeString,
-                        dataGridColumn_url: decodeURIComponent(url)
-                    });
+                                                dataGridColumn_thumbImage: decodeURIComponent(historyItem.@thumbUrl),
+                                                dataGridColumn_videoName: decodeURIComponent(historyItem.@videoName),
+                                                dataGridColumn_playdate: DateUtil.getDateString(playDate),
+                                                dataGridColumn_count: playCount,
+                                                dataGridColumn_condition: condition,
+                                                dataGridColumn_time: timeString,
+                                                dataGridColumn_url: decodeURIComponent(url)
+                                            });
 
                 }
 
@@ -320,38 +321,38 @@ package org.mineap.nndd.history {
                     }
 
                     historyProvider.setItemAt({
-                        dataGridColumn_thumbImage: historyProvider[i].dataGridColumn_thumbImage,
-                        dataGridColumn_videoName: historyProvider[i].dataGridColumn_videoName,
-                        dataGridColumn_playdate: historyProvider[i].dataGridColumn_playdate,
-                        dataGridColumn_condition: "ダウンロード済み",
-                        dataGridColumn_count: video.playCount,
-                        dataGridColumn_time: timeString,
-                        dataGridColumn_url: video.getDecodeUrl()
-                    }, i);
+                                                  dataGridColumn_thumbImage: historyProvider[i].dataGridColumn_thumbImage,
+                                                  dataGridColumn_videoName: historyProvider[i].dataGridColumn_videoName,
+                                                  dataGridColumn_playdate: historyProvider[i].dataGridColumn_playdate,
+                                                  dataGridColumn_condition: "ダウンロード済み",
+                                                  dataGridColumn_count: video.playCount,
+                                                  dataGridColumn_time: timeString,
+                                                  dataGridColumn_url: video.getDecodeUrl()
+                                              }, i);
 
                 } else if (videoId != null) {
 
                     historyProvider.setItemAt({
-                        dataGridColumn_thumbImage: historyProvider[i].dataGridColumn_thumbImage,
-                        dataGridColumn_videoName: historyProvider[i].dataGridColumn_videoName,
-                        dataGridColumn_playdate: historyProvider[i].dataGridColumn_playdate,
-                        dataGridColumn_condition: "未ダウンロード",
-                        dataGridColumn_count: historyProvider[i].dataGridColumn_count,
-                        dataGridColumn_time: historyProvider[i].dataGridColumn_time,
-                        dataGridColumn_url: "http://www.nicovideo.jp/watch/" + videoId
-                    }, i);
+                                                  dataGridColumn_thumbImage: historyProvider[i].dataGridColumn_thumbImage,
+                                                  dataGridColumn_videoName: historyProvider[i].dataGridColumn_videoName,
+                                                  dataGridColumn_playdate: historyProvider[i].dataGridColumn_playdate,
+                                                  dataGridColumn_condition: "未ダウンロード",
+                                                  dataGridColumn_count: historyProvider[i].dataGridColumn_count,
+                                                  dataGridColumn_time: historyProvider[i].dataGridColumn_time,
+                                                  dataGridColumn_url: "http://www.nicovideo.jp/watch/" + videoId
+                                              }, i);
 
                 } else {
 
                     historyProvider.setItemAt({
-                        dataGridColumn_thumbImage: historyProvider[i].dataGridColumn_thumbImage,
-                        dataGridColumn_videoName: historyProvider[i].dataGridColumn_videoName,
-                        dataGridColumn_playdate: historyProvider[i].dataGridColumn_playdate,
-                        dataGridColumn_condition: "未ダウンロード",
-                        dataGridColumn_count: historyProvider[i].dataGridColumn_count,
-                        dataGridColumn_time: historyProvider[i].dataGridColumn_time,
-                        dataGridColumn_url: historyProvider[i].dataGridColumn_url
-                    }, i);
+                                                  dataGridColumn_thumbImage: historyProvider[i].dataGridColumn_thumbImage,
+                                                  dataGridColumn_videoName: historyProvider[i].dataGridColumn_videoName,
+                                                  dataGridColumn_playdate: historyProvider[i].dataGridColumn_playdate,
+                                                  dataGridColumn_condition: "未ダウンロード",
+                                                  dataGridColumn_count: historyProvider[i].dataGridColumn_count,
+                                                  dataGridColumn_time: historyProvider[i].dataGridColumn_time,
+                                                  dataGridColumn_url: historyProvider[i].dataGridColumn_url
+                                              }, i);
 
                 }
             }

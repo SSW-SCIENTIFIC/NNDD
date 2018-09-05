@@ -2,8 +2,6 @@ package org.mineap.nndd.library.namedarray {
     import flash.events.EventDispatcher;
     import flash.filesystem.File;
 
-    import mx.controls.TileList;
-
     import org.mineap.nndd.FileIO;
     import org.mineap.nndd.LogManager;
     import org.mineap.nndd.event.LibraryLoadEvent;
@@ -11,7 +9,6 @@ package org.mineap.nndd.library.namedarray {
     import org.mineap.nndd.library.LibraryDirSearchUtil;
     import org.mineap.nndd.library.LocalVideoInfoLoader;
     import org.mineap.nndd.model.NNDDVideo;
-    import org.mineap.nndd.model.VideoType;
     import org.mineap.nndd.tag.TagManager;
     import org.mineap.nndd.util.LibraryUtil;
 
@@ -24,8 +21,7 @@ package org.mineap.nndd.library.namedarray {
      *
      * @author shiraminekeisuke (MineAP)
      *
-     */
-    public class NamedArrayLibraryManager extends EventDispatcher implements ILibraryManager {
+     */ public class NamedArrayLibraryManager extends EventDispatcher implements ILibraryManager {
 
         /**
          * ロガー
@@ -156,8 +152,7 @@ package org.mineap.nndd.library.namedarray {
         public function get systemFileDir(): File {
             if (!_useAppDirSystemFile) {
                 return new File(libraryDir.resolvePath("system/").url);
-            }
-            else {
+            } else {
                 return new File(File.applicationStorageDirectory.resolvePath("system/").url);
             }
         }
@@ -372,7 +367,13 @@ package org.mineap.nndd.library.namedarray {
 
             if (videoList.length == 0) {
                 this._libraryDirMap = convertVideoIdMapToDirMap(this._libraryVideoIdMap);
-                dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
+                dispatchEvent(new LibraryLoadEvent(
+                    LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                    false,
+                    false,
+                    _totalVideoCount,
+                    _videoCount
+                ));
             }
         }
 
@@ -414,7 +415,14 @@ package org.mineap.nndd.library.namedarray {
                 _tempLibraryMap[key] = nnddVideo;
 
                 if (index % 10 == 0) {
-                    dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOADING, false, false, _totalVideoCount, _videoCount, file));
+                    dispatchEvent(new LibraryLoadEvent(
+                        LibraryLoadEvent.LIBRARY_LOADING,
+                        false,
+                        false,
+                        _totalVideoCount,
+                        _videoCount,
+                        file
+                    ));
                     trace(_videoCount + "(" + index + "):" + file.nativePath);
                 }
 
@@ -473,7 +481,13 @@ package org.mineap.nndd.library.namedarray {
                     this._libraryDirMap = convertVideoIdMapToDirMap(this._libraryVideoIdMap);
                     this._tagManager.loadTag();
 
-                    dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
+                    dispatchEvent(new LibraryLoadEvent(
+                        LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                        false,
+                        false,
+                        _totalVideoCount,
+                        _videoCount
+                    ));
                 }
 
             } catch (error: Error) {
@@ -489,7 +503,13 @@ package org.mineap.nndd.library.namedarray {
                     this._libraryDirMap = convertVideoIdMapToDirMap(this._libraryVideoIdMap);
                     this._tagManager.loadTag();
 
-                    dispatchEvent(new LibraryLoadEvent(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, false, false, _totalVideoCount, _videoCount));
+                    dispatchEvent(new LibraryLoadEvent(
+                        LibraryLoadEvent.LIBRARY_LOAD_COMPLETE,
+                        false,
+                        false,
+                        _totalVideoCount,
+                        _videoCount
+                    ));
                 }
             }
 
@@ -615,7 +635,16 @@ package org.mineap.nndd.library.namedarray {
                     // Dir-NNDDVideoMapから取り除く
                     removeFromDirMap(video);
 
-                    var newVideo: NNDDVideo = new NNDDVideo(encodeURI(url), null, video.isEconomy, video.tagStrings, video.modificationDate, video.creationDate, video.thumbUrl, video.playCount);
+                    var newVideo: NNDDVideo = new NNDDVideo(
+                        encodeURI(url),
+                        null,
+                        video.isEconomy,
+                        video.tagStrings,
+                        video.modificationDate,
+                        video.creationDate,
+                        video.thumbUrl,
+                        video.playCount
+                    );
                     this._libraryVideoIdMap[LibraryUtil.getVideoKey(video.getDecodeUrl())] = newVideo;
 
                     // Dir-NNDDVideoMapに追加
@@ -679,7 +708,8 @@ package org.mineap.nndd.library.namedarray {
                     continue;
                 }
 
-                if (dir != null && (decodeURIComponent(dir.url) == video.getDecodeUrl().substr(0, video.getDecodeUrl().lastIndexOf("/")))) {
+                if (dir != null && (decodeURIComponent(dir.url) ==
+                                    video.getDecodeUrl().substr(0, video.getDecodeUrl().lastIndexOf("/")))) {
                     for each(var tag: String in video.tagStrings) {
                         if (map[tag] == null) {
                             array.push(tag);

@@ -1,4 +1,5 @@
 package org.mineap.nndd.model {
+    import org.mineap.nicovideo4as.model.search.SearchOrderType;
     import org.mineap.nicovideo4as.model.search.SearchSortType;
 
     /**
@@ -90,28 +91,28 @@ package org.mineap.nndd.model {
          * @return
          *
          */
-        public static function convertSortTypeNumToN4A(type: int): org.mineap.nicovideo4as.model.search.SearchSortType {
+        public static function convertSortTypeNumToN4A(type: int): SearchSortType {
 
-            var typeStr: org.mineap.nicovideo4as.model.search.SearchSortType = org.mineap.nicovideo4as.model.search.SearchSortType.MYLIST_COUNTER;
+            var typeStr: SearchSortType = SearchSortType.MYLIST_COUNTER;
 
             switch (type) {
                 case COMMENT_TIME:
-                    typeStr = org.mineap.nicovideo4as.model.search.SearchSortType.NEW_COMMENT;
+                    typeStr = SearchSortType.NEW_COMMENT;
                     break;
                 case PLAY_COUNT:
-                    typeStr = org.mineap.nicovideo4as.model.search.SearchSortType.VIEW_COUNTER;
+                    typeStr = SearchSortType.VIEW_COUNTER;
                     break;
                 case COMMENT_COUNT:
-                    typeStr = org.mineap.nicovideo4as.model.search.SearchSortType.NUM_RES;
+                    typeStr = SearchSortType.NUM_RES;
                     break;
                 case MYLIST_COUNT:
-                    typeStr = org.mineap.nicovideo4as.model.search.SearchSortType.MYLIST_COUNTER;
+                    typeStr = SearchSortType.MYLIST_COUNTER;
                     break;
                 case CONTRIBUTE:
-                    typeStr = org.mineap.nicovideo4as.model.search.SearchSortType.FIRST_RETRIVE;
+                    typeStr = SearchSortType.FIRST_RETRIVE;
                     break;
                 case PLAY_TIME:
-                    typeStr = org.mineap.nicovideo4as.model.search.SearchSortType.LENGTH;
+                    typeStr = SearchSortType.LENGTH;
                     break;
             }
 
@@ -125,11 +126,11 @@ package org.mineap.nndd.model {
          * @return
          *
          */
-        public static function convertSortOrderTypeNumToN4A(order: int): org.mineap.nicovideo4as.model.search.SearchOrderType {
+        public static function convertSortOrderTypeNumToN4A(order: int): SearchOrderType {
             if (order == ORDER_A) {
-                return org.mineap.nicovideo4as.model.search.SearchOrderType.ASCENDING;
+                return SearchOrderType.ASCENDING;
             }
-            return org.mineap.nicovideo4as.model.search.SearchOrderType.DESCENDING;
+            return SearchOrderType.DESCENDING;
         }
 
         /**

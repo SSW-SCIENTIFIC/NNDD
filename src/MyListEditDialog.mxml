@@ -8,17 +8,11 @@
 
     <mx:Script>
 		<![CDATA[
+        import mx.controls.Alert;
         import mx.events.ListEvent;
-
-        import org.mineap.nndd.myList.MyListBuilder;
-        import org.mineap.nndd.Message;
-
-        import mx.events.IndexChangedEvent;
         import mx.managers.PopUpManager;
 
         import org.mineap.nndd.LogManager;
-
-        import mx.controls.Alert;
 
         private var logManager: LogManager;
         private var _name: String;

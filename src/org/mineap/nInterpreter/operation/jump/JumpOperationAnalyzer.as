@@ -8,37 +8,44 @@ package org.mineap.nInterpreter.operation.jump {
         /**
          * 「jump(id:'動画ID')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_1: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_1: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*\\)");
 
         /**
          * 「jump(id:'動画ID',msg:'メッセージ')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_2: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_2: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*\\)");
 
         /**
          * 「jump(id:'動画ID',msg:'メッセージ',from:'開始位置')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_3: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_3: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*\\)");
 
         /**
          * 「jump(id:'動画ID',msg:'メッセージ',from:'開始位置',length:'再生時間')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_4: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_4: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*\\)");
 
         /**
          * 「jump(id:'動画ID',msg:'メッセージ',from:'開始位置',length:'再生時間',return:'戻り')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_5: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_5: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*\\)");
 
         /**
          * 「jump(id:'動画ID',msg:'メッセージ',from:'開始位置',length:'再生時間',return:'戻り',returmmsg:'戻りメッセージ')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_6: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*,returnmsg['\"]([^'\"]*)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_6: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*,returnmsg['\"]([^'\"]*)['\"][\\s]*\\)");
 
         /**
          * 「jump(id:'動画ID',msg:'メッセージ',from:'開始位置',length:'再生時間',return:'戻り',returmmsg:'戻りメッセージ',newwindow:'対象窓')」を解析するための正規表現
          */
-        public static const JUMP_OPERATION_PATTERN_7: RegExp = new RegExp("jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*,returnmsg['\"]([^'\"]*)['\"][\\s]*,newwindow:['\"]([^'\"]*)['\"][\\s]*\\)");
+        public static const JUMP_OPERATION_PATTERN_7: RegExp = new RegExp(
+            "jump\\(i?d?:?['\"]([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)['\"][\\s]*,msg:['\"]([^'\"]*)['\"][\\s]*,from:['\"]([^'\"]*)['\"][\\s]*,length:['\"]([^'\"]*)['\"][\\s]*,return:['\"]([^'\"]*)['\"][\\s]*,returnmsg['\"]([^'\"]*)['\"][\\s]*,newwindow:['\"]([^'\"]*)['\"][\\s]*\\)");
 
         /**
          *

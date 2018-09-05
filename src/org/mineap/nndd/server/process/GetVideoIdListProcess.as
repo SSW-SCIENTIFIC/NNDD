@@ -6,7 +6,6 @@ package org.mineap.nndd.server.process {
     import org.mineap.nndd.library.LibraryManagerBuilder;
     import org.mineap.nndd.model.NNDDVideo;
     import org.mineap.nndd.server.IRequestProcess;
-    import org.mineap.nndd.util.LibraryUtil;
     import org.mineap.nndd.util.PathMaker;
 
     /**
@@ -48,7 +47,8 @@ package org.mineap.nndd.server.process {
             httpResponse.body = nnddResponse.toXMLString();
             httpResponse.statusCode = 200;
 
-            LogManager.instance.addLog("動画リスト取得要求:list.len=" + videoList.length + ", resCode=" + httpResponse.statusCode);
+            LogManager.instance.addLog("動画リスト取得要求:list.len=" + videoList.length + ", resCode=" +
+                                       httpResponse.statusCode);
         }
     }
 }

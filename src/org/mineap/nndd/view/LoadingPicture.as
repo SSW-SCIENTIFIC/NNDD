@@ -1,5 +1,4 @@
 package org.mineap.nndd.view {
-    import flash.display.CapsStyle;
     import flash.display.DisplayObjectContainer;
     import flash.display.Sprite;
     import flash.events.Event;
@@ -60,9 +59,14 @@ package org.mineap.nndd.view {
             _rotationPerFrame = value;
         }
 
-        public function LoadingPicture(
-                radius: Number = 70, num: Number = 12, aWidth: Number = 6, length: Number = 20,
-                startColor: uint = 0x444444, endColor: uint = 0xdddddd, capsStyle: String = null) {
+        public function LoadingPicture(radius: Number = 70,
+                                       num: Number = 12,
+                                       aWidth: Number = 6,
+                                       length: Number = 20,
+                                       startColor: uint = 0x444444,
+                                       endColor: uint = 0xdddddd,
+                                       capsStyle: String = null
+        ) {
 
             _radius = radius;
             _num = num;

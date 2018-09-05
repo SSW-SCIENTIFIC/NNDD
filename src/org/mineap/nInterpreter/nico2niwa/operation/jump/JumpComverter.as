@@ -34,19 +34,22 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
          * 次のニコスクリプトを解析する正規表現です。
          * "＠ジャンプ ジャンプ先 [ジャンプメッセージ] [ジャンプ先再生開始位置]"
          */
-        public static const JUMP_OPERATION_PATTERN3: RegExp = new RegExp("ジャンプ\\s+([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)\\s+([\\S]+)\\s+([\\S]+)");
+        public static const JUMP_OPERATION_PATTERN3: RegExp = new RegExp(
+            "ジャンプ\\s+([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)\\s+([\\S]+)\\s+([\\S]+)");
 
         /**
          * 次のニコスクリプトを解析する正規表現です。
          * "＠ジャンプ ジャンプ先 [ジャンプメッセージ] [ジャンプ先再生開始位置] [戻り秒数]"
          */
-        public static const JUMP_OPERATION_PATTERN4: RegExp = new RegExp("ジャンプ\\s+([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)\\s+([\\S]+)\\s+([\\S]+)\\s+([\\S]+)");
+        public static const JUMP_OPERATION_PATTERN4: RegExp = new RegExp(
+            "ジャンプ\\s+([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)\\s+([\\S]+)\\s+([\\S]+)\\s+([\\S]+)");
 
         /**
          * 次のニコスクリプトを解析する正規表現です。
          * "＠ジャンプ ジャンプ先 [ジャンプメッセージ] [ジャンプ先再生開始位置] [戻り秒数] [戻りメッセージ]"
          */
-        public static const JUMP_OPERATION_PATTERN5: RegExp = new RegExp("ジャンプ\\s+([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)\\s+([\\S]+)\\s+([\\S]+)\\s+([\\S]+)\\s+([\\S]+)");
+        public static const JUMP_OPERATION_PATTERN5: RegExp = new RegExp(
+            "ジャンプ\\s+([A-LN-Za-ln-z0-9][A-Za-z0-9]\\d+)\\s+([\\S]+)\\s+([\\S]+)\\s+([\\S]+)\\s+([\\S]+)");
 
         /**
          * ジャンプ先が動画IDでないとき、時間指定なのかラベル指定なのかを調べるための正規表現です。
@@ -140,9 +143,8 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
                             jumpTo = VIDEO_ID_PATTERN.exec(array[1]);
                             if (jumpTo != null && jumpTo.length > 0) {
                                 //ジャンプ先は動画ID
-                                operation = JUMP_PRE + JUMP_P_ID +
-                                        JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE +
-                                        JUMP_LAST;
+                                operation =
+                                    JUMP_PRE + JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + JUMP_LAST;
                             } else {
                                 jumpTo = JUMP_TO_TIME_PATTERN.exec(array[1]);
                                 if (jumpTo != null) {
@@ -152,13 +154,12 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
                                         sec = jumpTo[2];
                                         vpos = String(int(((min * 60) + sec)));
 
-                                        operation = SEEK_PRE + SEEK_P_VPOS +
-                                                SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
-                                                SEEK_LAST;
+                                        operation =
+                                            SEEK_PRE + SEEK_P_VPOS + SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
+                                            SEEK_LAST;
 
                                     }
-                                }
-                                else {
+                                } else {
                                     jumpTo = JUMP_TO_LABEL_PATTERN.exec(array[1]);
                                     if (jumpTo.length == 2) {
 
@@ -168,9 +169,9 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
 
                                         if (vpos != null) {
                                             //ジャンプマーカへのジャンプはseek命令
-                                            operation = SEEK_PRE + SEEK_P_VPOS +
-                                                    SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
-                                                    SEEK_LAST;
+                                            operation =
+                                                SEEK_PRE + SEEK_P_VPOS + SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
+                                                SEEK_LAST;
                                         }
                                     }
                                 }
@@ -183,11 +184,9 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
                             jumpTo = VIDEO_ID_PATTERN.exec(array[1]);
                             if (jumpTo != null && jumpTo.length > 0) {
                                 //ジャンプ先はID
-                                operation = JUMP_PRE +
-                                        JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE +
-                                        JUMP_COMMA +
-                                        JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE +
-                                        JUMP_LAST;
+                                operation = JUMP_PRE + JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE +
+                                            JUMP_COMMA + JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE +
+                                            JUMP_LAST;
                             } else {
                                 jumpTo = JUMP_TO_TIME_PATTERN.exec(array[1]);
                                 if (jumpTo != null) {
@@ -197,9 +196,9 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
                                         sec = jumpTo[2];
                                         vpos = String(int(((min * 60) + sec)));
 
-                                        operation = SEEK_PRE + SEEK_P_VPOS +
-                                                SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
-                                                SEEK_LAST;
+                                        operation =
+                                            SEEK_PRE + SEEK_P_VPOS + SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
+                                            SEEK_LAST;
 
                                     }
                                 } else {
@@ -211,9 +210,9 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
 
                                         if (vpos != null) {
                                             //ジャンプマーカへのジャンプはseek命令
-                                            operation = SEEK_PRE + SEEK_P_VPOS +
-                                                    SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
-                                                    SEEK_LAST;
+                                            operation =
+                                                SEEK_PRE + SEEK_P_VPOS + SEEK_DOUBLE_QUOTE + vpos + SEEK_DOUBLE_QUOTE +
+                                                SEEK_LAST;
                                         }
                                     }
                                 }
@@ -224,33 +223,27 @@ package org.mineap.nInterpreter.nico2niwa.operation.jump {
                         // TODO 第3引数以降は無視
                         array = JUMP_OPERATION_PATTERN3.exec(line);
                         if (array != null && array.length > 0) {
-                            operation = JUMP_PRE +
-                                    JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE +
-                                    JUMP_COMMA +
-                                    JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE +
-                                    JUMP_LAST;
+                            operation =
+                                JUMP_PRE + JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + JUMP_COMMA +
+                                JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE + JUMP_LAST;
                         }
                         break;
                     case 5:
                         // TODO 第3引数以降は無視
                         array = JUMP_OPERATION_PATTERN4.exec(line);
                         if (array != null && array.length > 0) {
-                            operation = JUMP_PRE +
-                                    JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE +
-                                    JUMP_COMMA +
-                                    JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE +
-                                    JUMP_LAST;
+                            operation =
+                                JUMP_PRE + JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + JUMP_COMMA +
+                                JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE + JUMP_LAST;
                         }
                         break;
                     case 6:
                         // TODO 第3引数以降は無視
                         array = JUMP_OPERATION_PATTERN5.exec(line);
                         if (array != null && array.length > 0) {
-                            operation = JUMP_PRE +
-                                    JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE +
-                                    JUMP_COMMA +
-                                    JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE +
-                                    JUMP_LAST;
+                            operation =
+                                JUMP_PRE + JUMP_P_ID + JUMP_DOUBLE_QUOTE + array[1] + JUMP_DOUBLE_QUOTE + JUMP_COMMA +
+                                JUMP_P_MSG + JUMP_DOUBLE_QUOTE + array[2] + JUMP_DOUBLE_QUOTE + JUMP_LAST;
                         }
                         break;
                     default:

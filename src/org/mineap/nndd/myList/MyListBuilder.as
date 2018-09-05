@@ -1,6 +1,5 @@
 package org.mineap.nndd.myList {
     import mx.collections.ArrayCollection;
-    import mx.controls.DataGrid;
 
     import org.mineap.nicovideo4as.util.HtmlUtil;
     import org.mineap.nndd.LogManager;
@@ -11,7 +10,6 @@ package org.mineap.nndd.myList {
     import org.mineap.nndd.util.MyListUtil;
     import org.mineap.nndd.util.NicoPattern;
     import org.mineap.nndd.util.PathMaker;
-
 
     /**
      *
@@ -42,7 +40,11 @@ package org.mineap.nndd.myList {
          * @return
          *
          */
-        public function getMyListArrayCollection(myListId: String, xml: XML, onlyUnPlay: Boolean = false): ArrayCollection {
+        public function getMyListArrayCollection(
+            myListId: String,
+            xml: XML,
+            onlyUnPlay: Boolean = false
+        ): ArrayCollection {
 
             /*
                 <channel>
@@ -191,19 +193,19 @@ package org.mineap.nndd.myList {
                     }
 
                     arrayCollection.addItem({
-                        dataGridColumn_index: index++,
-                        dataGridColumn_preview: thumbUrl,
-                        dataGridColumn_videoName: title + "\n" + length + "\n" + date,
-                        dataGridColumn_videoInfo: "",
-                        dataGridColumn_ownerInfo: info,
-                        dataGridColumn_condition: condition,
-                        dataGridColumn_videoUrl: videoUrl,
-                        dataGridColumn_videoLocalPath: videoLocalPath,
-                        dataGridColumn_played: played,
-                        dataGridColumn_videoId: videoId,
-                        dataGridColumn_myListId: myListId,
-                        dataGridColumn_type: type
-                    });
+                                                dataGridColumn_index: index++,
+                                                dataGridColumn_preview: thumbUrl,
+                                                dataGridColumn_videoName: title + "\n" + length + "\n" + date,
+                                                dataGridColumn_videoInfo: "",
+                                                dataGridColumn_ownerInfo: info,
+                                                dataGridColumn_condition: condition,
+                                                dataGridColumn_videoUrl: videoUrl,
+                                                dataGridColumn_videoLocalPath: videoLocalPath,
+                                                dataGridColumn_played: played,
+                                                dataGridColumn_videoId: videoId,
+                                                dataGridColumn_myListId: myListId,
+                                                dataGridColumn_type: type
+                                            });
 
                 }
 

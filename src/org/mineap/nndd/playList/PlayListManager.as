@@ -1,17 +1,7 @@
 package org.mineap.nndd.playList {
-    import flash.errors.IOError;
-    import flash.events.Event;
-    import flash.events.EventDispatcher;
-    import flash.events.IOErrorEvent;
     import flash.filesystem.File;
-    import flash.media.Video;
-    import flash.net.URLLoader;
-    import flash.net.URLRequest;
 
-    import mx.collections.ArrayCollection;
     import mx.controls.Alert;
-    import mx.controls.DataGrid;
-    import mx.events.CloseEvent;
 
     import org.mineap.nndd.FileIO;
     import org.mineap.nndd.LogManager;
@@ -20,9 +10,7 @@ package org.mineap.nndd.playList {
     import org.mineap.nndd.library.LibraryManagerBuilder;
     import org.mineap.nndd.model.NNDDVideo;
     import org.mineap.nndd.model.PlayList;
-    import org.mineap.nndd.util.DateUtil;
     import org.mineap.nndd.util.LibraryUtil;
-    import org.mineap.nndd.util.PathMaker;
 
     /**
      * プレイリストの管理を行うクラスです。
@@ -154,9 +142,7 @@ package org.mineap.nndd.playList {
                 trace(error.getStackTrace());
             }
             if (str == null) {
-                Alert.show("プレイリストの読み込みに失敗しました。\n" +
-                        "指定されたプレイリストが存在しません。\n" +
-                        "パス:" + path, Message.M_ERROR);
+                Alert.show("プレイリストの読み込みに失敗しました。\n" + "指定されたプレイリストが存在しません。\n" + "パス:" + path, Message.M_ERROR);
                 logManager.addLog("プレイリストの読み込みに失敗(プレイリストが存在しない):" + path);
                 return videoArray;
             }

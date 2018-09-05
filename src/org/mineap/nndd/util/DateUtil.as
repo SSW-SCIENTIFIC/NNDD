@@ -1,12 +1,12 @@
 package org.mineap.nndd.util {
+    import mx.formatters.DateFormatter;
+
     /**
      *
      * @author shiraminekeisuke(MineAP)
      *
      */
     public class DateUtil {
-        import mx.formatters.DateFormatter;
-
         public function DateUtil() {
         }
 

@@ -31,10 +31,8 @@ package org.mineap.nndd.util {
             if ("市場情報が取得できませんでした。" == ichibaHTML) {
                 var array: ArrayCollection = new ArrayCollection();
                 array.addItem({
-                    col_image: "",
-                    col_info: ichibaHTML,
-                    col_link: ""
-                });
+                                  col_image: "", col_info: ichibaHTML, col_link: ""
+                              });
                 return array;
             } else {
                 return parse(ichibaHTML);
@@ -80,9 +78,10 @@ package org.mineap.nndd.util {
 
                 //画像のURLとタイトルを取得
                 var pattern_imgUrlAndTitle: RegExp = new RegExp(
-                        "(http://ecx.images-amazon.com/images/./[^\"]*|" +
-                        "http://item.shopping.c.yimg.jp/././[^\"]*|" +
-                        "http://[^/]*.e.akamai.net/[^/]*/[^/]*/[^/]*/[^/]*/image.shopping.yahoo.co.jp/././[^\"]*)\".*title=\"([^\"]*)\"[^>]*>", "ig");
+                    "(http://ecx.images-amazon.com/images/./[^\"]*|" + "http://item.shopping.c.yimg.jp/././[^\"]*|" +
+                    "http://[^/]*.e.akamai.net/[^/]*/[^/]*/[^/]*/[^/]*/image.shopping.yahoo.co.jp/././[^\"]*)\".*title=\"([^\"]*)\"[^>]*>",
+                    "ig"
+                );
                 pattern_imgUrlAndTitle.lastIndex = gIndex;
                 var execIandT: Object = pattern_imgUrlAndTitle.exec(ichibaHTML);
                 if (execIandT == null) {
@@ -114,7 +113,10 @@ package org.mineap.nndd.util {
                     gIndex = execASIN.index;
                 } else {
                     //ASIN not found = Yahooの時
-                    pattern_itemLink = new RegExp("href=\".*(http\\%3A\\%2F\\%2Frd.store.yahoo.co.jp\\%2.*.html)[^\"]*\" class=\"ichiba_item\"", "ig");
+                    pattern_itemLink = new RegExp(
+                        "href=\".*(http\\%3A\\%2F\\%2Frd.store.yahoo.co.jp\\%2.*.html)[^\"]*\" class=\"ichiba_item\"",
+                        "ig"
+                    );
                     pattern_itemLink.lastIndex = execIandT.index;
                     execASIN = pattern_itemLink.exec(ichibaHTML);
                     if (execASIN != null && execASIN.index < endIndex) {
@@ -139,7 +141,10 @@ package org.mineap.nndd.util {
                 }
 
                 //発売日抽出
-                var pattern_OnSaleDate: RegExp = new RegExp("(\\d\\d\\d\\d/\\d\\d/\\d\\d|\\d\\d\\d\\d\-\\d\\d\-\\d\\d)", "ig");
+                var pattern_OnSaleDate: RegExp = new RegExp(
+                    "(\\d\\d\\d\\d/\\d\\d/\\d\\d|\\d\\d\\d\\d\-\\d\\d\-\\d\\d)",
+                    "ig"
+                );
                 pattern_OnSaleDate.lastIndex = execIandT.index;
                 var execOnSaleDate: Object = pattern_OnSaleDate.exec(ichibaHTML);
                 if (execOnSaleDate != null && execOnSaleDate.index < endIndex) {
@@ -179,10 +184,8 @@ package org.mineap.nndd.util {
                 }
 
                 array.addItem({
-                    col_image: imageURL,
-                    col_info: itemInfo,
-                    col_link: linkURL
-                });
+                                  col_image: imageURL, col_info: itemInfo, col_link: linkURL
+                              });
 
 //				gIndex = endIndex;
 
@@ -191,8 +194,8 @@ package org.mineap.nndd.util {
 
             if (array.length == 0) {
                 array.addItem({
-                    col_info: "市場情報が存在しないか、\n市場情報の解析に失敗しました。"
-                });
+                                  col_info: "市場情報が存在しないか、\n市場情報の解析に失敗しました。"
+                              });
             }
 
             return array;

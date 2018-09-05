@@ -1,5 +1,4 @@
 package org.mineap.nndd.library.sqlite.dao {
-    import flash.data.SQLConnection;
     import flash.data.SQLResult;
     import flash.data.SQLStatement;
     import flash.errors.SQLError;
@@ -302,8 +301,7 @@ package org.mineap.nndd.library.sqlite.dao {
          * @return
          *
          */
-        public function selectTagStringByNNDDVideoByFile(file: File,
-                                                         withSubFile: Boolean = true): Vector.<TagString> {
+        public function selectTagStringByNNDDVideoByFile(file: File, withSubFile: Boolean = true): Vector.<TagString> {
             try {
 
                 var files: Vector.<NNDDFile> = null;
@@ -348,8 +346,7 @@ package org.mineap.nndd.library.sqlite.dao {
                 }
 
                 return tags;
-            }
-            catch (error: SQLError) {
+            } catch (error: SQLError) {
                 trace(error.getStackTrace());
             }
             return new Vector.<TagString>;

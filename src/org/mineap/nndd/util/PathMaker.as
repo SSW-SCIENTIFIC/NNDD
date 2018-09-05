@@ -62,7 +62,8 @@ package org.mineap.nndd.util {
                 var fileArray: Array = rootDir.getDirectoryListing();
                 var pattern: RegExp = new RegExp(".*[^(Owner)&^(ThumbInfo)]\\.xml");
                 for each(var tempFile: File in fileArray) {
-                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url).lastIndexOf("/") + 1);
+                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url)
+                                                                                          .lastIndexOf("/") + 1);
                     var array: Array = tempPath.match(pattern);
                     if (array != null && array.length >= 1) {
                         if ((array[array.length - 1] as String).indexOf(videoID) != -1) {
@@ -120,7 +121,8 @@ package org.mineap.nndd.util {
                 var fileArray: Array = rootDir.getDirectoryListing();
                 var pattern: RegExp = new RegExp(".*\\[Owner]\\.xml");
                 for each(var tempFile: File in fileArray) {
-                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url).lastIndexOf("/"));
+                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url)
+                                                                                          .lastIndexOf("/"));
                     var array: Array = tempPath.match(pattern);
                     if (array != null && array.length >= 1) {
                         if ((array[array.length - 1] as String).indexOf(videoID) != -1) {
@@ -178,7 +180,8 @@ package org.mineap.nndd.util {
                 var fileArray: Array = rootDir.getDirectoryListing();
                 var pattern: RegExp = new RegExp(".*\\[ThumbInfo]\\.xml");
                 for each(var tempFile: File in fileArray) {
-                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url).lastIndexOf("/"));
+                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url)
+                                                                                          .lastIndexOf("/"));
                     var array: Array = tempPath.match(pattern);
                     if (array != null && array.length >= 1) {
                         if ((array[array.length - 1] as String).indexOf(videoID) != -1) {
@@ -237,7 +240,8 @@ package org.mineap.nndd.util {
                 var fileArray: Array = rootDir.getDirectoryListing();
                 var pattern: RegExp = new RegExp(".*\\[IchibaInfo]\\.html");
                 for each(var tempFile: File in fileArray) {
-                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url).lastIndexOf("/"));
+                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url)
+                                                                                          .lastIndexOf("/"));
                     var array: Array = tempPath.match(pattern);
                     if (array != null && array.length >= 1) {
                         if ((array[array.length - 1] as String).indexOf(videoID) != -1) {
@@ -299,9 +303,14 @@ package org.mineap.nndd.util {
          * @return
          *
          */
-        public static function createNicowariPathByVideoPathAndNicowariVideoID(videoPath: String, nicowariVideoID: String = "nm\\d+", search: Boolean = false): String {
+        public static function createNicowariPathByVideoPathAndNicowariVideoID(
+            videoPath: String,
+            nicowariVideoID: String = "nm\\d+",
+            search: Boolean = false
+        ): String {
 
-            var defFilePath: String = videoPath.substring(0, videoPath.lastIndexOf(".")) + "[Nicowari][" + nicowariVideoID + "].swf";
+            var defFilePath: String = videoPath.substring(0, videoPath.lastIndexOf(".")) + "[Nicowari][" +
+                                      nicowariVideoID + "].swf";
 
             try {
 
@@ -317,21 +326,24 @@ package org.mineap.nndd.util {
                 var rootDir: File = new File(videoPath.substring(0, videoPath.lastIndexOf("/")));
                 if (!rootDir.exists) {
                     //そんなディレクトリ存在しない。とりあえず従来の方法で生成したコメントのパスを返す。
-                    return videoPath.substring(0, videoPath.lastIndexOf(".")) + "[Nicowari][" + nicowariVideoID + "].swf";
+                    return videoPath.substring(0, videoPath.lastIndexOf(".")) + "[Nicowari][" + nicowariVideoID +
+                           "].swf";
                 }
 
                 //videoPathからVideoIDを抽出
                 var videoID: String = getVideoID(videoPath);
                 if (videoID == null) {
                     //動画IDがついてないので従来の方法で生成したコメントパスを返す。
-                    return videoPath.substring(0, videoPath.lastIndexOf(".")) + "[Nicowari][" + nicowariVideoID + "].swf";
+                    return videoPath.substring(0, videoPath.lastIndexOf(".")) + "[Nicowari][" + nicowariVideoID +
+                           "].swf";
                 }
 
                 //指定されたファイルがあるディレクトリから対応するコメントファイルを探す
                 var fileArray: Array = rootDir.getDirectoryListing();
                 var pattern: RegExp = new RegExp(".*\\[Nicowari]\\[" + nicowariVideoID + "]\\.swf");
                 for each(var tempFile: File in fileArray) {
-                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url).lastIndexOf("/"));
+                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url)
+                                                                                          .lastIndexOf("/"));
                     var array: Array = tempPath.match(pattern);
                     if (array != null && array.length >= 1) {
                         if ((array[array.length - 1] as String).indexOf(videoID) != -1) {
@@ -389,7 +401,8 @@ package org.mineap.nndd.util {
                 var fileArray: Array = rootDir.getDirectoryListing();
                 var pattern: RegExp = new RegExp(".*\\[ThumbImg]\\.jpeg");
                 for each(var tempFile: File in fileArray) {
-                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url).lastIndexOf("/"));
+                    var tempPath: String = decodeURIComponent(tempFile.url).substring(decodeURIComponent(tempFile.url)
+                                                                                          .lastIndexOf("/"));
                     var array: Array = tempPath.match(pattern);
                     if (array != null && array.length >= 1) {
                         if ((array[array.length - 1] as String).indexOf(videoID) != -1) {
@@ -422,8 +435,7 @@ package org.mineap.nndd.util {
             var lastIndex: int = videoPath.lastIndexOf(" - [");
             if (lastIndex != -1) {
                 videoName = videoPath.substring(videoPath.lastIndexOf("/") + 1, lastIndex);
-            }
-            else {
+            } else {
                 lastIndex = videoPath.lastIndexOf("- [");
                 if (lastIndex != -1) {
                     videoName = videoPath.substring(videoPath.lastIndexOf("/") + 1, lastIndex);

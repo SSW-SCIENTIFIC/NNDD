@@ -78,15 +78,15 @@ package org.mineap.nndd.playList {
                 }
 
                 arrayCollection.addItem({
-                    dataGridColumn_thumbImage: thumbUrl,
-                    dataGridColumn_videoName: video.getVideoNameWithVideoID(),
-                    dataGridColumn_date: creationDate,
-                    dataGridColumn_pubdate: pubDate,
-                    dataGridColumn_count: playCount,
-                    dataGridColumn_condition: status,
-                    dataGridColumn_time: timeString,
-                    dataGridColumn_videoPath: video.getDecodeUrl()
-                });
+                                            dataGridColumn_thumbImage: thumbUrl,
+                                            dataGridColumn_videoName: video.getVideoNameWithVideoID(),
+                                            dataGridColumn_date: creationDate,
+                                            dataGridColumn_pubdate: pubDate,
+                                            dataGridColumn_count: playCount,
+                                            dataGridColumn_condition: status,
+                                            dataGridColumn_time: timeString,
+                                            dataGridColumn_videoPath: video.getDecodeUrl()
+                                        });
             }
 
             return arrayCollection;

@@ -1,5 +1,4 @@
 package org.mineap.nndd.library.sqlite.dao {
-    import flash.data.SQLConnection;
     import flash.data.SQLResult;
     import flash.data.SQLStatement;
     import flash.errors.SQLError;
@@ -42,7 +41,11 @@ package org.mineap.nndd.library.sqlite.dao {
          * @return
          *
          */
-        public function insertNNDDVideoTagStringRelation(videoIdArray: Array, tagStringIdArray: Array, transactionEnable: Boolean = true): Boolean {
+        public function insertNNDDVideoTagStringRelation(
+            videoIdArray: Array,
+            tagStringIdArray: Array,
+            transactionEnable: Boolean = true
+        ): Boolean {
             try {
 
                 if (videoIdArray.length != tagStringIdArray.length) {

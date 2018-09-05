@@ -1,14 +1,14 @@
 package org.libspark.utils {
     import flash.display.Loader;
-    import flash.net.URLRequest;
-    import flash.net.URLStream;
+    import flash.errors.EOFError;
+    import flash.events.Event;
     import flash.events.IOErrorEvent;
     import flash.events.SecurityErrorEvent;
-    import flash.events.Event;
+    import flash.net.URLRequest;
+    import flash.net.URLStream;
+    import flash.system.LoaderContext;
     import flash.utils.ByteArray;
     import flash.utils.Endian;
-    import flash.errors.EOFError;
-    import flash.system.LoaderContext;
 
     /**
      *
@@ -76,8 +76,7 @@ package org.libspark.utils {
             if (version < 9) {
                 if (version == 8) {
                     flagSWF9Bit(inputBytes);
-                }
-                else if (version <= 7) {
+                } else if (version <= 7) {
                     insertFileAttributesTag(inputBytes);
                 }
                 updateVersion(inputBytes, 9);
@@ -137,8 +136,7 @@ package org.libspark.utils {
                     }
                     bytes.position += length;
                 }
-            }
-            catch (e: EOFError) {
+            } catch (e: EOFError) {
             }
 
             return NaN;

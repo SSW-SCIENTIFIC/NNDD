@@ -9,8 +9,6 @@ package org.mineap.nndd {
     import flash.net.URLRequest;
     import flash.utils.setTimeout;
 
-    import mx.collections.CursorBookmark;
-
     import org.mineap.nicovideo4as.Login;
     import org.mineap.nicovideo4as.loader.ChannelLoader;
     import org.mineap.nicovideo4as.loader.CommunityLoader;
@@ -38,8 +36,7 @@ package org.mineap.nndd {
      *
      * @author shiraminekeisuke(MineAP)
      *
-     */
-    public class NNDDMyListLoader extends EventDispatcher {
+     */ public class NNDDMyListLoader extends EventDispatcher {
 
         private var _login: Login;
 
@@ -255,7 +252,8 @@ package org.mineap.nndd {
                                 }
                             }
 
-                            LogManager.instance.addLog("NNDDServerから取得したマイリスト情報をもとに、" + videoIds.length + "件の動画を視聴済みに設定(id:" + id + ", type:" + type + ")");
+                            LogManager.instance.addLog("NNDDServerから取得したマイリスト情報をもとに、" + videoIds.length +
+                                                       "件の動画を視聴済みに設定(id:" + id + ", type:" + type + ")");
                             MyListManager.instance.updatePlayedAndSave(id, type, videoIds, true);
 
                         }
@@ -296,7 +294,8 @@ package org.mineap.nndd {
                     timeout = int(timeoutStr);
                 }
 
-                var urlRequest: URLRequest = new URLRequest("http://" + nnddServerAddress + ":" + nnddServerPort + "/NNDDServer");
+                var urlRequest: URLRequest = new URLRequest("http://" + nnddServerAddress + ":" + nnddServerPort +
+                                                            "/NNDDServer");
                 urlRequest.method = "POST";
                 urlRequest.data = reqXml.toXMLString();
                 urlRequest.idleTimeout = timeout;
@@ -305,8 +304,7 @@ package org.mineap.nndd {
 
                 _nnddServerUrlLoader.load(urlRequest);
 
-            }
-            else {
+            } else {
                 loadRss();
             }
 
@@ -363,7 +361,8 @@ package org.mineap.nndd {
                 targetId = "user/" + this._uploadUserId + "/video/" + this._currentPage;
             }
 
-            LogManager.instance.addLog(DOWNLOAD_FAIL + ":" + targetId + ":" + event + ":" + event.target + ":" + event.text);
+            LogManager.instance.addLog(DOWNLOAD_FAIL + ":" + targetId + ":" + event + ":" + event.target + ":" +
+                                       event.text);
             trace(DOWNLOAD_FAIL + ":" + targetId + ":" + event + ":" + event.target + ":" + event.text);
 
             if (this._currentPage > 0 && this._retryCount < RETRY_COUNT_LIMIT) {
@@ -405,17 +404,14 @@ package org.mineap.nndd {
                     // community page load limit is very severe
                     wait = this._currentPage % 5 === 0 ? 10000 : 1000;
                     wait += this._currentPage > 20 ? 5000 : 0;
-                    LogManager.instance.addLog(
-                        DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId + "/" + this._currentPage
-                    );
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId + "/" +
+                                               this._currentPage);
                 } else if (this._channelId != null) {
-                    LogManager.instance.addLog(
-                            DOWNLOAD_PROCESS_INPROGRESS + ": channel/" + this._uploadUserId + "/" + this._currentPage
-                    );
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": channel/" + this._uploadUserId + "/" +
+                                               this._currentPage);
                 } else if (this._uploadUserId != null) {
-                    LogManager.instance.addLog(
-                        DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId + "/" + this._currentPage
-                    );
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId + "/" +
+                                               this._currentPage);
                 }
 
                 setTimeout(this.loadRss, wait);

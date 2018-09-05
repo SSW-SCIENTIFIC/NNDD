@@ -43,8 +43,7 @@ package org.mineap.nndd.util {
                     Alert.show("この動画はNicoSoundでダウンロードできません。", "情報");
                     FlexGlobals.topLevelApplication.activate();
                     LogManager.instance.addLog("この動画はNicoSoundに非対応:" + videoId);
-                }
-                else {
+                } else {
                     navigateToURL(new URLRequest(url));
                     LogManager.instance.addLog("NicoSoundで開く:" + url);
                 }
@@ -70,7 +69,8 @@ package org.mineap.nndd.util {
 
             if (videoId != null) {
                 url = "http://www.nicovideo.jp/watch/" + videoId;
-                navigateToURL(new URLRequest("http://b.hatena.ne.jp/add?mode=confirm&is_bm=1&title=" + encodeURIComponent(title) + "&url=" + url));
+                navigateToURL(new URLRequest("http://b.hatena.ne.jp/add?mode=confirm&is_bm=1&title=" +
+                                             encodeURIComponent(title) + "&url=" + url));
                 LogManager.instance.addLog("はてなダイアリーに登録:" + title + ":" + url);
             }
         }

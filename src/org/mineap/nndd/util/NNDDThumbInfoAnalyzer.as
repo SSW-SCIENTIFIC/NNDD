@@ -1,8 +1,6 @@
 package org.mineap.nndd.util {
 
     import org.mineap.nicovideo4as.analyzer.ThumbInfoAnalyzer;
-    import org.mineap.nicovideo4as.util.HtmlUtil;
-    import org.mineap.nndd.Message;
 
     /**
      *
@@ -27,7 +25,8 @@ package org.mineap.nndd.util {
          */
         public function get htmlTitle(): String {
             if (this.status == "ok") {
-                return "<a href=\"http://www.nicovideo.jp/watch/" + videoId + "\"><u><font color=\"#0000ff\">" + title + "</font></u></a>";
+                return "<a href=\"http://www.nicovideo.jp/watch/" + videoId + "\"><u><font color=\"#0000ff\">" + title +
+                       "</font></u></a>";
             } else {
                 return "(削除されています)";
             }

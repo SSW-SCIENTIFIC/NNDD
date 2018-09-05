@@ -26,7 +26,6 @@ import org.mineap.nndd.Message;
 import org.mineap.nndd.player.PlayerController;
 import org.mineap.util.config.ConfigManager;
 
-
 private var videoPlayer: VideoPlayer;
 private var playerController: PlayerController;
 private var logManager: LogManager;
@@ -49,7 +48,12 @@ private var isRollOn: Boolean = false;
  * @param enableTimer
  *
  */
-public function init(playerController: PlayerController, videoPlayer: VideoPlayer, logManager: LogManager, enableTimer: Boolean = true): void {
+public function init(
+    playerController: PlayerController,
+    videoPlayer: VideoPlayer,
+    logManager: LogManager,
+    enableTimer: Boolean = true
+): void {
     this.videoPlayer = videoPlayer;
     this.playerController = playerController;
     this.logManager = logManager;
@@ -72,7 +76,8 @@ public function init(playerController: PlayerController, videoPlayer: VideoPlaye
 public function resetAlpha(isWithFocusReset: Boolean): void {
     bAlpha = 2;
     statusAlpha = 2;
-    if (videoPlayer != null && !videoPlayer.videoInfoView.isHideUnderController && videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {
+    if (videoPlayer != null && !videoPlayer.videoInfoView.isHideUnderController && videoPlayer.stage.displayState !=
+        StageDisplayState.FULL_SCREEN_INTERACTIVE) {
         (this as Canvas).visible = false;
     } else {
         (this as Canvas).visible = true;
@@ -111,7 +116,8 @@ private function hideController(event: TimerEvent): void {
         var percent: int = playerController.getStreamingProgress();
 
         var show: Boolean = false;
-        if (videoPlayer.contextMenuShowing && (videoPlayer.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE)) {
+        if (videoPlayer.contextMenuShowing &&
+            (videoPlayer.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE)) {
             show = true;
         }
 
@@ -129,7 +135,8 @@ private function hideController(event: TimerEvent): void {
         }
 
         if (bAlpha > 1) {
-            if (videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE && !videoPlayer.videoInfoView.isHideUnderController) {
+            if (videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE &&
+                !videoPlayer.videoInfoView.isHideUnderController) {
                 (this as Canvas).visible = false;
             } else {
                 (this as Canvas).alpha = 1;
@@ -143,7 +150,8 @@ private function hideController(event: TimerEvent): void {
                 videoPlayer.label_economyStatus.alpha = 1;
             }
         } else {
-            if (videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE && !videoPlayer.videoInfoView.isHideUnderController) {
+            if (videoPlayer.stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE &&
+                !videoPlayer.videoInfoView.isHideUnderController) {
                 (this as Canvas).visible = false;
             } else {
                 (this as Canvas).alpha = bAlpha;

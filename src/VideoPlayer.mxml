@@ -16,8 +16,6 @@
 
     <fx:Script>
 		<![CDATA[
-        import mx.containers.ViewStack;
-
         private var videoDisplayMenu: ContextMenu;
         private var videoDisplayMenuItem1: ContextMenuItem;
         private var videoDisplayMenuItem2: ContextMenuItem;
@@ -44,8 +42,7 @@
                 this.setStyle("backgroundColor", "#646464");
                 this.setStyle("contentBackgroundColor", "#969696");
                 vbox_videoPlayer.setStyle("backgroundColor", "#646464");
-            }
-            else {
+            } else {
                 this.setStyle("backgroundColor", "#FFFFFF");
                 this.setStyle("contentBackgroundColor", "#FFFFFF");
                 vbox_videoPlayer.setStyle("backgroundColor", "#FFFFFF");
@@ -79,7 +76,9 @@
             videoDisplayMenuItem1 = new ContextMenuItem(Message.L_OPEN_DEFAULT_WEB_BROWSER, true);
             videoDisplayMenuItem1.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, button_goToWebClicked);
 
-            var playListContextMenuItem: ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM, true);
+            var playListContextMenuItem: ContextMenuItem = new ContextMenuItem(Message.L_PLAYLIST_ADD_SELECTED_ITEM,
+                                                                               true
+            );
             playListContextMenuItem.addEventListener(Event.DISPLAYING, playListContextMenuItemDisplayingEventHandler);
 
             // DLリストに追加
@@ -99,14 +98,16 @@
             videoDisplayMenuItem5.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeFullClickEventHandler);
 
             videoDisplayMenuItem6 = new ContextMenuItem(Message.L_COMMENT_SHOW_OR_HIDE);
-            videoDisplayMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeShowCommentClickEventHandler);
+            videoDisplayMenuItem6.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,
+                                                   changeShowCommentClickEventHandler
+            );
 
             videoDisplayMenuItem9 = new ContextMenuItem(Message.L_NOMAL_OR_WIDE);
             videoDisplayMenuItem9.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, changeWideMode);
             videoDisplayMenuItem9.addEventListener(Event.DISPLAYING, function (event: Event): void {
                 if (videoInfoView != null) {
-                    if (videoInfoView.isResizePlayerEachPlay &&
-                            videoInfoView.selectedResizeType == VideoInfoView.RESIZE_TYPE_NICO) {
+                    if (videoInfoView.isResizePlayerEachPlay && videoInfoView.selectedResizeType ==
+                        VideoInfoView.RESIZE_TYPE_NICO) {
                         videoDisplayMenuItem9.enabled = true;
                     } else {
                         videoDisplayMenuItem9.enabled = false;
@@ -125,13 +126,23 @@
             videoDisplayMenuItem14 = new ContextMenuItem(Message.L_RELOAD_VIDEO, true);
             videoDisplayMenuItem14.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, videoReload);
 
-            videoDisplayMenu.customItems.push(videoDisplayMenuItem10, nextPlayListMenuItem,
-                    videoDisplayMenuItem11, videoDisplayMenuItem1, playListContextMenuItem,
-                    addDListMenuItem, videoDisplayMenuItem2, videoDisplayMenuItem3,
-                    downnloadNicoSoundMenuItem,
-                    videoDisplayMenuItem5, videoDisplayMenuItem6, videoDisplayMenuItem9,
-                    videoDisplayMenuItem8, videoDisplayMenuItem12, videoDisplayMenuItem13,
-                    videoDisplayMenuItem14);
+            videoDisplayMenu.customItems.push(videoDisplayMenuItem10,
+                                              nextPlayListMenuItem,
+                                              videoDisplayMenuItem11,
+                                              videoDisplayMenuItem1,
+                                              playListContextMenuItem,
+                                              addDListMenuItem,
+                                              videoDisplayMenuItem2,
+                                              videoDisplayMenuItem3,
+                                              downnloadNicoSoundMenuItem,
+                                              videoDisplayMenuItem5,
+                                              videoDisplayMenuItem6,
+                                              videoDisplayMenuItem9,
+                                              videoDisplayMenuItem8,
+                                              videoDisplayMenuItem12,
+                                              videoDisplayMenuItem13,
+                                              videoDisplayMenuItem14
+            );
 
             canvas_video_back.contextMenu = videoDisplayMenu;
 

@@ -23,7 +23,14 @@ package org.mineap.nndd.event {
          * @param loadingItem
          *
          */
-        public function LibraryLoadEvent(type: String, bubbles: Boolean = false, cancelable: Boolean = false, totalVideoCount: int = 0, completeVideoCount: int = 0, loadingItem: File = null) {
+        public function LibraryLoadEvent(
+            type: String,
+            bubbles: Boolean = false,
+            cancelable: Boolean = false,
+            totalVideoCount: int = 0,
+            completeVideoCount: int = 0,
+            loadingItem: File = null
+        ) {
             super(type, bubbles, cancelable);
 
             this._completeVideoCount = completeVideoCount;
