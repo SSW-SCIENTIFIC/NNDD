@@ -650,7 +650,7 @@ public function showTagArea(isShow: Boolean, isChangeWindowSize: Boolean = true)
 private function keyUpListener(event: KeyboardEvent): void {
     if (event.keyCode == Keyboard.SPACE) {
         if (!(event.target is Button) && !(event.target is TextField)) {
-            this.playerController.play();
+            this.playerController.switchPlayer();
         }
     }
 }

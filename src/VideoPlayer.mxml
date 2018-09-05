@@ -53,7 +53,7 @@
         }
 
         protected function textArea_tag_keyDownHandler(event: KeyboardEvent): void {
-            playerController.play();
+            playerController.switchPlayer();
         }
 
         protected function canvas_video_back_creationCompleteHandler(event: FlexEvent): void {

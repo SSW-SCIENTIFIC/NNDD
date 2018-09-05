@@ -235,7 +235,7 @@ public function rollOut(event: MouseEvent): void {
 }
 
 private function play(): void {
-    this.playerController.play();
+    this.playerController.switchPlayer();
 }
 
 private function stop(): void {

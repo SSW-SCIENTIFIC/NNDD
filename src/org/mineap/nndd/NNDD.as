@@ -7898,7 +7898,7 @@ public function connectionStatusViewCreationCompleteHandler(event: FlexEvent): v
 }
 
 public function play(): void {
-    PlayerManager.instance.getLastPlayerController().play();
+    PlayerManager.instance.getLastPlayerController().switchPlayer();
 }
 
 public function stop(): void {

@@ -215,7 +215,7 @@ private function windowClosing(event: Event): void {
 }
 
 private function play(): void {
-    this.playerController.play();
+    this.playerController.switchPlayer();
 }
 
 private function stop(): void {
@@ -576,7 +576,7 @@ private function keyListener(event: KeyboardEvent): void {
 //		trace(event.keyCode);
         this.stage.nativeWindow.activate();
     } else if (event.keyCode == Keyboard.SPACE) {
-        this.playerController.play();
+        this.playerController.switchPlayer();
     } else if (event.keyCode == Keyboard.LEFT) {
         //左
         if (seekTimer != null) {
