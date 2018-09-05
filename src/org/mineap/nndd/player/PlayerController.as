@@ -1795,8 +1795,8 @@ package org.mineap.nndd.player {
         }
 
         /**
-         * 動画を再生する。
-         * 既に動画が再生中や再生可能でない状態では何もしないことを保証する。
+         * 動画を再生する.
+         * 既に動画が再生中や再生可能でない状態では何もしないことを保証する.
          */
         public function play(): void {
             var callback: Function;
@@ -1832,8 +1832,8 @@ package org.mineap.nndd.player {
         }
 
         /**
-         * 動画を一時停止する。
-         * PlayerControllerの状態にも反映する。
+         * 動画を一時停止する.
+         * PlayerControllerの状態にも反映する.
          */
         public function pause(): void {
             // 状態を一時停止に寄せる
@@ -1866,6 +1866,20 @@ package org.mineap.nndd.player {
             }
 
             callback();
+        }
+
+        /**
+         * 動画が現在再生中かどうかを返す.
+         */
+        public function get isPlaying(): Boolean {
+            switch (this.windowType) {
+                case WINDOW_TYPE_FLV:
+                    return this.videoDisplay !== null && this.videoDisplay.playing;
+                case WINDOW_TYPE_SWF:
+                    return this.mc !== null && this.mc.isPlaying;
+                default:
+                    return false;
+            }
         }
 
 
@@ -3055,33 +3069,36 @@ package org.mineap.nndd.player {
                 ++videoMin;
 
                 if (!this.isStreamingPlay && this.source != null && this.source != "") {
-                    comments = new Comments(PathMaker.createNomalCommentPathByVideoPath(source),
-                                            PathMaker.createOwnerCommentPathByVideoPath(source),
-                                            this.videoPlayer.getCommentListProvider(),
-                                            this.videoPlayer.videoInfoView.ownerCommentProvider,
-                                            this.ngListManager,
-                                            this.videoInfoView.isShowOnlyPermissionComment,
-                                            this.videoInfoView.isHideSekaShinComment,
-                                            this.videoInfoView.showCommentCountPerMin * videoMin,
-                                            this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                                            this.videoInfoView.isNgUpEnable,
-                                            date
+                    comments = new Comments(
+                        PathMaker.createNomalCommentPathByVideoPath(source),
+                        PathMaker.createOwnerCommentPathByVideoPath(source),
+                        this.videoPlayer.getCommentListProvider(),
+                        this.videoPlayer.videoInfoView.ownerCommentProvider,
+                        this.ngListManager,
+                        this.videoInfoView.isShowOnlyPermissionComment,
+                        this.videoInfoView.isHideSekaShinComment,
+                        this.videoInfoView.showCommentCountPerMin * videoMin,
+                        this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                        this.videoInfoView.isNgUpEnable,
+                        date
                     );
                 } else if (this.isStreamingPlay) {
-                    comments =
-                        new Comments(PathMaker.createNomalCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url +
-                                                                                 "/nndd.flv"),
-                                     PathMaker.createOwnerCommentPathByVideoPath(LibraryManagerBuilder.instance.libraryManager.tempDir.url +
-                                                                                 "/nndd.flv"),
-                                     this.videoPlayer.getCommentListProvider(),
-                                     this.videoPlayer.videoInfoView.ownerCommentProvider,
-                                     this.ngListManager,
-                                     this.videoInfoView.isShowOnlyPermissionComment,
-                                     this.videoInfoView.isHideSekaShinComment,
-                                     this.videoInfoView.showCommentCountPerMin * videoMin,
-                                     this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
-                                     this.videoInfoView.isNgUpEnable,
-                                     date
+                    comments = new Comments(
+                        PathMaker.createNomalCommentPathByVideoPath(
+                            LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"
+                        ),
+                        PathMaker.createOwnerCommentPathByVideoPath(
+                            LibraryManagerBuilder.instance.libraryManager.tempDir.url + "/nndd.flv"
+                        ),
+                        this.videoPlayer.getCommentListProvider(),
+                        this.videoPlayer.videoInfoView.ownerCommentProvider,
+                        this.ngListManager,
+                        this.videoInfoView.isShowOnlyPermissionComment,
+                        this.videoInfoView.isHideSekaShinComment,
+                        this.videoInfoView.showCommentCountPerMin * videoMin,
+                        this.videoInfoView.showOwnerCommentCountPerMin * videoMin,
+                        this.videoInfoView.isNgUpEnable,
+                        date
                         );
                 }
                 commentManager.setComments(comments);
@@ -3111,16 +3128,18 @@ package org.mineap.nndd.player {
 
                     //初期化
                     videoInfoView.ichibaNicoProvider.addItem({
-                                                                 col_image: "", col_info: "市場情報を取得中です", col_link: ""
-                                                             });
+                        col_image: "",
+                        col_info: "市場情報を取得中です",
+                        col_link: ""
+                    });
                     videoPlayer.videoInfoView.owner_text_nico = "";
 
                 } else {
                     videoInfoView.ichibaNicoProvider.addItem({
-                                                                 col_image: "",
-                                                                 col_info: "市場情報を取得できませんでした。",
-                                                                 col_link: ""
-                                                             });
+                        col_image: "",
+                        col_info: "市場情報を取得できませんでした。",
+                        col_link: ""
+                    });
 
                     var thumbInfoAnalyzer: ThumbInfoAnalyzer = null;
 
