@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v2.8.7</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.7-Beta/NNDD_v2_8_7.dmg</url>
+        <version>v3.0.4</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.4-Beta/NNDD_v3_0_4.dmg</url>
         <description><![CDATA[
+2018-09-07 v3.0.4
+・ストリーミング再生で動画の末尾に到達したときの振る舞い改善(v2.6.xのリベンジ)
+・新規動画読込のタイミングでDMCセッションビーティングを明示的に停止するように修正
+・DMCセッション関連のタイマー処理の改善
+・ストリーミング進捗表示の改善
+・Smileサーバからの配信の場合にプログレッシブ再生を行うように修正
+・プログレッシブ再生をHLSストリーミング再生に切り替え
+・AIR 30.0 + Flex 4.16.1にアップデート
+
 2018-08-29 v2.8.7
 ・プログレッシブ再生の場合にセッションが途切れることが多発したのでハートビート間隔を短縮
 ・dアニメをダウンロードする際に正しく中断されなかった問題を修正
@@ -129,9 +138,18 @@
     </dmg>
 
     <exe>
-        <version>2.8.7</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v2.8.7-Beta/NNDD_v2_8_7.exe</url>
+        <version>3.0.4</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.4-Beta/NNDD_v3_0_4.exe</url>
         <description><![CDATA[
+2018-09-07 v3.0.4
+・ストリーミング再生で動画の末尾に到達したときの振る舞い改善(v2.6.xのリベンジ)
+・新規動画読込のタイミングでDMCセッションビーティングを明示的に停止するように修正
+・DMCセッション関連のタイマー処理の改善
+・ストリーミング進捗表示の改善
+・Smileサーバからの配信の場合にプログレッシブ再生を行うように修正
+・プログレッシブ再生をHLSストリーミング再生に切り替え
+・AIR 30.0 + Flex 4.16.1にアップデート
+
 2018-08-29 v2.8.7
 ・プログレッシブ再生の場合にセッションが途切れることが多発したのでハートビート間隔を短縮
 ・dアニメをダウンロードする際に正しく中断されなかった問題を修正
