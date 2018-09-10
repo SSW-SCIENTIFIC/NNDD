@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v3.0.4</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.4-Beta/NNDD_v3_0_4.dmg</url>
+        <version>v3.0.5</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.5-Beta/NNDD_v3_0_5.dmg</url>
         <description><![CDATA[
+2018-09-10 v3.0.5
+・プレイリスト再生中にHLSストリーミング再生の動画の次の動画の再生が行われない不具合を修正
+
 2018-09-07 v3.0.4
 ・ストリーミング再生で動画の末尾に到達したときの振る舞い改善(v2.6.xのリベンジ)
 ・新規動画読込のタイミングでDMCセッションビーティングを明示的に停止するように修正
@@ -138,9 +141,12 @@
     </dmg>
 
     <exe>
-        <version>3.0.4</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.4-Beta/NNDD_v3_0_4.exe</url>
+        <version>3.0.5</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.5-Beta/NNDD_v3_0_5.exe</url>
         <description><![CDATA[
+2018-09-10 v3.0.5
+・プレイリスト再生中にHLSストリーミング再生の動画の次の動画の再生が行われない不具合を修正
+
 2018-09-07 v3.0.4
 ・ストリーミング再生で動画の末尾に到達したときの振る舞い改善(v2.6.xのリベンジ)
 ・新規動画読込のタイミングでDMCセッションビーティングを明示的に停止するように修正
