@@ -61,7 +61,7 @@ MITライセンスに示されるとおり, 本ソフトウェアは**無保証*
 [Issues]: https://github.com/SSW-SCIENTIFIC/NNDD/issues
 [License]: https://github.com/SSW-SCIENTIFIC/NNDD/blob/master/LICENSE
 [License-Orig]: https://github.com/SSW-SCIENTIFIC/NNDD/blob/master/LICENSE0
-[MPLv2]: https://github.com/SSW-SCIENTIFIC/NNDD/blob/master/LICENSE-MPLv2
+[MPLv2]: https://github.com/SSW-SCIENTIFIC/NNDD/blob/master/LICENSE_MPLv2
 [NativeApplicationUpdater]: https://code.google.com/archive/p/nativeapplicationupdater/
 [Flashls]: http://www.flashls.org/
 [mangui]: https://github.com/mangui
