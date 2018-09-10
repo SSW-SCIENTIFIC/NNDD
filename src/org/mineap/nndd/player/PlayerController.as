@@ -2377,12 +2377,11 @@ package org.mineap.nndd.player {
 
             /* 動画のリピートは無効 */
 
-            // ストリーミング再生はプレイリスト再生中でなければ先頭に戻るだけ
+            // ストリーミング再生は先頭に戻るだけ
             // それ以外のケースではクリーンアップしてしまってよい
-            if (this.isStreamingPlay && !this.isPlayListingPlay) {
+            if (this.isStreamingPlay) {
                 this.pause();
                 this.seek(0);
-                return;
             } else {
                 this.stop();
             }
