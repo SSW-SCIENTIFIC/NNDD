@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v3.0.5</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.5-Beta/NNDD_v3_0_5.dmg</url>
+        <version>v3.0.6</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.6-Beta/NNDD_v3_0_6.dmg</url>
         <description><![CDATA[
+2018-09-18 v3.0.6
+・HLSストリーミング再生で64MB未満のサイズの動画が取得失敗扱いになる問題を修正
+・HLSストリーミング再生の最大バッファ長を指定出来るように
+
 2018-09-10 v3.0.5
 ・プレイリスト再生中にHLSストリーミング再生の動画の次の動画の再生が行われない不具合を修正
 
@@ -141,9 +145,13 @@
     </dmg>
 
     <exe>
-        <version>3.0.5</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.5-Beta/NNDD_v3_0_5.exe</url>
+        <version>3.0.6</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.6-Beta/NNDD_v3_0_6.exe</url>
         <description><![CDATA[
+2018-09-18 v3.0.6
+・HLSストリーミング再生で64MB未満のサイズの動画が取得失敗扱いになる問題を修正
+・HLSストリーミング再生の最大バッファ長を指定出来るように
+
 2018-09-10 v3.0.5
 ・プレイリスト再生中にHLSストリーミング再生の動画の次の動画の再生が行われない不具合を修正
 
