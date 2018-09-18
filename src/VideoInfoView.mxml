@@ -225,6 +225,9 @@
             return str;
         }
 
+        protected function showSliderDataTipFunction(value: Number): String {
+            return value + "秒";
+        }
 
         protected function dataGrid_comment_creationCompleteHandler(event: FlexEvent): void {
             DataGridColumnWidthUtil.loadAndSet(dataGrid_comment, new Vector.<String>("mail_column"));
@@ -731,7 +734,24 @@
                                         </s:HGroup>
                                     </s:VGroup>
                                 </s:HGroup>
-
+                                <s:HGroup width="100%" verticalAlign="middle">
+                                    <mx:Label text="バッファリング (HLSストリーミング)"/>
+                                    <mx:HRule width="100%"/>
+                                </s:HGroup>
+                                <s:HGroup width="100%">
+                                    <s:Spacer width="20"/>
+                                    <s:VGroup width="100%">
+                                        <mx:HSlider minimum="0" maximum="300" snapInterval="1" value="0" width="100%"
+                                                    change="bufferingSliderChanged(event)" id="slider_bufferingLength"
+                                                    toolTip="HLSストリーミング再生時のバッファリングの最大長を指定します。デフォルトは 0 (無制限) です。"
+                                                    dataTipFormatFunction="showSliderDataTipFunction"/>
+                                        <s:HGroup width="100%">
+                                            <mx:Label text="0"/>
+                                            <s:Spacer width="100%"/>
+                                            <mx:Label text="300秒"/>
+                                        </s:HGroup>
+                                    </s:VGroup>
+                                </s:HGroup>
                             </s:VGroup>
 
 

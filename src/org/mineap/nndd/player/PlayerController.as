@@ -1485,6 +1485,16 @@ package org.mineap.nndd.player {
 
         /**
          *
+         * @param value 0-300 default=0
+         *
+         */
+        public function setBufferingLength(value: int): void {
+            HLSSettings.maxBufferLength = value;
+            HLSSettings.maxBackBufferLength = value;
+        }
+
+        /**
+         *
          * @param bool
          *
          */
@@ -2151,16 +2161,14 @@ package org.mineap.nndd.player {
          *
          */
         public function get bytesLoaded(): Number {
-
-            var value: Number = 0.0;
-
-            if (videoDisplay != null) {
-                value = videoDisplay.bytesLoaded;
-            } else if (loader != null && loader.contentLoaderInfo != null) {
-                value = loader.contentLoaderInfo.bytesLoaded;
+            if (this.videoDisplay != null) {
+                return this.videoDisplay.bytesLoaded * (this._dmcHeartbeatTimer ? 1024 : 1);
+            }
+            if (this.loader != null && this.loader.contentLoaderInfo != null) {
+                return this.loader.contentLoaderInfo.bytesLoaded;
             }
 
-            return value;
+            return 0;
         }
 
         /**

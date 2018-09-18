@@ -85,6 +85,7 @@ public var isNgUpEnable: Boolean = true;
 public var isSmoothing: Boolean = true;
 public var isSmoothingOnlyNotPixelIdenticalDimensions: Boolean = true;
 public var playerQuality: int = 2;
+public var bufferingLength: int = 0;
 public var isFollowInfoViewHeight: Boolean = false;
 public var isNotPlayNicowari: Boolean = false;
 public var isOpenFileDialogWhenOpenPlayer: Boolean = false;
@@ -792,6 +793,14 @@ private function playerQualitySliderChanged(event: Event): void {
 
     if (playerController != null) {
         playerController.setPlayerQuality(playerQuality);
+    }
+}
+
+private function bufferingSliderChanged(event: Event): void {
+    this.bufferingLength = this.slider_bufferingLength.value;
+
+    if (this.playerController != null) {
+        this.playerController.setBufferingLength(this.bufferingLength);
     }
 }
 
