@@ -164,6 +164,8 @@ package org.mineap.nndd.player {
         public var nnddServerAddress: String = null;
         public var nnddServerPortNum: int = -1;
 
+        private var isHLS: Boolean = false;
+
         private var renewDownloadManager: RenewDownloadManager;
         private var nnddDownloaderForStreaming: NNDDDownloader;
         private var playerHistoryManager: PlayerHistoryManager;
@@ -305,6 +307,7 @@ package org.mineap.nndd.player {
             if (this._dmcHeartbeatTimer !== null && this._dmcHeartbeatTimer.running) {
                 this._dmcHeartbeatTimer.stop();
                 this._dmcHeartbeatTimer = null;
+                this.isHLS = false;
             }
 
             if (this.comments != null) {
@@ -479,7 +482,7 @@ package org.mineap.nndd.player {
 
                 if (this.videoPlayer.title == null) {
                     this.videoPlayer.addEventListener(FlexEvent.CREATION_COMPLETE, function (): void {
-                        this.videoPlayer.title = downLoadedURL.substr(downLoadedURL.lastIndexOf("/") + 1);
+                        videoPlayer.title = downLoadedURL.substr(downLoadedURL.lastIndexOf("/") + 1);
                     });
                 } else {
                     this.videoPlayer.title = downLoadedURL.substr(downLoadedURL.lastIndexOf("/") + 1);
@@ -490,7 +493,7 @@ package org.mineap.nndd.player {
                 this.streamingRetryCount = 0;
                 if (this.videoPlayer.title == null) {
                     this.videoPlayer.addEventListener(FlexEvent.CREATION_COMPLETE, function (): void {
-                        this.videoPlayer.title = videoPath.substr(videoPath.lastIndexOf("/") + 1);
+                        videoPlayer.title = videoPath.substr(videoPath.lastIndexOf("/") + 1);
                     });
                 } else {
                     this.videoPlayer.title = videoPath.substr(videoPath.lastIndexOf("/") + 1);
@@ -596,6 +599,7 @@ package org.mineap.nndd.player {
                     // 止まっていない場合はNNDDDownloader経由でないのでタイマーを止めて削除してよい
                     this._dmcHeartbeatTimer.stop();
                     this._dmcHeartbeatTimer = null;
+                    this.isHLS = false;
                 }
 
                 videoPlayer.canvas_video.toolTip = null;
@@ -735,8 +739,10 @@ package org.mineap.nndd.player {
                             function (event: MediaFactoryEvent): void {
                                 if (isStreamingPlay && _dmcHeartbeatTimer !== null) {
                                     // ハートビートタイマーが設定されている場合にはタイマーを起動
-                                    // 動画ソースはDynamicStreamingResouceオブジェクトにする必要がある
                                     _dmcHeartbeatTimer.start();
+                                }
+                                if (isHLS) {
+                                    // HLSの場合, 動画ソースはDynamicStreamingResouceオブジェクトにする必要がある
                                     videoDisplay.source = new DynamicStreamingResource(videoPath);
                                 } else {
                                     videoDisplay.source = videoPath;
@@ -2142,7 +2148,7 @@ package org.mineap.nndd.player {
                 return value;
             }
 
-            if (this._dmcHeartbeatTimer === null) {
+            if (!this.isHLS) {
                 //MBに直す
                 value /= 1048576;
             }
@@ -2162,7 +2168,7 @@ package org.mineap.nndd.player {
          */
         public function get bytesLoaded(): Number {
             if (this.videoDisplay != null) {
-                return this.videoDisplay.bytesLoaded * (this._dmcHeartbeatTimer ? 1024 : 1);
+                return this.videoDisplay.bytesLoaded * (this.isHLS ? 1 : 1024);
             }
             if (this.loader != null && this.loader.contentLoaderInfo != null) {
                 return this.loader.contentLoaderInfo.bytesLoaded;
@@ -4576,6 +4582,7 @@ package org.mineap.nndd.player {
                                     _dmcHeartbeatTimer.stop();
                                 }
                                 _dmcHeartbeatTimer = nnddDownloaderForStreaming.createDmcBeatingTimer();
+                                isHLS = nnddDownloaderForStreaming.isHLS;
                                 _playMovie(
                                     (event.target as NNDDDownloader).streamingUrl,
                                     (event.target as NNDDDownloader).fmsToken,

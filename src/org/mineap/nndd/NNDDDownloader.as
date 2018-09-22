@@ -1665,9 +1665,10 @@ package org.mineap.nndd {
                 return;
             }
 
-            this._dmcAccess.createDmcSession(this._videoId,
-                                             this._dmcInfoAnalyzer.apiUrl,
-                                             this._dmcInfoAnalyzer.getSession(this._isVideoNotDownload)
+            this._dmcAccess.createDmcSession(
+                this._videoId,
+                this._dmcInfoAnalyzer.apiUrl,
+                this._dmcInfoAnalyzer.getSession(this._isVideoNotDownload)
             );
         }
 
@@ -1921,6 +1922,14 @@ package org.mineap.nndd {
             }
 
             return timer;
+        }
+
+        public function get isDmc(): Boolean {
+            return this._dmcInfoAnalyzer.isAvailable;
+        }
+
+        public function get isHLS(): Boolean {
+            return this._dmcInfoAnalyzer.isHLSAvailable && this._isVideoNotDownload;
         }
 
         /**
