@@ -2158,7 +2158,8 @@ package org.mineap.nndd.player {
          */
         public function get bytesLoaded(): Number {
             if (this.videoDisplay != null) {
-                return this.videoDisplay.bytesLoaded * (this.isHLS ? 1 : 1024);
+                // bytes単位に直す (DynamicStreamingResouce使用時はMB単位がデフォルトのため)
+                return this.videoDisplay.bytesLoaded * (this.isHLS ? 1048576 : 1);
             }
             if (this.loader != null && this.loader.contentLoaderInfo != null) {
                 return this.loader.contentLoaderInfo.bytesLoaded;

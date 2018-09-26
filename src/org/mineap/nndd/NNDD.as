@@ -298,6 +298,7 @@ private var thumbImgSizeHistory: Number = -1;
 private var myListRenewScheduleTime: Number = 30;
 
 private var loadWindow: LoadWindow = null;
+private var isLoginDialogOpened: Boolean = false;
 
 [Bindable]
 private var rankingProvider: ArrayCollection = new ArrayCollection();
@@ -2523,13 +2524,14 @@ private function readStore(isLogout: Boolean = false): void {
 
 private function createLoginDialog(isLogout: Boolean, isLocalStoreError: Boolean): void {
     // ログインダイアログの作成
-    loginDialog = PopUpManager.createPopUp(this, LoginDialog, true) as LoginDialog;
-    loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, LogManager.instance, isLogout);
+    this.loginDialog = PopUpManager.createPopUp(this, LoginDialog, true) as LoginDialog;
+    this.isLoginDialogOpened = true;
+    this.loginDialog.initLoginDialog(Access2Nico.TOP_PAGE_URL, Access2Nico.LOGIN_URL, LogManager.instance, isLogout);
     // ログイン時のイベントリスナを追加
-    loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
-    loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
-    loginDialog.addEventListener(LoginDialog.NO_LOGIN, noLogin);
-    loginDialog.addEventListener(FlexEvent.CREATION_COMPLETE, function (event: Event): void {
+    this.loginDialog.addEventListener(LoginDialog.ON_LOGIN_SUCCESS, onFirstTimeLoginSuccess);
+    this.loginDialog.addEventListener(LoginDialog.LOGIN_FAIL, loginFailEventHandler);
+    this.loginDialog.addEventListener(LoginDialog.NO_LOGIN, noLogin);
+    this.loginDialog.addEventListener(FlexEvent.CREATION_COMPLETE, function (event: Event): void {
         if (isLocalStoreError) {
             EncryptedLocalStore.reset();
             Alert.show(Message.M_LOCAL_STORE_IS_BROKEN, Message.M_ERROR);
@@ -2567,6 +2569,7 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
     logoutButton.enabled = true;
 
     PopUpManager.removePopUp(loginDialog);
+    this.isLoginDialogOpened = false;
 
     UserManager.instance.user = loginDialog.textInput_userName.text;
     UserManager.instance.password = loginDialog.textInput_password.text;
@@ -2588,6 +2591,7 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
     downloadManager.isSkipEconomy = isSkipEconomy;
     downloadManager.retryMaxCount = this.downloadRetryMaxCount;
     scheduleManager = new ScheduleManager(logManager, downloadManager);
+    this.label_nextDownloadTime.text = scheduleManager.scheduleString;
     if (scheduleManager.isScheduleEnable) {
         scheduleManager.timerStart();
     }
@@ -2654,6 +2658,7 @@ private function noLogin(event: HTTPStatusEvent): void {
     logoutButton.enabled = true;
 
     PopUpManager.removePopUp(loginDialog);
+    this.isLoginDialogOpened = false;
 
     UserManager.instance.user = null;
     UserManager.instance.password = null;
@@ -6363,6 +6368,9 @@ private function addDLList(url: String): void {
 
 
 private function queueKeyDownHandler(event: KeyboardEvent): void {
+    if (this.isLoginDialogOpened) {
+        return;
+    }
     if (viewstack1.selectedIndex == DOWNLOAD_LIST_TAB_NUM) {
         if (event.ctrlKey) {
             isCtrlKeyPush = true;
@@ -6372,10 +6380,14 @@ private function queueKeyDownHandler(event: KeyboardEvent): void {
 
 /**
  * WindowsとLinuxの時のctrl+vイベントハンドラ
+ * TODO: 本来DELETE/BACKSPACEのハンドリングはdownloadedKeyUpHandlerで行われるべきだがそうなっていない
  * @param event
  *
  */
 private function queueKeyUpHandler(event: KeyboardEvent): void {
+    if (this.isLoginDialogOpened) {
+        return;
+    }
     if (viewstack1.selectedIndex == DOWNLOAD_LIST_TAB_NUM) {
         if (!textInput_url_foculsIn) {
             if (event.keyCode == Keyboard.DELETE || event.keyCode == Keyboard.BACKSPACE) {
