@@ -643,7 +643,7 @@ package org.mineap.nndd {
             dispatchEvent(new Event(LOGIN_SKIP));
 
             // closeが呼ばれていないか？
-            if (this._watchVideo == null) {
+            if (this._login === null) {
                 return;
             }
 

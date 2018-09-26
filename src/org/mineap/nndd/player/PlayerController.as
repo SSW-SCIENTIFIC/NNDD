@@ -306,8 +306,6 @@ package org.mineap.nndd.player {
 
             if (this._dmcHeartbeatTimer !== null && this._dmcHeartbeatTimer.running) {
                 this._dmcHeartbeatTimer.stop();
-                this._dmcHeartbeatTimer = null;
-                this.isHLS = false;
             }
 
             if (this.comments != null) {
@@ -594,14 +592,6 @@ package org.mineap.nndd.player {
                     videoPlayer.label_economyStatus.text = "";
                 }
 
-                // VideoDisplay構築のタイミングではハートビートタイマーは止まっているはず
-                if (this._dmcHeartbeatTimer !== null && this._dmcHeartbeatTimer.running) {
-                    // 止まっていない場合はNNDDDownloader経由でないのでタイマーを止めて削除してよい
-                    this._dmcHeartbeatTimer.stop();
-                    this._dmcHeartbeatTimer = null;
-                    this.isHLS = false;
-                }
-
                 videoPlayer.canvas_video.toolTip = null;
 
                 if (isPlayerClosing) {
@@ -737,10 +727,10 @@ package org.mineap.nndd.player {
                         factory.addEventListener(
                             MediaFactoryEvent.PLUGIN_LOAD,
                             function (event: MediaFactoryEvent): void {
-                                if (isStreamingPlay && _dmcHeartbeatTimer !== null) {
-                                    // ハートビートタイマーが設定されている場合にはタイマーを起動
+                                if (_dmcHeartbeatTimer !== null && !_dmcHeartbeatTimer.running) {
                                     _dmcHeartbeatTimer.start();
                                 }
+
                                 if (isHLS) {
                                     // HLSの場合, 動画ソースはDynamicStreamingResouceオブジェクトにする必要がある
                                     videoDisplay.source = new DynamicStreamingResource(videoPath);
@@ -4191,6 +4181,7 @@ package org.mineap.nndd.player {
 
         /**
          * 渡されたURLで動画を再生します。
+         * 恐らく動画ソース変更時には必ず呼ばれる
          *
          * @param url 再生したい動画のURL（ローカルの場合でもURL形式ならば有効）
          * @param token Flash Media Serverの認証を行うためのトークン
@@ -4198,7 +4189,8 @@ package org.mineap.nndd.player {
          * @param playListIndex プレイリスト内でどの項目を再生するか指定
          * @param videoTitle ストリーミング再生等で動画のタイトルを取得するのが難しい場合は動画のタイトルを指定します。
          * @param isEconomy エコノミーモードで再生するかどうかです。デフォルトではfalseで、エコノミーモードで再生しません。
-         *
+         * @param isHLS HLSストリーミングかどうか
+         * @param timer DMCサーバ使用時のハートビートタイマー
          */
         public function _playMovie(
             url: String,
@@ -4206,7 +4198,9 @@ package org.mineap.nndd.player {
             playList: PlayList = null,
             playListIndex: int = -1,
             videoTitle: String = "",
-            isEconomy: Boolean = false
+            isEconomy: Boolean = false,
+            isHLS: Boolean = false,
+            timer: Timer = null
         ): void {
 
             try {
@@ -4239,8 +4233,8 @@ package org.mineap.nndd.player {
                         nicoVideoAccessRetryTimer.stop();
                         nicoVideoAccessRetryTimer = null;
                     }
-                    if (_dmcHeartbeatTimer !== null) {
-                        _dmcHeartbeatTimer.stop();
+                    if (this._dmcHeartbeatTimer !== null) {
+                        this._dmcHeartbeatTimer.stop();
                     }
                     stop();
                 } catch (error: Error) {
@@ -4263,6 +4257,8 @@ package org.mineap.nndd.player {
                 }
 
                 this._isEconomyMode = isEconomy;
+                this.isHLS = isHLS;
+                this._dmcHeartbeatTimer = timer;
 
                 url = decodeURIComponent(url);
 
@@ -4578,18 +4574,15 @@ package org.mineap.nndd.player {
                         nnddDownloaderForStreaming.addEventListener(
                             NNDDDownloader.DOWNLOAD_PROCESS_COMPLETE,
                             function (event: Event): void {
-                                if (_dmcHeartbeatTimer !== null && _dmcHeartbeatTimer.running) {
-                                    _dmcHeartbeatTimer.stop();
-                                }
-                                _dmcHeartbeatTimer = nnddDownloaderForStreaming.createDmcBeatingTimer();
-                                isHLS = nnddDownloaderForStreaming.isHLS;
                                 _playMovie(
                                     (event.target as NNDDDownloader).streamingUrl,
                                     (event.target as NNDDDownloader).fmsToken,
                                     playList,
                                     playListIndex,
                                     FileIO.getSafeFileName((event.target as NNDDDownloader).nicoVideoName),
-                                    nnddDownloaderForStreaming.isEconomyMode
+                                    nnddDownloaderForStreaming.isEconomyMode,
+                                    nnddDownloaderForStreaming.isHLS,
+                                    nnddDownloaderForStreaming.createDmcBeatingTimer()
                                 );
 
                                 removeStreamingPlayHandler(event);

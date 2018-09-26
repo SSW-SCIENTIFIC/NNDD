@@ -1124,33 +1124,33 @@ package org.mineap.nndd.player.comment {
         }
 
         /**
+         * コールバックを用いてコメントのパラメータ設定を行う
+         * @param callback (element: NNDDText, index: int, vector: Vector.<NNDDText>) => void
+         */
+        private function setCommentByCallback(callback: Function): void {
+            this.commentNomalTextArray.map(
+                function (array: Vector.<NNDDText>, index: int, vector: Vector.<Vector.<NNDDText>>): void {
+                    if (array) {
+                        array.map(callback);
+                    }
+                }
+            );
+            this.commentShitaTextArray.map(callback);
+            this.commentUeTextArray.map(callback);
+        }
+
+        /**
          *
          * @param commentAlpha
          *
          */
         public function setCommentAlpha(commentAlpha: Number): void {
-
             this._commentAlpha = commentAlpha;
-
-            var i: int = 0;
-            for (var j: int = 0; j < commentNomalTextArray.length; j++) {
-                for (i = 0; i < commentNomalTextArray[j].length; i++) {
-                    if (commentNomalTextArray[j][i] != null) {
-                        commentNomalTextArray[j][i].alpha = this._commentAlpha;
-                    }
+            this.setCommentByCallback(function (element: NNDDText, index: int, vector: Vector.<NNDDText>): void {
+                if (element) {
+                    element.alpha = commentAlpha;
                 }
-            }
-            for (i = 0; i < commentShitaTextArray.length; i++) {
-                if (commentShitaTextArray[i] != null) {
-                    commentShitaTextArray[i].alpha = this._commentAlpha;
-                }
-            }
-            for (i = 0; i < commentUeTextArray.length; i++) {
-                if (commentUeTextArray[i] != null) {
-                    commentUeTextArray[i].alpha = this._commentAlpha;
-                }
-            }
-
+            });
         }
 
         /**
@@ -1159,39 +1159,18 @@ package org.mineap.nndd.player.comment {
          *
          */
         public function setCommentBold(isCommentBold: Boolean): void {
-
             this._isCommentBold = isCommentBold;
-
-            try {
-
-                var i: int = 0;
-                for (var j: int = 0; j < commentNomalTextArray.length; j++) {
-                    for (i = 0; i < commentNomalTextArray[j].length; i++) {
-                        if (isCommentBold) {
-                            (commentNomalTextArray[j][i]).setStyle("fontWeight", "bold");
-                        } else {
-                            (commentNomalTextArray[j][i]).setStyle("fontWeight", "nomal");
-                        }
-                    }
-                }
-                for (i = 0; i < commentShitaTextArray.length; i++) {
-                    if (isCommentBold) {
-                        (commentShitaTextArray[i]).setStyle("fontWeight", "bold");
-                    } else {
-                        (commentShitaTextArray[i]).setStyle("fontWeight", "nomal");
-                    }
-                }
-                for (i = 0; i < commentUeTextArray.length; i++) {
-                    if (isCommentBold) {
-                        (commentUeTextArray[i]).setStyle("fontWeight", "bold");
-                    } else {
-                        (commentUeTextArray[i]).setStyle("fontWeight", "nomal");
-                    }
+            this.setCommentByCallback(function (element: NNDDText, index: int, vector: Vector.<NNDDText>): void {
+                if (!element) {
+                    return;
                 }
 
-            } catch (error: Error) {
-                trace("まだ準備が終わってない(setBold):" + error.getStackTrace());
-            }
+                if (isCommentBold) {
+                    element.setStyle("fontWeight", "bold");
+                } else {
+                    element.setStyle("fontWeight", "normal");
+                }
+            });
         }
 
         /**
@@ -1201,22 +1180,11 @@ package org.mineap.nndd.player.comment {
          *
          */
         public function setCommentVisible(isVisible: Boolean): void {
-            try {
-                var i: int = 0;
-                for (var j: int = 0; j < commentNomalTextArray.length; j++) {
-                    for (i = 0; i < commentNomalTextArray[j].length; i++) {
-                        (commentNomalTextArray[j][i] as NNDDText).visible = isVisible;
-                    }
+            this.setCommentByCallback(function (element: NNDDText, index: int, vector: Vector.<NNDDText>): void {
+                if (element) {
+                    element.visible = isVisible;
                 }
-                for (i = 0; i < commentShitaTextArray.length; i++) {
-                    (commentShitaTextArray[i] as NNDDText).visible = isVisible;
-                }
-                for (i = 0; i < commentUeTextArray.length; i++) {
-                    (commentUeTextArray[i] as NNDDText).visible = isVisible;
-                }
-            } catch (error: Error) {
-                trace("まだ準備が終わっていない(isVisible):" + error.getStackTrace());
-            }
+            });
         }
 
 
