@@ -2591,7 +2591,9 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
     downloadManager.isSkipEconomy = isSkipEconomy;
     downloadManager.retryMaxCount = this.downloadRetryMaxCount;
     scheduleManager = new ScheduleManager(logManager, downloadManager);
-    this.label_nextDownloadTime.text = scheduleManager.scheduleString;
+    if (this.label_nextDownloadTime !== null) {
+        this.label_nextDownloadTime.text = scheduleManager.scheduleString;
+    }
     if (scheduleManager.isScheduleEnable) {
         scheduleManager.timerStart();
     }
@@ -2637,8 +2639,14 @@ private function onFirstTimeLoginSuccess(event: HTTPStatusEvent): void {
             }
         }
     }
+}
 
-
+private function nextDownloadLabelCreationCompleteHandler(): void {
+    if (this.scheduleManager !== null) {
+        this.label_nextDownloadTime.text = this.scheduleManager.scheduleString;
+    } else {
+        this.label_nextDownloadTime.text = "";
+    }
 }
 
 /**

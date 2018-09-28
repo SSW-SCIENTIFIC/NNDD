@@ -1960,7 +1960,11 @@
 
             <s:HGroup right="10" top="5">
                 <mx:Label text="次のダウンロード開始:"/>
-                <mx:Label width="100" id="label_nextDownloadTime"/>
+                <mx:Label
+                        width="100"
+                        id="label_nextDownloadTime"
+                        creationComplete="nextDownloadLabelCreationCompleteHandler()"
+                />
             </s:HGroup>
 
             <mx:DataGrid left="10" top="28" right="10" bottom="30" rowHeight="55"
