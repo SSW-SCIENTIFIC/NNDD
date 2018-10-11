@@ -121,7 +121,7 @@
                 var obj: Object = Clipboard.generalClipboard.getData(ClipboardFormats.URL_FORMAT);
                 if (obj != null) {
                     // url
-                    if (obj.toString().indexOf("http://www.nicovideo.jp/watch/") != -1) {
+                    if (obj.toString().match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                         url = obj.toString();
                     }
                 }
@@ -129,7 +129,7 @@
                 obj = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT);
                 if (obj != null && obj is String) {
                     // テキスト
-                    if ((obj as String).indexOf("http://www.nicovideo.jp/watch/") != -1) {
+                    if ((obj as String).match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                         url = (obj as String);
                     }
                 }

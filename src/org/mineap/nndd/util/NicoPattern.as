@@ -24,7 +24,7 @@ package org.mineap.nndd.util {
          * <a class="tab_a1" href="http://www.nicovideo.jp/ranking/mylist/daily/music"><div>音楽</div></a>
          */
         public static var rankingCategoryPattern: RegExp = new RegExp(
-            "<a class=\"tab_..\" href=\"http://www.nicovideo.jp/ranking/\\w+/\\w+/([^\"]*)\"><div>([^<]*)</div></a>",
+            "<a class=\"tab_..\" href=\"https?://www\.nicovideo\.jp/ranking/\\w+/\\w+/([^\"]*)\"><div>([^<]*)</div></a>",
             "ig"
         );
 
@@ -42,7 +42,7 @@ package org.mineap.nndd.util {
          * 検索結果から次ページへのリンクを抽出する正規表現です。
          */
         public static var searchPageLinkPattern: RegExp = new RegExp(
-            "<a href=\"(http://www.nicovideo.jp/[^/]+/[^\"]*)\">(\\d*)</a>[^</a>]*",
+            "<a href=\"(https?://www\.nicovideo\.jp/[^/]+/[^\"]*)\">(\\d*)</a>",
             "ig"
         );
 

@@ -4527,7 +4527,7 @@ package org.mineap.nndd.player {
                             );
                         }
                     }
-                } else if (url.match(new RegExp("http://www.nicovideo.jp/watch/")) != null) {
+                } else if (url.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
 
                     /* ストリーミング再生(接続先動画サーバがまだわかっていない時) */
 

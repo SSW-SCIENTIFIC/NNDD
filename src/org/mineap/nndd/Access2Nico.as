@@ -1153,7 +1153,7 @@ package org.mineap.nndd {
             this.urlList = this.getSearch(searchLoader);
 
             // 検索ワードが含まれていないときは新着
-            if (nicoSearchURL.indexOf("http://www.nicovideo.jp/?") != -1) {
+            if (nicoSearchURL.match(/https?:\/\/www\.nicovideo\.jp\/?/)) {
                 this.categoryList = this.getCategoryList(listLoader);
             }
 
@@ -1338,7 +1338,7 @@ package org.mineap.nndd {
                 this.urlList = this.getSearch(listLoader);
 
                 // 検索ワードが含まれていないときは新着
-                if (nicoRankingURL.indexOf("http://www.nicovide.jp/?") != -1) {
+                if (nicoRankingURL.match(/https?:\/\/www\.nicovide\.jp\/?/)) {
                     this.categoryList = this.getCategoryList(listLoader);
                 }
 

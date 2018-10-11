@@ -1687,7 +1687,7 @@ private function invokeEventHandler(event: InvokeEvent): void {
                     url = "http://www.nicovideo.jp/watch/" + videoId;
                 }
 
-                if (url.indexOf("http://www.nicovideo.jp/watch/") > -1) {
+                if (url.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                     //DLリストに追加
 
                     var video: NNDDVideo = new NNDDVideo(url, "-");
@@ -1705,7 +1705,7 @@ private function invokeEventHandler(event: InvokeEvent): void {
                             if (checker.url != null) {
                                 logManager.addLog("短縮URLを展開:" + checker.url);
 
-                                if (checker.url.indexOf("http://www.nicovideo.jp/watch/") > -1) {
+                                if (checker.url.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                                     //DLリストに追加
                                     var video: NNDDVideo = new NNDDVideo(checker.url, "-");
                                     var timer: Timer = new Timer(1000, 1);
@@ -1755,7 +1755,7 @@ private function invokeEventHandler(event: InvokeEvent): void {
                     this.playingVideoPath = decodeURIComponent(file.nativePath);
                     playMovie(decodeURIComponent(file.url), -1);
                 }
-            } else if (arg1.indexOf("http://www.nicovideo.jp/watch/") > -1) {
+            } else if (arg1.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                 // ニコ動
 
                 this.playingVideoPath = arg1;
@@ -3330,7 +3330,7 @@ private function videoStreamingPlayStart(url: String): void {
             mUrl = "http://www.nicovideo.jp/watch/" + videoId;
         }
 
-        if (mUrl != null && mUrl.indexOf("http://www.nicovideo.jp/watch/") != -1) {
+        if (mUrl != null && mUrl.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
 
             if (isOutStreamingPlayerUse) {
 
@@ -6345,7 +6345,7 @@ private function addDLList(url: String): void {
 
     var auto: Boolean = isAutoDownload;
 
-    var matchResult: Array = url.match(new RegExp("http://www.nicovideo.jp/watch/"));
+    var matchResult: Array = url.match(/https?:\/\/www\.nicovideo\.jp\/watch\//);
     if (matchResult != null && matchResult.length > 0) {
         var video: NNDDVideo = new NNDDVideo(url, "-");
         if (!downloadManager.add(video, auto)) {
@@ -6582,7 +6582,7 @@ private function addDownloadListButtonClickedForMyList(): void {
             var videoName: String = dataGrid_myList.dataProvider[index].dataGridColumn_videoName;
             var thumbUrl: String = dataGrid_myList.dataProvider[index].dataGridColumn_preview;
 
-            if (videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1) {
+            if (videoUrl.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                 //ダウンロード
                 var video: NNDDVideo = new NNDDVideo(videoUrl, videoName);
                 video.thumbUrl = thumbUrl;
@@ -6607,7 +6607,7 @@ private function addDownloadListButtonClickedForSearch(): void {
             var videoName: String = dataGrid_search.dataProvider[index].dataGridColumn_videoName;
             var thumbUrl: String = dataGrid_search.dataProvider[index].dataGridColumn_preview;
 
-            if (videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1) {
+            if (videoUrl.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
                 //ダウンロード
                 var video: NNDDVideo = new NNDDVideo(videoUrl, videoName);
                 video.thumbUrl = thumbUrl;
@@ -6627,7 +6627,7 @@ private function videoStreamingPlayButtonClickedForMyList(): void {
         var videoName: String = dataGrid_myList.dataProvider[index].dataGridColumn_videoName;
         var type: RssType = dataGrid_myList.dataProvider[index].dataGridColumn_type;
 
-        if (videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1) {
+        if (videoUrl.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
             var myListId: String = dataGrid_myList.dataProvider[index].dataGridColumn_myListId;
             if (myListId != null) {
                 var vector: Vector.<String> = new Vector.<String>();
@@ -6663,7 +6663,7 @@ private function videoStreamingPlayButtonClickedForSearch(): void {
         var videoUrl: String = dataGrid_search.dataProvider[index].dataGridColumn_nicoVideoUrl;
         var videoName: String = dataGrid_search.dataProvider[index].dataGridColumn_videoName;
 
-        if (videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1) {
+        if (videoUrl.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
             //ストリーミング
             videoStreamingPlayStart(videoUrl);
         }
@@ -6683,7 +6683,7 @@ private function myListItemDataGridDoubleClicked(): void {
         var videoName: String = dataGrid_myList.dataProvider[index].dataGridColumn_videoName;
         var type: RssType = dataGrid_myList.dataProvider[index].dataGridColumn_type;
 
-        if (videoUrl.indexOf("http://www.nicovideo.jp/watch/") != -1) {
+        if (videoUrl.match(/https?:\/\/www\.nicovideo\.jp\/watch\//)) {
             //ダウンロード or ストリーミング
             if (isDoubleClickOnVideoPlay) {
                 //ストリーミング

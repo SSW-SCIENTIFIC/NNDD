@@ -14,7 +14,7 @@ private function okButtonClicked(event: MouseEvent): void {
 
 private function goToDownload(): void {
 
-    var urlRequest: URLRequest = new URLRequest("http://sourceforge.jp/projects/nndd/releases/");
+    var urlRequest: URLRequest = new URLRequest("https://github.com/SSW-SCIENTIFIC/NNDD");
     urlRequest.userAgent = "NNDD " + Application.application.version;
 
     navigateToURL(urlRequest);

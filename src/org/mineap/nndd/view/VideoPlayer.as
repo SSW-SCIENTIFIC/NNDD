@@ -1040,7 +1040,7 @@ private function canvasVideoDroped(event: NativeDragEvent): void {
             checker.addEventListener(Event.COMPLETE, function (event: Event): void {
                 var url: String = checker.url;
                 logManager.addLog("短縮URLを展開:" + url);
-                if (url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) != null) {
+                if (url.match(/https?:\/\/www\.nicovideo\.jp\/watch\/|file:\/\/\//)) {
                     playerController.playMovie(url);
                     return;
                 }
@@ -1058,7 +1058,7 @@ private function canvasVideoDroped(event: NativeDragEvent): void {
             checker.expansion(url);
         }
 
-        if (url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) != null) {
+        if (url.match(/https?:\/\/www\.nicovideo\.jp\/watch\/|file:\/\/\//)) {
             playerController.playMovie(url);
             return;
         }
@@ -1070,8 +1070,7 @@ private function canvasVideoDroped(event: NativeDragEvent): void {
         }
     } else if (event.clipboard.hasFormat(ClipboardFormats.FILE_LIST_FORMAT)) {
         var array: Array = (event.clipboard.getData(ClipboardFormats.FILE_LIST_FORMAT) as Array);
-        if (array != null && (array[0] as File).url.match(new RegExp("http://www.nicovideo.jp/watch/|file:///")) !=
-            null) {
+        if (array != null && (array[0] as File).url.match(/https?:\/\/www\.nicovideo\.jp\/watch\/|file:\/\/\//)) {
             playerController.playMovie(array[0].url);
         }
     }

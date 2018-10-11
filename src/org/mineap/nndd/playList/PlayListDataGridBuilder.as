@@ -38,7 +38,7 @@ package org.mineap.nndd.playList {
                     video = tempVideo;
                 }
 
-                if (video.uri.indexOf("http://") != -1) {
+                if (video.uri.match(/https?:\/\//)) {
                     status = "未ダウンロード";
                 }
 

@@ -22,7 +22,9 @@ package org.mineap.nndd.util {
 
             // Case: http://www.nicovideo.jp/mylist/[MyListID]
             //       http://www.nicovideo.jp/my/mylist/#/[MyListID]
-            if (matches = string.match(/^http:\/\/www\.nicovideo\.jp\/(?:mylist|my\/mylist\/#)\/([1-9][0-9]*)$/)) {
+            //       https://www.nicovideo.jp/mylist/[MyListID]
+            //       https://www.nicovideo.jp/my/mylist/#/[MyListID]
+            if (matches = string.match(/^https?:\/\/www\.nicovideo\.jp\/(?:mylist|my\/mylist\/#)\/([1-9][0-9]*)$/)) {
                 return matches[1];
             }
 
@@ -46,7 +48,9 @@ package org.mineap.nndd.util {
 
             // Case: http://www.nicovideo.jp/user/[UserID]/video
             //       http://www.nicovideo.jp/user/[UserID]
-            if (matches = string.match(/^http:\/\/www\.nicovideo\.jp\/user\/([1-9][0-9]*)/)) {
+            //       https://www.nicovideo.jp/user/[UserID]/video
+            //       https://www.nicovideo.jp/user/[UserID]
+            if (matches = string.match(/^https?:\/\/www\.nicovideo\.jp\/user\/([1-9][0-9]*)/)) {
                 return matches[1];
             }
 
