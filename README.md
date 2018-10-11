@@ -65,7 +65,7 @@ MITライセンスに示されるとおり, 本ソフトウェアは**無保証*
 [NativeApplicationUpdater]: https://code.google.com/archive/p/nativeapplicationupdater/
 [Flashls]: http://www.flashls.org/
 [mangui]: https://github.com/mangui
-[Config]: https://github.com/SSW-SCIENTIFIC/NNDD/wiki/NNDD%E3%81%8B%E3%82%89NNDD-DMC%E3%81%B8%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%81%AE%E5%BC%95%E7%B6%99%E3%81%8E%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6NN
+[Config]: https://github.com/SSW-SCIENTIFIC/NNDD/wiki/NNDD%E3%81%8B%E3%82%89NNDD-DMC%E3%81%B8%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%81%AE%E5%BC%95%E7%B6%99%E3%81%8E%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6
 [NNDD+DMC on Linux]: https://github.com/SSW-SCIENTIFIC/NNDD/wiki/(%E5%8F%82%E8%80%83)-Linux%E3%81%B8%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB
 [Release-Latest]: https://github.com/SSW-SCIENTIFIC/NNDD/releases/latest
 [Releases]: https://github.com/SSW-SCIENTIFIC/NNDD/releases
