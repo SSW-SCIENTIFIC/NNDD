@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v3.0.8</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.8-Beta/NNDD_v3_0_8.dmg</url>
+        <version>v3.0.9</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.9-Beta/NNDD_v3_0_9.dmg</url>
         <description><![CDATA[
+2018-10-23 v3.0.9
+・ログの保存場所が変更出来なかった不具合を修正
+・InfoViewの投稿者説明文のHTML時の表示を改善
+・非HTML時については置換を諦める
+
 2018-10-12 v3.0.8
 ・起動時`label_nextDownloadTime`が初期化される前に代入が行われて例外が飛んでいたのを修正
 ・コメント投稿時にチャンネルIDが取得可能かどうか確認し, チャンネル動画の場合は自動184を無効化するように
@@ -158,9 +163,14 @@
     </dmg>
 
     <exe>
-        <version>3.0.8</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.8-Beta/NNDD_v3_0_8.exe</url>
+        <version>3.0.9</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.9-Beta/NNDD_v3_0_9.exe</url>
         <description><![CDATA[
+2018-10-23 v3.0.9
+・ログの保存場所が変更出来なかった不具合を修正
+・InfoViewの投稿者説明文のHTML時の表示を改善
+・非HTML時については置換を諦める
+
 2018-10-12 v3.0.8
 ・起動時`label_nextDownloadTime`が初期化される前に代入が行われて例外が飛んでいたのを修正
 ・コメント投稿時にチャンネルIDが取得可能かどうか確認し, チャンネル動画の場合は自動184を無効化するように
