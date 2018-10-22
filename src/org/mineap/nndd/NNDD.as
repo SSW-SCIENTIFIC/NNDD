@@ -255,8 +255,6 @@ private var showAll: Boolean = false;
 
 private var isEnableNativePlayer: Boolean = false;
 
-private var useAppDirLibFile: Boolean = false;
-
 private var isOpenPlayerOnBoot: Boolean = false;
 
 private var downloadRetryMaxCount: int = 2;
@@ -395,9 +393,9 @@ public function initNNDD(nndd: NNDD): void {
 
     this.version = VersionUtil.instance.versionNumber;
 
-    this.title = "NNDD - v" + VersionUtil.instance.versionLabel;
+    this.title = "NNDD+DMC - v" + VersionUtil.instance.versionLabel;
 
-    var userAgent: String = URLRequestDefaults.userAgent + " NNDD/" + this.version;
+    var userAgent: String = URLRequestDefaults.userAgent + " NNDD+DMC/" + this.version;
 
     // 外部ライブラリを呼び出した後でuserAgentを設定しないとUserAgentが正しく設定されない?
     UserAgentManager.instance.userAgent = userAgent;
@@ -413,16 +411,7 @@ public function initNNDD(nndd: NNDD): void {
     readStore();
 
     /* バージョンチェック */
-//	VersionChecker.instance.init(this.isVersionCheckEnable);
     VersionCheckerFactory.create().init(this.isVersionCheckEnable);
-
-//	var startDate:Date = new Date(2009, 0, 1);
-//	var lastDate:Date = new Date(2009, 0, 4);
-//	var nowDate:Date = new Date();
-//	if(nowDate.getTime() > startDate.getTime() && nowDate.getTime() < lastDate.getTime() && !isSayHappyNewYear){
-//		Alert.show("あけましておめでとうございます！\n新年も皆様がニコニコできますように！");
-//		isSayHappyNewYear = true;
-//	}
 
     /* タグマネージャー */
     this.tagManager = TagManager.instance;
@@ -431,10 +420,7 @@ public function initNNDD(nndd: NNDD): void {
     this.ngTagManager = NgTagManager.instance;
     this.ngTagManager.initialize(ngTagProvider);
 
-    /* ライブラリマネージャー生成 */
-//	this.libraryManager = LibraryManagerBuilder.instance.libraryManager;
-
-    //動画の保存先ディレクトリはあるか？(保存先ディレクトリは存在するか？)
+    // 動画の保存先ディレクトリはあるか？(保存先ディレクトリは存在するか？)
     if (!_libraryDir.exists) {
 
         // デフォルトに戻す
@@ -443,48 +429,9 @@ public function initNNDD(nndd: NNDD): void {
 
     }
 
-
-    //アプリケーションディレクトリのライブラリを使う準備
-    this.libraryManager.useAppDirLibFile = this.useAppDirLibFile;
-    if (true == this.useAppDirLibFile) {
-        //アプリケーションディレクトリを使う場合
-        if (this.libraryManager.libraryFile.exists) {
-            //ライブラリファイルがもうあるので何もしない
-        } else {
-            //ライブラリファイルは無い場合
-            this.libraryManager.useAppDirLibFile = false;
-
-            //古いライブラリファイル(SQL)をアプリケーションディレクトリにコピー
-            var oldLibFile: File = _libraryDir.resolvePath("system/")
-                .resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
-            var oldXMLLibFile: File = _libraryDir.resolvePath("system/")
-                .resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
-
-            this.libraryManager.useAppDirLibFile = true;
-            var newLibFile: File = File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME);
-            if (oldLibFile.exists && !newLibFile.exists) {
-                oldLibFile.copyTo(newLibFile);
-                logManager.addLog("ライブラリファイルの保存先を変更(新しい保存先:" +
-                                  File.applicationStorageDirectory.resolvePath(SQLiteLibraryManager.LIBRARY_FILE_NAME).nativePath +
-                                  ")");
-            }
-
-            //古いライブラリファイル(XML)をアプリケーションディレクトリにコピー
-            var newXMLFile: File = File.applicationStorageDirectory.resolvePath(NamedArrayLibraryManager.LIBRARY_FILE_NAME);
-            if (oldXMLLibFile.exists && !newXMLFile.exists) {
-                oldXMLLibFile.copyTo(newXMLFile);
-            }
-
-//			oldLibFile.moveToTrash();
-        }
-    }
-
-
-    this.libraryManager.changeLibraryDir(this._libraryDir, false);
-
     this.ngTagManager.loadNgTags();
 
-    //システムディレクトリにライブラリファイルがあればそっちを取りに行く
+    // システムディレクトリにライブラリファイルがあればそっちを取りに行く
     var isSuccess: Boolean = this.libraryManager.loadLibrary();
     this.libraryManager.addEventListener(LibraryLoadEvent.LIBRARY_LOAD_COMPLETE, libraryLoadCompleteEventHandler);
     if (!isSuccess) {
@@ -2143,6 +2090,8 @@ private function readStore(isLogout: Boolean = false): void {
         } else {
             this._libraryDir.url = String(confValue);
         }
+        // ライブラリのディレクトリを移動し, ログ出力先を設定
+        this.libraryManager.changeLibraryDir(this._libraryDir, false);
         logManager.setLogDir(libraryManager.systemFileDir);
 
         errorName = "isSayHappyNewYear";
@@ -2390,15 +2339,6 @@ private function readStore(isLogout: Boolean = false): void {
         }
         confValue = FontUtil.setSize(Number(confValue));
         ConfigManager.getInstance().setItem("fontSize", confValue);
-
-// このオプションは無効(useAppDirSystemFileを使う)
-//		errorName = "useAppDirLibFile";
-//		confValue = ConfigManager.getInstance().getItem("useAppDirLibFile");
-//		if(confValue != null){
-//			useAppDirLibFile = ConfUtil.parseBoolean(confValue);
-//		}else{
-        useAppDirLibFile = false;
-//		}
 
         errorName = "isOpenPlayerOnBoot";
         confValue = ConfigManager.getInstance().getItem("isOpenPlayerOnBoot");
