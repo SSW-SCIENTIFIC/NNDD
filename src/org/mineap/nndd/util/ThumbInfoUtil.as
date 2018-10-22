@@ -29,34 +29,18 @@ package org.mineap.nndd.util {
 //            );
 //
 
-            var myList_pattern: RegExp = new RegExp(
-                "<(?i:a href)=\"https?://www\\.nicovideo\\.jp/mylist/[1-9][0-9]*\"[^>]*>((?i:mylist)/[1-9][0-9]*)</(?i:a)>|((?i:mylist)/[1-9][0-9]*)",
-                "g"
-            );
-            var user_pattern: RegExp = new RegExp(
-                "<(?i:a href)=\"https?://www\\.nicovideo\\.jp/user/[1-9][0-9]*\"[^>]*>((?i:user)/[1-9][0-9]*)</a>|((?i:user)/[1-9][0-9]*)",
-                "g"
-            );
-            var videoId_pattern: RegExp = new RegExp(
-                "<(?i:a href)=\"https?://www\\.nicovideo\\.jp/watch/[^\"]+\"[^>]*>([^<]+)</a>|" +
-                VideoTypeUtil.VIDEO_ID_WITHOUT_NUMONLY_SEARCH_PATTERN_STRING,
-                "g"
-            );
-            var channel_pattern: RegExp = new RegExp(
-                "<(?i:a href)=\"https?://ch\\.nicovideo\\.jp/(channel/ch[^\"]+)\"[^>]*>[^<]+</a>|((?i:channel)/\\w+)",
-                "g"
-            );  // TODO
-            var community_pattern: RegExp = new RegExp(
-                "<(?i:a href)=\"https?://com\\.nicovideo\\.jp/(community/co[^\"]+)\"[^>]*>[^<]+</a>|((?i:co)[1-9][0-9]+)",
-                "g"
-            );
+            var patterns: Array = [];
+            patterns.push(new RegExp("https?://www\\.nicovideo\\.jp/(mylist/[1-9][0-9]*)"));
+            patterns.push(new RegExp("https?://www\\.nicovideo\\.jp/(user/[1-9][0-9]*)"));
+            patterns.push(new RegExp("https?://ch\\.nicovideo\\.jp/(channel/ch[^\"]+)"));
+            patterns.push(new RegExp("https?://com\\.nicovideo\\.jp/(community/co[^\"]+)"));
+
+            var video_pattern: RegExp = new RegExp("https?://www\\.nicovideo\\.jp/watch/([^\"]+)");
 
             var fontsize_pattern: RegExp = new RegExp("size=\"(\\d+)\"", "ig");
 
             // 小さすぎるサイズを全置換
-            text = text.replace(fontsize_pattern, replFn_changeFontSize);
-
-            function replFn_changeFontSize(): String {
+            text = text.replace(fontsize_pattern, function (): String {
                 var str: String = arguments[0];
                 if (arguments.length > 1 && arguments[1] != "") {
                     var size: int = int(arguments[1]);
@@ -66,58 +50,29 @@ package org.mineap.nndd.util {
                     }
                 }
                 return "size=\"" + size + "\"";
-            }
+            });
 
             var returnString: String = text;
-            returnString = returnString.replace(myList_pattern, replacer);
-            returnString = returnString.replace(channel_pattern, replacer);
-            returnString = returnString.replace(community_pattern, replacer);
-            returnString = returnString.replace(user_pattern, replacer);
-
-            function replacer(): String {
-                var str: String = arguments[0];
-                if (arguments.length > 1 && arguments[1] != "") {
-                    str = arguments[1];
-                }
-                if (str.match(/^co[1-9][0-9]*$/i)) {
-                    str = "community/" + str;
-                }
-                myLists.push(str);
-                return "<a href=\"event:" + str + "\"><u><font color=\"#0000ff\">" + str + "</font></u></a>";
-            }
-
-            returnString = returnString.replace(videoId_pattern, replFN);
-
-            function replFN(): String {
-
-                var htmltag: String = arguments[0];
-                var videoId: String = arguments[1];
-
-                if (videoId != null && videoId == "") {
-                    videoId = arguments[0];
-                }
-
-                //color="#0000ff"を見つけたときはスキップ
-                if (videoId == "0000") {
-                    return arguments[0];
-                }
-
-                //マイリストとして登録済みならスキップ
-                // TODO この方法だとマイリストと同じ番号を持つ動画にたいしてはリンクが設定されないが、その可能性は低いので問題はないとする。
-                for each(var mylist: String in myLists) {
-                    var id: String = mylist.substring(7);
-                    if (id == videoId) {
-                        return arguments[0];
+            returnString = returnString.replace(/<(?i:a\s+href)="([^"]+)"[^>]*?>.*?<\/(?i:a)>/g, function (): String {
+                var url: String = arguments[1];
+                var matches: Array = null;
+                for each(var pattern: RegExp in patterns) {
+                    matches = matches || url.match(pattern);
+                    if (matches) {
+                        myLists.push(matches[1]);
+                        return "<a href=\"event:" + matches[1] + "\"><u><font color=\"#0000ff\">" + matches[1] + "</font></u></a>";
                     }
                 }
 
-                return "<a href=\"event:watch/" + videoId + "\"><u><font color=\"#0000ff\">" + videoId +
-                       "</font></u></a>";
+                if (matches = url.match(video_pattern)) {
+                    var videoId: String = matches[1];
+                    return "<a href=\"event:watch/" + videoId + "\"><u><font color=\"#0000ff\">" + videoId + "</font></u></a>";
+                }
 
-            }
+                return arguments[0];
+            });
 
             return returnString;
-
         }
 
 
