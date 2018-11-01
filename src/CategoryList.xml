@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<categorylist version="20120216">
+<categorylist version="20181101">
     <category title="カテゴリ合算" suffix="all">
     </category>
     <category title="エンタメ・音楽" suffix="g_ent2">
@@ -10,6 +10,9 @@
         <category title="踊ってみた" suffix="dance"></category>
         <category title="VOCALOID" suffix="vocaloid"></category>
         <category title="ニコニコインディーズ" suffix="nicoindies"></category>
+        <category title="ASMR" suffix="asmr"></category>
+        <category title="MMD" suffix="mmd"></category>
+        <category title="バーチャル" suffix="virtual"></category>
     </category>
     <category title="生活・一般・スポ" suffix="g_life2">
         <category title="動物" suffix="animal"></category>
@@ -20,6 +23,7 @@
         <category title="ニコニコ動画講座" suffix="lecture"></category>
         <category title="車載動画" suffix="drive"></category>
         <category title="歴史" suffix="history"></category>
+        <category title="鉄道" suffix="train"></category>
     </category>
     <category title="政治" suffix="g_politics">
     </category>
@@ -36,6 +40,7 @@
         <category title="アイドルマスター" suffix="imas"></category>
         <category title="ラジオ" suffix="radio"></category>
         <category title="描いてみた" suffix="draw"></category>
+        <category title="TRPG" suffix="trpg"></category>
     </category>
     <category title="その他" suffix="g_other">
         <category title="例のアレ" suffix="are"></category>
