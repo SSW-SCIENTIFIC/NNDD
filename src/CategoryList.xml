@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<categorylist version="20181101">
+<categorylist version="20181103">
     <category title="カテゴリ合算" suffix="all">
     </category>
     <category title="エンタメ・音楽" suffix="g_ent2">
@@ -36,6 +36,7 @@
     <category title="アニメ・ゲーム・絵" suffix="g_culture2">
         <category title="アニメ" suffix="anime"></category>
         <category title="ゲーム" suffix="game"></category>
+        <category title="実況プレイ動画" suffix="jikkyo"></category>
         <category title="東方" suffix="toho"></category>
         <category title="アイドルマスター" suffix="imas"></category>
         <category title="ラジオ" suffix="radio"></category>

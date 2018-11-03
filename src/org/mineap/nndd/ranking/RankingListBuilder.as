@@ -29,7 +29,8 @@ package org.mineap.nndd.ranking {
 
         private static const CATEGORY_LIST_FILE_NAME: String = "CategoryList.xml";
 
-        private static const CATEGORY_VERSION: String = "20181101";
+        // TODO: Rollback to 20181101
+        private static const CATEGORY_VERSION: String = "20181103";
 
         /**
          *
