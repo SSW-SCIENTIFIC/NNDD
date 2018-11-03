@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>v3.0.10</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.10-Beta/NNDD_v3_0_10.dmg</url>
+        <version>v3.0.11</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.11-Beta/NNDD_v3_0_11.dmg</url>
         <description><![CDATA[
+2018-11-03 v3.0.11
+・ゲーム->実況プレイ動画のカテゴリが無かったので追加
+
 2018-11-02 v3.0.10
 ・ニコニコ動画のカテゴリ追加への対応
 
@@ -166,9 +169,12 @@
     </dmg>
 
     <exe>
-        <version>3.0.10</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.10-Beta/NNDD_v3_0_10.exe</url>
+        <version>3.0.11</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.11-Beta/NNDD_v3_0_11.exe</url>
         <description><![CDATA[
+2018-11-03 v3.0.11
+・ゲーム->実況プレイ動画のカテゴリが無かったので追加
+
 2018-11-02 v3.0.10
 ・ニコニコ動画のカテゴリ追加への対応
 
