@@ -3741,9 +3741,6 @@ private function rankingRenewButtonClicked(): void {
                     for (var i: int = 0; i < 10; i++) {
                         this.rankingPageCountProvider.push(i + 1);
                     }
-
-                    this.categoryListProvider = new Array();
-
                     combobox_pageCounter_ranking.selectedIndex = rankingPageIndex - 1;
 
                     setEnableTargetRadioButtons(false);
@@ -3787,7 +3784,7 @@ private function rankingRenewButtonClicked(): void {
                         rankingPageIndex
                     );
 
-                    if (period != 5) {
+                    if (period != 5 && categoryListProvider.length == 0) {
                         categoryList = RankingListBuilder.getCategoryList();
                         categoryListProvider = new Array(categoryList.length);
                         for (var index: int = 0; index < categoryList.length; index++) {
