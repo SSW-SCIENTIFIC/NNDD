@@ -2206,7 +2206,7 @@ package org.mineap.nndd.player {
             }
 
             // ある程度以上データが読めていれば完了
-            if (this.bytesLoaded > 64) {
+            if (this.bytesLoaded > 16) {
                 this.streamingRetryCount = 0;
                 return;
             }

@@ -1002,7 +1002,13 @@ package org.mineap.nndd {
 
             //APIアクセス成功(アクセスは閉じない)
             this._flvResultAnalyzer = new GetFlvResultAnalyzer();
-            this._flvResultAnalyzer.analyze(this._getflvAccess.data);
+
+            if (this._watchVideo.isFlash) {
+                this._flvResultAnalyzer.analyze(this._watchVideo.jsonData.flashvars.flvInfo || "");
+            } else {
+                this._flvResultAnalyzer.analyze(this._getflvAccess.data);
+            }
+
             this._threadId = this._flvResultAnalyzer.threadId;
             this._fmsToken = this._flvResultAnalyzer.fmsToken;
 
@@ -1012,22 +1018,29 @@ package org.mineap.nndd {
                 LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_FAIL + ":" + this._videoId + ":" +
                                            this._nicoVideoName);
                 LogManager.instance.addLog("動画が存在しないか、アクセスできません。(" + this._videoId + ")");
-                var errorEvent: ErrorEvent = new IOErrorEvent(
-                    GETFLV_API_ACCESS_FAIL,
-                    false,
-                    false,
-                    "動画が存在しないか、アクセスできません。(" + this._videoId + ")"
+                var errorEvent: ErrorEvent = new IOErrorEvent(GETFLV_API_ACCESS_FAIL,
+                                                              false,
+                                                              false,
+                                                              "動画が存在しないか、アクセスできません。(" + this._videoId + ")"
                 );
                 dispatchEvent(errorEvent);
                 close(true, true, errorEvent);
                 return;
-            } else {
-                trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
-                LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" +
-                                           this._nicoVideoName);
-                dispatchEvent(new Event(GETFLV_API_ACCESS_SUCCESS));
             }
 
+            trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);
+            LogManager.instance.addLog(
+                "\t" + GETFLV_API_ACCESS_SUCCESS + ":" + this._videoId + ":" + this._nicoVideoName
+            );
+            dispatchEvent(new Event(GETFLV_API_ACCESS_SUCCESS));
+
+            getWaybackkeyAccess();
+        }
+
+        /**
+         * waybackkey取得APIにアクセスする.
+         */
+        private function getWaybackkeyAccess(): void {
             if (this._when == null) {
                 //過去ログは取得しない
                 getNormalComment();
@@ -1127,7 +1140,7 @@ package org.mineap.nndd {
                 this._videoId,
                 1000,
                 false,
-                this._getflvAccess,
+                this._flvResultAnalyzer,
                 this._when,
                 this._waybackkey,
                 this._useOldType
@@ -1274,7 +1287,14 @@ package org.mineap.nndd {
             dispatchEvent(new Event(OWNER_COMMENT_GET_START));
 
             //isOwner=trueでコメントを取得しにいく。過去コメントは取りに行かない。
-            this._ownerCommentLoader.getComment(this._videoId, 1000, true, this._getflvAccess, null, null);
+            this._ownerCommentLoader.getComment(
+                this._videoId,
+                1000,
+                true,
+                this._flvResultAnalyzer,
+                null,
+                null
+            );
 
         }
 
@@ -1828,15 +1848,20 @@ package org.mineap.nndd {
             this._videoStream.addEventListener(ProgressEvent.PROGRESS, streamProgressHandler);
             this._videoStream.addEventListener(Event.COMPLETE, videoGetCompleteHandler);
 
-            var analyzer: GetFlvResultAnalyzer = new GetFlvResultAnalyzer();
-            analyzer.analyze(String(this._getflvAccess.data));
+            this._threadId = this._flvResultAnalyzer.threadId;
 
-            this._threadId = analyzer.threadId;
-
-            if (analyzer.url == null || analyzer.url.length == 0 || (this._watchVideo.isDmc &&
-                                                                     (!this._dmcResultAnalyzer.isValid ||
-                                                                      this._dmcResultAnalyzer.contentUri.length ==
-                                                                      0))) {
+            // TODO: Refactor this condition.
+            if (
+                this._flvResultAnalyzer.url == null ||
+                this._flvResultAnalyzer.url.length == 0 ||
+                (
+                    this._watchVideo.isDmc &&
+                    (
+                        !this._dmcResultAnalyzer.isValid ||
+                        this._dmcResultAnalyzer.contentUri.length == 0
+                    )
+                )
+            ) {
                 trace(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません:" + this.videoUrl);
                 LogManager.instance.addLog(VIDEO_GET_FAIL + ":動画サーバーのURLが取得できません。:" + this.videoUrl);
                 var event: ErrorEvent = new IOErrorEvent(VIDEO_GET_FAIL, false, false, "動画サーバーのURLが取得できません。");
@@ -1844,7 +1869,7 @@ package org.mineap.nndd {
                 close(true, true, event);
                 return;
             }
-            var videoType: VideoType = VideoStream.checkVideoType(analyzer.url);
+            var videoType: VideoType = VideoStream.checkVideoType(this._flvResultAnalyzer.url);
 
             var extension: String = "";
             if (VideoType.VIDEO_TYPE_FLV == videoType) {
@@ -1871,7 +1896,7 @@ package org.mineap.nndd {
                 oldFile.moveToTrash();
             }
 
-            var videoUrl: String = this._watchVideo.isHTML5 ? this._watchVideo.smileInfo.url : analyzer.url;
+            var videoUrl: String = this._watchVideo.isHTML5 ? this._watchVideo.smileInfo.url : this._flvResultAnalyzer.url;
 
             if (this._watchVideo.isDmc) {
                 videoUrl = this._dmcResultAnalyzer.contentUri;
@@ -2003,7 +2028,7 @@ package org.mineap.nndd {
 
             LogManager.instance.addLog("ストリーム再生用のURLを取得:" + this._nicoVideoName);
 
-            this._videoLoader.getVideo(this._isVideoNotDownload, this._getflvAccess, this._dmcAccess, this._watchVideo);
+            this._videoLoader.getVideo(this._isVideoNotDownload, this._flvResultAnalyzer, this._dmcAccess, this._watchVideo);
         }
 
         /**
