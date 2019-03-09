@@ -27,6 +27,8 @@ package org.mineap.nndd {
     import org.mineap.nicovideo4as.analyzer.DmcResultAnalyzer;
     import org.mineap.nicovideo4as.analyzer.GetFlvResultAnalyzer;
     import org.mineap.nicovideo4as.analyzer.GetWaybackkeyResultAnalyzer;
+    import org.mineap.nicovideo4as.analyzer.WatchDataAnalyzer;
+    import org.mineap.nicovideo4as.analyzer.WatchDataAnalyzerGetFlvAdapter;
     import org.mineap.nicovideo4as.api.ApiGetBgmAccess;
     import org.mineap.nicovideo4as.loader.IchibaInfoLoader;
     import org.mineap.nicovideo4as.loader.ThumbImgLoader;
@@ -1013,19 +1015,12 @@ package org.mineap.nndd {
             this._fmsToken = this._flvResultAnalyzer.fmsToken;
 
             if (this._flvResultAnalyzer.url == null) {
-                // urlがとれない。
-                trace(GETFLV_API_ACCESS_FAIL + ":" + event);
-                LogManager.instance.addLog("\t" + GETFLV_API_ACCESS_FAIL + ":" + this._videoId + ":" +
-                                           this._nicoVideoName);
-                LogManager.instance.addLog("動画が存在しないか、アクセスできません。(" + this._videoId + ")");
-                var errorEvent: ErrorEvent = new IOErrorEvent(GETFLV_API_ACCESS_FAIL,
-                                                              false,
-                                                              false,
-                                                              "動画が存在しないか、アクセスできません。(" + this._videoId + ")"
-                );
-                dispatchEvent(errorEvent);
-                close(true, true, errorEvent);
-                return;
+                var watchDataAnalyzer = new WatchDataAnalyzer();
+                var watchWrapper = new WatchDataAnalyzerGetFlvAdapter();
+
+                watchDataAnalyzer.analyze(this._watchVideo);
+                watchWrapper.wrap(watchDataAnalyzer);
+                this._flvResultAnalyzer = watchWrapper;
             }
 
             trace(GETFLV_API_ACCESS_SUCCESS + ":" + event);

@@ -741,9 +741,9 @@
                                 <s:HGroup width="100%">
                                     <s:Spacer width="20"/>
                                     <s:VGroup width="100%">
-                                        <mx:HSlider minimum="0" maximum="300" snapInterval="1" value="0" width="100%"
+                                        <mx:HSlider minimum="0" maximum="300" snapInterval="1" value="300" width="100%"
                                                     change="bufferingSliderChanged(event)" id="slider_bufferingLength"
-                                                    toolTip="HLSストリーミング再生時のバッファリングの最大長を指定します。デフォルトは 0 (無制限) です。"
+                                                    toolTip="HLSストリーミング再生時のバッファリングの最大長(0は無制限)を指定します。デフォルトは 300秒 です。"
                                                     dataTipFormatFunction="showSliderDataTipFunction"/>
                                         <s:HGroup width="100%">
                                             <mx:Label text="0"/>

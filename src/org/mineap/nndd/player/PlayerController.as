@@ -251,8 +251,8 @@ package org.mineap.nndd.player {
          */
         public function PlayerController() {
             OSMFSettings.enableStageVideo = false;
-            HLSSettings.maxBufferLength = 0;
-            HLSSettings.maxBackBufferLength = 0;
+            HLSSettings.maxBufferLength = 300;
+            HLSSettings.maxBackBufferLength = 300;
             HLSSettings.seekMode = HLSSeekMode.ACCURATE_SEEK;
 
             this.logManager = LogManager.instance;
