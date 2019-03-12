@@ -384,54 +384,71 @@ package org.mineap.nndd {
         private function getXMLSuccess(event: Event): void {
 //			trace((event.target as URLLoader).data);
 
-            var xml: XML = new XML((event.target as URLLoader).data);
-            var items: XMLList = xml.child("channel")[0].child("item");
-            var next: Boolean = items.length() > 0;
-            if (this._xml == null) {
-                this._xml = xml;
-            } else {
-                for each(var tmp: XML in items) {
-                    if (tmp.name() == "item") {
-                        this._xml.child("channel")[0].appendChild(tmp);
+            try {
+                var xml: XML = new XML((event.target as URLLoader).data);
+                var items: XMLList = xml.child("channel")[0].child("item");
+                var next: Boolean = items.length() > 0;
+                if (this._xml == null) {
+                    this._xml = xml;
+                } else {
+                    for each(var tmp: XML in items) {
+                        if (tmp.name() == "item") {
+                            this._xml.child("channel")[0].appendChild(tmp);
+                        }
                     }
                 }
-            }
 
-            // default wait par page is set by 100ms.
-            var wait: int = 100;
-            if (next && this._currentPage > 0) {
-                if (this._communityId != null) {
-                    // community page load limit is very severe
-                    wait = this._currentPage % 5 === 0 ? 10000 : 1000;
-                    wait += this._currentPage > 20 ? 5000 : 0;
-                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId + "/" +
-                                               this._currentPage);
-                } else if (this._channelId != null) {
-                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": channel/" + this._uploadUserId + "/" +
-                                               this._currentPage);
-                } else if (this._uploadUserId != null) {
-                    LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId + "/" +
-                                               this._currentPage);
+                // default wait par page is set by 100ms.
+                var wait: int = 100;
+                if (next && this._currentPage > 0) {
+                    if (this._communityId != null) {
+                        // community page load limit is very severe
+                        wait = this._currentPage % 5 === 0 ? 10000 : 1000;
+                        wait += this._currentPage > 20 ? 5000 : 0;
+                        LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": community/" + this._communityId +
+                                                   "/" + this._currentPage);
+                    } else if (this._channelId != null) {
+                        LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": channel/" + this._uploadUserId +
+                                                   "/" + this._currentPage);
+                    } else if (this._uploadUserId != null) {
+                        LogManager.instance.addLog(DOWNLOAD_PROCESS_INPROGRESS + ": user/" + this._uploadUserId + "/" +
+                                                   this._currentPage);
+                    }
+
+                    setTimeout(this.loadRss, wait);
+                    this._currentPage++;
+                    this._retryCount = 0;
+                    return;
                 }
 
-                setTimeout(this.loadRss, wait);
-                this._currentPage++;
-                this._retryCount = 0;
-                return;
-            }
-
 //			trace(DOWNLOAD_PROCESS_COMPLETE + ":" + event + ":" + xml);
-            if (this._myListId != null) {
-                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": mylist/" + this._myListId);
-            } else if (this._channelId != null) {
-                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": channel/" + this._channelId);
-            } else if (this._communityId != null) {
-                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": community/" + this._communityId);
-            } else {
-                LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": user/" + this._uploadUserId);
-            }
+                if (this._myListId != null) {
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": mylist/" + this._myListId);
+                } else if (this._channelId != null) {
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": channel/" + this._channelId);
+                } else if (this._communityId != null) {
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": community/" + this._communityId);
+                } else {
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_COMPLETE + ": user/" + this._uploadUserId);
+                }
 
-            dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
+                dispatchEvent(new Event(DOWNLOAD_PROCESS_COMPLETE));
+            } catch (e: *) {
+                if (this._myListId != null) {
+                    trace(DOWNLOAD_PROCESS_ERROR + ": mylist/" + this._myListId);
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_ERROR + ": mylist/" + this._myListId);
+                } else if (this._channelId != null) {
+                    trace(DOWNLOAD_PROCESS_ERROR + ": channel/" + this._channelId);
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_ERROR + ": channel/" + this._channelId);
+                } else if (this._communityId != null) {
+                    trace(DOWNLOAD_PROCESS_ERROR + ": community/" + this._communityId);
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_ERROR + ": community/" + this._communityId);
+                } else {
+                    trace(DOWNLOAD_PROCESS_ERROR + ": user/" + this._uploadUserId);
+                    LogManager.instance.addLog(DOWNLOAD_PROCESS_ERROR + ": user/" + this._uploadUserId);
+                }
+                dispatchEvent(new Event(DOWNLOAD_PROCESS_ERROR));
+            }
         }
 
         /**
