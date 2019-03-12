@@ -1,10 +1,13 @@
 package org.mineap.nndd {
+    import flash.desktop.NativeProcess;
+    import flash.desktop.NativeProcessStartupInfo;
     import flash.errors.IOError;
     import flash.events.ErrorEvent;
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.HTTPStatusEvent;
     import flash.events.IOErrorEvent;
+    import flash.events.NativeProcessExitEvent;
     import flash.events.ProgressEvent;
     import flash.events.TimerEvent;
     import flash.filesystem.File;
@@ -12,11 +15,14 @@ package org.mineap.nndd {
     import flash.net.URLRequest;
     import flash.net.URLRequestHeader;
     import flash.net.URLStream;
+    import flash.system.Capabilities;
+    import flash.system.System;
     import flash.utils.ByteArray;
     import flash.utils.Timer;
     import flash.utils.getTimer;
 
     import mx.controls.Alert;
+    import mx.core.Application;
     import mx.events.CloseEvent;
 
     import org.mineap.nicovideo4as.CommentLoader;
@@ -79,6 +85,7 @@ package org.mineap.nndd {
         private var _ichibaInfoLoader: IchibaInfoLoader;
         private var _videoLoader: VideoLoader;
         private var _videoStream: VideoStream;
+        private var _nativeProcess: NativeProcess;
 
         public var _dmcAccess: ApiDmcAccess;
         public var _dmcInfoAnalyzer: DmcInfoAnalyzer;
@@ -1683,7 +1690,7 @@ package org.mineap.nndd {
             this._dmcAccess.createDmcSession(
                 this._videoId,
                 this._dmcInfoAnalyzer.apiUrl,
-                this._dmcInfoAnalyzer.getSession(this._isVideoNotDownload)
+                this._dmcInfoAnalyzer.getSession(this.isHLS)
             );
         }
 
@@ -1847,9 +1854,10 @@ package org.mineap.nndd {
 
             // TODO: Refactor this condition.
             if (
-                this._flvResultAnalyzer.url == null ||
-                this._flvResultAnalyzer.url.length == 0 ||
                 (
+                    this._flvResultAnalyzer.url == null ||
+                    this._flvResultAnalyzer.url.length == 0
+                ) && (
                     this._watchVideo.isDmc &&
                     (
                         !this._dmcResultAnalyzer.isValid ||
@@ -1911,7 +1919,57 @@ package org.mineap.nndd {
             if (this._dmcHeartBeatTimer !== null) {
                 this._dmcHeartBeatTimer.start();
             }
-            this._videoStream.getVideoStart(videoUrl, this._downloadedSize);
+
+            if (this.isHLS) {
+                this._nativeProcess = new NativeProcess();
+                this._nativeProcess.addEventListener(
+                    ProgressEvent.STANDARD_OUTPUT_DATA,
+                    function (event: ProgressEvent): void {
+                        trace(_nativeProcess.standardOutput.readUTFBytes(_nativeProcess.standardOutput.bytesAvailable));
+                    }
+                );
+
+                this._nativeProcess.addEventListener(
+                    ProgressEvent.STANDARD_ERROR_DATA,
+                    function (event: ProgressEvent): void {
+                        trace(_nativeProcess.standardError.readUTFBytes(_nativeProcess.standardError.bytesAvailable));
+                    }
+                );
+
+                this._nativeProcess.addEventListener(
+                    NativeProcessExitEvent.EXIT,
+                    function (event: NativeProcessExitEvent): void {
+                        trace("ffmpeg exited.");
+                    }
+                );
+
+                var startupInfo: NativeProcessStartupInfo = new NativeProcessStartupInfo();
+                startupInfo.executable = File.applicationDirectory.resolvePath(
+                    "externals/ffmpeg" + (Capabilities.os.indexOf("Windows") != -1 ? ".exe" : "")
+                );
+                startupInfo.arguments = new <String>[
+                    "-protocol_whitelist",
+                    "file,http,https,tcp,tls,crypto",
+                    "-headers",
+                    "Origin: https://www.nicovideo.jp",
+                    "-i",
+                    videoUrl,
+                    "-movflags",
+                    "faststart",
+                    "-c",
+                    "copy",
+                    "-bsf:a",
+                    "aac_adtstoasc",
+                    "-stats",
+                    this._saveDir.resolvePath(this._saveVideoFileName).nativePath
+                ];
+
+                startupInfo.workingDirectory = File.applicationDirectory.resolvePath("externals");
+
+                this._nativeProcess.start(startupInfo);
+            } else {
+                this._videoStream.getVideoStart(videoUrl, this._downloadedSize);
+            }
         }
 
         public function createDmcBeatingTimer(): Timer {
@@ -1949,7 +2007,7 @@ package org.mineap.nndd {
         }
 
         public function get isHLS(): Boolean {
-            return this._dmcInfoAnalyzer.isHLSAvailable && this._isVideoNotDownload;
+            return this._dmcInfoAnalyzer.isHLSAvailable;
         }
 
         /**
