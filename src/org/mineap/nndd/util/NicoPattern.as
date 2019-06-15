@@ -14,19 +14,14 @@ package org.mineap.nndd.util {
          * ランキングから動画のURLとタイトルを抽出する正規表現です。
          * <a class="video" href="watch/sm6124961">アホな女達の自動車事故、アクシデント集</a>
          */
-        public static var rankingVideoPattern: RegExp = new RegExp(
-            "<a class=\"video\" href=\"(watch/[^\"]*)\">([^\<]*)</a>",
-            "ig"
-        );
+        public static var rankingVideoPattern: RegExp = /<a class="video" href="(watch\/[^"]*)">([^<]*)<\/a>/ig;
 
         /**
          * ランキングからカテゴリを抽出する正規表現です。
          * <a class="tab_a1" href="http://www.nicovideo.jp/ranking/mylist/daily/music"><div>音楽</div></a>
          */
-        public static var rankingCategoryPattern: RegExp = new RegExp(
-            "<a class=\"tab_..\" href=\"https?://www\.nicovideo\.jp/ranking/\\w+/\\w+/([^\"]*)\"><div>([^<]*)</div></a>",
-            "ig"
-        );
+        public static var rankingCategoryPattern: RegExp
+            = /<a class="tab_.." href="https?:\/\/www\.nicovideo\.jp\/ranking\/\w+\/\w+\/([^"]*)"><div>([^<]*)<\/div><\/a>/ig;
 
         /**
          * 検索結果から動画のURLを抽出する正規表現です。
@@ -41,38 +36,37 @@ package org.mineap.nndd.util {
         /**
          * 検索結果から次ページへのリンクを抽出する正規表現です。
          */
-        public static var searchPageLinkPattern: RegExp = new RegExp(
-            "<a href=\"(https?://www\.nicovideo\.jp/[^/]+/[^\"]*)\">(\\d*)</a>",
-            "ig"
-        );
+        public static var searchPageLinkPattern: RegExp
+            = /<a href="(https?:\/\/www\.nicovideo\.jp\/[^\/]+\/[^"]*)">(\d*)<\/a>/i;
 
         /**
          * 検索結果から現在のページ番号を抽出する正規表現です。
          * <span class="in">1</span>
          */
-        public static var searchNowPagePattern: RegExp = new RegExp("<span class=\"in\">(\\d+)</span>", "ig");
+        public static var searchNowPagePattern: RegExp = /<span class="in">(\d+)<\/span>/i;
 
         /**
          * マイリストの取得結果の中からサムネイル画像のURLを抽出する正規表現です。
          */
-        public static var myListThumbImgUrlPattern: RegExp = new RegExp("src=\"(https?://tn[\.\-][^\"]*)\"");
+        public static var myListThumbImgUrlPattern: RegExp
+            = /src="(https?:\/\/(?:tn[.-]|nicovideo\.cdn\.nimg\.jp\/thumbnails\/)[^"]*)"/;
 
         /**
          * マイリストの取得結果の中からメモを抽出する正規表現です。
          */
-        public static var myListMemoPattern: RegExp = new RegExp("<p class=\"nico-memo\">([^<]*)</p>");
+        public static var myListMemoPattern: RegExp = /<p class="nico-memo">([^<]*)<\/p>/;
 
         /**
          * マイリストの取得結果の中から投稿日を抽出する正規表現です
          * <strong class="nico-info-date">2008年09月03日 19：35：42</strong>
          */
-        public static var myListInfoDate: RegExp = new RegExp("<strong class=\"nico-info-date\">([^<]+)</strong>");
+        public static var myListInfoDate: RegExp = /<strong class="nico-info-date">([^<]+)<\/strong>/;
 
         /**
          * マイリストの取得結果の中から動画の再生時間を抽出する正規表現です。
          * <strong class="nico-info-length">5:39</strong>
          */
-        public static var myListLength: RegExp = new RegExp("<strong class=\"nico-info-length\">([^<]+)</strong>");
+        public static var myListLength: RegExp = /<strong class="nico-info-length">([^<]+)<\/strong>/;
 
 
         public function NicoPattern() {

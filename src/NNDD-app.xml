@@ -5,7 +5,7 @@
 
         Specifies parameters for identifying, installing, and launching AIR applications.
 
-        xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/2.5
+	xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/3.5
                 The last segment of the namespace specifies the version
                 of the AIR runtime required for this application to run.
 
@@ -20,15 +20,27 @@
     <!-- Used as the filename for the application. Required. -->
     <filename>NNDD+DMC</filename>
 
+	<!-- Determines the architecture of the Windows captive app (non-Flash Builder workflows only)-->
+	<architecture>64</architecture>
+
+	<!-- The name that is displayed in the AIR application installer. 
+	May have multiple values for each language. See samples or xsd schema file. Optional. -->
+	<name>NNDD+DMC</name>
+	
     <!-- A string value of the format <0-999>.<0-999>.<0-999> that represents application version which can be used to check for application upgrade.
     Values can also be 1-part or 2-part. It is not necessary to have a 3-part value.
-    An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 . -->
+	An updated version of application must have a versionNumber value higher than the previous version. Required for namespace >= 2.5 .
+    For iOS Apps, this represents build number. -->
     <versionNumber>3.0.12</versionNumber>
 
-    <!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. Optional. -->
+	<!-- A string value (such as "v1", "2.5", or "Alpha 1") that represents the version of the application, as it should be shown to users. 
+     For iOS Apps, this represents application version number and format should be (<0-999>.<0-999>.<0-999>).
+     If this tag is not specified or the value is not according to the format, then this tag will be ignored 
+     and <versionNumber> will be used for application version number. Optional. -->
     <versionLabel>v3.0.12-Beta</versionLabel>
 
-    <!-- Description, displayed in the AIR application installer. Optional. -->
+	<!-- Description, displayed in the AIR application installer.
+	May have multiple values for each language. See samples or xsd schema file. Optional. -->
     <!-- <description></description> -->
 
     <!-- Copyright information. Optional -->
@@ -40,20 +52,20 @@
     <!-- Settings for the application's initial window. Required. -->
     <initialWindow>
         <!-- The main SWF or HTML file of the application. Required. -->
-        <!-- Note: In Flex Builder, the SWF reference is set automatically. -->
-        <content>[この値は Flex　Builder の出力ファイル app.xml　に上書きされます]</content>
+		<!-- Note: In Flash Builder, the SWF reference is set automatically. -->
+		<content></content>
 
         <!-- The title of the main window. Optional. -->
         <!-- <title></title> -->
 
         <!-- The type of system chrome to use (either "standard" or "none"). Optional. Default standard. -->
-        <!-- <systemChrome>standard</systemChrome> -->
+		<!-- <systemChrome></systemChrome> -->
 
-        <!-- Whether the window is transparent. Only applicable when systemChrome is false. Optional. Default false. -->
-        <!-- <transparent>true</transparent> -->
+		<!-- Whether the window is transparent. Only applicable when systemChrome is none. Optional. Default false. -->
+		<!-- <transparent></transparent> -->
 
-        <!-- Whether the window is initially visible. Optional. Default false. -->
-        <!-- <visible>true</visible> -->
+		<!-- Whether the window is initially visible. Optional. Default false. -->
+		<!-- <visible></visible> -->
 
         <!-- Whether the user can minimize the window. Optional. Default true. -->
         <!-- <minimizable></minimizable> -->
@@ -64,10 +76,10 @@
         <!-- Whether the user can resize the window. Optional. Default true. -->
         <!-- <resizable></resizable> -->
 
-        <!-- The window's initial width. Optional. -->
+		<!-- The window's initial width in pixels. Optional. -->
         <width>900</width>
 
-        <!-- The window's initial height. Optional. -->
+		<!-- The window's initial height in pixels. Optional. -->
         <height>600</height>
 
         <!-- The window's initial x position. Optional. -->
@@ -76,21 +88,56 @@
         <!-- The window's initial y position. Optional. -->
         <!-- <y></y> -->
 
-        <!-- The window's minimum size, specified as a width/height pair, such as "400 200". Optional. -->
-        <!-- <minSize>1000 500</minSize> -->
+		<!-- The window's minimum size, specified as a width/height pair in pixels, such as "400 200". Optional. -->
+		<!-- <minSize></minSize> -->
 
-        <!-- The window's initial maximum size, specified as a width/height pair, such as "1600 1200". Optional. -->
-        <!-- <maxSize></maxSize> -->
+		<!-- The window's initial maximum size, specified as a width/height pair in pixels, such as "1600 1200". Optional. -->
+		<!-- <maxSize></maxSize> -->
 
-        <requestedDisplayResolution>high</requestedDisplayResolution>
+        <!-- The aspect ratio of the app ("portrait" or "landscape" or "any"). Optional. Mobile only. Default is the natural orientation of the device -->
 
-    </initialWindow>
+        <!-- <aspectRatio></aspectRatio> -->
 
-    <!-- The subpath of the standard default installation location to use. Optional. -->
-    <!-- <installFolder></installFolder> -->
+        <!-- Whether the app will begin auto-orienting on launch. Optional. Mobile only. Default false -->
 
-    <!-- The subpath of the Windows Start/Programs menu to use. Optional. -->
-    <!-- <programMenuFolder></programMenuFolder> -->
+        <!-- <autoOrients></autoOrients> -->
+
+        <!-- Whether the app launches in full screen. Optional. Mobile only. Default false -->
+
+        <!-- <fullScreen></fullScreen> -->
+
+        <!-- The render mode for the app (either auto, cpu, gpu, or direct). Optional. Default auto -->
+
+        <!-- <renderMode></renderMode> -->
+
+        <!-- Whether the default direct mode rendering context allocates storage for depth and stencil buffers.  Optional.  Default false. -->
+        <!-- <depthAndStencil></depthAndStencil> -->
+
+		<!-- Whether or not to pan when a soft keyboard is raised or lowered (either "pan" or "none").  Optional.  Defaults "pan." -->
+		<!-- <softKeyboardBehavior></softKeyboardBehavior> -->
+
+		<!-- Display Resolution for the app (either "standard" or "high"). Optional. Default "standard" -->
+		<!-- <requestedDisplayResolution></requestedDisplayResolution> -->
+	</initialWindow>
+
+	<!-- We recommend omitting the supportedProfiles element, -->
+	<!-- which in turn permits your application to be deployed to all -->
+	<!-- devices supported by AIR. If you wish to restrict deployment -->
+	<!-- (i.e., to only mobile devices) then add this element and list -->
+	<!-- only the profiles which your application does support. -->
+	<!-- <supportedProfiles>desktop extendedDesktop mobileDevice extendedMobileDevice</supportedProfiles> -->
+
+	<!-- Languages supported by application -->
+	<!-- Only these languages can be specified -->
+	<!-- Android Native uses "in" code for indonesean language, wherein native iOS uses "id" as its language code. -->
+	<!-- We have added support of "id" in "in" code to support iOS with the same tag.-->
+	<!-- <supportedLanguages>cs da de el en es fi fr in it iw ja ko ms nb nl pl pt ru sv th tr vi zh</supportedLanguages> -->
+
+	<!-- The subpath of the standard default installation location to use. Optional. -->
+	<!-- <installFolder></installFolder> -->
+
+	<!-- The subpath of the Programs menu to use. (Ignored on operating systems without a Programs menu.) Optional. -->
+	<!-- <programMenuFolder></programMenuFolder> -->
 
     <!-- The icon the system uses for the application. For at least one resolution,
          specify the path to a PNG file included in the AIR package. Optional. -->
@@ -125,7 +172,7 @@
             <!-- The description of the file type. Optional. -->
             <!-- <description></description> -->
 
-            <!-- The MIME type. Optional. -->
+			<!-- The MIME content type. -->
             <contentType>video/mp4</contentType>
 
             <!-- The icon to display for the file type. Optional. -->
@@ -162,5 +209,81 @@
 
         </fileType>
     </fileTypes>
+    
+    <!-- A preferred GPU type (either "discrete" or "integrated") in case the app utilizes GPU. Desktop only. Optional -->
+    <!-- <gpuPreference></gpuPreference> -->
+
+    <!-- iOS specific capabilities -->
+	<!-- <iPhone> -->
+		<!-- A list of plist key/value pairs to be added to the application Info.plist -->
+		<!-- <InfoAdditions>
+            <![CDATA[
+                <key>UIDeviceFamily</key>
+                <array>
+                    <string>1</string>
+                    <string>2</string>
+                </array>
+                <key>UIStatusBarStyle</key>
+                <string>UIStatusBarStyleBlackOpaque</string>
+                <key>UIRequiresPersistentWiFi</key>
+                <string>YES</string>
+            ]]>
+        </InfoAdditions> -->
+        <!-- A list of plist key/value pairs to be added to the application Entitlements.plist -->
+		<!-- <Entitlements>
+            <![CDATA[
+                <key>keychain-access-groups</key>
+                <array>
+                    <string></string>
+                    <string></string>
+                </array>
+            ]]>
+        </Entitlements> -->
+	<!-- Display Resolution for the app (either "standard" or "high"). Optional. Default "standard" -->
+	<!-- <requestedDisplayResolution></requestedDisplayResolution> -->
+	<!-- Forcing Render Mode CPU for the devices mentioned. Optional  -->
+	<!-- <forceCPURenderModeForDevices></forceCPURenderModeForDevices> -->
+	<!-- File containing line separated list of external swf paths. These swfs won't be 
+	packaged inside the application and corresponding stripped swfs will be output in 
+	externalStrippedSwfs folder. -->
+	<!-- <externalSwfs></externalSwfs> -->
+	<!-- </iPhone> -->
+
+	<!-- Specify Android specific tags that get passed to AndroidManifest.xml file. -->
+    <!--<android> -->
+    <!--	<manifestAdditions>
+		<![CDATA[
+			<manifest android:installLocation="auto">
+				<uses-permission android:name="android.permission.INTERNET"/>
+				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+				<uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
+				<application android:enabled="true">
+					<activity android:excludeFromRecents="false">
+						<intent-filter>
+							<action android:name="android.intent.action.MAIN"/>
+							<category android:name="android.intent.category.LAUNCHER"/>
+						</intent-filter>
+					</activity>
+				</application>
+            </manifest>
+		]]>
+        </manifestAdditions> -->
+	    <!-- Color depth for the app (either "32bit" or "16bit"). Optional. Default 16bit before namespace 3.0, 32bit after -->
+        <!-- <colorDepth></colorDepth> -->
+        <!-- Indicates if the app contains video or not. Necessary for ordering of video planes with graphics plane, especially in Jellybean - if you app does video this must be set to true - valid values are true or false -->
+        <!-- <containsVideo></containsVideo> -->
+        <!-- This app is also for Android TV (either "true" or "false"). Optional. Default is 'false' -->
+        <!-- <supportsAndroidTV></supportsAndroidTV> -->
+        <!-- Path to the image used for banner when the app is shown on TV. The banner should be a .png image of size 320*180.-->
+        <!-- <banner></banner> -->
+        <!-- Indicates if webContents (HTML/CSS/JavaScript) can be inspected in browser. Optional . Default value is 'false' -->
+        <!-- <webContentsDebuggingEnabled></webContentsDebuggingEnabled> -->
+
+         <!-- Indicates if disableMediaCodec is enabled or not. Optional . Default value is 'false' -->
+        <!-- <disableMediaCodec></disableMediaCodec> -->
+
+    <!-- </android> -->
+	<!-- End of the schema for adding the android specific tags in AndroidManifest.xml file -->
 
 </application>
