@@ -27,10 +27,9 @@ package org.mineap.nndd.ranking {
      */
     public class RankingListBuilder extends EventDispatcher {
 
-        private static const CATEGORY_LIST_FILE_NAME: String = "CategoryList.xml";
+        private static const CATEGORY_LIST_FILE_NAME: String = "CategoryList.json";
 
-        // TODO: Rollback to 20181101
-        private static const CATEGORY_VERSION: String = "20181101";
+        private static const CATEGORY_VERSION: String = "20190721";
 
         /**
          *
@@ -195,10 +194,13 @@ package org.mineap.nndd.ranking {
          * カテゴリの一覧を返します。
          *
          * @return
+         *      Array<{
+         *
+         *      }>
          *
          */
         public static function getCategoryList(): Array {
-            var catList: Array = new Array();
+            var catList: Array = [];
 
             var file: File = File.applicationStorageDirectory.resolvePath(CATEGORY_LIST_FILE_NAME);
 
@@ -208,30 +210,20 @@ package org.mineap.nndd.ranking {
             }
 
             var fileIO: FileIO = new FileIO();
-            var categoryListXml: XML = fileIO.loadXMLSync(file.nativePath, true);
+            var categoryList: Object = JSON.parse(fileIO.loadTextSync(file.nativePath));
 
-            if (categoryListXml.@version != null && CATEGORY_VERSION != categoryListXml.@version.toString()) {
+            if (categoryList.version != null && categoryList.version !== CATEGORY_VERSION) {
                 // カテゴリバージョンが違うならバックアップして強制的に上書き
                 file.copyTo(File.applicationStorageDirectory.resolvePath(CATEGORY_LIST_FILE_NAME + ".back"), true);
                 file.deleteFile();
                 defCategoryList.copyTo(file, true);
             }
 
-            var categories: XMLList = categoryListXml.category;
-
-            for each(var category: XML in categories) {
-                var title: String = category.@title;
-                var suffix: String = category.@suffix;
-                catList.push(new Array(title, suffix));
-
-                var subCategories: XMLList = category.category;
-
-                for each(var subCategory: XML in subCategories) {
-                    title = "  " + subCategory.@title;
-                    suffix = subCategory.@suffix;
-                    catList.push(new Array(title, suffix));
+            for each(var category: Object in categoryList.category_list) {
+                catList.push({ title: category.name, suffix: category.id });
+                for each(var tag: Object in category.tags) {
+                    catList.push({ title: "  " + tag, tag: tag, suffix: category.id });
                 }
-
             }
 
             return catList;

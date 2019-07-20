@@ -436,9 +436,8 @@ package org.mineap.nndd {
          * @param tagsArray タグを格納するArrayCollectionです。
          */
         public function request_rankingRenew(
-            period: int,
-            target: int,
-            category: String,
+            term: String,
+            genre: String,
             rankingListProvider: ArrayCollection,
             pageIndex: int,
             tagsArray: ArrayCollection = null,
@@ -452,7 +451,7 @@ package org.mineap.nndd {
             this.pageIndex = pageIndex;
             this.isRankingListGetting = true;
 
-            listLoader = watchRanking(period, target, category, pageIndex);
+            listLoader = watchRanking(term, genre, pageIndex);
         }
 
         /**
@@ -1282,20 +1281,17 @@ package org.mineap.nndd {
 
         /**
          * ランキングのページを参照する
-         * @param url マイリスト登録ランキングのURL
+         * @param genre String 取得するランキングのジャンル
+         * @param term String ランキングの集計期間
+         * @param page int 参照するランキングのページ
          * @return マイリスト登録ランキングへのアクセスを保持するURLLoader
          *
          **/
-        private function watchRanking(period: int, target: int, category: String, page: int): URLLoader {
+        private function watchRanking(genre: String, term: String, page: int): URLLoader {
+            this.nicoRankingURL = NicoRankingUrl.getNicoRankingUrl(genre, term, null, true);
 
-            if (period != 5) {
-                this.nicoRankingURL = NicoRankingUrl.NICO_RANKING_URLS[period][target] + category;
-            } else {
-                this.nicoRankingURL = NicoRankingUrl.NICO_RANKING_URLS[period][0];
-            }
             var request: URLRequest = new URLRequest(nicoRankingURL);
             var variables: URLVariables = new URLVariables();
-            variables.rss = "2.0";
             variables.page = page;
 
             request.data = variables;

@@ -28,6 +28,8 @@
         import mx.events.TreeEvent;
         import mx.managers.DragManager;
 
+        import org.mineap.nicovideo4as.model.NicoRankingUrl;
+
         import org.mineap.nndd.library.LibraryTreeBuilder;
         import org.mineap.nndd.model.NNDDVideo;
         import org.mineap.nndd.model.tree.ITreeItem;
@@ -1633,31 +1635,55 @@
                 <mx:Label text="[期間]:"/>
                 <mx:RadioButtonGroup id="radiogroup_period">
                 </mx:RadioButtonGroup>
-                <mx:RadioButton label="新着" groupName="radiogroup_period" id="radio_period_new" value="5"
-                                click="rankingRenewButtonClicked()" enabled="true"/>
-                <mx:RadioButton label="毎時" groupName="radiogroup_period" id="radio_period_hourly" value="3"
-                                click="rankingRenewButtonClicked()" enabled="true"/>
-                <mx:RadioButton label="毎日" groupName="radiogroup_period" id="radio_period_daily" selected="true"
-                                value="0" click="rankingRenewButtonClicked()" enabled="true"/>
-                <mx:RadioButton label="週間" groupName="radiogroup_period" id="radio_period_weekly" value="1"
-                                click="rankingRenewButtonClicked()" enabled="true"/>
-                <mx:RadioButton label="月間" groupName="radiogroup_period" id="radio_period_monthly" value="2"
-                                click="rankingRenewButtonClicked()" enabled="true"/>
-                <mx:RadioButton label="合計" groupName="radiogroup_period" id="radio_period_all" value="4"
-                                click="rankingRenewButtonClicked()" enabled="true"/>
-
-                <mx:Label text="[対象]:"/>
-                <mx:RadioButtonGroup id="radiogroup_target">
-                </mx:RadioButtonGroup>
-                <mx:RadioButton label="総合" groupName="radiogroup_target" enabled="true" value="3" id="radio_target_fav"
-                                click="rankingRenewButtonClicked()" selected="true"/>
-                <mx:RadioButton label="コメント" groupName="radiogroup_target" enabled="true" value="2"
-                                id="radio_target_res" click="rankingRenewButtonClicked()"/>
-                <mx:RadioButton label="再生数" groupName="radiogroup_target" enabled="true" value="1"
-                                id="radio_target_view" click="rankingRenewButtonClicked()"/>
-                <mx:RadioButton label="マイリスト" groupName="radiogroup_target" value="0" id="radio_target_mylist"
-                                click="rankingRenewButtonClicked()" enabled="true"/>
-
+                <mx:RadioButton
+                        label="新着"
+                        groupName="radiogroup_period"
+                        id="radio_period_new"
+                        value="{NicoRankingUrl.NEW_ARRIVAL}"
+                        click="rankingRenewButtonClicked()"
+                        enabled="true"
+                />
+                <mx:RadioButton
+                        label="毎時"
+                        groupName="radiogroup_period"
+                        id="radio_period_hourly"
+                        value="{NicoRankingUrl.HOURLY}"
+                        click="rankingRenewButtonClicked()"
+                        enabled="true"
+                />
+                <mx:RadioButton
+                        label="毎日"
+                        groupName="radiogroup_period"
+                        id="radio_period_daily"
+                        selected="true"
+                        value="{NicoRankingUrl.DAILY}"
+                        click="rankingRenewButtonClicked()"
+                        enabled="true"
+                />
+                <mx:RadioButton
+                        label="週間"
+                        groupName="radiogroup_period"
+                        id="radio_period_weekly"
+                        value="{NicoRankingUrl.WEEKLEY}"
+                        click="rankingRenewButtonClicked()"
+                        enabled="true"
+                />
+                <mx:RadioButton
+                        label="月間"
+                        groupName="radiogroup_period"
+                        id="radio_period_monthly"
+                        value="{NicoRankingUrl.MONTHLY}"
+                        click="rankingRenewButtonClicked()"
+                        enabled="true"
+                />
+                <mx:RadioButton
+                        label="合計"
+                        groupName="radiogroup_period"
+                        id="radio_period_all"
+                        value="{NicoRankingUrl.TOTAL}"
+                        click="rankingRenewButtonClicked()"
+                        enabled="true"
+                />
             </mx:ApplicationControlBar>
 
             <mx:HDividedBox left="10" top="40" bottom="30" right="10">

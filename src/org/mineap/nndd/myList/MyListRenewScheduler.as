@@ -143,7 +143,7 @@ package org.mineap.nndd.myList {
                     }
                 }
                 if (!exist) {
-                    this._myLists.splice(0, 0, myList);
+                    this._myLists.push(myList);
                 }
             }
         }
@@ -153,9 +153,8 @@ package org.mineap.nndd.myList {
          *
          */
         public function myListReset(): void {
-            this._myLists.splice(0, this._myLists.length);
+            this._myLists.length = 0;
         }
-
         /**
          * スケジュール実行を停止します
          *

@@ -275,8 +275,7 @@ private var enableSyncMyListYetPlay: Boolean = false;
 
 private var isRowHeightSync: Boolean = true;
 
-private var period: int = 0;
-private var target: int = 0;
+private var period: String = null;
 
 private var lastTagWidth: int = -1;
 
@@ -2059,23 +2058,12 @@ private function readStore(isLogout: Boolean = false): void {
         }
 
 
-        errorName = "rankingTarget";
-        confValue = ConfigManager.getInstance().getItem("rankingTarget");
-        if (confValue == null) {
-            //何もしない
-        } else {
-            this.target = int(confValue);
-            this.addEventListener(AIREvent.WINDOW_COMPLETE, function (): void {
-                radiogroup_target.selectedValue = target;
-            });
-        }
-
         errorName = "rankingPeriod";
         confValue = ConfigManager.getInstance().getItem("rankingPeriod");
         if (confValue == null) {
             //何もしない
         } else {
-            this.period = int(confValue);
+            this.period = confValue;
             this.addEventListener(AIREvent.WINDOW_COMPLETE, function (): void {
                 radiogroup_period.selectedValue = period;
             });
@@ -2626,14 +2614,6 @@ private function noLogin(event: HTTPStatusEvent): void {
 
 }
 
-private function setEnableTargetRadioButtons(enable: Boolean): void {
-
-    nndd.radio_target_mylist.enabled = enable;
-    nndd.radio_target_res.enabled = enable;
-    nndd.radio_target_view.enabled = enable;
-
-}
-
 /**
  * ラジオボタンをまとめて有効・無効に設定します。
  * @param enable
@@ -2641,7 +2621,6 @@ private function setEnableTargetRadioButtons(enable: Boolean): void {
  */
 private function setEnableRadioButtons(enable: Boolean): void {
     nndd.radiogroup_period.enabled = enable;
-    nndd.radiogroup_target.enabled = enable;
 
     nndd.radio_period_new.enabled = enable;
     nndd.radio_period_daily.enabled = enable;
@@ -2649,9 +2628,6 @@ private function setEnableRadioButtons(enable: Boolean): void {
     nndd.radio_period_monthly.enabled = enable;
     nndd.radio_period_weekly.enabled = enable;
     nndd.radio_period_all.enabled = enable;
-    nndd.radio_target_mylist.enabled = enable;
-    nndd.radio_target_res.enabled = enable;
-    nndd.radio_target_view.enabled = enable;
 }
 
 /**
@@ -3692,8 +3668,7 @@ private function rankingRenewButtonClicked(): void {
         if (rankingLoader == null) {
 
             //選択中の期間、対象を保存
-            this.period = int(this.radiogroup_period.selectedValue);
-            this.target = int(this.radiogroup_target.selectedValue);
+            this.period = this.radiogroup_period.selectedValue.toString();
 
             // selectedIndexだと正しくない(画面で表示されている項目の上からいくつ目かという値）が取れてしまう事がある
             var selectedItem: Object = list_categoryList.selectedItem;
@@ -3715,14 +3690,13 @@ private function rankingRenewButtonClicked(): void {
             try {
                 rankingProvider.removeAll();
 
-                if (this.radiogroup_period.selectedValue != 5) {
+                if (this.radiogroup_period.selectedValue !== NicoRankingUrl.NEW_ARRIVAL) {
                     //普通のライブラリ更新
                     combobox_pageCounter_ranking.selectedIndex = 0;
 
                     this.rankingPageCountProvider = new Array();
                     this.rankingPageCountProvider.push(1);
                     this.rankingPageIndex = 1;
-                    setEnableTargetRadioButtons(true);
                 } else {
                     //新着の場合は期間を無視
                     if (this.combobox_pageCounter_ranking.selectedIndex >= 0) {
@@ -3742,8 +3716,6 @@ private function rankingRenewButtonClicked(): void {
                         this.rankingPageCountProvider.push(i + 1);
                     }
                     combobox_pageCounter_ranking.selectedIndex = rankingPageIndex - 1;
-
-                    setEnableTargetRadioButtons(false);
                 }
 
                 setEnableRadioButtons(false);
@@ -3784,17 +3756,11 @@ private function rankingRenewButtonClicked(): void {
                         rankingPageIndex
                     );
 
-                    if (period != 5 && categoryListProvider.length == 0) {
+                    if (period !== NicoRankingUrl.NEW_ARRIVAL && categoryListProvider.length == 0) {
                         categoryList = RankingListBuilder.getCategoryList();
-                        categoryListProvider = new Array(categoryList.length);
-                        for (var index: int = 0; index < categoryList.length; index++) {
-                            categoryListProvider[index] = categoryList[index][0];
-                        }
-                    }
-
-                    if (radiogroup_period.selectedValue != 5) {
-                        //通常のランキングのときのページリンク
-                    } else {
+                        categoryListProvider = categoryList.map(function (element: Object, index: int, arr: Array): Object {
+                            return element.title;
+                        });
                     }
 
                     if (categoryListIndex != -1 && categoryList.length >= categoryListIndex) {
@@ -3808,25 +3774,27 @@ private function rankingRenewButtonClicked(): void {
                     loading = null;
                 });
 
-                var category: String = "all";
+                var genre: String = "all";
+                var tag: String = null;
                 if (categoryListIndex != -1 && categoryList.length > 0) {
-                    category = categoryList[categoryListIndex][1];
+                    tag = categoryList[categoryListIndex].tag !== null ? categoryList[categoryListIndex].tag : null;
+                    genre = categoryList[categoryListIndex].suffix;
                 }
-                logManager.addLog("ランキングを更新:期間=" + period + ", 種別=" + target + ", カテゴリ=" + category);
-                if (period == 5) {
-                    rankingLoader.getRanking(period, target, rankingPageIndex, category);
+                logManager.addLog("ランキングを更新:期間=" + period + ", ジャンル=" + genre + ", タグ=" + tag);
+                if (period === NicoRankingUrl.NEW_ARRIVAL) {
+                    rankingLoader.getRanking(period, genre, tag, rankingPageIndex);
                 } else {
-                    rankingLoader.getRanking(period, target, 1, category);
+                    rankingLoader.getRanking(period, genre, tag, 1);
                 }
             } catch (error: Error) {
                 trace(error.getStackTrace());
                 setEnableRadioButtons(true);
                 rankingRenewButton.label = Message.L_RENEW;
                 list_categoryList.enabled = true;
-                Alert.show("ランキング更新中に想定外の例外が発生しました。\n" + error + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" +
-                           category, "エラー");
-                logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n" + "\n期間=" + period + ", 種別=" + target + ", カテゴリ=" +
-                                  category + "\n" + error.getStackTrace());
+                Alert.show("ランキング更新中に想定外の例外が発生しました。\n" + error + "\n期間=" + period + ", カテゴリ=" +
+                           genre, "エラー");
+                logManager.addLog("ランキング更新中に想定外の例外が発生しました。\n" + "\n期間=" + period + ", カテゴリ=" +
+                                  genre + "\n" + error.getStackTrace());
                 if (loading != null) {
                     loading.stop();
                     loading.remove();
@@ -4658,7 +4626,6 @@ private function saveStore(): void {
 
         //選択されているランキング期間
         ConfigManager.getInstance().removeItem("rankingTarget");
-        ConfigManager.getInstance().setItem("rankingTarget", this.target);
 
         //選択されているランキング対象
         ConfigManager.getInstance().removeItem("rankingPeriod");
@@ -7802,15 +7769,12 @@ public function showMyListOnNico(event: Event): void {
  */
 public function showRankingOnNico(event: Event): void {
 
-    var url: String = null;
-
-    if (this.radiogroup_period.selectedValue != 5) {
-        //普通のライブラリ更新
-        url = Access2Nico.NICO_RANKING_URLS[this.radiogroup_period.selectedValue][this.radiogroup_target.selectedValue];
-    } else {
-        //新着の場合は期間を無視
-        url = Access2Nico.NICO_RANKING_URLS[this.radiogroup_period.selectedValue][0];
-    }
+    var url: String = NicoRankingUrl.getNicoRankingUrl(
+        "",
+        this.radiogroup_period.selectedValue.toString(),
+        null,
+        false
+    );
 
     navigateToURL(new URLRequest(url));
 

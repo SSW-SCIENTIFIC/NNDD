@@ -25,7 +25,7 @@
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon32.png" path-in-package="icon32.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon48.png" path-in-package="icon48.png" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/icon128.png" path-in-package="icon128.png" />
-            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/CategoryList.xml" path-in-package="CategoryList.xml" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/CategoryList.json" path-in-package="CategoryList.json" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/README.md" path-in-package="README.md" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/LICENSE" path-in-package="LICENSE" />
             <FilePathAndPathInPackage file-path="$MODULE_DIR$/LICENSE0" path-in-package="LICENSE0" />
