@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>3.0.13</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.13-Beta/NNDD_v3_0_13.dmg</url>
+        <version>3.1.0</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.1.0-Beta/NNDD_v3_1_0.dmg</url>
         <description><![CDATA[
+2019-07-21 v3.1.0
+・ランキングの変更に対応(暫定)
+・カテゴリリストをXMLからJSONに変更(CategoryList.xml -> CategoryList.json)
+・ランキング集計対象(再生, コメント, マイリスト, etc.)を廃止
+
 2019-06-15 v3.0.13
 ・デフォルトのHLSバッファリングを前後300秒に
 ・どうやらコミュニティ動画リストのRSS配信が停止したようなのでとりあえず例外補足しておく
@@ -178,9 +183,14 @@
     </dmg>
 
     <exe>
-        <version>3.0.13</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.0.13-Beta/NNDD_v3_0_13.exe</url>
+        <version>3.1.0</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.1.0-Beta/NNDD_v3_1_0.exe</url>
         <description><![CDATA[
+2019-07-21 v3.1.0
+・ランキングの変更に対応(暫定)
+・カテゴリリストをXMLからJSONに変更(CategoryList.xml -> CategoryList.json)
+・ランキング集計対象(再生, コメント, マイリスト, etc.)を廃止
+
 2019-06-15 v3.0.13
 ・デフォルトのHLSバッファリングを前後300秒に
 ・どうやらコミュニティ動画リストのRSS配信が停止したようなのでとりあえず例外補足しておく
