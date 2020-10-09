@@ -29,7 +29,7 @@ package org.mineap.nndd.ranking {
 
         private static const CATEGORY_LIST_FILE_NAME: String = "CategoryList.json";
 
-        private static const CATEGORY_VERSION: String = "20190721";
+        private static const CATEGORY_VERSION: String = "20201009";
 
         /**
          *

@@ -10,6 +10,10 @@ Author
 
 History
 -------
+### 2020-10-09 v3.1.1
+* ランキングリストの更新
+* HiDPI対応
+
 ### 2019-07-21 v3.1.0
 * ランキングの変更に対応(暫定)
 * カテゴリリストをXMLからJSONに変更(CategoryList.xml -> CategoryList.json)
