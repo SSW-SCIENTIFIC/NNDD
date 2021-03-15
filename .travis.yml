@@ -3,12 +3,12 @@ osx_image: xcode12.2
 before_install:
 - brew update
 - touch $HOME/sum.sha256
-- echo "f1f95129fbc48b0625cda9d94c4e02fa704f287698dd1ff7d5051a617fca3077 *$HOME/AIRSDK_Compiler.dmg"
+- echo "0f910a98c138ac70edec7058647b3e7f247db4a080bf262e0fb3d7528ed99483 *$HOME/AIRSDK_Compiler.dmg"
   >> $HOME/sum.sha256
 - echo "17fda7ac8d3e476cad3127f345455ef316acfb87c6f4322e5897bd8d9b09388e *$HOME/apache-flex-sdk-4.16.1-bin.tar.gz"
   >> $HOME/sum.sha256
 - wget -P $HOME https://archive.apache.org/dist/flex/4.16.1/binaries/apache-flex-sdk-4.16.1-bin.tar.gz
-- wget -P $HOME http://airdownload.adobe.com/air/mac/download/30.0/AIRSDK_Compiler.dmg
+- wget -P $HOME https://airdownload.adobe.com/air/mac/download/32.0/AIRSDK_Compiler.dmg
 - shasum -a 256 --check $HOME/sum.sha256
 - tar xzf $HOME/apache-flex-sdk-4.16.1-bin.tar.gz
 - mv apache-flex-sdk-4.16.1-bin $HOME/
