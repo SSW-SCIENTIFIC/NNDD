@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
-        <version>3.1.1</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.1.1-Beta/NNDD_v3_1_1.dmg</url>
+        <version>4.0.0</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v4.0.0-Beta/NNDD_v4_0_0.dmg</url>
         <description><![CDATA[
-2020-10-09 v3.1.1
+2021-03-16 v4.0.0
+・ニコニコ動画API変更への対応
 ・ランキングリストの更新
 ・HiDPI対応
+・最終リリース
 
 2019-07-21 v3.1.0
 ・ランキングの変更に対応(暫定)
@@ -187,9 +189,15 @@
     </dmg>
 
     <exe>
-        <version>3.1.1</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v3.1.1-Beta/NNDD_v3_1_1.exe</url>
+        <version>4.0.0</version>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v4.0.0-Beta/NNDD_v4_0_0.exe</url>
         <description><![CDATA[
+2021-03-16 v4.0.0
+・ニコニコ動画API変更への対応
+・ランキングリストの更新
+・HiDPI対応
+・最終リリース
+
 2020-10-09 v3.1.1
 ・ランキングリストの更新
 ・HiDPI対応
