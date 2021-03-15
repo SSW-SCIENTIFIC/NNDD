@@ -1891,11 +1891,7 @@ package org.mineap.nndd {
                 oldFile.moveToTrash();
             }
 
-            var videoUrl: String = this._watchVideo.isHTML5 ? this._watchVideo.smileInfo.url : this._flvResultAnalyzer.url;
-
-            if (this._watchVideo.isDmc) {
-                videoUrl = this._dmcResultAnalyzer.contentUri;
-            }
+            var videoUrl: String = this._dmcResultAnalyzer.contentUri;
 
             if (this._isNNDDServerReady) {
                 videoUrl = _nnddServerVideoUrl;
