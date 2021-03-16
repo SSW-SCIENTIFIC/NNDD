@@ -2,7 +2,7 @@
 <update xmlns="http://ns.riaspace.com/air/framework/update/description/1.1">
     <dmg>
         <version>4.0.0</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v4.0.0-Beta/NNDD_v4_0_0.dmg</url>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v4.0.0/NNDD_v4_0_0.dmg</url>
         <description><![CDATA[
 2021-03-16 v4.0.0
 ・ニコニコ動画API変更への対応
@@ -190,7 +190,7 @@
 
     <exe>
         <version>4.0.0</version>
-        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v4.0.0-Beta/NNDD_v4_0_0.exe</url>
+        <url>https://github.com/SSW-SCIENTIFIC/NNDD/releases/download/v4.0.0/NNDD_v4_0_0.exe</url>
         <description><![CDATA[
 2021-03-16 v4.0.0
 ・ニコニコ動画API変更への対応
